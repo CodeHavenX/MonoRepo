@@ -43,7 +43,6 @@ class PaymentRecordController(
     private val rbacService: RBACService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -54,21 +53,22 @@ class PaymentRecordController(
             CreatePaymentRecordNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PaymentRecordNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.unitId, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return paymentRecordService.createPaymentRecord(
-            unitId = request.requestBody.unitId,
-            paymentType = request.requestBody.paymentType,
-            periodMonth = request.requestBody.periodMonth,
-            amountDue = request.requestBody.amountDue,
-            dueDate = request.requestBody.dueDate,
-            recordedBy = request.context.payload.userId,
-            notes = request.requestBody.notes,
-        ).toPaymentRecordNetworkResponse()
+        return paymentRecordService
+            .createPaymentRecord(
+                unitId = request.requestBody.unitId,
+                paymentType = request.requestBody.paymentType,
+                periodMonth = request.requestBody.periodMonth,
+                amountDue = request.requestBody.amountDue,
+                dueDate = request.requestBody.dueDate,
+                recordedBy = request.context.payload.userId,
+                notes = request.requestBody.notes,
+            ).toPaymentRecordNetworkResponse()
     }
 
     /**
@@ -80,8 +80,8 @@ class PaymentRecordController(
             NoRequestBody,
             NoQueryParam,
             PaymentRecordId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PaymentRecordNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
             throw NotFoundException("Payment record not found.")
@@ -99,16 +99,18 @@ class PaymentRecordController(
             NoRequestBody,
             GetPaymentRecordsQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PaymentRecordListNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.queryParam.unitId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val records = paymentRecordService.listPaymentRecords(
-            unitId = request.queryParam.unitId,
-            periodMonth = request.queryParam.periodMonth,
-        ).map { it.toPaymentRecordNetworkResponse() }
+        val records =
+            paymentRecordService
+                .listPaymentRecords(
+                    unitId = request.queryParam.unitId,
+                    periodMonth = request.queryParam.periodMonth,
+                ).map { it.toPaymentRecordNetworkResponse() }
         return PaymentRecordListNetworkResponse(records)
     }
 
@@ -120,19 +122,20 @@ class PaymentRecordController(
             UpdatePaymentRecordNetworkRequest,
             NoQueryParam,
             PaymentRecordId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PaymentRecordNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return paymentRecordService.updatePaymentRecord(
-            paymentRecordId = request.pathParam,
-            amountPaid = request.requestBody.amountPaid,
-            paidDate = request.requestBody.paidDate,
-            status = request.requestBody.status,
-            notes = request.requestBody.notes,
-        ).toPaymentRecordNetworkResponse()
+        return paymentRecordService
+            .updatePaymentRecord(
+                paymentRecordId = request.pathParam,
+                amountPaid = request.requestBody.amountPaid,
+                paidDate = request.requestBody.paidDate,
+                status = request.requestBody.status,
+                notes = request.requestBody.notes,
+            ).toPaymentRecordNetworkResponse()
     }
 
     /**

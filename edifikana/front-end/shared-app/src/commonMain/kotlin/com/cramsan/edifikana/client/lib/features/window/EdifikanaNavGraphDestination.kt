@@ -15,7 +15,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class EdifikanaNavGraphDestination : NavigationGraphDestination {
-
     /**
      * A class representing navigating to the splash screen.
      */

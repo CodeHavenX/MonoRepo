@@ -16,11 +16,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * A confirmation dialog that asks the user if they want to sign out
  * and leave the onboarding process.
  */
-class SignOutConfirmationDialog(
-    private val onConfirm: () -> Unit,
-    private val onDismiss: () -> Unit,
-) : Dialog() {
-
+class SignOutConfirmationDialog(private val onConfirm: () -> Unit, private val onDismiss: () -> Unit) : Dialog() {
     @Composable
     override fun Content() {
         AlertDialog(
@@ -35,7 +31,7 @@ class SignOutConfirmationDialog(
                     onClick = {
                         hide()
                         onConfirm()
-                    }
+                    },
                 ) {
                     Text(stringResource(Res.string.edifikana_string_sign_out))
                 }
@@ -45,11 +41,11 @@ class SignOutConfirmationDialog(
                     onClick = {
                         hide()
                         onDismiss()
-                    }
+                    },
                 ) {
                     Text(stringResource(Res.string.edifikana_string_cancel))
                 }
-            }
+            },
         )
     }
 }
@@ -59,7 +55,7 @@ class SignOutConfirmationDialog(
 private fun SignOutConfirmationDialogPreview() {
     SignOutConfirmationDialog(
         onConfirm = {},
-        onDismiss = {}
+        onDismiss = {},
     ).Content()
 }
 
@@ -68,6 +64,6 @@ private fun SignOutConfirmationDialogPreview() {
 private fun SignOutConfirmationDialogPreview_ES() {
     SignOutConfirmationDialog(
         onConfirm = {},
-        onDismiss = {}
+        onDismiss = {},
     ).Content()
 }

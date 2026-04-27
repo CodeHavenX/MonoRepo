@@ -18,31 +18,32 @@ import org.apache.logging.log4j.Logger
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal actual val FrameworkPlatformDelegatesModule: Module = module {
-    single<ThreadUtilDelegate> {
-        ThreadUtilJVM(
-            get(),
-            get(),
-        )
+internal actual val FrameworkPlatformDelegatesModule: Module =
+    module {
+        single<ThreadUtilDelegate> {
+            ThreadUtilJVM(
+                get(),
+                get(),
+            )
+        }
+
+        single {
+            Severity.VERBOSE
+        }
+
+        single<Logger> {
+            Log4J2Helpers.getRootLogger(true, get())
+        }
+
+        single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate() }
+
+        single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
+
+        single<HaltUtilDelegate> {
+            HaltUtilJVM(get())
+        }
+
+        single<DispatcherProvider> { UIDispatcherProvider() }
+
+        single<PreferencesDelegate> { JVMPreferencesDelegate("com.cramsan.framework.sample") }
     }
-
-    single {
-        Severity.VERBOSE
-    }
-
-    single<Logger> {
-        Log4J2Helpers.getRootLogger(true, get())
-    }
-
-    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate() }
-
-    single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
-
-    single<HaltUtilDelegate> {
-        HaltUtilJVM(get())
-    }
-
-    single<DispatcherProvider> { UIDispatcherProvider() }
-
-    single<PreferencesDelegate> { JVMPreferencesDelegate("com.cramsan.framework.sample") }
-}

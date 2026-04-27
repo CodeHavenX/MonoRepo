@@ -11,7 +11,6 @@ import kotlin.time.Instant
  * Interface for interacting with the time card database.
  */
 interface TimeCardDatastore {
-
     /**
      * Creates a new time card event. Returns the [Result] of the operation with the created [TimeCardEvent].
      */

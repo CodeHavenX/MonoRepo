@@ -2,20 +2,21 @@ package com.cramsan.agentic.ai
 
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
+import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
-import kotlinx.coroutines.delay
 
 private const val TAG = "RetryingAiProvider"
 
-private val USAGE_LIMIT_KEYWORDS = listOf(
-    "rate limit",
-    "usage limit",
-    "overloaded",
-    "too many requests",
-    "429",
-    "529",
-)
+private val USAGE_LIMIT_KEYWORDS =
+    listOf(
+        "rate limit",
+        "usage limit",
+        "overloaded",
+        "too many requests",
+        "429",
+        "529",
+    )
 
 /**
  * [AiProvider] decorator that retries [chat] calls when a usage or rate-limit error
@@ -30,7 +31,6 @@ class RetryingAiProvider(
     private val maxRetries: Int = 65,
     private val retryDelay: Duration = 5.minutes,
 ) : AiProvider {
-
     override suspend fun chat(
         systemPrompt: String,
         messages: List<AiMessage>,
@@ -45,7 +45,10 @@ class RetryingAiProvider(
                     throw e
                 }
                 attempt++
-                logW(TAG, "Usage limit detected (attempt $attempt/$maxRetries): ${e.message}. Waiting ${retryDelay}ms before retry.")
+                logW(
+                    TAG,
+                    "Usage limit detected (attempt $attempt/$maxRetries): ${e.message}. Waiting ${retryDelay}ms before retry.",
+                )
                 delay(retryDelay)
                 logI(TAG, "Retrying after usage limit wait (attempt $attempt/$maxRetries)")
             }

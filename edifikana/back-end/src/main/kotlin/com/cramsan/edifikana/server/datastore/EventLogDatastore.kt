@@ -12,7 +12,6 @@ import kotlin.time.Instant
  * Interface for interacting with the event log database.
  */
 interface EventLogDatastore {
-
     /**
      * Creates a new event log entry for the given [request]. Returns the [Result] of the operation with the created [EventLogEntry].
      */
@@ -39,7 +38,7 @@ interface EventLogDatastore {
      * Retrieves all event log entries for the given [propertyId]. Returns the [Result] of the operation with the list of [EventLogEntry]s.
      */
     suspend fun getEventLogEntries(
-        propertyId: PropertyId
+        propertyId: PropertyId,
     ): Result<List<EventLogEntry>>
 
     /**

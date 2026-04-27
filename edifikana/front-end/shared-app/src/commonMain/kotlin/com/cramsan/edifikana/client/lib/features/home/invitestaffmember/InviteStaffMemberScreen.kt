@@ -38,9 +38,9 @@ import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
+import edifikana_lib.edifikana_string_role
 import edifikana_lib.invite_staff_member_screen_email_label
 import edifikana_lib.invite_staff_member_screen_email_placeholder
-import edifikana_lib.edifikana_string_role
 import edifikana_lib.invite_staff_member_screen_role_placeholder
 import edifikana_lib.invite_staff_member_screen_send_button
 import edifikana_lib.invite_staff_member_screen_title
@@ -60,9 +60,7 @@ fun InviteStaffMemberScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize(destination.orgId)
     }
@@ -141,7 +139,7 @@ internal fun InviteStaffMemberContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading)
-            }
+            },
         )
     }
 }
@@ -156,7 +154,10 @@ private fun RoleDropdown(
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val displayValue = selectedRole?.displayName ?: stringResource(Res.string.invite_staff_member_screen_role_placeholder)
+    val displayValue =
+        selectedRole?.displayName ?: stringResource(
+            Res.string.invite_staff_member_screen_role_placeholder,
+        )
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -172,22 +173,25 @@ private fun RoleDropdown(
         ) {
             OutlinedTextField(
                 value = displayValue,
-                modifier = Modifier
+                modifier =
+                Modifier
                     .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                     .fillMaxWidth(),
                 trailingIcon = {
-                    val icon = if (expanded) {
-                        Icons.Filled.ArrowDropUp
-                    } else {
-                        Icons.Filled.ArrowDropDown
-                    }
+                    val icon =
+                        if (expanded) {
+                            Icons.Filled.ArrowDropUp
+                        } else {
+                            Icons.Filled.ArrowDropDown
+                        }
                     Icon(icon, displayValue)
                 },
                 singleLine = true,
                 onValueChange = { },
                 readOnly = true,
                 shape = RoundedCornerShape(25.dp),
-                colors = OutlinedTextFieldDefaults.colors(
+                colors =
+                OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,

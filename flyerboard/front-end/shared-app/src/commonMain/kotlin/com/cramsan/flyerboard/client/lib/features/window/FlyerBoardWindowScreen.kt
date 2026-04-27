@@ -31,13 +31,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.flyerboard.client.lib.features.application.FlyerBoardApplicationMainScreenEventHandler
 import com.cramsan.flyerboard.client.lib.features.auth.authNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
 import com.cramsan.flyerboard.client.lib.features.main.mainNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.splash.SplashScreen
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import flyerboard_lib.Res
 import flyerboard_lib.nav_archive
 import flyerboard_lib.nav_browse
@@ -80,12 +80,13 @@ private fun WindowsContent(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    val isTopLevelMainDestination = currentDestination?.let { dest ->
-        dest.hasRoute(MainDestination.FlyerListDestination::class) ||
-            dest.hasRoute(MainDestination.ArchiveDestination::class) ||
-            dest.hasRoute(MainDestination.MyFlyersDestination::class) ||
-            dest.hasRoute(MainDestination.ModerationQueueDestination::class)
-    } ?: false
+    val isTopLevelMainDestination =
+        currentDestination?.let { dest ->
+            dest.hasRoute(MainDestination.FlyerListDestination::class) ||
+                dest.hasRoute(MainDestination.ArchiveDestination::class) ||
+                dest.hasRoute(MainDestination.MyFlyersDestination::class) ||
+                dest.hasRoute(MainDestination.ModerationQueueDestination::class)
+        } ?: false
 
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
@@ -126,7 +127,7 @@ private fun WindowsContent(
                                 }
                             } else {
                                 navController.navigate(
-                                    FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination
+                                    FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination,
                                 )
                             }
                         },
@@ -137,7 +138,7 @@ private fun WindowsContent(
                                 }
                             } else {
                                 navController.navigate(
-                                    FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination
+                                    FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination,
                                 )
                             }
                         },
@@ -192,8 +193,9 @@ private fun FlyerBoardBottomNavBar(
         )
         if (isAuthenticated) {
             NavigationBarItem(
-                selected = currentDestination?.hasRoute(
-                    MainDestination.ModerationQueueDestination::class
+                selected =
+                currentDestination?.hasRoute(
+                    MainDestination.ModerationQueueDestination::class,
                 ) == true,
                 onClick = onModeration,
                 icon = { Icon(Icons.Default.Gavel, contentDescription = null) },
@@ -215,6 +217,7 @@ private fun handleWindowEvent(
         is FlyerBoardWindowsEvent.ShareContent -> {
             eventHandler.shareContent(event)
         }
+
         is FlyerBoardWindowsEvent.NavigateToNavGraph -> {
             handleNavigationEvent(
                 navController = navController,
@@ -222,6 +225,7 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is FlyerBoardWindowsEvent.NavigateToScreen -> {
             handleNavigationEvent(
                 navController = navController,
@@ -229,17 +233,21 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is FlyerBoardWindowsEvent.NavigateBack -> {
             navController.popBackStack()
         }
+
         is FlyerBoardWindowsEvent.CloseNavGraph -> {
-            val currentNavGraph = navController.currentBackStack.value.reversed().find {
-                it.destination.navigatorName == "navigation"
-            }
+            val currentNavGraph =
+                navController.currentBackStack.value.reversed().find {
+                    it.destination.navigatorName == "navigation"
+                }
             currentNavGraph?.destination?.route?.let {
                 navController.popBackStack(it, inclusive = true)
             }
         }
+
         is FlyerBoardWindowsEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
@@ -276,11 +284,12 @@ private suspend fun handleSnackbarEvent(
     onResult: (SnackbarResult) -> Unit,
 ) {
     snackbarHostState.currentSnackbarData?.dismiss()
-    val result = snackbarHostState
-        .showSnackbar(
-            message = event.message,
-            duration = SnackbarDuration.Short,
-        )
+    val result =
+        snackbarHostState
+            .showSnackbar(
+                message = event.message,
+                duration = SnackbarDuration.Short,
+            )
     onResult(result)
 }
 
@@ -293,9 +302,10 @@ private fun WindowNavigationHost(
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = remember {
-        mapOf()
-    }
+    val typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> =
+        remember {
+            mapOf()
+        }
     NavHost(
         navController = navHostController,
         startDestination = startDestination,

@@ -95,150 +95,189 @@ fun agenticModule(
     )
 }
 
-private fun infraModule() = module {
-    single<Json> {
-        Json { ignoreUnknownKeys = true; isLenient = true }
-    }
-    @Suppress("InjectDispatcher")
-    single<CoroutineDispatcher>(ioDispatcherQualifier) { Dispatchers.IO }
-    single<ShellRunner> { ShellRunner(get(ioDispatcherQualifier)) }
-    single<HttpClient> {
-        HttpClient(CIO) {
-            install(ContentNegotiation) { json(get()) }
-        }
-    }
-}
-
-private fun configModule(configPath: Path, planningPath: Path) = module {
-    single<AgenticConfig> {
-        val json = get<Json>()
-        json.decodeFromString(java.nio.file.Files.readString(configPath))
-    }
-    single<PlanningConfig> {
-        val json = get<Json>()
-        json.decodeFromString(java.nio.file.Files.readString(planningPath))
-    }
-}
-
-private fun vcsModule(agenticDir: Path, repoRoot: Path) = module {
-    single<VcsProvider> {
-        val config = get<AgenticConfig>()
-        when (val vcs = config.vcsProvider) {
-            is VcsProviderConfig.GitHub -> {
-                logI(TAG, "Configuring VCS provider: GitHub (owner=${vcs.owner}, repo=${vcs.repo})")
-                GitHubVcsProvider(vcs.owner, vcs.repo, get(), get(), get(ioDispatcherQualifier))
+private fun infraModule() =
+    module {
+        single<Json> {
+            Json {
+                ignoreUnknownKeys = true
+                isLenient = true
             }
-            is VcsProviderConfig.Local -> {
-                logI(TAG, "Configuring VCS provider: Local (stateFile=${vcs.stateFile}, autoMerge=${vcs.autoMerge})")
-                LocalVcsProvider(
-                    stateFile = agenticDir.resolve(vcs.stateFile),
-                    autoMerge = vcs.autoMerge,
-                    repoRoot = repoRoot,
-                    shell = get(),
-                    json = get(),
-                    dispatcher = get(ioDispatcherQualifier),
-                )
+        }
+        @Suppress("InjectDispatcher")
+        single<CoroutineDispatcher>(ioDispatcherQualifier) { Dispatchers.IO }
+        single<ShellRunner> { ShellRunner(get(ioDispatcherQualifier)) }
+        single<HttpClient> {
+            HttpClient(CIO) {
+                install(ContentNegotiation) { json(get()) }
             }
         }
     }
-    single<WorktreeManager> {
-        val config = get<AgenticConfig>()
-        DefaultWorktreeManager(repoRoot, agenticDir, config.baseBranch, get())
-    }
-}
 
-private fun aiProviderModule() = module {
-    single<AiProvider> {
-        val config = get<AgenticConfig>()
-        when (val aiConfig = config.aiProvider) {
-            is AiProviderConfig.ClaudeApi -> {
-                logI(TAG, "Configuring AI provider: ClaudeApi (model=${aiConfig.model}, apiKeyEnvVar=${aiConfig.anthropicApiKeyEnvVar})")
-                val apiKey = System.getenv(aiConfig.anthropicApiKeyEnvVar)
-                    ?: error("API key env var '${aiConfig.anthropicApiKeyEnvVar}' is not set")
-                logD(TAG, "ClaudeApi API key resolved from env var: ${aiConfig.anthropicApiKeyEnvVar}")
-                RetryingAiProvider(ClaudeAiProvider(get(), apiKey, get(), aiConfig.model))
-            }
-            is AiProviderConfig.ClaudeCli -> {
-                logI(TAG, "Configuring AI provider: ClaudeCli (model=${aiConfig.model}, cliPath=${aiConfig.cliPath}, fullAccess=${aiConfig.fullAccess})")
-                RetryingAiProvider(
-                    ClaudeCliAiProvider(
-                        shell = get(),
-                        cliPath = aiConfig.cliPath,
-                        model = aiConfig.model,
-                        fullAccess = aiConfig.fullAccess,
-                        json = if (aiConfig.fullAccess) get() else null,
+private fun configModule(configPath: Path, planningPath: Path) =
+    module {
+        single<AgenticConfig> {
+            val json = get<Json>()
+            json.decodeFromString(
+                java.nio.file.Files
+                    .readString(configPath),
+            )
+        }
+        single<PlanningConfig> {
+            val json = get<Json>()
+            json.decodeFromString(
+                java.nio.file.Files
+                    .readString(planningPath),
+            )
+        }
+    }
+
+private fun vcsModule(agenticDir: Path, repoRoot: Path) =
+    module {
+        single<VcsProvider> {
+            val config = get<AgenticConfig>()
+            when (val vcs = config.vcsProvider) {
+                is VcsProviderConfig.GitHub -> {
+                    logI(TAG, "Configuring VCS provider: GitHub (owner=${vcs.owner}, repo=${vcs.repo})")
+                    GitHubVcsProvider(vcs.owner, vcs.repo, get(), get(), get(ioDispatcherQualifier))
+                }
+
+                is VcsProviderConfig.Local -> {
+                    logI(
+                        TAG,
+                        "Configuring VCS provider: Local (stateFile=${vcs.stateFile}, autoMerge=${vcs.autoMerge})",
                     )
-                )
-            }
-            is AiProviderConfig.Fake -> {
-                logI(TAG, "Configuring AI provider: Fake (model=${aiConfig.model}, mode=${aiConfig.mode})")
-                FakeAiProvider(
-                    model = aiConfig.model,
-                    mode = aiConfig.mode,
-                    delayMs = aiConfig.delayMs,
-                    autoCompleteAfterTurns = aiConfig.autoCompleteAfterTurns,
-                    defaultTextResponse = aiConfig.defaultTextResponse,
-                )
+                    LocalVcsProvider(
+                        stateFile = agenticDir.resolve(vcs.stateFile),
+                        autoMerge = vcs.autoMerge,
+                        repoRoot = repoRoot,
+                        shell = get(),
+                        json = get(),
+                        dispatcher = get(ioDispatcherQualifier),
+                    )
+                }
             }
         }
-    }
-    single<ReviewerAgent> { ClaudeReviewerAgent(get()) }
-}
-
-private fun coordinationModule(agenticDir: Path) = module {
-    single<TaskListProvider> {
-        val config = get<AgenticConfig>()
-        when (val tlConfig = config.taskListProvider) {
-            is TaskListProviderConfig.Document -> {
-                logI(TAG, "Configuring TaskListProvider: Document (documentPath=${tlConfig.documentPath})")
-                DocumentTaskListProvider(
-                    documentPath = agenticDir.resolve(tlConfig.documentPath),
-                    tasksDir = agenticDir.resolve(tlConfig.tasksOutputDir),
-                    json = get(),
-                )
-            }
-            is TaskListProviderConfig.Fake -> {
-                logI(TAG, "Configuring TaskListProvider: Fake")
-                FakeTaskListProvider()
-            }
+        single<WorktreeManager> {
+            val config = get<AgenticConfig>()
+            DefaultWorktreeManager(repoRoot, agenticDir, config.baseBranch, get())
         }
     }
-    single<DependencyGraph> {
-        val tasks = runBlocking { get<TaskListProvider>().provide() }
-        DefaultDependencyGraph(tasks)
-    }
-    single<StateDeriver> { DefaultStateDeriver(get(), get(), agenticDir) }
-    single<Notifier> { VcsCommentNotifier(get()) }
-    single<ReviewerLoader> {
-        val planningConfig = get<PlanningConfig>()
-        ConfigurableReviewerLoader(planningConfig.reviewers, agenticDir.resolve("docs"))
-    }
-    single<AgentSession> {
-        val config = get<AgenticConfig>()
-        DefaultAgentSession(get(), get(), get(), config.baseBranch, get())
-    }
-    single<AgentRunner> { DefaultAgentRunner(get(), get(), listOf(get()), get(), agenticDir) }
-    single<Orchestrator> { DefaultOrchestrator(get(), get(), get(), get(), get(), get(), get(ioDispatcherQualifier)) }
-}
 
-private fun workflowModule(agenticDir: Path) = module {
-    single<DocumentStore> {
-        val planningConfig = get<PlanningConfig>()
-        FileSystemDocumentStore(agenticDir.resolve("docs"), get(), planningConfig.inputDocuments)
+private fun aiProviderModule() =
+    module {
+        single<AiProvider> {
+            val config = get<AgenticConfig>()
+            when (val aiConfig = config.aiProvider) {
+                is AiProviderConfig.ClaudeApi -> {
+                    logI(
+                        TAG,
+                        "Configuring AI provider: ClaudeApi (model=${aiConfig.model}, apiKeyEnvVar=${aiConfig.anthropicApiKeyEnvVar})",
+                    )
+                    val apiKey =
+                        System.getenv(aiConfig.anthropicApiKeyEnvVar)
+                            ?: error("API key env var '${aiConfig.anthropicApiKeyEnvVar}' is not set")
+                    logD(TAG, "ClaudeApi API key resolved from env var: ${aiConfig.anthropicApiKeyEnvVar}")
+                    RetryingAiProvider(ClaudeAiProvider(get(), apiKey, get(), aiConfig.model))
+                }
+
+                is AiProviderConfig.ClaudeCli -> {
+                    logI(
+                        TAG,
+                        "Configuring AI provider: ClaudeCli (model=${aiConfig.model}, cliPath=${aiConfig.cliPath}, fullAccess=${aiConfig.fullAccess})",
+                    )
+                    RetryingAiProvider(
+                        ClaudeCliAiProvider(
+                            shell = get(),
+                            cliPath = aiConfig.cliPath,
+                            model = aiConfig.model,
+                            fullAccess = aiConfig.fullAccess,
+                            json = if (aiConfig.fullAccess) get() else null,
+                        ),
+                    )
+                }
+
+                is AiProviderConfig.Fake -> {
+                    logI(TAG, "Configuring AI provider: Fake (model=${aiConfig.model}, mode=${aiConfig.mode})")
+                    FakeAiProvider(
+                        model = aiConfig.model,
+                        mode = aiConfig.mode,
+                        delayMs = aiConfig.delayMs,
+                        autoCompleteAfterTurns = aiConfig.autoCompleteAfterTurns,
+                        defaultTextResponse = aiConfig.defaultTextResponse,
+                    )
+                }
+            }
+        }
+        single<ReviewerAgent> { ClaudeReviewerAgent(get()) }
     }
-    single<Scaffolder> {
-        val planningConfig = get<PlanningConfig>()
-        DefaultScaffolder(
-            planningConfig.inputDocuments,
-            planningConfig.reviewers,
-            planningConfig.workflow.stages,
-        )
+
+private fun coordinationModule(agenticDir: Path) =
+    module {
+        single<TaskListProvider> {
+            val config = get<AgenticConfig>()
+            when (val tlConfig = config.taskListProvider) {
+                is TaskListProviderConfig.Document -> {
+                    logI(TAG, "Configuring TaskListProvider: Document (documentPath=${tlConfig.documentPath})")
+                    DocumentTaskListProvider(
+                        documentPath = agenticDir.resolve(tlConfig.documentPath),
+                        tasksDir = agenticDir.resolve(tlConfig.tasksOutputDir),
+                        json = get(),
+                    )
+                }
+
+                is TaskListProviderConfig.Fake -> {
+                    logI(TAG, "Configuring TaskListProvider: Fake")
+                    FakeTaskListProvider()
+                }
+            }
+        }
+        single<DependencyGraph> {
+            val tasks = runBlocking { get<TaskListProvider>().provide() }
+            DefaultDependencyGraph(tasks)
+        }
+        single<StateDeriver> { DefaultStateDeriver(get(), get(), agenticDir) }
+        single<Notifier> { VcsCommentNotifier(get()) }
+        single<ReviewerLoader> {
+            val planningConfig = get<PlanningConfig>()
+            ConfigurableReviewerLoader(planningConfig.reviewers, agenticDir.resolve("docs"))
+        }
+        single<AgentSession> {
+            val config = get<AgenticConfig>()
+            DefaultAgentSession(get(), get(), get(), config.baseBranch, get())
+        }
+        single<AgentRunner> { DefaultAgentRunner(get(), get(), listOf(get()), get(), agenticDir) }
+        single<Orchestrator> {
+            DefaultOrchestrator(
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(),
+                get(ioDispatcherQualifier),
+            )
+        }
     }
-    single<ValidationService> {
-        DefaultValidationService(get(), get(), listOf(get()), get(), get(), agenticDir.resolve("docs"))
+
+private fun workflowModule(agenticDir: Path) =
+    module {
+        single<DocumentStore> {
+            val planningConfig = get<PlanningConfig>()
+            FileSystemDocumentStore(agenticDir.resolve("docs"), get(), planningConfig.inputDocuments)
+        }
+        single<Scaffolder> {
+            val planningConfig = get<PlanningConfig>()
+            DefaultScaffolder(
+                planningConfig.inputDocuments,
+                planningConfig.reviewers,
+                planningConfig.workflow.stages,
+            )
+        }
+        single<ValidationService> {
+            DefaultValidationService(get(), get(), listOf(get()), get(), get(), agenticDir.resolve("docs"))
+        }
+        single<WorkflowService> {
+            val planningConfig = get<PlanningConfig>()
+            DefaultWorkflowService(get(), get(), agenticDir.resolve("docs"), get(), planningConfig.workflow)
+        }
     }
-    single<WorkflowService> {
-        val planningConfig = get<PlanningConfig>()
-        DefaultWorkflowService(get(), get(), agenticDir.resolve("docs"), get(), planningConfig.workflow)
-    }
-}

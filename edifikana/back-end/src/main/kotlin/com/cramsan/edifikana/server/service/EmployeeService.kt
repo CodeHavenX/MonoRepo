@@ -13,10 +13,7 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for employee operations.
  */
-class EmployeeService(
-    private val employeeDatastore: EmployeeDatastore,
-) {
-
+class EmployeeService(private val employeeDatastore: EmployeeDatastore) {
     /**
      * Creates an employee with the provided [name].
      */
@@ -28,13 +25,14 @@ class EmployeeService(
         propertyId: PropertyId,
     ): Employee {
         logD(TAG, "createEmployee")
-        return employeeDatastore.createEmployee(
-            idType = idType,
-            firstName = firstName,
-            lastName = lastName,
-            role = role,
-            propertyId = propertyId,
-        ).getOrThrow()
+        return employeeDatastore
+            .createEmployee(
+                idType = idType,
+                firstName = firstName,
+                lastName = lastName,
+                role = role,
+                propertyId = propertyId,
+            ).getOrThrow()
     }
 
     /**
@@ -44,9 +42,11 @@ class EmployeeService(
         id: EmployeeId,
     ): Employee? {
         logD(TAG, "getEmployee")
-        val employee = employeeDatastore.getEmployee(
-            id = id,
-        ).getOrNull()
+        val employee =
+            employeeDatastore
+                .getEmployee(
+                    id = id,
+                ).getOrNull()
 
         return employee
     }
@@ -58,9 +58,11 @@ class EmployeeService(
         clientContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
     ): List<Employee> {
         logD(TAG, "getEmployees")
-        val employees = employeeDatastore.getEmployees(
-            currentUser = clientContext.payload.userId,
-        ).getOrThrow()
+        val employees =
+            employeeDatastore
+                .getEmployees(
+                    currentUser = clientContext.payload.userId,
+                ).getOrThrow()
         return employees
     }
 
@@ -75,13 +77,14 @@ class EmployeeService(
         role: EmployeeRole?,
     ): Employee {
         logD(TAG, "updateEmployee")
-        return employeeDatastore.updateEmployee(
-            employeeId = id,
-            idType = idType,
-            firstName = firstName,
-            lastName = lastName,
-            role = role,
-        ).getOrThrow()
+        return employeeDatastore
+            .updateEmployee(
+                employeeId = id,
+                idType = idType,
+                firstName = firstName,
+                lastName = lastName,
+                role = role,
+            ).getOrThrow()
     }
 
     /**
@@ -91,9 +94,10 @@ class EmployeeService(
         id: EmployeeId,
     ): Boolean {
         logD(TAG, "deleteEmployee")
-        return employeeDatastore.deleteEmployee(
-            id = id,
-        ).getOrThrow()
+        return employeeDatastore
+            .deleteEmployee(
+                id = id,
+            ).getOrThrow()
     }
 
     companion object {

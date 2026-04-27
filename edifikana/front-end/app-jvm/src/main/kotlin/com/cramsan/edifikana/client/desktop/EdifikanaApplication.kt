@@ -23,42 +23,45 @@ import org.koin.core.annotation.KoinExperimentalAPI
  * Main function for the desktop application.
  */
 @OptIn(KoinExperimentalAPI::class)
-fun main() = application {
-    ComposableKoinContext {
-        val processViewModel: EdifikanaApplicationViewModel = koinInject()
-        val appState by processViewModel.uiState.collectAsState()
+fun main() =
+    application {
+        ComposableKoinContext {
+            val processViewModel: EdifikanaApplicationViewModel = koinInject()
+            val appState by processViewModel.uiState.collectAsState()
 
-        LaunchedEffect(Unit) {
-            processViewModel.initialize()
-        }
+            LaunchedEffect(Unit) {
+                processViewModel.initialize()
+            }
 
-        if (appState.applicationLoaded) {
-            Window(
-                onCloseRequest = ::exitApplication,
-                title = "Edifikana",
-                state = rememberWindowState(
-                    size = DpSize(600.dp, 800.dp)
-                )
-            ) {
-                KoinScope<String>("root-window") {
-                    val windowViewModel: EdifikanaWindowViewModel = koinInject()
-                    val scope = rememberCoroutineScope()
+            if (appState.applicationLoaded) {
+                Window(
+                    onCloseRequest = ::exitApplication,
+                    title = "Edifikana",
+                    state =
+                    rememberWindowState(
+                        size = DpSize(600.dp, 800.dp),
+                    ),
+                ) {
+                    KoinScope<String>("root-window") {
+                        val windowViewModel: EdifikanaWindowViewModel = koinInject()
+                        val scope = rememberCoroutineScope()
 
-                    // Create event handler with photo picker callback
-                    val windowEventHandler = remember(scope) {
-                        EdifikanaJvmMainScreenEventHandler(
-                            scope = scope,
-                            onPhotoPickerResult = { uris ->
-                                windowViewModel.handleReceivedImages(uris)
+                        // Create event handler with photo picker callback
+                        val windowEventHandler =
+                            remember(scope) {
+                                EdifikanaJvmMainScreenEventHandler(
+                                    scope = scope,
+                                    onPhotoPickerResult = { uris ->
+                                        windowViewModel.handleReceivedImages(uris)
+                                    },
+                                )
                             }
+                        EdifikanaWindowScreen(
+                            eventHandler = windowEventHandler,
+                            viewModel = windowViewModel,
                         )
                     }
-                    EdifikanaWindowScreen(
-                        eventHandler = windowEventHandler,
-                        viewModel = windowViewModel,
-                    )
                 }
             }
         }
     }
-}

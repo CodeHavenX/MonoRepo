@@ -8,8 +8,6 @@ import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -18,6 +16,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "GitHubVcsProvider"
 
@@ -45,48 +45,53 @@ class GitHubVcsProvider(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val delayDuration: Duration = 2.seconds,
 ) : VcsProvider {
-
     override suspend fun createPullRequest(
         sourceBranch: String,
         targetBranch: String,
         title: String,
         body: String,
         labels: List<String>,
-    ): PullRequest = withContext(ioDispatcher) {
-        logI(TAG, "createPullRequest: repo=$owner/$repo, sourceBranch=$sourceBranch, targetBranch=$targetBranch, title='$title', labels=$labels")
-        val args = mutableListOf(
-            "gh", "pr", "create",
-            "--title", title,
-            "--body", body,
-            "--base", targetBranch,
-            "--head", sourceBranch,
-            "--repo", "$owner/$repo",
-            "--json", "number,url,title,state,headRefName,baseRefName,labels",
-        )
-        labels.forEach { label ->
-            args.add("--label")
-            args.add(label)
+    ): PullRequest =
+        withContext(ioDispatcher) {
+            logI(
+                TAG,
+                "createPullRequest: repo=$owner/$repo, sourceBranch=$sourceBranch, targetBranch=$targetBranch, title='$title', labels=$labels",
+            )
+            val args =
+                mutableListOf(
+                    "gh", "pr", "create",
+                    "--title", title,
+                    "--body", body,
+                    "--base", targetBranch,
+                    "--head", sourceBranch,
+                    "--repo", "$owner/$repo",
+                    "--json", "number,url,title,state,headRefName,baseRefName,labels",
+                )
+            labels.forEach { label ->
+                args.add("--label")
+                args.add(label)
+            }
+            delay(delayDuration)
+            val result = shell.run(args)
+            if (result.exitCode != 0) {
+                logE(TAG, "createPullRequest failed: exitCode=${result.exitCode}, stderr=${result.stderr}")
+                throw VcsProviderException("Failed to create PR: ${result.stderr}", result.exitCode)
+            }
+            val pr = parsePullRequest(result.stdout)
+            logI(TAG, "createPullRequest succeeded: prId=${pr.id}, url=${pr.url}")
+            pr
         }
-        delay(delayDuration)
-        val result = shell.run(args)
-        if (result.exitCode != 0) {
-            logE(TAG, "createPullRequest failed: exitCode=${result.exitCode}, stderr=${result.stderr}")
-            throw VcsProviderException("Failed to create PR: ${result.stderr}", result.exitCode)
-        }
-        val pr = parsePullRequest(result.stdout)
-        logI(TAG, "createPullRequest succeeded: prId=${pr.id}, url=${pr.url}")
-        pr
-    }
 
     override suspend fun listOpenPullRequests(labels: List<String>): List<PullRequest> =
         withContext(ioDispatcher) {
             logI(TAG, "listOpenPullRequests: repo=$owner/$repo, labels=$labels")
-            val args = mutableListOf(
-                "gh", "pr", "list",
-                "--state", "open",
-                "--repo", "$owner/$repo",
-                "--json", "number,url,title,state,headRefName,baseRefName,labels",
-            )
+            val args =
+                mutableListOf(
+                    "gh", "pr", "list",
+                    "--state", "open",
+                    "--repo", "$owner/$repo",
+                    "--json", "number,url,title,state,headRefName,baseRefName,labels",
+                )
             if (labels.isNotEmpty()) {
                 args.add("--label")
                 args.add(labels.joinToString(","))
@@ -106,12 +111,13 @@ class GitHubVcsProvider(
     override suspend fun listMergedPullRequests(labels: List<String>): List<PullRequest> =
         withContext(ioDispatcher) {
             logI(TAG, "listMergedPullRequests: repo=$owner/$repo, labels=$labels")
-            val args = mutableListOf(
-                "gh", "pr", "list",
-                "--state", "merged",
-                "--repo", "$owner/$repo",
-                "--json", "number,url,title,state,headRefName,baseRefName,labels",
-            )
+            val args =
+                mutableListOf(
+                    "gh", "pr", "list",
+                    "--state", "merged",
+                    "--repo", "$owner/$repo",
+                    "--json", "number,url,title,state,headRefName,baseRefName,labels",
+                )
             if (labels.isNotEmpty()) {
                 args.add("--label")
                 args.add(labels.joinToString(","))
@@ -132,28 +138,45 @@ class GitHubVcsProvider(
         withContext(ioDispatcher) {
             logI(TAG, "getPullRequestComments: repo=$owner/$repo, prId=$prId")
             delay(delayDuration)
-            val result = shell.run(
-                "gh", "pr", "view", prId,
-                "--repo", "$owner/$repo",
-                "--json", "comments",
-            )
+            val result =
+                shell.run(
+                    "gh",
+                    "pr",
+                    "view",
+                    prId,
+                    "--repo",
+                    "$owner/$repo",
+                    "--json",
+                    "comments",
+                )
             if (result.exitCode != 0) {
-                logE(TAG, "getPullRequestComments failed: prId=$prId, exitCode=${result.exitCode}, stderr=${result.stderr}")
+                logE(
+                    TAG,
+                    "getPullRequestComments failed: prId=$prId, exitCode=${result.exitCode}, stderr=${result.stderr}",
+                )
                 throw VcsProviderException("Failed to get PR comments: ${result.stderr}", result.exitCode)
             }
             val obj = json.parseToJsonElement(result.stdout).jsonObject
-            val commentsArray = obj["comments"]?.jsonArray ?: run {
-                logW(TAG, "getPullRequestComments: no 'comments' field in response for prId=$prId")
-                return@withContext emptyList()
-            }
-            val comments = commentsArray.map { element ->
-                val commentObj = element.jsonObject
-                PullRequestComment(
-                    author = commentObj["author"]?.jsonObject?.get("login")?.jsonPrimitive?.content .orEmpty(),
-                    body = commentObj["body"]?.jsonPrimitive?.content .orEmpty(),
-                    createdAtEpochMs = 0L,
-                )
-            }
+            val commentsArray =
+                obj["comments"]?.jsonArray ?: run {
+                    logW(TAG, "getPullRequestComments: no 'comments' field in response for prId=$prId")
+                    return@withContext emptyList()
+                }
+            val comments =
+                commentsArray.map { element ->
+                    val commentObj = element.jsonObject
+                    PullRequestComment(
+                        author =
+                        commentObj["author"]
+                            ?.jsonObject
+                            ?.get("login")
+                            ?.jsonPrimitive
+                            ?.content
+                            .orEmpty(),
+                        body = commentObj["body"]?.jsonPrimitive?.content.orEmpty(),
+                        createdAtEpochMs = 0L,
+                    )
+                }
             logI(TAG, "getPullRequestComments succeeded: prId=$prId, commentCount=${comments.size}")
             comments
         }
@@ -162,13 +185,22 @@ class GitHubVcsProvider(
         logI(TAG, "addPullRequestComment: repo=$owner/$repo, prId=$prId, bodyLength=${body.length}")
         withContext(ioDispatcher) {
             delay(delayDuration)
-            val result = shell.run(
-                "gh", "pr", "comment", prId,
-                "--repo", "$owner/$repo",
-                "--body", body,
-            )
+            val result =
+                shell.run(
+                    "gh",
+                    "pr",
+                    "comment",
+                    prId,
+                    "--repo",
+                    "$owner/$repo",
+                    "--body",
+                    body,
+                )
             if (result.exitCode != 0) {
-                logE(TAG, "addPullRequestComment failed: prId=$prId, exitCode=${result.exitCode}, stderr=${result.stderr}")
+                logE(
+                    TAG,
+                    "addPullRequestComment failed: prId=$prId, exitCode=${result.exitCode}, stderr=${result.stderr}",
+                )
                 throw VcsProviderException("Failed to add PR comment: ${result.stderr}", result.exitCode)
             }
             logI(TAG, "addPullRequestComment succeeded: prId=$prId")
@@ -179,13 +211,22 @@ class GitHubVcsProvider(
         withContext(ioDispatcher) {
             logI(TAG, "isPullRequestMerged: repo=$owner/$repo, prId=$prId")
             delay(delayDuration)
-            val result = shell.run(
-                "gh", "pr", "view", prId,
-                "--repo", "$owner/$repo",
-                "--json", "mergedAt",
-            )
+            val result =
+                shell.run(
+                    "gh",
+                    "pr",
+                    "view",
+                    prId,
+                    "--repo",
+                    "$owner/$repo",
+                    "--json",
+                    "mergedAt",
+                )
             if (result.exitCode != 0) {
-                logE(TAG, "isPullRequestMerged failed: prId=$prId, exitCode=${result.exitCode}, stderr=${result.stderr}")
+                logE(
+                    TAG,
+                    "isPullRequestMerged failed: prId=$prId, exitCode=${result.exitCode}, stderr=${result.stderr}",
+                )
                 throw VcsProviderException("Failed to check PR merge status: ${result.stderr}", result.exitCode)
             }
             val obj = json.parseToJsonElement(result.stdout).jsonObject
@@ -199,19 +240,31 @@ class GitHubVcsProvider(
         withContext(ioDispatcher) {
             logI(TAG, "pullRequestHasRequestedChanges: repo=$owner/$repo, prId=$prId")
             delay(delayDuration)
-            val result = shell.run(
-                "gh", "pr", "view", prId,
-                "--repo", "$owner/$repo",
-                "--json", "reviewDecision",
-            )
+            val result =
+                shell.run(
+                    "gh",
+                    "pr",
+                    "view",
+                    prId,
+                    "--repo",
+                    "$owner/$repo",
+                    "--json",
+                    "reviewDecision",
+                )
             if (result.exitCode != 0) {
-                logE(TAG, "pullRequestHasRequestedChanges failed: prId=$prId, exitCode=${result.exitCode}, stderr=${result.stderr}")
+                logE(
+                    TAG,
+                    "pullRequestHasRequestedChanges failed: prId=$prId, exitCode=${result.exitCode}, stderr=${result.stderr}",
+                )
                 throw VcsProviderException("Failed to check PR review decision: ${result.stderr}", result.exitCode)
             }
             val obj = json.parseToJsonElement(result.stdout).jsonObject
             val reviewDecision = obj["reviewDecision"]?.jsonPrimitive?.content
             val hasRequestedChanges = reviewDecision == "CHANGES_REQUESTED"
-            logI(TAG, "pullRequestHasRequestedChanges result: prId=$prId, reviewDecision=$reviewDecision, hasRequestedChanges=$hasRequestedChanges")
+            logI(
+                TAG,
+                "pullRequestHasRequestedChanges result: prId=$prId, reviewDecision=$reviewDecision, hasRequestedChanges=$hasRequestedChanges",
+            )
             hasRequestedChanges
         }
 
@@ -219,13 +272,21 @@ class GitHubVcsProvider(
         logD(TAG, "parsePullRequest: parsing JSON response")
         val obj = json.parseToJsonElement(jsonStr).jsonObject
         return PullRequest(
-            id = obj["number"]?.jsonPrimitive?.content .orEmpty(),
-            url = obj["url"]?.jsonPrimitive?.content .orEmpty(),
-            title = obj["title"]?.jsonPrimitive?.content .orEmpty(),
-            state = parseState(obj["state"]?.jsonPrimitive?.content .orEmpty()),
-            sourceBranch = obj["headRefName"]?.jsonPrimitive?.content .orEmpty(),
-            targetBranch = obj["baseRefName"]?.jsonPrimitive?.content .orEmpty(),
-            labels = obj["labels"]?.jsonArray?.map { it.jsonObject["name"]?.jsonPrimitive?.content .orEmpty() } .orEmpty(),
+            id = obj["number"]?.jsonPrimitive?.content.orEmpty(),
+            url = obj["url"]?.jsonPrimitive?.content.orEmpty(),
+            title = obj["title"]?.jsonPrimitive?.content.orEmpty(),
+            state = parseState(obj["state"]?.jsonPrimitive?.content.orEmpty()),
+            sourceBranch = obj["headRefName"]?.jsonPrimitive?.content.orEmpty(),
+            targetBranch = obj["baseRefName"]?.jsonPrimitive?.content.orEmpty(),
+            labels =
+            obj["labels"]
+                ?.jsonArray
+                ?.map {
+                    it.jsonObject["name"]
+                        ?.jsonPrimitive
+                        ?.content
+                        .orEmpty()
+                }.orEmpty(),
         )
     }
 
@@ -235,13 +296,21 @@ class GitHubVcsProvider(
         return array.map { element ->
             val obj = element.jsonObject
             PullRequest(
-                id = obj["number"]?.jsonPrimitive?.content .orEmpty(),
-                url = obj["url"]?.jsonPrimitive?.content .orEmpty(),
-                title = obj["title"]?.jsonPrimitive?.content .orEmpty(),
-                state = parseState(obj["state"]?.jsonPrimitive?.content .orEmpty()),
-                sourceBranch = obj["headRefName"]?.jsonPrimitive?.content .orEmpty(),
-                targetBranch = obj["baseRefName"]?.jsonPrimitive?.content .orEmpty(),
-                labels = obj["labels"]?.jsonArray?.map { it.jsonObject["name"]?.jsonPrimitive?.content .orEmpty() } .orEmpty(),
+                id = obj["number"]?.jsonPrimitive?.content.orEmpty(),
+                url = obj["url"]?.jsonPrimitive?.content.orEmpty(),
+                title = obj["title"]?.jsonPrimitive?.content.orEmpty(),
+                state = parseState(obj["state"]?.jsonPrimitive?.content.orEmpty()),
+                sourceBranch = obj["headRefName"]?.jsonPrimitive?.content.orEmpty(),
+                targetBranch = obj["baseRefName"]?.jsonPrimitive?.content.orEmpty(),
+                labels =
+                obj["labels"]
+                    ?.jsonArray
+                    ?.map {
+                        it.jsonObject["name"]
+                            ?.jsonPrimitive
+                            ?.content
+                            .orEmpty()
+                    }.orEmpty(),
             )
         }
     }
@@ -249,9 +318,18 @@ class GitHubVcsProvider(
     private fun parseState(state: String): PullRequestState {
         logD(TAG, "parseState: input='$state'")
         return when (state.uppercase()) {
-            "OPEN" -> PullRequestState.OPEN
-            "CLOSED" -> PullRequestState.CLOSED
-            "MERGED" -> PullRequestState.MERGED
+            "OPEN" -> {
+                PullRequestState.OPEN
+            }
+
+            "CLOSED" -> {
+                PullRequestState.CLOSED
+            }
+
+            "MERGED" -> {
+                PullRequestState.MERGED
+            }
+
             else -> {
                 logW(TAG, "parseState: unknown state '$state', defaulting to OPEN")
                 PullRequestState.OPEN

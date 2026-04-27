@@ -8,17 +8,27 @@ package com.cramsan.framework.utils.exceptions
 sealed class ClientRequestExceptions(
     val statusCode: Int,
     override val message: String,
-    override val cause: Throwable?
+    override val cause: Throwable?,
 ) : Throwable(message, cause) {
     /**
      * Invalid request exception.
      */
-    class InvalidRequestException(message: String, cause: Throwable? = null) : ClientRequestExceptions(400, message, cause)
+    class InvalidRequestException(message: String, cause: Throwable? = null) :
+        ClientRequestExceptions(
+            400,
+            message,
+            cause,
+        )
 
     /**
      * Unauthorized exception.
      */
-    class UnauthorizedException(message: String, cause: Throwable? = null) : ClientRequestExceptions(401, message, cause)
+    class UnauthorizedException(message: String, cause: Throwable? = null) :
+        ClientRequestExceptions(
+            401,
+            message,
+            cause,
+        )
 
     /**
      * Forbidden exception.

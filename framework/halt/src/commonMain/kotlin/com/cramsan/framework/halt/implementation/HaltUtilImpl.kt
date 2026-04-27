@@ -8,7 +8,6 @@ import com.cramsan.framework.halt.HaltUtilDelegate
  * the logic is delegated to the [platformDelegate].
  */
 class HaltUtilImpl(private val platformDelegate: HaltUtilDelegate) : HaltUtil {
-
     override fun resumeThread() {
         platformDelegate.resumeThread()
     }

@@ -83,15 +83,16 @@ fun Int.toYupay(): String {
 
     val numbers = parts.reversed().joinToString(" ")
     val lastCharacter = numbers.last()
-    val suffix = if (segments > 1) {
-        if (!VOWELS.contains(lastCharacter)) {
-            "niyuq"
+    val suffix =
+        if (segments > 1) {
+            if (!VOWELS.contains(lastCharacter)) {
+                "niyuq"
+            } else {
+                "yuq"
+            }
         } else {
-            "yuq"
+            ""
         }
-    } else {
-        ""
-    }
     return "$numbers$suffix"
 }
 

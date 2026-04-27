@@ -10,7 +10,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class TemplateReplaceMeWindowNavGraphDestination : NavigationGraphDestination {
-
     /**
      * Splash navigation graph destination.
      */

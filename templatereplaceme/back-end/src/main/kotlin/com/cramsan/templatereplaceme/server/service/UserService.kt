@@ -9,11 +9,7 @@ import com.cramsan.templatereplaceme.server.settings.TemplateReplaceMeSettingKey
 /**
  * Example of service to manage users.
  */
-class UserService(
-    private val userDatastore: UserDatastore,
-    private val settingsHolder: SettingsHolder,
-) {
-
+class UserService(private val userDatastore: UserDatastore, private val settingsHolder: SettingsHolder) {
     /**
      * Creates a new user with the given first and last name.
      *
@@ -26,10 +22,11 @@ class UserService(
         lastName: String,
     ): Result<User> {
         logD(TAG, "createUser")
-        val result = userDatastore.createUser(
-            firstName,
-            lastName,
-        )
+        val result =
+            userDatastore.createUser(
+                firstName,
+                lastName,
+            )
         if (result.isSuccess && settingsHolder.getBoolean(TemplateReplaceMeSettingKey.LogAccountCreated) == true) {
             logD(TAG, "User created successfully: ${result.getOrThrow().id.userId}")
         }

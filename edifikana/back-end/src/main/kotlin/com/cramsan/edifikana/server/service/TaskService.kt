@@ -22,11 +22,7 @@ import kotlin.time.Instant
  * status-transition rules before delegating updates.
  */
 @OptIn(ExperimentalTime::class)
-class TaskService(
-    private val taskDatastore: TaskDatastore,
-    private val clock: Clock,
-) {
-
+class TaskService(private val taskDatastore: TaskDatastore, private val clock: Clock) {
     /**
      * Creates a new task scoped to [propertyId]. At least one of [unitId] or [commonAreaId]
      * must be provided to locate the task within the property. [createdBy] is the authenticated
@@ -52,17 +48,18 @@ class TaskService(
         if (unitId != null && commonAreaId != null) {
             throw InvalidRequestException(invalidRequest)
         }
-        return taskDatastore.createTask(
-            propertyId = propertyId,
-            unitId = unitId,
-            commonAreaId = commonAreaId,
-            assigneeId = assigneeId,
-            createdBy = createdBy,
-            title = title,
-            description = description,
-            priority = priority,
-            dueDate = dueDate,
-        ).getOrThrow()
+        return taskDatastore
+            .createTask(
+                propertyId = propertyId,
+                unitId = unitId,
+                commonAreaId = commonAreaId,
+                assigneeId = assigneeId,
+                createdBy = createdBy,
+                title = title,
+                description = description,
+                priority = priority,
+                dueDate = dueDate,
+            ).getOrThrow()
     }
 
     /**
@@ -84,13 +81,14 @@ class TaskService(
         priority: TaskPriority?,
     ): List<Task> {
         logD(TAG, "getTasks")
-        return taskDatastore.getTasks(
-            propertyId = propertyId,
-            unitId = unitId,
-            status = status,
-            assigneeId = assigneeId,
-            priority = priority,
-        ).getOrThrow()
+        return taskDatastore
+            .getTasks(
+                propertyId = propertyId,
+                unitId = unitId,
+                status = status,
+                assigneeId = assigneeId,
+                priority = priority,
+            ).getOrThrow()
     }
 
     /**
@@ -108,8 +106,9 @@ class TaskService(
         callerUserId: UserId,
     ): Task {
         logD(TAG, "updateTask")
-        val current = taskDatastore.getTask(taskId).getOrThrow()
-            ?: throw NotFoundException("Task not found: $taskId")
+        val current =
+            taskDatastore.getTask(taskId).getOrThrow()
+                ?: throw NotFoundException("Task not found: $taskId")
 
         var completedAt: Instant? = null
         var statusChangedAt: Instant? = null
@@ -125,18 +124,19 @@ class TaskService(
             }
         }
 
-        return taskDatastore.updateTask(
-            taskId = taskId,
-            title = title,
-            description = description,
-            priority = priority,
-            status = status,
-            assigneeId = assigneeId,
-            dueDate = dueDate,
-            statusChangedBy = statusChangedBy,
-            completedAt = completedAt,
-            statusChangedAt = statusChangedAt,
-        ).getOrThrow()
+        return taskDatastore
+            .updateTask(
+                taskId = taskId,
+                title = title,
+                description = description,
+                priority = priority,
+                status = status,
+                assigneeId = assigneeId,
+                dueDate = dueDate,
+                statusChangedBy = statusChangedBy,
+                completedAt = completedAt,
+                statusChangedAt = statusChangedAt,
+            ).getOrThrow()
     }
 
     /**
@@ -157,15 +157,16 @@ class TaskService(
      * - CANCELLED → (terminal)
      */
     private fun validateStatusTransition(current: TaskStatus, next: TaskStatus) {
-        val allowed = when (current) {
-            TaskStatus.OPEN -> setOf(TaskStatus.IN_PROGRESS, TaskStatus.COMPLETED, TaskStatus.CANCELLED)
-            TaskStatus.IN_PROGRESS -> setOf(TaskStatus.OPEN, TaskStatus.COMPLETED, TaskStatus.CANCELLED)
-            TaskStatus.COMPLETED -> emptySet()
-            TaskStatus.CANCELLED -> emptySet()
-        }
+        val allowed =
+            when (current) {
+                TaskStatus.OPEN -> setOf(TaskStatus.IN_PROGRESS, TaskStatus.COMPLETED, TaskStatus.CANCELLED)
+                TaskStatus.IN_PROGRESS -> setOf(TaskStatus.OPEN, TaskStatus.COMPLETED, TaskStatus.CANCELLED)
+                TaskStatus.COMPLETED -> emptySet()
+                TaskStatus.CANCELLED -> emptySet()
+            }
         if (next !in allowed) {
             throw InvalidRequestException(
-                "Invalid status transition: cannot move from $current to $next"
+                "Invalid status transition: cannot move from $current to $next",
             )
         }
     }

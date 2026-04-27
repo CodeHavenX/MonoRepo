@@ -35,28 +35,35 @@ class KeyValueMapEncoder : AbstractEncoder() {
 
     override fun encodeValue(value: Any) {
         when (depth) {
-            DEPTH_OBJECT -> map[currentTag] = listOf(value.toString())
+            DEPTH_OBJECT -> {
+                map[currentTag] = listOf(value.toString())
+            }
+
             DEPTH_LIST -> {
                 array.add(value.toString())
             }
-            else -> error("Unsupported depth $depth")
+
+            else -> {
+                error("Unsupported depth $depth")
+            }
         }
     }
 
     override fun encodeNull() = Unit // Ignore nulls
 
-    private val allowedKinds = setOf(
-        PrimitiveKind.BOOLEAN,
-        PrimitiveKind.BYTE,
-        PrimitiveKind.CHAR,
-        PrimitiveKind.DOUBLE,
-        PrimitiveKind.FLOAT,
-        PrimitiveKind.INT,
-        PrimitiveKind.LONG,
-        PrimitiveKind.SHORT,
-        PrimitiveKind.STRING,
-        SerialKind.ENUM,
-    )
+    private val allowedKinds =
+        setOf(
+            PrimitiveKind.BOOLEAN,
+            PrimitiveKind.BYTE,
+            PrimitiveKind.CHAR,
+            PrimitiveKind.DOUBLE,
+            PrimitiveKind.FLOAT,
+            PrimitiveKind.INT,
+            PrimitiveKind.LONG,
+            PrimitiveKind.SHORT,
+            PrimitiveKind.STRING,
+            SerialKind.ENUM,
+        )
 
     @Suppress("NestedBlockDepth")
     override fun encodeElement(descriptor: SerialDescriptor, index: Int): Boolean {
@@ -66,7 +73,7 @@ class KeyValueMapEncoder : AbstractEncoder() {
                     if (depth != DEPTH_OBJECT) {
                         error(
                             "Lists are only supported as top level properties. " +
-                                "Found nested list for ${descriptor.getElementName(index)}"
+                                "Found nested list for ${descriptor.getElementName(index)}",
                         )
                     }
                 } else if (it.kind == StructureKind.CLASS || it.kind == StructureKind.OBJECT) {
@@ -74,13 +81,13 @@ class KeyValueMapEncoder : AbstractEncoder() {
                     if (!it.isInline) {
                         error(
                             "Only value classes are supported as nested classes. " +
-                                "Found ${it.kind} for ${descriptor.getElementName(index)}"
+                                "Found ${it.kind} for ${descriptor.getElementName(index)}",
                         )
                     }
                 } else {
                     error(
                         "Only primitives, enums and lists are supported as query params. " +
-                            "Found ${it.kind} for ${descriptor.getElementName(index)}"
+                            "Found ${it.kind} for ${descriptor.getElementName(index)}",
                     )
                 }
             }
@@ -104,8 +111,8 @@ class KeyValueMapEncoder : AbstractEncoder() {
         if (
             // First level must be a class or object. Value classes are not allowed at top level.
             // Value classes can be used as values in the map.
-            kind == StructureKind.CLASS && depth != DEPTH_UNINITIALIZED ||
-            kind == StructureKind.OBJECT && depth != DEPTH_UNINITIALIZED
+            (kind == StructureKind.CLASS && depth != DEPTH_UNINITIALIZED) ||
+            (kind == StructureKind.OBJECT && depth != DEPTH_UNINITIALIZED)
         ) {
             if (!serializer.descriptor.isInline) {
                 error("Class or object only allowed on top level or as value class. Found $kind")

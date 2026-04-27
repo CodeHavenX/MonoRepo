@@ -3,17 +3,17 @@ package com.cramsan.edifikana.server.controller
 import com.cramsan.edifikana.api.UserApi
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.network.user.CheckUserNetworkResponse
-import com.cramsan.edifikana.lib.model.network.user.CreateUserNetworkRequest
-import com.cramsan.edifikana.lib.model.network.password.PasswordResetNetworkRequest
-import com.cramsan.edifikana.lib.model.network.user.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.invite.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.invite.InviteUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.password.PasswordResetNetworkRequest
+import com.cramsan.edifikana.lib.model.network.user.CheckUserNetworkResponse
+import com.cramsan.edifikana.lib.model.network.user.CreateUserNetworkRequest
+import com.cramsan.edifikana.lib.model.network.user.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.user.UpdateUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.user.UserListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
@@ -41,7 +41,6 @@ class UserController(
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action."
 
     /**
@@ -54,16 +53,17 @@ class UserController(
         requireAll(
             "An email and phone number must be provided.",
             createUserRequest.email,
-            createUserRequest.phoneNumber
+            createUserRequest.phoneNumber,
         )
 
-        val newUserResult = userService.createUser(
-            email = createUserRequest.email,
-            phoneNumber = createUserRequest.phoneNumber,
-            password = createUserRequest.password,
-            firstName = createUserRequest.firstName,
-            lastName = createUserRequest.lastName,
-        )
+        val newUserResult =
+            userService.createUser(
+                email = createUserRequest.email,
+                phoneNumber = createUserRequest.phoneNumber,
+                password = createUserRequest.password,
+                firstName = createUserRequest.firstName,
+                lastName = createUserRequest.lastName,
+            )
 
         return newUserResult.requireSuccess().toUserNetworkResponse()
     }
@@ -76,14 +76,16 @@ class UserController(
     @OptIn(NetworkModel::class)
     suspend fun getUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        userId: UserId
+        userId: UserId,
     ): UserNetworkResponse? {
         if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return userService.getUser(
-            id = userId,
-        ).getOrNull()?.toUserNetworkResponse()
+        return userService
+            .getUser(
+                id = userId,
+            ).getOrNull()
+            ?.toUserNetworkResponse()
     }
 
     /**
@@ -102,9 +104,12 @@ class UserController(
             throw UnauthorizedException(unauthorizedMsg)
         }
 
-        val users = userService.getUsers(
-            organizationId = queryParams.orgId,
-        ).getOrThrow().map { it.toUserNetworkResponse() }
+        val users =
+            userService
+                .getUsers(
+                    organizationId = queryParams.orgId,
+                ).getOrThrow()
+                .map { it.toUserNetworkResponse() }
 
         return UserListNetworkResponse(users)
     }
@@ -120,15 +125,18 @@ class UserController(
     suspend fun updateUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         updateUserRequest: UpdateUserNetworkRequest,
-        userId: UserId
+        userId: UserId,
     ): UserNetworkResponse {
         if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val updatedUser = userService.updateUser(
-            id = userId,
-            email = updateUserRequest.email,
-        ).getOrThrow().toUserNetworkResponse()
+        val updatedUser =
+            userService
+                .updateUser(
+                    id = userId,
+                    email = updateUserRequest.email,
+                ).getOrThrow()
+                .toUserNetworkResponse()
 
         return updatedUser
     }
@@ -141,14 +149,15 @@ class UserController(
      */
     suspend fun deleteUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        userId: UserId
+        userId: UserId,
     ): NoResponseBody {
         if (!rbacService.hasRole(context, userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val result = userService.deleteUser(
-            userId,
-        )
+        val result =
+            userService.deleteUser(
+                userId,
+            )
 
         result.requireSuccess()
         return NoResponseBody
@@ -162,17 +171,18 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun associate(
-        authenticatedContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+        authenticatedContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
     ): UserNetworkResponse {
         val userId = authenticatedContext.payload.userId
         val email = authenticatedContext.payload.userInfo.email
 
         requireNotBlank(email, "User does not have a configured email.")
 
-        val newUserResult = userService.associateUser(
-            userId,
-            email,
-        )
+        val newUserResult =
+            userService.associateUser(
+                userId,
+                email,
+            )
 
         return newUserResult.requireSuccess().toUserNetworkResponse()
     }
@@ -187,7 +197,7 @@ class UserController(
     @OptIn(NetworkModel::class)
     suspend fun inviteUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        inviteRequest: InviteUserNetworkRequest
+        inviteRequest: InviteUserNetworkRequest,
     ): NoResponseBody {
         val email = inviteRequest.email
         val orgId = inviteRequest.organizationId
@@ -203,11 +213,12 @@ class UserController(
             throw UnauthorizedException("Cannot invite users with higher privileges than your own")
         }
 
-        userService.inviteUser(
-            email,
-            orgId,
-            inviteRole,
-        ).requireSuccess()
+        userService
+            .inviteUser(
+                email,
+                orgId,
+                inviteRole,
+            ).requireSuccess()
         return NoResponseBody
     }
 
@@ -225,9 +236,12 @@ class UserController(
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val invites = userService.getInvites(
-            organizationId = orgId,
-        ).getOrThrow().map { it.toInviteNetworkResponse() }
+        val invites =
+            userService
+                .getInvites(
+                    organizationId = orgId,
+                ).getOrThrow()
+                .map { it.toInviteNetworkResponse() }
 
         return InviteListNetworkResponse(invites)
     }
@@ -239,7 +253,7 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun checkUserIsRegistered(
-        email: String
+        email: String,
     ): CheckUserNetworkResponse {
         val registeredUser = userService.checkUserIsRegistered(email).getOrThrow()
         return CheckUserNetworkResponse(registeredUser)
@@ -256,10 +270,11 @@ class UserController(
     ): NoResponseBody {
         val userId = context.payload.userId
 
-        userService.acceptInvite(
-            userId = userId,
-            inviteId = inviteId,
-        ).requireSuccess()
+        userService
+            .acceptInvite(
+                userId = userId,
+                inviteId = inviteId,
+            ).requireSuccess()
 
         return NoResponseBody
     }
@@ -275,10 +290,11 @@ class UserController(
     ): NoResponseBody {
         val userId = context.payload.userId
 
-        userService.declineInvite(
-            userId = userId,
-            inviteId = inviteId,
-        ).requireSuccess()
+        userService
+            .declineInvite(
+                userId = userId,
+                inviteId = inviteId,
+            ).requireSuccess()
 
         return NoResponseBody
     }

@@ -29,9 +29,7 @@ import kotlinx.serialization.serializer
  * Note: This decoder does not support nested objects or complex types.
  */
 @ExperimentalSerializationApi
-open class KeyValueMapDecoder(
-    private val params: Map<String, List<String>>
-) : AbstractDecoder() {
+open class KeyValueMapDecoder(private val params: Map<String, List<String>>) : AbstractDecoder() {
     private var currentIndex = -1
     private lateinit var currentDescriptor: SerialDescriptor
     override val serializersModule: SerializersModule = SerializersModule {}
@@ -40,7 +38,7 @@ open class KeyValueMapDecoder(
 
     override fun <T : Any?> decodeSerializableValue(
         deserializer: DeserializationStrategy<T>,
-        previousValue: T?
+        previousValue: T?,
     ): T {
         return decodeSerializableValue(deserializer)
     }
@@ -103,12 +101,19 @@ open class KeyValueMapDecoder(
     }
 
     override fun decodeInt(): Int = decodeString().toInt()
+
     override fun decodeLong(): Long = decodeString().toLong()
+
     override fun decodeBoolean(): Boolean = decodeString().toBoolean()
+
     override fun decodeFloat(): Float = decodeString().toFloat()
+
     override fun decodeDouble(): Double = decodeString().toDouble()
+
     override fun decodeChar(): Char = decodeString().single()
+
     override fun decodeShort(): Short = decodeString().toShort()
+
     override fun decodeByte(): Byte = decodeString().toByte()
 
     override fun decodeNull(): Nothing? = null

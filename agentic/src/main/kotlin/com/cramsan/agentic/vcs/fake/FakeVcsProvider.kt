@@ -24,9 +24,7 @@ private const val TAG = "FakeVcsProvider"
  * reviewer actions (merging a PR or requesting changes) without going through the full VCS
  * interface. These methods are intentionally public for test use.
  */
-class FakeVcsProvider(
-    private val autoMergeOnCreate: Boolean = false,
-) : VcsProvider {
+class FakeVcsProvider(private val autoMergeOnCreate: Boolean = false) : VcsProvider {
     val pullRequests: MutableList<PullRequest> = CopyOnWriteArrayList()
     val comments: MutableMap<String, MutableList<PullRequestComment>> = ConcurrentHashMap()
     val requestedChangesForPr: MutableSet<String> = ConcurrentHashMap.newKeySet()
@@ -39,18 +37,22 @@ class FakeVcsProvider(
         body: String,
         labels: List<String>,
     ): PullRequest {
-        logD(TAG, "createPullRequest: sourceBranch=$sourceBranch, targetBranch=$targetBranch, title='$title', labels=$labels")
+        logD(
+            TAG,
+            "createPullRequest: sourceBranch=$sourceBranch, targetBranch=$targetBranch, title='$title', labels=$labels",
+        )
         val id = nextPrId.getAndIncrement()
         val autoMerge = autoMergeOnCreate && "agentic-code" in labels
-        val pr = PullRequest(
-            id = id.toString(),
-            url = "https://github.com/fake/repo/pull/$id",
-            title = title,
-            state = if (autoMerge) PullRequestState.MERGED else PullRequestState.OPEN,
-            sourceBranch = sourceBranch,
-            targetBranch = targetBranch,
-            labels = labels,
-        )
+        val pr =
+            PullRequest(
+                id = id.toString(),
+                url = "https://github.com/fake/repo/pull/$id",
+                title = title,
+                state = if (autoMerge) PullRequestState.MERGED else PullRequestState.OPEN,
+                sourceBranch = sourceBranch,
+                targetBranch = targetBranch,
+                labels = labels,
+            )
         pullRequests.add(pr)
         logD(TAG, "createPullRequest: created PR id=${pr.id}, url=${pr.url}")
         return pr
@@ -58,20 +60,22 @@ class FakeVcsProvider(
 
     override suspend fun listOpenPullRequests(labels: List<String>): List<PullRequest> {
         logD(TAG, "listOpenPullRequests: labels=$labels")
-        val result = pullRequests.filter { pr ->
-            pr.state == PullRequestState.OPEN &&
-                (labels.isEmpty() || labels.any { it in pr.labels })
-        }
+        val result =
+            pullRequests.filter { pr ->
+                pr.state == PullRequestState.OPEN &&
+                    (labels.isEmpty() || labels.any { it in pr.labels })
+            }
         logD(TAG, "listOpenPullRequests: returning ${result.size} PRs")
         return result
     }
 
     override suspend fun listMergedPullRequests(labels: List<String>): List<PullRequest> {
         logD(TAG, "listMergedPullRequests: labels=$labels")
-        val result = pullRequests.filter { pr ->
-            pr.state == PullRequestState.MERGED &&
-                (labels.isEmpty() || labels.any { it in pr.labels })
-        }
+        val result =
+            pullRequests.filter { pr ->
+                pr.state == PullRequestState.MERGED &&
+                    (labels.isEmpty() || labels.any { it in pr.labels })
+            }
         logD(TAG, "listMergedPullRequests: returning ${result.size} PRs")
         return result
     }
@@ -90,7 +94,7 @@ class FakeVcsProvider(
                 author = "agentic-bot",
                 body = body,
                 createdAtEpochMs = System.currentTimeMillis(),
-            )
+            ),
         )
         logD(TAG, "addPullRequestComment: comment added to prId=$prId")
     }

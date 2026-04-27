@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>Indentation:AgentPrompts.kt: </ID>
+    <ID>LongMethod:ClaudeAiProvider.kt:ClaudeAiProvider$private suspend fun executeWithRetry: AiResponse</ID>
+    <ID>LongMethod:DefaultValidationService.kt:DefaultValidationService$override suspend fun reviewDocument: List&lt;ValidationIssue></ID>
+    <ID>LongMethod:DefaultValidationService.kt:DefaultValidationService$override suspend fun runValidationPass: ValidationReport</ID>
+    <ID>MaximumLineLength:AgentTools.kt:,</ID>
+    <ID>MaximumLineLength:AgentTools.kt:=</ID>
+    <ID>MaximumLineLength:ConfigurableReviewerLoader.kt:ConfigurableReviewerLoader${</ID>
+    <ID>MaximumLineLength:DefaultValidationService.kt:DefaultValidationService$(</ID>
+    <ID>MaximumLineLength:DefaultValidationServiceExtendedTest.kt:DefaultValidationServiceExtendedTest$"""</ID>
+    <ID>MaximumLineLength:GitHubVcsProviderTest.kt:GitHubVcsProviderTest$,</ID>
+    <ID>MaximumLineLength:PlanCommand.kt:PlanStatusSubcommand$"</ID>
+    <ID>MaximumLineLength:VcsCommentNotifierTest.kt:VcsCommentNotifierTest$,</ID>
+    <ID>NoConsecutiveComments:Task.kt:TaskStatus$// NOT @Serializable — status is always derived, never persisted</ID>
+    <ID>StringTemplateIndent:AgentPrompts.kt:""" The reviewer has requested changes on task **${task.id}: ${task.title}**. ## What You Built (Git Diff) ```diff $gitDiff ``` ## Reviewer Comments $commentsSection ## Instructions 1. Address all reviewer feedback in your worktree. 2. Run verification (tests, build) to ensure changes are correct. 3. When ready, stage and commit your changes (`git add -A &amp;&amp; git commit -m "..."`), push the branch (`git push`), then use `task_complete` to update the Pull Request. Work autonomously. Address each comment thoughtfully. """</ID>
+    <ID>StringTemplateIndent:AgentPrompts.kt:""" You are an autonomous software engineering agent. Your goal is to complete the following task by writing code in your assigned worktree. ## Your Task **ID:** ${task.id} **Title:** ${task.title} **Description:** ${task.description} ## Reference Documents $docsSection ## Instructions 1. Read the existing code to understand the codebase. 2. Implement the required changes in your worktree. 3. Run verification (tests, build) to ensure your changes are correct. 4. When all checks pass, stage and commit your changes (`git add -A &amp;&amp; git commit -m "..."`) and push the branch (`git push -u origin HEAD`), then use the `task_complete` tool to open a Pull Request. 5. If you encounter a blocker you cannot resolve, use `task_failed` to report it. 6. If you need to propose changes to the input documents, use `propose_amendment`. 7. If the task is larger than expected, use `split_task` to deliver partial value and queue remaining work. Work autonomously. Do not ask for clarification — make reasonable decisions and document them in the PR description. """</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -15,12 +15,10 @@ data class ImageOptionUIModel(
      * Unique identifier for this option (e.g., "CASA", "custom_upload", "none").
      */
     val id: String,
-
     /**
      * Human-readable label displayed in the dropdown (e.g., "Casa", "Upload Custom Image").
      */
     val displayName: String,
-
     /**
      * The source of the image to display.
      */

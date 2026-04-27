@@ -4,7 +4,6 @@ package com.cramsan.framework.preferences
  * Platform delegate that implements the logic to store the values
  */
 interface PreferencesDelegate {
-
     /**
      * Save [value] of type [String] as the specified [key]
      */

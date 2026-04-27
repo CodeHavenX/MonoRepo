@@ -26,9 +26,9 @@ import com.github.ajalt.clikt.parameters.types.enum
  * - `run` → `start` / `status` / `task` — autonomous agent execution
  */
 class AgenticCli : CliktCommand(name = "agentic", invokeWithoutSubcommand = false) {
-
     private val logLevel by option(
-        "--log-level", "-l",
+        "--log-level",
+        "-l",
         help = "Logging verbosity: VERBOSE, DEBUG, INFO, WARNING, ERROR, DISABLED (default)",
     ).enum<Severity>(ignoreCase = true).default(Severity.INFO)
 

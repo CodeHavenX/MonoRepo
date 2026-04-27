@@ -62,15 +62,15 @@ private fun CardSide(
     text: String?,
 ) {
     Box(
-        modifier = Modifier
+        modifier =
+        Modifier
             .shadow(15.dp, MaterialTheme.shapes.large)
             .background(MaterialTheme.colorScheme.surface)
             .border(
                 2.dp,
                 MaterialTheme.colorScheme.primary,
                 MaterialTheme.shapes.large,
-            )
-            .sizeIn(maxWidth = 400.dp, maxHeight = 250.dp)
+            ).sizeIn(maxWidth = 400.dp, maxHeight = 250.dp)
             .fillMaxSize()
             .padding(Size.large),
         contentAlignment = Alignment.Center,
@@ -83,7 +83,8 @@ private fun CardSide(
                 text = it.orEmpty(),
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
-                autoSize = TextAutoSize.StepBased(
+                autoSize =
+                TextAutoSize.StepBased(
                     maxFontSize = MaterialTheme.typography.headlineLarge.fontSize,
                 ),
             )

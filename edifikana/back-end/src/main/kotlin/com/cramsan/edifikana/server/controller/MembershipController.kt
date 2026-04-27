@@ -3,7 +3,6 @@ package com.cramsan.edifikana.server.controller
 import com.cramsan.edifikana.api.MembershipApi
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.network.invite.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.invite.InviteMemberNetworkRequest
 import com.cramsan.edifikana.lib.model.network.invite.JoinViaCodeNetworkRequest
@@ -11,6 +10,7 @@ import com.cramsan.edifikana.lib.model.network.organization.MemberListNetworkRes
 import com.cramsan.edifikana.lib.model.network.organization.RemoveMemberNetworkRequest
 import com.cramsan.edifikana.lib.model.network.organization.TransferOwnershipNetworkRequest
 import com.cramsan.edifikana.lib.model.network.organization.UpdateRoleNetworkRequest
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.supabase.toUserRole
@@ -36,7 +36,6 @@ class MembershipController(
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action."
 
     /**
@@ -53,7 +52,8 @@ class MembershipController(
     ): NoResponseBody {
         if (request.role == InviteRole.RESIDENT) {
             throw InvalidRequestException(
-                "Residents must be invited from a unit. Please invite residents via their unit instead of the organization.")
+                "Residents must be invited from a unit. Please invite residents via their unit instead of the organization.",
+            )
         }
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -77,8 +77,11 @@ class MembershipController(
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val members = membershipService.listMembers(orgId).getOrThrow()
-            .map { it.toMemberNetworkResponse() }
+        val members =
+            membershipService
+                .listMembers(orgId)
+                .getOrThrow()
+                .map { it.toMemberNetworkResponse() }
         return MemberListNetworkResponse(members)
     }
 
@@ -159,8 +162,11 @@ class MembershipController(
         if (!rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val invites = membershipService.listPendingInvites(orgId).getOrThrow()
-            .map { it.toInviteNetworkResponse() }
+        val invites =
+            membershipService
+                .listPendingInvites(orgId)
+                .getOrThrow()
+                .map { it.toInviteNetworkResponse() }
         return InviteListNetworkResponse(invites)
     }
 

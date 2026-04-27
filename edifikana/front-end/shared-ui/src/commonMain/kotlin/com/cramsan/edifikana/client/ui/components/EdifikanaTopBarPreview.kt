@@ -6,9 +6,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-private fun EdifikanaTopBarPreview() = AppTheme {
-    EdifikanaTopBar(
-        title = "Title",
-        onNavigationIconSelected = {},
-    )
-}
+private fun EdifikanaTopBarPreview() =
+    AppTheme {
+        EdifikanaTopBar(
+            title = "Title",
+            onNavigationIconSelected = {},
+        )
+    }

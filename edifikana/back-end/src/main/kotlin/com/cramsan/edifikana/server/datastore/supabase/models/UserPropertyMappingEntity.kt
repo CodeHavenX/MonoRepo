@@ -18,7 +18,6 @@ data class UserPropertyMappingEntity(
     @SerialName("property_id")
     val propertyId: PropertyId,
 ) {
-
     /**
      * Creates a new instance of [UserPropertyMappingEntity].
      */

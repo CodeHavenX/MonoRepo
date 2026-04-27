@@ -10,25 +10,26 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun ButtonSectionPreview() = MaterialTheme {
-    ButtonSection { buttonModifier ->
-        Button(
-            onClick = {},
-            modifier = buttonModifier,
-        ) {
-            Text("Filled")
-        }
-        OutlinedButton(
-            onClick = {},
-            modifier = buttonModifier,
-        ) {
-            Text("Outlined")
-        }
-        TextButton(
-            onClick = {},
-            modifier = buttonModifier,
-        ) {
-            Text("Text")
+private fun ButtonSectionPreview() =
+    MaterialTheme {
+        ButtonSection { buttonModifier ->
+            Button(
+                onClick = {},
+                modifier = buttonModifier,
+            ) {
+                Text("Filled")
+            }
+            OutlinedButton(
+                onClick = {},
+                modifier = buttonModifier,
+            ) {
+                Text("Outlined")
+            }
+            TextButton(
+                onClick = {},
+                modifier = buttonModifier,
+            ) {
+                Text("Text")
+            }
         }
     }
-}

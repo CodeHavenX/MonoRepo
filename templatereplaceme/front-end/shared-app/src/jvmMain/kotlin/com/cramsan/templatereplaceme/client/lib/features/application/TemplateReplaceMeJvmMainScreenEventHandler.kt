@@ -7,7 +7,6 @@ import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceM
  * Main screen event handler for JVM.
  */
 class TemplateReplaceMeJvmMainScreenEventHandler : TemplateReplaceMeApplicationMainScreenEventHandler {
-
     override fun shareContent(event: TemplateReplaceMeWindowsEvent.ShareContent) {
         logE(TAG, "Sharing content is not supported on JVM")
     }

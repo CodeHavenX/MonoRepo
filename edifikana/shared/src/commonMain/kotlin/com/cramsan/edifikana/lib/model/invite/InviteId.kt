@@ -10,8 +10,6 @@ import kotlin.jvm.JvmInline
  */
 @Serializable
 @JvmInline
-value class InviteId(
-    val id: String
-) : PathParam {
+value class InviteId(val id: String) : PathParam {
     override fun toString(): String = id
 }

@@ -102,7 +102,8 @@ internal fun SignInContent(
         modifier = modifier,
     ) { innerPadding ->
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center,
@@ -115,7 +116,7 @@ internal fun SignInContent(
                         transitionSpec = {
                             fadeIn()
                                 .togetherWith(
-                                    fadeOut()
+                                    fadeOut(),
                                 )
                         },
                     ) {
@@ -148,12 +149,14 @@ internal fun SignInContent(
                 buttonContent = { modifier ->
                     AnimatedContent(uiState.showPassword) {
                         EdifikanaPrimaryButton(
-                            text = if (it) {
+                            text =
+                            if (it) {
                                 stringResource(Res.string.sign_in_screen_text_sign_in)
                             } else {
                                 stringResource(Res.string.sign_in_screen_text_sign_in_otp)
                             },
-                            onClick = if (it) {
+                            onClick =
+                            if (it) {
                                 onPWSignInClicked
                             } else {
                                 onSignInOtpClicked
@@ -163,12 +166,14 @@ internal fun SignInContent(
                     }
 
                     EdifikanaSecondaryButton(
-                        text = if (uiState.showPassword) {
+                        text =
+                        if (uiState.showPassword) {
                             stringResource(Res.string.sign_in_screen_text_sign_in_otp)
                         } else {
                             stringResource(Res.string.sign_in_screen_text_sign_in)
                         },
-                        onClick = if (uiState.showPassword) {
+                        onClick =
+                        if (uiState.showPassword) {
                             onSignInOtpClicked
                         } else {
                             onContinueWithPWClicked
@@ -185,7 +190,8 @@ internal fun SignInContent(
             EdifikanaTextButton(
                 text = stringResource(Res.string.edifikana_string_sign_up),
                 onClick = onSignUpClicked,
-                modifier = Modifier
+                modifier =
+                Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 16.dp),
             )

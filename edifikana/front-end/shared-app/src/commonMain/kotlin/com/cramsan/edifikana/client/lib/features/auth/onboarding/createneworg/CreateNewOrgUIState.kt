@@ -15,11 +15,12 @@ data class CreateNewOrgUIState(
     val isButtonEnabled: Boolean,
 ) : ViewModelUIState {
     companion object {
-        val Initial = CreateNewOrgUIState(
-            organizationName = "",
-            organizationDescription = "",
-            isLoading = false,
-            isButtonEnabled = false,
-        )
+        val Initial =
+            CreateNewOrgUIState(
+                organizationName = "",
+                organizationDescription = "",
+                isLoading = false,
+                isButtonEnabled = false,
+            )
     }
 }

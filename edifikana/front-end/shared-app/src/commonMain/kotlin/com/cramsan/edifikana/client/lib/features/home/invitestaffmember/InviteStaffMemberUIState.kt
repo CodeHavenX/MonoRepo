@@ -16,18 +16,16 @@ data class InviteStaffMemberUIState(
     val roles: List<StaffRoleUIModel>,
 ) : ViewModelUIState {
     companion object {
-        val Initial = InviteStaffMemberUIState(
-            isLoading = false,
-            orgId = null,
-            roles = emptyList(),
-        )
+        val Initial =
+            InviteStaffMemberUIState(
+                isLoading = false,
+                orgId = null,
+                roles = emptyList(),
+            )
     }
 }
 
 /**
  * UI model representing a staff role option in the dropdown.
  */
-data class StaffRoleUIModel(
-    val role: UserRole,
-    val displayName: String,
-)
+data class StaffRoleUIModel(val role: UserRole, val displayName: String)

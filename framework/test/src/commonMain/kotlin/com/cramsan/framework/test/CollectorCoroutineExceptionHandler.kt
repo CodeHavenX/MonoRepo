@@ -12,7 +12,6 @@ class CollectorCoroutineExceptionHandler :
         CoroutineExceptionHandler.Key,
     ),
     CoroutineExceptionHandler {
-
     private val _exceptions = mutableListOf<Throwable>()
     val exceptions: List<Throwable>
         get() = _exceptions.toList()

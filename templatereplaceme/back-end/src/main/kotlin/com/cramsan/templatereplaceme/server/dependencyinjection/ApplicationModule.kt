@@ -15,15 +15,16 @@ import kotlin.time.ExperimentalTime
  * Class to initialize all the application level components.
  */
 @OptIn(ExperimentalTime::class)
-internal val ApplicationModule = module {
+internal val ApplicationModule =
+    module {
 
-    single<String>(named(NamedDependency.DOMAIN_KEY)) { "TEMPLATE_REPLACE_ME" }
+        single<String>(named(NamedDependency.DOMAIN_KEY)) { "TEMPLATE_REPLACE_ME" }
 
-    single<Json> {
-        createJson()
+        single<Json> {
+            createJson()
+        }
+
+        singleOf(::ContextRetrieverImpl) {
+            bind<ContextRetriever<Unit>>()
+        }
     }
-
-    singleOf(::ContextRetrieverImpl) {
-        bind<ContextRetriever<Unit>>()
-    }
-}

@@ -18,38 +18,43 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object EmployeeApi : Api("employee") {
-    val createEmployee = operation<
-        CreateEmployeeNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        EmployeeNetworkResponse
-        >(HttpMethod.Post)
+    val createEmployee =
+        operation<
+            CreateEmployeeNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            EmployeeNetworkResponse,
+            >(HttpMethod.Post)
 
-    val getEmployee = operation<
-        NoRequestBody,
-        NoQueryParam,
-        EmployeeId,
-        EmployeeNetworkResponse
-        >(HttpMethod.Get)
+    val getEmployee =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            EmployeeId,
+            EmployeeNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getEmployees = operation<
-        NoRequestBody,
-        NoQueryParam,
-        NoPathParam,
-        EmployeeListNetworkResponse,
-        >(HttpMethod.Get)
+    val getEmployees =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            EmployeeListNetworkResponse,
+            >(HttpMethod.Get)
 
-    val updateEmployee = operation<
-        UpdateEmployeeNetworkRequest,
-        NoQueryParam,
-        EmployeeId,
-        EmployeeNetworkResponse
-        >(HttpMethod.Put)
+    val updateEmployee =
+        operation<
+            UpdateEmployeeNetworkRequest,
+            NoQueryParam,
+            EmployeeId,
+            EmployeeNetworkResponse,
+            >(HttpMethod.Put)
 
-    val deleteEmployee = operation<
-        NoRequestBody,
-        NoQueryParam,
-        EmployeeId,
-        NoResponseBody
-        >(HttpMethod.Delete)
+    val deleteEmployee =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            EmployeeId,
+            NoResponseBody,
+            >(HttpMethod.Delete)
 }

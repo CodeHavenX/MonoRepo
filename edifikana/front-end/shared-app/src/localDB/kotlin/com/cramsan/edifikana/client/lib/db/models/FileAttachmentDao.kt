@@ -10,7 +10,6 @@ import androidx.room.Query
  */
 @Dao
 interface FileAttachmentDao {
-
     /**
      * Get all file attachments.
      */

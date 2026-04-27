@@ -16,60 +16,62 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun ScreenLayoutPreview() = MaterialTheme {
-    Box(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        ScreenLayout(
-            modifier = debugModifier(),
-            fixedFooter = false,
-            sectionContent = { sectionModifier ->
-                Text(
-                    text = "Sample Section Content 1",
-                    modifier = debugModifier(sectionModifier),
-                )
-                Text(
-                    text = "Sample Section Content 2",
-                    modifier = debugModifier(sectionModifier),
-                )
-                Text(
-                    text = "Sample Section Content 3",
-                    modifier = debugModifier(sectionModifier),
-                )
-                Text(
-                    text = "Sample Section Content 4",
-                    modifier = debugModifier(sectionModifier),
-                )
-            },
-            buttonContent = { sectionModifier ->
-                Button(
-                    modifier = debugModifier(sectionModifier),
-                    onClick = {},
-                ) {
-                    Text("Default Button")
-                }
-                FilledTonalButton(
-                    modifier = debugModifier(sectionModifier),
-                    onClick = {},
-                ) {
-                    Text("Tonal Button")
-                }
-                OutlinedButton(
-                    modifier = debugModifier(sectionModifier),
-                    onClick = {},
-                ) {
-                    Text("Outlined Button")
-                }
-                TextButton(
-                    modifier = debugModifier(sectionModifier),
-                    onClick = {},
-                ) {
-                    Text("Text Button")
-                }
-            },
-        )
+private fun ScreenLayoutPreview() =
+    MaterialTheme {
+        Box(
+            modifier =
+            Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            ScreenLayout(
+                modifier = debugModifier(),
+                fixedFooter = false,
+                sectionContent = { sectionModifier ->
+                    Text(
+                        text = "Sample Section Content 1",
+                        modifier = debugModifier(sectionModifier),
+                    )
+                    Text(
+                        text = "Sample Section Content 2",
+                        modifier = debugModifier(sectionModifier),
+                    )
+                    Text(
+                        text = "Sample Section Content 3",
+                        modifier = debugModifier(sectionModifier),
+                    )
+                    Text(
+                        text = "Sample Section Content 4",
+                        modifier = debugModifier(sectionModifier),
+                    )
+                },
+                buttonContent = { sectionModifier ->
+                    Button(
+                        modifier = debugModifier(sectionModifier),
+                        onClick = {},
+                    ) {
+                        Text("Default Button")
+                    }
+                    FilledTonalButton(
+                        modifier = debugModifier(sectionModifier),
+                        onClick = {},
+                    ) {
+                        Text("Tonal Button")
+                    }
+                    OutlinedButton(
+                        modifier = debugModifier(sectionModifier),
+                        onClick = {},
+                    ) {
+                        Text("Outlined Button")
+                    }
+                    TextButton(
+                        modifier = debugModifier(sectionModifier),
+                        onClick = {},
+                    ) {
+                        Text("Text Button")
+                    }
+                },
+            )
+        }
     }
-}

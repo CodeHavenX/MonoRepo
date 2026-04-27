@@ -27,7 +27,6 @@ class MembershipService(
     private val userDatastore: UserDatastore,
     private val clock: Clock,
 ) {
-
     /**
      * Records an invite for [email] to join [orgId] with [role].
      */
@@ -35,17 +34,19 @@ class MembershipService(
         orgId: OrganizationId,
         email: String,
         role: InviteRole,
-    ): Result<Unit> = runCatching {
-        logD(TAG, "inviteMember: org=%s, email=%s, role=%s", orgId, email, role)
-        membershipDatastore.createInvite(
-            email = email,
-            organizationId = orgId,
-            expiration = clock.now() + 14.days,
-            role = role,
-            inviteCode = generateInviteCode(),
-        ).getOrThrow()
-        Unit
-    }
+    ): Result<Unit> =
+        runCatching {
+            logD(TAG, "inviteMember: org=%s, email=%s, role=%s", orgId, email, role)
+            membershipDatastore
+                .createInvite(
+                    email = email,
+                    organizationId = orgId,
+                    expiration = clock.now() + 14.days,
+                    role = role,
+                    inviteCode = generateInviteCode(),
+                ).getOrThrow()
+            Unit
+        }
 
     /**
      * Returns all active members of [orgId].
@@ -75,16 +76,17 @@ class MembershipService(
     suspend fun removeMember(
         orgId: OrganizationId,
         targetUserId: UserId,
-    ): Result<Unit> = runCatching {
-        logD(TAG, "removeMember: org=%s, target=%s", orgId, targetUserId)
-        if (isSoleOwner(orgId, targetUserId)) {
-            throw InvalidRequestException(
-                "Cannot remove the sole owner of an organization"
-            )
+    ): Result<Unit> =
+        runCatching {
+            logD(TAG, "removeMember: org=%s, target=%s", orgId, targetUserId)
+            if (isSoleOwner(orgId, targetUserId)) {
+                throw InvalidRequestException(
+                    "Cannot remove the sole owner of an organization",
+                )
+            }
+            membershipDatastore.unassignTasksForMember(orgId, targetUserId).getOrThrow()
+            membershipDatastore.removeMember(orgId, targetUserId).getOrThrow()
         }
-        membershipDatastore.unassignTasksForMember(orgId, targetUserId).getOrThrow()
-        membershipDatastore.removeMember(orgId, targetUserId).getOrThrow()
-    }
 
     /**
      * Removes [callerId] from [orgId].
@@ -93,16 +95,17 @@ class MembershipService(
     suspend fun leaveOrganization(
         callerId: UserId,
         orgId: OrganizationId,
-    ): Result<Unit> = runCatching {
-        logD(TAG, "leaveOrganization: caller=%s, org=%s", callerId, orgId)
-        if (isSoleOwner(orgId, callerId)) {
-            throw InvalidRequestException(
-                "Cannot leave an organization you are the sole owner of. Transfer ownership first."
-            )
+    ): Result<Unit> =
+        runCatching {
+            logD(TAG, "leaveOrganization: caller=%s, org=%s", callerId, orgId)
+            if (isSoleOwner(orgId, callerId)) {
+                throw InvalidRequestException(
+                    "Cannot leave an organization you are the sole owner of. Transfer ownership first.",
+                )
+            }
+            membershipDatastore.unassignTasksForMember(orgId, callerId).getOrThrow()
+            membershipDatastore.removeMember(orgId, callerId).getOrThrow()
         }
-        membershipDatastore.unassignTasksForMember(orgId, callerId).getOrThrow()
-        membershipDatastore.removeMember(orgId, callerId).getOrThrow()
-    }
 
     /**
      * Transfers ownership of [orgId] from [callerId] to [newOwnerId].
@@ -112,19 +115,20 @@ class MembershipService(
         callerId: UserId,
         orgId: OrganizationId,
         newOwnerId: UserId,
-    ): Result<Unit> = runCatching {
-        logD(TAG, "transferOwnership: caller=%s, org=%s, newOwner=%s", callerId, orgId, newOwnerId)
-        if (callerId == newOwnerId) {
-            throw InvalidRequestException(
-                "New owner cannot be the same as the current owner"
-            )
+    ): Result<Unit> =
+        runCatching {
+            logD(TAG, "transferOwnership: caller=%s, org=%s, newOwner=%s", callerId, orgId, newOwnerId)
+            if (callerId == newOwnerId) {
+                throw InvalidRequestException(
+                    "New owner cannot be the same as the current owner",
+                )
+            }
+            membershipDatastore.getMember(orgId, newOwnerId).getOrThrow()
+                ?: throw NotFoundException(
+                    "Target user is not an active member of this organization",
+                )
+            membershipDatastore.transferOwnership(orgId, newOwnerId, callerId).getOrThrow()
         }
-        membershipDatastore.getMember(orgId, newOwnerId).getOrThrow()
-            ?: throw NotFoundException(
-                "Target user is not an active member of this organization"
-            )
-        membershipDatastore.transferOwnership(orgId, newOwnerId, callerId).getOrThrow()
-    }
 
     /**
      * Returns pending invites for [orgId].
@@ -138,12 +142,15 @@ class MembershipService(
      * Returns the organization ID for [inviteId].
      * Used by the controller to resolve the org before performing an RBAC check.
      */
-    suspend fun getInviteOrganization(inviteId: InviteId): Result<OrganizationId> = runCatching {
-        logD(TAG, "getInviteOrganization: invite=%s", inviteId)
-        membershipDatastore.getInviteById(inviteId).getOrThrow()
-            ?.organizationId
-            ?: throw NotFoundException("Invite not found")
-    }
+    suspend fun getInviteOrganization(inviteId: InviteId): Result<OrganizationId> =
+        runCatching {
+            logD(TAG, "getInviteOrganization: invite=%s", inviteId)
+            membershipDatastore
+                .getInviteById(inviteId)
+                .getOrThrow()
+                ?.organizationId
+                ?: throw NotFoundException("Invite not found")
+        }
 
     /**
      * Cancels the invite with [inviteId].
@@ -157,49 +164,61 @@ class MembershipService(
      * Regenerates the invite code and resets the expiry for [inviteId].
      * Returns the updated [Invite].
      */
-    suspend fun resendInvite(inviteId: InviteId): Result<Invite> = runCatching {
-        logD(TAG, "resendInvite: invite=%s", inviteId)
-        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
-            ?: throw NotFoundException("Invite not found")
-        if (invite.acceptedAt != null) {
-            throw ConflictException("Invite has already been accepted")
+    suspend fun resendInvite(inviteId: InviteId): Result<Invite> =
+        runCatching {
+            logD(TAG, "resendInvite: invite=%s", inviteId)
+            val invite =
+                membershipDatastore.getInviteById(inviteId).getOrThrow()
+                    ?: throw NotFoundException("Invite not found")
+            if (invite.acceptedAt != null) {
+                throw ConflictException("Invite has already been accepted")
+            }
+            if (invite.expiration < clock.now()) {
+                throw InvalidRequestException("Invite has expired")
+            }
+            val newCode = generateInviteCode()
+            val newExpiry = clock.now() + 7.days
+            membershipDatastore.resendInvite(inviteId, newCode, newExpiry).getOrThrow()
         }
-        if (invite.expiration < clock.now()) {
-            throw InvalidRequestException("Invite has expired")
-        }
-        val newCode = generateInviteCode()
-        val newExpiry = clock.now() + 7.days
-        membershipDatastore.resendInvite(inviteId, newCode, newExpiry).getOrThrow()
-    }
 
     /**
      * Joins an organization via [inviteCode] for the authenticated [callerId].
      * Validates the invite is active and the caller's email matches the invite.
      */
-    suspend fun joinViaCode(callerId: UserId, inviteCode: String): Result<Unit> = runCatching {
-        logD(TAG, "joinViaCode: caller=%s", callerId)
-        val invite = membershipDatastore.getInviteByCode(inviteCode).getOrThrow()
-            ?: throw NotFoundException("Invalid or expired invite code")
-        val user = userDatastore.getUser(callerId).getOrThrow()
-            ?: throw NotFoundException("User not found")
-        if (user.email != invite.email) {
-            throw ForbiddenException(
-                "This invite is not for your email address"
-            )
+    suspend fun joinViaCode(callerId: UserId, inviteCode: String): Result<Unit> =
+        runCatching {
+            logD(TAG, "joinViaCode: caller=%s", callerId)
+            val invite =
+                membershipDatastore.getInviteByCode(inviteCode).getOrThrow()
+                    ?: throw NotFoundException("Invalid or expired invite code")
+            val user =
+                userDatastore.getUser(callerId).getOrThrow()
+                    ?: throw NotFoundException("User not found")
+            if (user.email != invite.email) {
+                throw ForbiddenException(
+                    "This invite is not for your email address",
+                )
+            }
+            membershipDatastore.acceptInviteByCode(invite.id, callerId).getOrThrow()
         }
-        membershipDatastore.acceptInviteByCode(invite.id, callerId).getOrThrow()
-    }
 
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
 
     private fun generateInviteCode(): String =
-        UUID.random().replace("-", "").take(INVITE_CODE_LENGTH).uppercase()
+        UUID
+            .random()
+            .replace("-", "")
+            .take(INVITE_CODE_LENGTH)
+            .uppercase()
 
     private suspend fun isSoleOwner(orgId: OrganizationId, userId: UserId): Boolean {
-        val owners = membershipDatastore.getMembers(orgId).getOrThrow()
-            .filter { it.role == OrgRole.OWNER }
+        val owners =
+            membershipDatastore
+                .getMembers(orgId)
+                .getOrThrow()
+                .filter { it.role == OrgRole.OWNER }
         return owners.size == 1 && owners.first().userId == userId
     }
 

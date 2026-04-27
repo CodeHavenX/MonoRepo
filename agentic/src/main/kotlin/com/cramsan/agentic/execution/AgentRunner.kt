@@ -13,12 +13,12 @@ import com.cramsan.agentic.core.Task
  * writes a `failed.txt` marker on failure so the orchestrator does not retry automatically.
  * Use `agentic run task retry <id>` to clear the marker and re-queue the task.
  */
-sealed class AgentResult {
+sealed interface AgentResult {
     /** The agent successfully completed the task and opened PR [prId] at [prUrl]. */
-    data class PrOpened(val prId: String, val prUrl: String) : AgentResult()
+    data class PrOpened(val prId: String, val prUrl: String) : AgentResult
 
     /** The agent could not complete the task. [reason] is written to `failed.txt` for operator inspection. */
-    data class Failed(val reason: String) : AgentResult()
+    data class Failed(val reason: String) : AgentResult
 }
 
 /**

@@ -18,14 +18,15 @@ data class OtpValidationUIState(
     val otpLength: Int,
 ) : ViewModelUIState {
     companion object {
-        val Initial = OtpValidationUIState(
-            isLoading = true,
-            email = "",
-            otpCode = "",
-            errorMessage = null,
-            accountCreationFlow = true,
-            enabledContinueButton = false,
-            otpLength = 6,
-        )
+        val Initial =
+            OtpValidationUIState(
+                isLoading = true,
+                email = "",
+                otpCode = "",
+                errorMessage = null,
+                accountCreationFlow = true,
+                enabledContinueButton = false,
+                otpLength = 6,
+            )
     }
 }

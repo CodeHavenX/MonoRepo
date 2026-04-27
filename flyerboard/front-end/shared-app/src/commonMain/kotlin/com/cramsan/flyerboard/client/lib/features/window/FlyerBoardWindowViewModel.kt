@@ -21,17 +21,16 @@ class FlyerBoardWindowViewModel(
 ) : BaseViewModel<FlyerBoardWindowViewModelEvent, FlyerBoardWindowUIState>(
     dependencies,
     FlyerBoardWindowUIState.Initial,
-    TAG
+    TAG,
 ) {
-
     init {
         viewModelScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")
                 emitEvent(
                     FlyerBoardWindowViewModelEvent.FlyerBoardWindowEventWrapper(
-                        event as FlyerBoardWindowsEvent
-                    )
+                        event as FlyerBoardWindowsEvent,
+                    ),
                 )
             }
         }
@@ -55,8 +54,8 @@ class FlyerBoardWindowViewModel(
                     FlyerBoardWindowsEvent.NavigateToNavGraph(
                         destination = FlyerBoardWindowNavGraphDestination.MainNavGraphDestination,
                         clearStack = true,
-                    )
-                )
+                    ),
+                ),
             )
         }
     }

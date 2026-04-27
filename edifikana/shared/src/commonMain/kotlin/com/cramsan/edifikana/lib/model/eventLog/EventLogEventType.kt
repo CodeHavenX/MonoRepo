@@ -10,8 +10,8 @@ enum class EventLogEventType {
     MAINTENANCE_SERVICE,
     OTHER,
     ;
-    companion object {
 
+    companion object {
         /**
          * Converts a string to an EventLogEventType.
          */

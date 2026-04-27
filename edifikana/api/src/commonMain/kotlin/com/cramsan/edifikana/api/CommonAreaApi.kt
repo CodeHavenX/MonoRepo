@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.api
 
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
-import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaNetworkResponse
 import com.cramsan.edifikana.lib.model.network.commonArea.CreateCommonAreaNetworkRequest
 import com.cramsan.edifikana.lib.model.network.commonArea.UpdateCommonAreaNetworkRequest
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
@@ -23,39 +23,43 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object CommonAreaApi : Api("common-area") {
+    val createCommonArea =
+        operation<
+            CreateCommonAreaNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            CommonAreaNetworkResponse,
+            >(HttpMethod.Post)
 
-    val createCommonArea = operation<
-        CreateCommonAreaNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        CommonAreaNetworkResponse
-        >(HttpMethod.Post)
+    val getCommonArea =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            CommonAreaId,
+            CommonAreaNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getCommonArea = operation<
-        NoRequestBody,
-        NoQueryParam,
-        CommonAreaId,
-        CommonAreaNetworkResponse
-        >(HttpMethod.Get)
+    val getCommonAreasForProperty =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            PropertyId,
+            CommonAreaListNetworkResponse,
+            >(HttpMethod.Get, "by-property")
 
-    val getCommonAreasForProperty = operation<
-        NoRequestBody,
-        NoQueryParam,
-        PropertyId,
-        CommonAreaListNetworkResponse
-        >(HttpMethod.Get, "by-property")
+    val updateCommonArea =
+        operation<
+            UpdateCommonAreaNetworkRequest,
+            NoQueryParam,
+            CommonAreaId,
+            CommonAreaNetworkResponse,
+            >(HttpMethod.Put)
 
-    val updateCommonArea = operation<
-        UpdateCommonAreaNetworkRequest,
-        NoQueryParam,
-        CommonAreaId,
-        CommonAreaNetworkResponse
-        >(HttpMethod.Put)
-
-    val deleteCommonArea = operation<
-        NoRequestBody,
-        NoQueryParam,
-        CommonAreaId,
-        NoResponseBody
-        >(HttpMethod.Delete)
+    val deleteCommonArea =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            CommonAreaId,
+            NoResponseBody,
+            >(HttpMethod.Delete)
 }

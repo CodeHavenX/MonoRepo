@@ -9,8 +9,8 @@ enum class EmployeeRole {
     SECURITY_COVER,
     CLEANING,
     ;
-    companion object {
 
+    companion object {
         /**
          * Converts a string value to a EmployeeRole.
          */

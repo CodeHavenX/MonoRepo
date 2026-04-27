@@ -18,19 +18,22 @@ actual fun CoreUri.getFilename(ioDependencies: IODependencies): String {
 
     // Extract filename from URI path
     // Handle various URI formats: file://path/to/file.jpg, blob:http://..., or plain paths
-    val filename = when {
-        // For blob URIs, try to extract from the end of the URI
-        uriString.startsWith("blob:") -> {
-            // Blob URIs don't contain filenames, generate a timestamp-based name
-            // Don't assume extension - let MIME type validation handle the actual format
-            "upload_${Clock.System.now().toEpochMilliseconds()}"
+    val filename =
+        when {
+            // For blob URIs, try to extract from the end of the URI
+            uriString.startsWith("blob:") -> {
+                // Blob URIs don't contain filenames, generate a timestamp-based name
+                // Don't assume extension - let MIME type validation handle the actual format
+                "upload_${Clock.System.now().toEpochMilliseconds()}"
+            }
+
+            // For file URIs or paths, extract the last segment (preserves original extension)
+            else -> {
+                uriString
+                    .substringAfterLast('/', "unknown_file")
+                    .substringAfterLast('\\', "unknown_file")
+            }
         }
-        // For file URIs or paths, extract the last segment (preserves original extension)
-        else -> {
-            uriString.substringAfterLast('/', "unknown_file")
-                .substringAfterLast('\\', "unknown_file")
-        }
-    }
 
     return filename.ifEmpty { "unknown_file" }
 }

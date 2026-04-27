@@ -12,7 +12,6 @@ import kotlin.test.BeforeTest
  */
 @Suppress("UnnecessaryAbstractClass")
 actual abstract class CoroutineTest {
-
     @ExtendWith
     var testCoroutineRule: TestCoroutineRule = TestCoroutineRule()
 
@@ -35,7 +34,7 @@ actual abstract class CoroutineTest {
 
     @Deprecated(
         message = "Use runCoroutineTest instead",
-        replaceWith = ReplaceWith(expression = "runCoroutineTest(block)")
+        replaceWith = ReplaceWith(expression = "runCoroutineTest(block)"),
     )
     actual fun runBlockingTest(block: suspend TestScope.() -> Unit) = runCoroutineTest(block)
 }

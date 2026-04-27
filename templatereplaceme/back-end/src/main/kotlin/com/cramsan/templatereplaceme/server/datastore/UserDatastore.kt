@@ -6,7 +6,6 @@ import com.cramsan.templatereplaceme.server.service.models.User
  * Interface defining user-related data operations.
  */
 interface UserDatastore {
-
     /**
      * Creates a new user with the given first and last name.
      *

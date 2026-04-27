@@ -20,7 +20,6 @@ class CreateNewOrgViewModel(
     CreateNewOrgUIState.Initial,
     TAG,
 ) {
-
     /**
      * Trigger the back event.
      */
@@ -71,23 +70,24 @@ class CreateNewOrgViewModel(
                     return@launch
                 }
 
-                organizationManager.createOrganization(
-                    name = currentState.organizationName,
-                    description = currentState.organizationDescription,
-                ).onSuccess {
-                    logI(TAG, "Organization created successfully")
-                    emitWindowEvent(
-                        EdifikanaWindowsEvent.NavigateToNavGraph(
-                            EdifikanaNavGraphDestination.HomeNavGraphDestination,
-                            clearTop = true,
+                organizationManager
+                    .createOrganization(
+                        name = currentState.organizationName,
+                        description = currentState.organizationDescription,
+                    ).onSuccess {
+                        logI(TAG, "Organization created successfully")
+                        emitWindowEvent(
+                            EdifikanaWindowsEvent.NavigateToNavGraph(
+                                EdifikanaNavGraphDestination.HomeNavGraphDestination,
+                                clearTop = true,
+                            ),
                         )
-                    )
-                }.onFailure { error ->
-                    logE(TAG, "Failed to create organization: ${error.message}", error.cause)
-                    emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar("Failed to create organization. Please try again.")
-                    )
-                }
+                    }.onFailure { error ->
+                        logE(TAG, "Failed to create organization: ${error.message}", error.cause)
+                        emitWindowEvent(
+                            EdifikanaWindowsEvent.ShowSnackbar("Failed to create organization. Please try again."),
+                        )
+                    }
             } finally {
                 updateUiState { it.copy(isLoading = false) }
             }

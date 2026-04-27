@@ -10,36 +10,42 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Preview
 @Composable
-private fun InviteStaffMemberScreenPreview() = AppTheme {
-    InviteStaffMemberContent(
-        content = InviteStaffMemberUIState(
-            isLoading = false,
-            orgId = null,
-            roles = listOf(
-                StaffRoleUIModel(UserRole.ADMIN, "Admin"),
-                StaffRoleUIModel(UserRole.MANAGER, "Manager"),
-                StaffRoleUIModel(UserRole.EMPLOYEE, "Employee"),
+private fun InviteStaffMemberScreenPreview() =
+    AppTheme {
+        InviteStaffMemberContent(
+            content =
+            InviteStaffMemberUIState(
+                isLoading = false,
+                orgId = null,
+                roles =
+                listOf(
+                    StaffRoleUIModel(UserRole.ADMIN, "Admin"),
+                    StaffRoleUIModel(UserRole.MANAGER, "Manager"),
+                    StaffRoleUIModel(UserRole.EMPLOYEE, "Employee"),
+                ),
             ),
-        ),
-        onBackSelected = {},
-        onSendInvitationSelected = { _, _ -> }
-    )
-}
+            onBackSelected = {},
+            onSendInvitationSelected = { _, _ -> },
+        )
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun InviteStaffMemberScreenPreview_ES() = AppTheme {
-    InviteStaffMemberContent(
-        content = InviteStaffMemberUIState(
-            isLoading = false,
-            orgId = null,
-            roles = listOf(
-                StaffRoleUIModel(UserRole.ADMIN, "Administrador"),
-                StaffRoleUIModel(UserRole.MANAGER, "Gerente"),
-                StaffRoleUIModel(UserRole.EMPLOYEE, "Empleado"),
+private fun InviteStaffMemberScreenPreview_ES() =
+    AppTheme {
+        InviteStaffMemberContent(
+            content =
+            InviteStaffMemberUIState(
+                isLoading = false,
+                orgId = null,
+                roles =
+                listOf(
+                    StaffRoleUIModel(UserRole.ADMIN, "Administrador"),
+                    StaffRoleUIModel(UserRole.MANAGER, "Gerente"),
+                    StaffRoleUIModel(UserRole.EMPLOYEE, "Empleado"),
+                ),
             ),
-        ),
-        onBackSelected = {},
-        onSendInvitationSelected = { _, _ -> }
-    )
-}
+            onBackSelected = {},
+            onSendInvitationSelected = { _, _ -> },
+        )
+    }

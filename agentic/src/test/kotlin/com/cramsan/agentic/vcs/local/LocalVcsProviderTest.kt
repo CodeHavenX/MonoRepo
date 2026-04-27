@@ -14,7 +14,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class LocalVcsProviderTest : CoroutineTest() {
-
     @TempDir
     lateinit var tempDir: Path
 
@@ -28,152 +27,167 @@ class LocalVcsProviderTest : CoroutineTest() {
     @BeforeEach
     fun setup() {
         stateFile = tempDir.resolve("local_prs.json")
-        provider = LocalVcsProvider(
-            stateFile = stateFile,
-            autoMerge = false,
-            repoRoot = tempDir,
-            shell = shell,
-            json = json,
-            dispatcher = testCoroutineDispatcher,
-        )
+        provider =
+            LocalVcsProvider(
+                stateFile = stateFile,
+                autoMerge = false,
+                repoRoot = tempDir,
+                shell = shell,
+                json = json,
+                dispatcher = testCoroutineDispatcher,
+            )
     }
 
     @Test
-    fun `createPullRequest returns PR with state OPEN when autoMerge is false`() = runCoroutineTest {
-        val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
+    fun `createPullRequest returns PR with state OPEN when autoMerge is false`() =
+        runCoroutineTest {
+            val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
 
-        assertEquals(PullRequestState.OPEN, pr.state)
-        assertEquals("feature/a", pr.sourceBranch)
-        assertEquals("main", pr.targetBranch)
-        assertEquals("PR 1", pr.title)
-    }
-
-    @Test
-    fun `createPullRequest assigns sequential IDs`() = runCoroutineTest {
-        val pr1 = provider.createPullRequest("feature/a", "main", "PR 1", "Body 1")
-        val pr2 = provider.createPullRequest("feature/b", "main", "PR 2", "Body 2")
-
-        assertTrue(pr1.id != pr2.id)
-    }
+            assertEquals(PullRequestState.OPEN, pr.state)
+            assertEquals("feature/a", pr.sourceBranch)
+            assertEquals("main", pr.targetBranch)
+            assertEquals("PR 1", pr.title)
+        }
 
     @Test
-    fun `createPullRequest sets labels on returned PR`() = runCoroutineTest {
-        val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
+    fun `createPullRequest assigns sequential IDs`() =
+        runCoroutineTest {
+            val pr1 = provider.createPullRequest("feature/a", "main", "PR 1", "Body 1")
+            val pr2 = provider.createPullRequest("feature/b", "main", "PR 2", "Body 2")
 
-        assertEquals(listOf("agentic-code"), pr.labels)
-    }
-
-    @Test
-    fun `listOpenPullRequests returns all OPEN PRs`() = runCoroutineTest {
-        provider.createPullRequest("feature/a", "main", "PR 1", "Body")
-        provider.createPullRequest("feature/b", "main", "PR 2", "Body")
-
-        val open = provider.listOpenPullRequests()
-
-        assertEquals(2, open.size)
-        assertTrue(open.all { it.state == PullRequestState.OPEN })
-    }
+            assertTrue(pr1.id != pr2.id)
+        }
 
     @Test
-    fun `listMergedPullRequests returns empty when no PRs are merged`() = runCoroutineTest {
-        provider.createPullRequest("feature/a", "main", "PR 1", "Body")
+    fun `createPullRequest sets labels on returned PR`() =
+        runCoroutineTest {
+            val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
 
-        val merged = provider.listMergedPullRequests()
-
-        assertEquals(0, merged.size)
-    }
-
-    @Test
-    fun `listOpenPullRequests filters by labels`() = runCoroutineTest {
-        provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
-        provider.createPullRequest("feature/b", "main", "PR 2", "Body", listOf("agentic-document"))
-
-        val codeOnly = provider.listOpenPullRequests(listOf("agentic-code"))
-
-        assertEquals(1, codeOnly.size)
-        assertEquals("feature/a", codeOnly[0].sourceBranch)
-    }
+            assertEquals(listOf("agentic-code"), pr.labels)
+        }
 
     @Test
-    fun `listOpenPullRequests with empty labels returns all OPEN PRs`() = runCoroutineTest {
-        provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
-        provider.createPullRequest("feature/b", "main", "PR 2", "Body", listOf("agentic-document"))
+    fun `listOpenPullRequests returns all OPEN PRs`() =
+        runCoroutineTest {
+            provider.createPullRequest("feature/a", "main", "PR 1", "Body")
+            provider.createPullRequest("feature/b", "main", "PR 2", "Body")
 
-        val all = provider.listOpenPullRequests()
+            val open = provider.listOpenPullRequests()
 
-        assertEquals(2, all.size)
-    }
-
-    @Test
-    fun `listMergedPullRequests filters by labels`() = runCoroutineTest {
-        provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
-        provider.createPullRequest("feature/b", "main", "PR 2", "Body", listOf("agentic-document"))
-        // Directly manipulate the state file to mark one PR as MERGED
-        val rawState = json.decodeFromString(LocalPrState.serializer(), stateFile.toFile().readText())
-        rawState.prs[0].state = PullRequestState.MERGED
-        stateFile.toFile().writeText(json.encodeToString(LocalPrState.serializer(), rawState))
-
-        val merged = provider.listMergedPullRequests(listOf("agentic-code"))
-
-        assertEquals(1, merged.size)
-        assertEquals("feature/a", merged[0].sourceBranch)
-    }
+            assertEquals(2, open.size)
+            assertTrue(open.all { it.state == PullRequestState.OPEN })
+        }
 
     @Test
-    fun `addPullRequestComment is reflected in getPullRequestComments`() = runCoroutineTest {
-        val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
-        provider.addPullRequestComment(pr.id, "LGTM!")
+    fun `listMergedPullRequests returns empty when no PRs are merged`() =
+        runCoroutineTest {
+            provider.createPullRequest("feature/a", "main", "PR 1", "Body")
 
-        val comments = provider.getPullRequestComments(pr.id)
+            val merged = provider.listMergedPullRequests()
 
-        assertEquals(1, comments.size)
-        assertEquals("LGTM!", comments[0].body)
-        assertEquals("agentic-bot", comments[0].author)
-    }
+            assertEquals(0, merged.size)
+        }
 
     @Test
-    fun `multiple comments accumulate on the same PR`() = runCoroutineTest {
-        val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
-        provider.addPullRequestComment(pr.id, "First comment")
-        provider.addPullRequestComment(pr.id, "Second comment")
+    fun `listOpenPullRequests filters by labels`() =
+        runCoroutineTest {
+            provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
+            provider.createPullRequest("feature/b", "main", "PR 2", "Body", listOf("agentic-document"))
 
-        val comments = provider.getPullRequestComments(pr.id)
+            val codeOnly = provider.listOpenPullRequests(listOf("agentic-code"))
 
-        assertEquals(2, comments.size)
-        assertEquals("First comment", comments[0].body)
-        assertEquals("Second comment", comments[1].body)
-    }
-
-    @Test
-    fun `pullRequestHasRequestedChanges returns false by default`() = runCoroutineTest {
-        val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
-
-        assertFalse(provider.pullRequestHasRequestedChanges(pr.id))
-    }
+            assertEquals(1, codeOnly.size)
+            assertEquals("feature/a", codeOnly[0].sourceBranch)
+        }
 
     @Test
-    fun `state file is created when it does not exist`() = runCoroutineTest {
-        assertFalse(stateFile.toFile().exists())
+    fun `listOpenPullRequests with empty labels returns all OPEN PRs`() =
+        runCoroutineTest {
+            provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
+            provider.createPullRequest("feature/b", "main", "PR 2", "Body", listOf("agentic-document"))
 
-        provider.createPullRequest("feature/a", "main", "PR 1", "Body")
+            val all = provider.listOpenPullRequests()
 
-        assertTrue(stateFile.toFile().exists())
-    }
+            assertEquals(2, all.size)
+        }
 
     @Test
-    fun `state file is created inside a nested directory`() = runCoroutineTest {
-        val nestedStateFile = tempDir.resolve("nested/dir/local_prs.json")
-        val nestedProvider = LocalVcsProvider(
-            stateFile = nestedStateFile,
-            autoMerge = false,
-            repoRoot = tempDir,
-            shell = shell,
-            json = json,
-            dispatcher = testCoroutineDispatcher,
-        )
+    fun `listMergedPullRequests filters by labels`() =
+        runCoroutineTest {
+            provider.createPullRequest("feature/a", "main", "PR 1", "Body", listOf("agentic-code"))
+            provider.createPullRequest("feature/b", "main", "PR 2", "Body", listOf("agentic-document"))
+            // Directly manipulate the state file to mark one PR as MERGED
+            val rawState = json.decodeFromString(LocalPrState.serializer(), stateFile.toFile().readText())
+            rawState.prs[0].state = PullRequestState.MERGED
+            stateFile.toFile().writeText(json.encodeToString(LocalPrState.serializer(), rawState))
 
-        nestedProvider.createPullRequest("feature/a", "main", "PR 1", "Body")
+            val merged = provider.listMergedPullRequests(listOf("agentic-code"))
 
-        assertTrue(nestedStateFile.toFile().exists())
-    }
+            assertEquals(1, merged.size)
+            assertEquals("feature/a", merged[0].sourceBranch)
+        }
+
+    @Test
+    fun `addPullRequestComment is reflected in getPullRequestComments`() =
+        runCoroutineTest {
+            val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
+            provider.addPullRequestComment(pr.id, "LGTM!")
+
+            val comments = provider.getPullRequestComments(pr.id)
+
+            assertEquals(1, comments.size)
+            assertEquals("LGTM!", comments[0].body)
+            assertEquals("agentic-bot", comments[0].author)
+        }
+
+    @Test
+    fun `multiple comments accumulate on the same PR`() =
+        runCoroutineTest {
+            val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
+            provider.addPullRequestComment(pr.id, "First comment")
+            provider.addPullRequestComment(pr.id, "Second comment")
+
+            val comments = provider.getPullRequestComments(pr.id)
+
+            assertEquals(2, comments.size)
+            assertEquals("First comment", comments[0].body)
+            assertEquals("Second comment", comments[1].body)
+        }
+
+    @Test
+    fun `pullRequestHasRequestedChanges returns false by default`() =
+        runCoroutineTest {
+            val pr = provider.createPullRequest("feature/a", "main", "PR 1", "Body")
+
+            assertFalse(provider.pullRequestHasRequestedChanges(pr.id))
+        }
+
+    @Test
+    fun `state file is created when it does not exist`() =
+        runCoroutineTest {
+            assertFalse(stateFile.toFile().exists())
+
+            provider.createPullRequest("feature/a", "main", "PR 1", "Body")
+
+            assertTrue(stateFile.toFile().exists())
+        }
+
+    @Test
+    fun `state file is created inside a nested directory`() =
+        runCoroutineTest {
+            val nestedStateFile = tempDir.resolve("nested/dir/local_prs.json")
+            val nestedProvider =
+                LocalVcsProvider(
+                    stateFile = nestedStateFile,
+                    autoMerge = false,
+                    repoRoot = tempDir,
+                    shell = shell,
+                    json = json,
+                    dispatcher = testCoroutineDispatcher,
+                )
+
+            nestedProvider.createPullRequest("feature/a", "main", "PR 1", "Body")
+
+            assertTrue(nestedStateFile.toFile().exists())
+        }
 }

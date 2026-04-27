@@ -10,8 +10,6 @@ import kotlin.jvm.JvmInline
  */
 @Serializable
 @JvmInline
-value class NotificationId(
-    val id: String
-) : PathParam {
+value class NotificationId(val id: String) : PathParam {
     override fun toString(): String = id
 }

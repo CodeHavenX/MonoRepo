@@ -10,9 +10,7 @@ class SimpleConfiguration(private val configFile: String) : Configuration {
     // Properties object to store the config properties.
     val properties = Properties()
 
-    /**
-     * Initializes the configuration by loading the properties from the config file.
-     */
+    // Initializes the configuration by loading the properties from the config file.
     init {
         val file = File(configFile)
         file.createNewFile()
@@ -60,12 +58,13 @@ class SimpleConfiguration(private val configFile: String) : Configuration {
 
     override fun transformKey(key: String): String {
         // Transform keys to only contain lowercase letters, numbers, periods and underscores.
-        return key.map { char ->
-            when {
-                char.isLetterOrDigit() -> char.lowercaseChar()
-                char == '.' || char == '_' -> char
-                else -> '_'
-            }
-        }.joinToString("")
+        return key
+            .map { char ->
+                when {
+                    char.isLetterOrDigit() -> char.lowercaseChar()
+                    char == '.' || char == '_' -> char
+                    else -> '_'
+                }
+            }.joinToString("")
     }
 }

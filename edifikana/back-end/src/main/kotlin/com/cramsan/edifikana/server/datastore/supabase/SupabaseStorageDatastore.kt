@@ -11,52 +11,52 @@ import kotlin.time.Duration.Companion.minutes
 /**
  * Datastore for managing storage of assets using Supabase.
  */
-class SupabaseStorageDatastore(
-    private val storage: Storage,
-) : StorageDatastore {
+class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore {
     /**
      * Uploads a new asset to storage with the given [fileName] and [content].
      */
     override suspend fun createAsset(
         fileName: String,
         content: ByteArray,
-    ): Result<Asset> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating a new asset: %s", fileName)
-        val bucket = storage.from("images/timecard-images")
-        bucket.upload(fileName, content) {
-            upsert = false
+    ): Result<Asset> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Creating a new asset: %s", fileName)
+            val bucket = storage.from("images/timecard-images")
+            bucket.upload(fileName, content) {
+                upsert = false
+            }
+            val assetId = generateAssetId(bucket.bucketId, fileName)
+            Asset(assetId, fileName, null, content)
         }
-        val assetId = generateAssetId(bucket.bucketId, fileName)
-        Asset(assetId, fileName, null, content)
-    }
 
     /**
      * Retrieves an asset by [id], including its signed download URL and content bytes.
      */
     override suspend fun getAsset(
         id: AssetId,
-    ): Result<Asset?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting assetId: %s", id)
-        // Extract the file's bucketId and file name from the assetId
-        val fileIdParts = extractFileIdPartsFromAssetId(id)
-        val bucketId = fileIdParts.dropLast(1).joinToString("/")
-        val fileName = fileIdParts.last()
+    ): Result<Asset?> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting assetId: %s", id)
+            // Extract the file's bucketId and file name from the assetId
+            val fileIdParts = extractFileIdPartsFromAssetId(id)
+            val bucketId = fileIdParts.dropLast(1).joinToString("/")
+            val fileName = fileIdParts.last()
 
-        // Download the file from the storage bucket
-        val bucket = storage.from(bucketId)
-        val signedUrl = bucket.createSignedUrl(fileName, expiresIn = 3.minutes)
-        val bytes = bucket.downloadAuthenticated(fileName)
+            // Download the file from the storage bucket
+            val bucket = storage.from(bucketId)
+            val signedUrl = bucket.createSignedUrl(fileName, expiresIn = 3.minutes)
+            val bytes = bucket.downloadAuthenticated(fileName)
 
-        // Create and return the Asset object
-        Asset(id, fileName, signedUrl, bytes)
-    }
+            // Create and return the Asset object
+            Asset(id, fileName, signedUrl, bytes)
+        }
 
     /**
      * Generates a unique asset ID based on the bucket name and file name.
      */
     private fun generateAssetId(
         bucketName: String,
-        fileName: String
+        fileName: String,
     ): AssetId {
         val assetId = "$bucketName/$fileName"
         return AssetId(assetId)
@@ -66,7 +66,7 @@ class SupabaseStorageDatastore(
      * Extracts the file name from the asset ID.
      */
     private fun extractFileIdPartsFromAssetId(
-        assetId: AssetId
+        assetId: AssetId,
     ): List<String> {
         val parts = assetId.assetId.split("/")
         return parts

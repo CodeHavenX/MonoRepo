@@ -20,36 +20,37 @@ import org.koin.dsl.module
 /**
  * Koin module that initializes the Supabase client and binds all service components.
  */
-internal val ServiceModule = module {
+internal val ServiceModule =
+    module {
 
-    single {
-        val settingsHolder: SettingsHolder = get()
-        val supabaseUrl = settingsHolder.getString(FlyerBoardSettingKey.SupabaseUrl).orEmpty().trim()
-        val supabaseKey = settingsHolder.getString(FlyerBoardSettingKey.SupabaseKey).orEmpty().trim()
+        single {
+            val settingsHolder: SettingsHolder = get()
+            val supabaseUrl = settingsHolder.getString(FlyerBoardSettingKey.SupabaseUrl).orEmpty().trim()
+            val supabaseKey = settingsHolder.getString(FlyerBoardSettingKey.SupabaseKey).orEmpty().trim()
 
-        createSupabaseClient(
-            supabaseUrl = supabaseUrl,
-            supabaseKey = supabaseKey,
-        ) {
-            install(Auth) {
-                sessionManager = SettingsSessionManager(key = "$supabaseUrl-flyerboard")
+            createSupabaseClient(
+                supabaseUrl = supabaseUrl,
+                supabaseKey = supabaseKey,
+            ) {
+                install(Auth) {
+                    sessionManager = SettingsSessionManager(key = "$supabaseUrl-flyerboard")
+                }
             }
         }
-    }
 
-    single<Auth> {
-        get<SupabaseClient>().auth
-    }
+        single<Auth> {
+            get<SupabaseClient>().auth
+        }
 
-    singleOf(::AuthServiceImpl) {
-        bind<AuthService>()
-    }
+        singleOf(::AuthServiceImpl) {
+            bind<AuthService>()
+        }
 
-    singleOf(::UserServiceImpl) {
-        bind<UserService>()
-    }
+        singleOf(::UserServiceImpl) {
+            bind<UserService>()
+        }
 
-    singleOf(::FlyerServiceImpl) {
-        bind<FlyerService>()
+        singleOf(::FlyerServiceImpl) {
+            bind<FlyerService>()
+        }
     }
-}

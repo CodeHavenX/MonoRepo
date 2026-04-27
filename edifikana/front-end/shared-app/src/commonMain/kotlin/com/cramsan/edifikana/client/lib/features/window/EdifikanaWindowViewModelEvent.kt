@@ -7,11 +7,8 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * triggered by a feature screen, and it will be handled by the window.
  */
 sealed class EdifikanaWindowViewModelEvent : ViewModelEvent {
-
     /**
      * Wrapper for [EdifikanaWindowsEvent] to be used in the view model.
      */
-    data class EdifikanaWindowEventWrapper(
-        val event: EdifikanaWindowsEvent,
-    ) : EdifikanaWindowViewModelEvent()
+    data class EdifikanaWindowEventWrapper(val event: EdifikanaWindowsEvent) : EdifikanaWindowViewModelEvent()
 }

@@ -14,10 +14,7 @@ import io.ktor.server.routing.Routing
  * Controller for the health check endpoint.
  */
 @OptIn(NetworkModel::class)
-class HealthController(
-    private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>,
-) : Controller {
-
+class HealthController(private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>) : Controller {
     override fun registerRoutes(route: Routing) {
         HealthApi.register(route) {
             unauthenticatedHandler(api.check, contextRetriever) { _ ->

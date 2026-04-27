@@ -9,8 +9,9 @@ import org.koin.dsl.module
 /**
  * Initialize and bind controllers used by the runasimi backend.
  */
-internal val ControllerModule = module {
-    singleOf(::RunasimiController) {
-        bind<Controller>()
+internal val ControllerModule =
+    module {
+        singleOf(::RunasimiController) {
+            bind<Controller>()
+        }
     }
-}

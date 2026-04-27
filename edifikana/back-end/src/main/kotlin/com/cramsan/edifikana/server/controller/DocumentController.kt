@@ -34,7 +34,6 @@ class DocumentController(
     private val rbacService: RBACService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -45,22 +44,24 @@ class DocumentController(
             CreateDocumentNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): DocumentNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.orgId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val document = documentService.createDocument(
-            orgId = request.requestBody.orgId,
-            propertyId = request.requestBody.propertyId,
-            unitId = request.requestBody.unitId,
-            filename = request.requestBody.filename,
-            mimeType = request.requestBody.mimeType,
-            documentType = request.requestBody.documentType,
-            assetId = request.requestBody.assetId,
-            createdBy = request.context.payload.userId,
-        ).toDocumentNetworkResponse()
+        val document =
+            documentService
+                .createDocument(
+                    orgId = request.requestBody.orgId,
+                    propertyId = request.requestBody.propertyId,
+                    unitId = request.requestBody.unitId,
+                    filename = request.requestBody.filename,
+                    mimeType = request.requestBody.mimeType,
+                    documentType = request.requestBody.documentType,
+                    assetId = request.requestBody.assetId,
+                    createdBy = request.context.payload.userId,
+                ).toDocumentNetworkResponse()
         return document
     }
 
@@ -72,8 +73,8 @@ class DocumentController(
             NoRequestBody,
             NoQueryParam,
             DocumentId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): DocumentNetworkResponse? {
         val documentId = request.pathParam
         if (!rbacService.hasRoleOrHigher(request.context, documentId, UserRole.EMPLOYEE)) {
@@ -91,17 +92,19 @@ class DocumentController(
             NoRequestBody,
             GetDocumentsQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): DocumentListNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.queryParam.orgId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val documents = documentService.getDocuments(
-            orgId = request.queryParam.orgId,
-            propertyId = request.queryParam.propertyId,
-            unitId = request.queryParam.unitId,
-        ).map { it.toDocumentNetworkResponse() }
+        val documents =
+            documentService
+                .getDocuments(
+                    orgId = request.queryParam.orgId,
+                    propertyId = request.queryParam.propertyId,
+                    unitId = request.queryParam.unitId,
+                ).map { it.toDocumentNetworkResponse() }
         return DocumentListNetworkResponse(documents)
     }
 
@@ -113,17 +116,18 @@ class DocumentController(
             UpdateDocumentNetworkRequest,
             NoQueryParam,
             DocumentId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): DocumentNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return documentService.updateDocument(
-            documentId = request.pathParam,
-            filename = request.requestBody.filename,
-            documentType = request.requestBody.documentType,
-        ).toDocumentNetworkResponse()
+        return documentService
+            .updateDocument(
+                documentId = request.pathParam,
+                filename = request.requestBody.filename,
+                documentType = request.requestBody.documentType,
+            ).toDocumentNetworkResponse()
     }
 
     /**
@@ -134,8 +138,8 @@ class DocumentController(
             NoRequestBody,
             NoQueryParam,
             DocumentId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): NoResponseBody {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)

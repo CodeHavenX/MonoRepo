@@ -43,7 +43,8 @@ fun EdifikanaListItem(
     imageUrl: String? = null,
 ) {
     Row(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(vertical = 12.dp),
@@ -62,12 +63,14 @@ fun EdifikanaListItem(
                     contentScale = ContentScale.Crop,
                 )
             }
+
             icon != null -> {
                 // Icon for events
                 Icon(
                     imageVector = icon,
                     contentDescription = title,
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .size(40.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceContainerHighest)

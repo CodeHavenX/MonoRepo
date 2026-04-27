@@ -24,7 +24,6 @@ class SignUpViewModel(
     private val auth: AuthManager,
     private val stringProvider: StringProvider,
 ) : BaseViewModel<SignUpEvent, SignUpUIState>(dependencies, SignUpUIState.Initial, TAG) {
-
     /**
      * Initialize the page.
      */
@@ -34,7 +33,7 @@ class SignUpViewModel(
             updateUiState {
                 it.copy(
                     email = destination.userEmail,
-                    errorMessages = emptyList()
+                    errorMessages = emptyList(),
                 )
             }
         }
@@ -48,7 +47,7 @@ class SignUpViewModel(
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    email = username
+                    email = username,
                 )
             }
         }
@@ -62,7 +61,7 @@ class SignUpViewModel(
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    phoneNumber = username
+                    phoneNumber = username,
                 )
             }
         }
@@ -76,7 +75,7 @@ class SignUpViewModel(
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    firstName = firstName
+                    firstName = firstName,
                 )
             }
         }
@@ -90,7 +89,7 @@ class SignUpViewModel(
         viewModelScope.launch {
             updateUiState {
                 it.copy(
-                    lastName = lastName
+                    lastName = lastName,
                 )
             }
         }
@@ -102,7 +101,7 @@ class SignUpViewModel(
     fun navigateBack() {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }
@@ -119,16 +118,17 @@ class SignUpViewModel(
             val email = uiState.value.email.trim()
             val phoneNumber = uiState.value.phoneNumber.trim()
 
-            val errorMessages = listOf(
-                validateName(firstName, lastName),
-                validateEmail(email),
-                validatePhoneNumber(phoneNumber),
-            ).flatten()
+            val errorMessages =
+                listOf(
+                    validateName(firstName, lastName),
+                    validateEmail(email),
+                    validatePhoneNumber(phoneNumber),
+                ).flatten()
 
             if (errorMessages.isNotEmpty()) {
                 updateUiState {
                     it.copy(
-                        errorMessages = errorMessages
+                        errorMessages = errorMessages,
                     )
                 }
                 return@launch
@@ -136,29 +136,31 @@ class SignUpViewModel(
 
             updateUiState { it.copy(isLoading = true) }
 
-            val user = auth.signUp(
-                email = email,
-                phoneNumber = phoneNumber,
-                firstName = firstName,
-                lastName = lastName,
-            ).getOrElse { exception ->
-                logD(TAG, "Error signing up: $exception")
-                updateUiState {
-                    it.copy(
-                        isLoading = false,
-                        errorMessages = listOf(getErrorMessage(exception))
-                    )
-                }
+            val user =
+                auth
+                    .signUp(
+                        email = email,
+                        phoneNumber = phoneNumber,
+                        firstName = firstName,
+                        lastName = lastName,
+                    ).getOrElse { exception ->
+                        logD(TAG, "Error signing up: $exception")
+                        updateUiState {
+                            it.copy(
+                                isLoading = false,
+                                errorMessages = listOf(getErrorMessage(exception)),
+                            )
+                        }
 
-                return@launch
-            }
+                        return@launch
+                    }
 
             logD(TAG, "User signed up: $user")
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AuthDestination.ValidationDestination(email, accountCreationFlow = true),
                     clearTop = true,
-                )
+                ),
             )
         }
     }
@@ -186,11 +188,14 @@ class SignUpViewModel(
      */
     private suspend fun getErrorMessage(exception: Throwable): String {
         return when (exception) {
-            is ClientRequestExceptions.ConflictException ->
+            is ClientRequestExceptions.ConflictException -> {
                 "This email is already registered. You can reset your " +
                     "password or use another email."
+            }
 
-            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
+            else -> {
+                stringProvider.getString(Res.string.error_message_unexpected_error)
+            }
         }
     }
 }

@@ -8,7 +8,6 @@ import kotlinx.coroutines.test.TestScope
  * to provide the right approach for each one of them.
  */
 expect abstract class CoroutineTest() {
-
     /**
      * Reference to the Scope used to run the tests. This scope can be injected into
      * classes as well.
@@ -25,7 +24,7 @@ expect abstract class CoroutineTest() {
 
     @Deprecated(
         message = "Use runCoroutineTest instead",
-        replaceWith = ReplaceWith("runCoroutineTest(block)")
+        replaceWith = ReplaceWith("runCoroutineTest(block)"),
     )
     fun runBlockingTest(block: suspend TestScope.() -> Unit)
 }

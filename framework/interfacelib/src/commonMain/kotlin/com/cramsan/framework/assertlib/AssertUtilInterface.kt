@@ -10,7 +10,6 @@ import com.cramsan.framework.logging.EventLoggerInterface
  * then [haltUtil] needs to be non-null.
  */
 interface AssertUtilInterface {
-
     /**
      * If true, then when [assert] is called with a false condition, the current thread will be halted.
      */

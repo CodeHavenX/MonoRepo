@@ -32,17 +32,13 @@ import kotlinx.serialization.serializer
  * Utility object to handle the registration and handling of API operations within Ktor routing.
  */
 object OperationHandler {
-
     /**
      * Builder class to hold the API and the corresponding route for registration.
      *
      * @param api The API instance being registered.
      * @param route The Ktor route associated with the API.
      */
-    data class RegistrationBuilder<T : Api>(
-        val api: T,
-        val route: Route,
-    )
+    data class RegistrationBuilder<T : Api>(val api: T, val route: Route)
 
     /**
      * Registers the routes for the given API within the provided Ktor routing context.
@@ -54,10 +50,11 @@ object OperationHandler {
      */
     fun <T : Api> T.register(route: Routing, build: RegistrationBuilder<T>.() -> Unit) {
         route.route(this.path) {
-            val builder = RegistrationBuilder(
-                api = this@register,
-                route = this, // this route is the inner route with the api path
-            )
+            val builder =
+                RegistrationBuilder(
+                    api = this@register,
+                    route = this, // this route is the inner route with the api path
+                )
             builder.build()
         }
     }
@@ -79,15 +76,14 @@ object OperationHandler {
         PathParamType : PathParam,
         ResponseType : ResponseBody,
         P,
-        C : ClientContext<P>
-        >
-        Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
-            route: Route,
-            contextRetriever: suspend ApplicationCall.() -> C,
-            handler: suspend ApplicationCall.(
-                OperationRequest<RequestType, QueryParamType, PathParamType, C>
-            ) -> HttpResponse<ResponseType>,
-        ) {
+        C : ClientContext<P>,
+        > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
+        route: Route,
+        contextRetriever: suspend ApplicationCall.() -> C,
+        handler: suspend ApplicationCall.(
+            OperationRequest<RequestType, QueryParamType, PathParamType, C>,
+        ) -> HttpResponse<ResponseType>,
+    ) {
         this.handleImpl(route, contextRetriever) { request ->
             handler(request)
         }
@@ -113,14 +109,13 @@ object OperationHandler {
         ResponseType : ResponseBody,
         P,
         Context : ClientContext<P>,
-        >
-        Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handleImpl(
-            route: Route,
-            contextRetriever: suspend (ApplicationCall) -> Context,
-            block: suspend ApplicationCall.(
-                OperationRequest<RequestType, QueryParamType, PathParamType, Context>,
-            ) -> HttpResponse<ResponseType>,
-        ) {
+        > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handleImpl(
+        route: Route,
+        contextRetriever: suspend (ApplicationCall) -> Context,
+        block: suspend ApplicationCall.(
+            OperationRequest<RequestType, QueryParamType, PathParamType, Context>,
+        ) -> HttpResponse<ResponseType>,
+    ) {
         val handler = this.toOperationHandler()
         route.route(handler.path, handler.method) {
             handle {
@@ -129,14 +124,16 @@ object OperationHandler {
                     message = "Handling operation %s",
                     this.call.request.uri,
                 )
-                val contextResult = runCatching {
-                    contextRetriever(call)
-                }
+                val contextResult =
+                    runCatching {
+                        contextRetriever(call)
+                    }
                 if (contextResult.isFailure) {
                     call.validateClientError(
                         tag = TAG,
-                        exception = ClientRequestExceptions.UnauthorizedException(
-                            "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}"
+                        exception =
+                        ClientRequestExceptions.UnauthorizedException(
+                            "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}",
                         ),
                     )
                     return@handle
@@ -162,26 +159,33 @@ object OperationHandler {
                 val queryParams = queryParamResult.getOrThrow()
 
                 val context = contextResult.getOrThrow()
-                val body = if (handler.requestBodyType == NoRequestBody::class) {
-                    NoRequestBody as RequestType
-                } else if (handler.requestBodyType == BytesRequestBody::class) {
-                    BytesRequestBody(call.receive<ByteArray>()) as RequestType
-                } else {
-                    call.receive(handler.requestBodyType)
-                }
-
-                val responseResult = runCatching {
-                    call.run {
-                        val operationRequest: OperationRequest<RequestType, QueryParamType, PathParamType, Context> =
-                            OperationRequest(
-                                requestBody = body,
-                                queryParam = queryParams,
-                                pathParam = param,
-                                context = context,
-                            )
-                        block(operationRequest)
+                val body =
+                    if (handler.requestBodyType == NoRequestBody::class) {
+                        NoRequestBody as RequestType
+                    } else if (handler.requestBodyType == BytesRequestBody::class) {
+                        BytesRequestBody(call.receive<ByteArray>()) as RequestType
+                    } else {
+                        call.receive(handler.requestBodyType)
                     }
-                }
+
+                val responseResult =
+                    runCatching {
+                        call.run {
+                            val operationRequest: OperationRequest<
+                                RequestType,
+                                QueryParamType,
+                                PathParamType,
+                                Context,
+                                > =
+                                OperationRequest(
+                                    requestBody = body,
+                                    queryParam = queryParams,
+                                    pathParam = param,
+                                    context = context,
+                                )
+                            block(operationRequest)
+                        }
+                    }
 
                 if (responseResult.isFailure) {
                     call.validateClientError(
@@ -212,20 +216,21 @@ private fun <
     > getPathParam(
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
     call: RoutingCall,
-): Result<PathParamType> = runCatching {
-    val paramString = handler.param
-    if (paramString == null && handler.pathParamType.isInstance(NoPathParam)) {
-        NoPathParam as PathParamType
-    } else if (paramString != null && !handler.pathParamType.isInstance(NoPathParam)) {
-        val resolvedParam = call.parameters[paramString]
-        if (resolvedParam.isNullOrBlank()) {
-            throw ClientRequestExceptions.InvalidRequestException("Missing path parameter.")
+): Result<PathParamType> =
+    runCatching {
+        val paramString = handler.param
+        if (paramString == null && handler.pathParamType.isInstance(NoPathParam)) {
+            NoPathParam as PathParamType
+        } else if (paramString != null && !handler.pathParamType.isInstance(NoPathParam)) {
+            val resolvedParam = call.parameters[paramString]
+            if (resolvedParam.isNullOrBlank()) {
+                throw ClientRequestExceptions.InvalidRequestException("Missing path parameter.")
+            }
+            decodeFromValue(handler.pathParamType.serializer(), resolvedParam) as PathParamType
+        } else {
+            TODO()
         }
-        decodeFromValue(handler.pathParamType.serializer(), resolvedParam) as PathParamType
-    } else {
-        TODO()
     }
-}
 
 @OptIn(InternalSerializationApi::class)
 private fun <
@@ -236,19 +241,21 @@ private fun <
     > getQueryParam(
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
     call: RoutingCall,
-): Result<QueryParamType> = runCatching {
-    if (handler.queryParamType == NoQueryParam::class) {
-        NoQueryParam
-    } else {
-        val queryParamResult = runCatching {
-            decodeFromQueryParams(handler.queryParamType.serializer(), call.request.queryParameters)
-        }
-        if (queryParamResult.isFailure) {
-            throw ClientRequestExceptions.InvalidRequestException("Invalid query parameters")
+): Result<QueryParamType> =
+    runCatching {
+        if (handler.queryParamType == NoQueryParam::class) {
+            NoQueryParam
         } else {
-            queryParamResult.getOrThrow()
-        }
-    } as QueryParamType
-}
+            val queryParamResult =
+                runCatching {
+                    decodeFromQueryParams(handler.queryParamType.serializer(), call.request.queryParameters)
+                }
+            if (queryParamResult.isFailure) {
+                throw ClientRequestExceptions.InvalidRequestException("Invalid query parameters")
+            } else {
+                queryParamResult.getOrThrow()
+            }
+        } as QueryParamType
+    }
 
 private const val TAG = "OperationHandler"

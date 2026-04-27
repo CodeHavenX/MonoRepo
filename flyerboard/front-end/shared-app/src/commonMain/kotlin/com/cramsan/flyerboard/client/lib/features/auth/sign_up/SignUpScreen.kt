@@ -76,7 +76,8 @@ internal fun SignUpContent(
                         value = uiState.email,
                         onValueChange = onEmailChanged,
                         label = { Text(stringResource(Res.string.sign_up_screen_label_email)) },
-                        keyboardOptions = KeyboardOptions(
+                        keyboardOptions =
+                        KeyboardOptions(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next,
                         ),
@@ -88,7 +89,8 @@ internal fun SignUpContent(
                         onValueChange = onPasswordChanged,
                         label = { Text(stringResource(Res.string.sign_up_screen_label_password)) },
                         visualTransformation = PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(
+                        keyboardOptions =
+                        KeyboardOptions(
                             keyboardType = KeyboardType.Password,
                             imeAction = ImeAction.Done,
                         ),

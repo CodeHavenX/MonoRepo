@@ -1,15 +1,14 @@
 package com.cramsan.edifikana.server.datastore
 
+import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.server.service.models.Organization
 
 /**
  * Interface for interacting with the organization database.
  */
 interface OrganizationDatastore {
-
     /**
      * Create a new organization.
      *
@@ -38,7 +37,7 @@ interface OrganizationDatastore {
     suspend fun updateOrganization(
         id: OrganizationId,
         name: String?,
-        description: String?
+        description: String?,
     ): Result<Organization>
 
     /**

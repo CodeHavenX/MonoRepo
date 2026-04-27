@@ -14,68 +14,69 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun ContentSectionPreview() = MaterialTheme {
-    ContentSection { sectionModifier ->
-        OutlinedTextField(
-            value = "Value",
-            onValueChange = {},
-            label = { Text("Label") },
-            modifier = sectionModifier,
-        )
-        HorizontalDivider(sectionModifier)
-        OutlinedTextField(
-            value = "Value",
-            onValueChange = {},
-            label = { Text("Label") },
-            modifier = sectionModifier,
-        )
-        OutlinedTextField(
-            value = "Value",
-            onValueChange = {},
-            label = { Text("Label") },
-            modifier = sectionModifier,
-        )
-        HorizontalDivider(sectionModifier)
-        ListCell(
-            modifier = sectionModifier,
-            onSelection = null,
-            startSlot = {
-                Text("Start")
-            },
-            endSlot = {
-                Text("End")
-            },
-            content = {
-                Text("Content")
-            },
-        )
-        ListCell(
-            modifier = sectionModifier,
-            onSelection = null,
-            startSlot = {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "",
-                )
-            },
-            endSlot = {
-                Icon(
-                    imageVector = Icons.Default.ChevronRight,
-                    contentDescription = "",
-                )
-            },
-            content = {
-                Column {
-                    Text(
-                        "This is a title",
-                        style = MaterialTheme.typography.labelLarge,
+private fun ContentSectionPreview() =
+    MaterialTheme {
+        ContentSection { sectionModifier ->
+            OutlinedTextField(
+                value = "Value",
+                onValueChange = {},
+                label = { Text("Label") },
+                modifier = sectionModifier,
+            )
+            HorizontalDivider(sectionModifier)
+            OutlinedTextField(
+                value = "Value",
+                onValueChange = {},
+                label = { Text("Label") },
+                modifier = sectionModifier,
+            )
+            OutlinedTextField(
+                value = "Value",
+                onValueChange = {},
+                label = { Text("Label") },
+                modifier = sectionModifier,
+            )
+            HorizontalDivider(sectionModifier)
+            ListCell(
+                modifier = sectionModifier,
+                onSelection = null,
+                startSlot = {
+                    Text("Start")
+                },
+                endSlot = {
+                    Text("End")
+                },
+                content = {
+                    Text("Content")
+                },
+            )
+            ListCell(
+                modifier = sectionModifier,
+                onSelection = null,
+                startSlot = {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "",
                     )
-                    Text(
-                        "This is a subtitle with a longer text",
-                        style = MaterialTheme.typography.labelSmall,
+                },
+                endSlot = {
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = "",
                     )
-                }
-            },
-        )
+                },
+                content = {
+                    Column {
+                        Text(
+                            "This is a title",
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                        Text(
+                            "This is a subtitle with a longer text",
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    }
+                },
+            )
+        }
     }
-}

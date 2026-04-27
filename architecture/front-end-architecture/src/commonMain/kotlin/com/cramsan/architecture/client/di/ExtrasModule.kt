@@ -31,75 +31,76 @@ import kotlin.time.ExperimentalTime
  * string providers, settings holders, event buses, and view model dependencies.
  */
 @OptIn(ExperimentalTime::class)
-internal val ExtrasModule = module {
+internal val ExtrasModule =
+    module {
 
-    single<Clock>(createdAtStart = true) {
-        Chronos.initializeClock(clock = Clock.System)
-        Chronos.clock()
-    }
-
-    single {
-        CoroutineExceptionHandler { _, throwable ->
-            logE("CoroutineExceptionHandler", "Uncaught Exception", throwable)
+        single<Clock>(createdAtStart = true) {
+            Chronos.initializeClock(clock = Clock.System)
+            Chronos.clock()
         }
-    }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    single<CoroutineScope> { GlobalScope }
+        single {
+            CoroutineExceptionHandler { _, throwable ->
+                logE("CoroutineExceptionHandler", "Uncaught Exception", throwable)
+            }
+        }
 
-    singleOf(::ComposeStringProvider) {
-        bind<StringProvider>()
-    }
+        @OptIn(DelicateCoroutinesApi::class)
+        single<CoroutineScope> { GlobalScope }
 
-    single {
-        SettingsHolder(get())
-    }
+        singleOf(::ComposeStringProvider) {
+            bind<StringProvider>()
+        }
 
-    single { ManagerDependencies(get(), get()) }
+        single {
+            SettingsHolder(get())
+        }
 
-    single(named(ApplicationIdentifier.EVENT_BUS)) {
-        EventBus<ApplicationEvent>()
-    } withOptions {
-        bind<EventReceiver<ApplicationEvent>>()
-        bind<EventEmitter<ApplicationEvent>>()
-    }
+        single { ManagerDependencies(get(), get()) }
 
-    single(named(ApplicationIdentifier.WINDOW_EVENT_BUS)) {
-        InvalidEventBus<WindowEvent>()
-    } withOptions {
-        bind<EventReceiver<WindowEvent>>()
-        bind<EventEmitter<WindowEvent>>()
-    }
-
-    single(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)) {
-        ViewModelDependencies(
-            get(),
-            get(),
-            get(),
-            get(named(ApplicationIdentifier.WINDOW_EVENT_BUS)),
-            get(named(ApplicationIdentifier.EVENT_BUS)),
-        )
-    }
-
-    scope<String> {
-        scoped(named(WindowIdentifier.EVENT_BUS)) {
-            EventBus<WindowEvent>()
+        single(named(ApplicationIdentifier.EVENT_BUS)) {
+            EventBus<ApplicationEvent>()
         } withOptions {
-            bind<EventEmitter<WindowEvent>>()
-            bind<EventReceiver<WindowEvent>>()
+            bind<EventReceiver<ApplicationEvent>>()
+            bind<EventEmitter<ApplicationEvent>>()
         }
 
-        scoped {
+        single(named(ApplicationIdentifier.WINDOW_EVENT_BUS)) {
+            InvalidEventBus<WindowEvent>()
+        } withOptions {
+            bind<EventReceiver<WindowEvent>>()
+            bind<EventEmitter<WindowEvent>>()
+        }
+
+        single(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)) {
             ViewModelDependencies(
                 get(),
                 get(),
                 get(),
-                get(named(WindowIdentifier.EVENT_BUS)),
+                get(named(ApplicationIdentifier.WINDOW_EVENT_BUS)),
                 get(named(ApplicationIdentifier.EVENT_BUS)),
             )
         }
+
+        scope<String> {
+            scoped(named(WindowIdentifier.EVENT_BUS)) {
+                EventBus<WindowEvent>()
+            } withOptions {
+                bind<EventEmitter<WindowEvent>>()
+                bind<EventReceiver<WindowEvent>>()
+            }
+
+            scoped {
+                ViewModelDependencies(
+                    get(),
+                    get(),
+                    get(),
+                    get(named(WindowIdentifier.EVENT_BUS)),
+                    get(named(ApplicationIdentifier.EVENT_BUS)),
+                )
+            }
+        }
     }
-}
 
 /**
  * Identifiers for various window-level components.

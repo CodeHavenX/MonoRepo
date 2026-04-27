@@ -20,9 +20,8 @@ class EdifikanaWindowViewModel(
 ) : BaseViewModel<EdifikanaWindowViewModelEvent, EdifikanaWindowUIState>(
     dependencies,
     EdifikanaWindowUIState,
-    TAG
+    TAG,
 ) {
-
     /**
      * Initialize the view model and all required state for the entire application.
      */
@@ -33,8 +32,8 @@ class EdifikanaWindowViewModel(
                 logI(TAG, "Window event received: $event")
                 emitEvent(
                     EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(
-                        event as EdifikanaWindowsEvent
-                    )
+                        event as EdifikanaWindowsEvent,
+                    ),
                 )
             }
         }
@@ -43,26 +42,28 @@ class EdifikanaWindowViewModel(
     /**
      * Handle received image.
      */
-    fun handleReceivedImage(uri: CoreUri?) = viewModelScope.launch {
-        if (uri == null) {
-            logI(TAG, "Uri was null.")
-        } else {
-            logI(TAG, "Uri was received: $uri")
-            delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleReceivedImage(uri))
+    fun handleReceivedImage(uri: CoreUri?) =
+        viewModelScope.launch {
+            if (uri == null) {
+                logI(TAG, "Uri was null.")
+            } else {
+                logI(TAG, "Uri was received: $uri")
+                delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleReceivedImage(uri))
+            }
         }
-    }
 
     /**
      * Handle received images.
      */
-    fun handleReceivedImages(uris: List<CoreUri>) = viewModelScope.launch {
-        if (uris.isEmpty()) {
-            logI(TAG, "Uri list is empty.")
-        } else {
-            logI(TAG, "Uri list received with ${uris.count()} elements.")
-            delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleReceivedImages(uris))
+    fun handleReceivedImages(uris: List<CoreUri>) =
+        viewModelScope.launch {
+            if (uris.isEmpty()) {
+                logI(TAG, "Uri list is empty.")
+            } else {
+                logI(TAG, "Uri list received with ${uris.count()} elements.")
+                delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleReceivedImages(uris))
+            }
         }
-    }
 
     /**
      * Handle snackbar result and emits it as a delegated event. Any observer can then consume this event.

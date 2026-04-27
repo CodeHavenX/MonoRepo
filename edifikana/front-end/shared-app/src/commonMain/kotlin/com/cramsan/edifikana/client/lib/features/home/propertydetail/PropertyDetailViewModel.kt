@@ -31,14 +31,14 @@ class PropertyDetailViewModel(
     PropertyDetailUIState.Initial,
     TAG,
 ) {
-
     /**
      * Initialize the ViewModel with the property ID.
      */
     fun initialize(propertyId: PropertyId) {
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true, propertyId = propertyId) }
-            propertyManager.getProperty(propertyId)
+            propertyManager
+                .getProperty(propertyId)
                 .onSuccess { property ->
                     updateUiState {
                         it.copy(
@@ -48,13 +48,12 @@ class PropertyDetailViewModel(
                             imageUrl = property.imageUrl,
                         )
                     }
-                }
-                .onFailure { throwable ->
+                }.onFailure { throwable ->
                     updateUiState { it.copy(isLoading = false) }
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to load property: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to load property: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
                 }
         }
@@ -90,7 +89,8 @@ class PropertyDetailViewModel(
         viewModelScope.launch {
             val propertyId = uiState.value.propertyId ?: return@launch
             updateUiState { it.copy(isLoading = true, isEditMode = false) }
-            propertyManager.getProperty(propertyId)
+            propertyManager
+                .getProperty(propertyId)
                 .onSuccess { property ->
                     updateUiState {
                         it.copy(
@@ -101,8 +101,7 @@ class PropertyDetailViewModel(
                             imageUrl = property.imageUrl,
                         )
                     }
-                }
-                .onFailure {
+                }.onFailure {
                     updateUiState { it.copy(isLoading = false) }
                 }
         }
@@ -148,17 +147,17 @@ class PropertyDetailViewModel(
             val uri = uris.first()
             logI(TAG, "Validating and previewing image")
 
-            storageManager.validateAndPrepareImagePreview(uri)
+            storageManager
+                .validateAndPrepareImagePreview(uri)
                 .onSuccess { previewIcon ->
                     logI(TAG, "Validation successful, showing local preview")
                     updateUiState {
                         it.copy(
                             selectedIcon = previewIcon,
-                            uploadError = null
+                            uploadError = null,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     logE(TAG, "Validation failed: ${error.message}", error)
                     val message = error.message ?: "Failed to validate image"
                     updateUiState { it.copy(uploadError = message, selectedIcon = null) }
@@ -176,7 +175,6 @@ class PropertyDetailViewModel(
         }
     }
 
-
     /**
      * Handle image option selection from the bottom sheet.
      * If "custom_upload" is selected, trigger the photo picker.
@@ -190,7 +188,7 @@ class PropertyDetailViewModel(
                 updateUiState {
                     it.copy(
                         selectedIcon = option,
-                        uploadError = null
+                        uploadError = null,
                     )
                 }
             }
@@ -207,40 +205,44 @@ class PropertyDetailViewModel(
             val propertyId = state.propertyId ?: return@launch
 
             // Extract URI if user selected a custom local file
-            val imageUri = if (state.selectedIcon?.id == "custom_local" &&
-                state.selectedIcon.imageSource is ImageSource.LocalFile
-            ) {
-                (state.selectedIcon.imageSource as ImageSource.LocalFile).uri
-            } else {
-                null
-            }
+            val imageUri =
+                if (state.selectedIcon?.id == "custom_local" &&
+                    state.selectedIcon.imageSource is ImageSource.LocalFile
+                ) {
+                    (state.selectedIcon.imageSource as ImageSource.LocalFile).uri
+                } else {
+                    null
+                }
 
             // Use imageUrl from state if no custom upload
-            val imageUrl = if (imageUri == null)
-                "drawable:${state.selectedIcon?.id}"
-            else
-                null
+            val imageUrl =
+                if (imageUri == null) {
+                    "drawable:${state.selectedIcon?.id}"
+                } else {
+                    null
+                }
 
             // Set loading states - isUploading only if we have a custom image
             updateUiState {
                 it.copy(
                     isLoading = true,
-                    isUploading = imageUri != null
+                    isUploading = imageUri != null,
                 )
             }
 
             // Call PropertyManager with either imageUrl or imageUri
-            propertyManager.updateProperty(propertyId, state.name, state.address, imageUrl, imageUri)
+            propertyManager
+                .updateProperty(propertyId, state.name, state.address, imageUrl, imageUri)
                 .onSuccess {
                     updateUiState { it.copy(isLoading = false, isUploading = false, isEditMode = false) }
-                    val message = if (imageUri != null) {
-                        "Property updated with custom image"
-                    } else {
-                        "Property updated successfully"
-                    }
+                    val message =
+                        if (imageUri != null) {
+                            "Property updated with custom image"
+                        } else {
+                            "Property updated successfully"
+                        }
                     emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     logE(TAG, "Failed to update property", error)
                     val message = getUploadErrorMessage(error)
                     updateUiState { it.copy(isLoading = false, isUploading = false, uploadError = message) }
@@ -257,19 +259,19 @@ class PropertyDetailViewModel(
             val propertyId = uiState.value.propertyId ?: return@launch
 
             updateUiState { it.copy(isLoading = true) }
-            propertyManager.removeProperty(propertyId)
+            propertyManager
+                .removeProperty(propertyId)
                 .onSuccess {
                     emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar("Property deleted successfully")
+                        EdifikanaWindowsEvent.ShowSnackbar("Property deleted successfully"),
                     )
                     emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
-                }
-                .onFailure { throwable ->
+                }.onFailure { throwable ->
                     updateUiState { it.copy(isLoading = false) }
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to delete property: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to delete property: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
                 }
         }
@@ -280,19 +282,25 @@ class PropertyDetailViewModel(
      */
     private suspend fun getUploadErrorMessage(exception: Throwable): String {
         return when (exception) {
-            is ClientRequestExceptions.UnauthorizedException ->
+            is ClientRequestExceptions.UnauthorizedException -> {
                 "Authentication failed. Please sign in again."
+            }
 
-            is ClientRequestExceptions.ForbiddenException ->
+            is ClientRequestExceptions.ForbiddenException -> {
                 "You don't have permission to upload files."
+            }
 
-            is ClientRequestExceptions.InvalidRequestException ->
+            is ClientRequestExceptions.InvalidRequestException -> {
                 "Invalid file. ${exception.message}"
+            }
 
-            is ClientRequestExceptions.ConflictException ->
+            is ClientRequestExceptions.ConflictException -> {
                 "A file with this name already exists."
+            }
 
-            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
+            else -> {
+                stringProvider.getString(Res.string.error_message_unexpected_error)
+            }
         }
     }
 

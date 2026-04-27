@@ -4,7 +4,6 @@ package com.cramsan.edifikana.client.lib.features.window
  * Events that can be triggered application-wide.
  */
 interface EdifikanaMainScreenEventHandler {
-
     /**
      * Open the camera.
      */

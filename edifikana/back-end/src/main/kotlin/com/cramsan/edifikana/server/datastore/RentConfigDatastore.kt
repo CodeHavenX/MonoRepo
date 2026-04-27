@@ -9,7 +9,6 @@ import com.cramsan.edifikana.server.service.models.RentConfig
  * Interface for the rent configuration datastore.
  */
 interface RentConfigDatastore {
-
     /**
      * Retrieves the active rent configuration for [unitId]. Returns null if none exists.
      */

@@ -6,13 +6,12 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 
 actual abstract class CoroutineTest {
-
     actual val testCoroutineDispatcher: TestDispatcher = UnconfinedTestDispatcher()
     private val _testCoroutineScope = TestScope(testCoroutineDispatcher)
 
     @Deprecated(
         message = "Use runCoroutineTest instead",
-        replaceWith = ReplaceWith(expression = "runCoroutineTest(block)")
+        replaceWith = ReplaceWith(expression = "runCoroutineTest(block)"),
     )
     actual fun runBlockingTest(block: suspend TestScope.() -> Unit) = runCoroutineTest(block)
 

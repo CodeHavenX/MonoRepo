@@ -28,7 +28,6 @@ class UserService(
     private val membershipDatastore: MembershipDatastore,
     private val clock: Clock,
 ) {
-
     /**
      * Creates a user with the provided information.
      */
@@ -41,14 +40,15 @@ class UserService(
     ): Result<User> {
         logD(TAG, "createUser")
         val isTransient = password.isNullOrBlank()
-        val result = userDatastore.createUser(
-            email,
-            phoneNumber,
-            password,
-            firstName,
-            lastName,
-            isTransient
-        )
+        val result =
+            userDatastore.createUser(
+                email,
+                phoneNumber,
+                password,
+                firstName,
+                lastName,
+                isTransient,
+            )
 
         if (!isTransient) {
             val user = result.getOrThrow()
@@ -70,10 +70,11 @@ class UserService(
         email: String,
     ): Result<User> {
         logD(TAG, "associateUser")
-        val result = userDatastore.associateUser(
-            userId = id,
-            email = email
-        )
+        val result =
+            userDatastore.associateUser(
+                userId = id,
+                email = email,
+            )
 
         if (result.isSuccess) {
             val user = result.getOrThrow()
@@ -145,39 +146,50 @@ class UserService(
         email: String,
         organizationId: OrganizationId,
         role: InviteRole,
-    ): Result<Unit> = runCatching {
-        logD(TAG, "inviteUser with role: $role")
-        if (role == InviteRole.RESIDENT) {
-            throw ClientRequestExceptions.InvalidRequestException(
-                "Residents must be invited from a unit. Please use the 'Invite Resident' option on the unit page."
-            )
-        }
-        val userId = userDatastore.getUser(email).getOrNull()?.id
-        val organization = organizationDatastore.getOrganization(organizationId).getOrNull()
-            ?: throw ClientRequestExceptions.NotFoundException("Organization not found")
+    ): Result<Unit> =
+        runCatching {
+            logD(TAG, "inviteUser with role: $role")
+            if (role == InviteRole.RESIDENT) {
+                throw ClientRequestExceptions.InvalidRequestException(
+                    "Residents must be invited from a unit. Please use the 'Invite Resident' option on the unit page.",
+                )
+            }
+            val userId = userDatastore.getUser(email).getOrNull()?.id
+            val organization =
+                organizationDatastore.getOrganization(organizationId).getOrNull()
+                    ?: throw ClientRequestExceptions.NotFoundException("Organization not found")
 
-        val invite = membershipDatastore.createInvite(
-            email,
-            organizationId,
-            expiration = clock.now() + 14.days,
-            role = role,
-            inviteCode = UUID.random().replace("-", "").take(INVITE_CODE_LENGTH).uppercase(),
-        ).getOrThrow()
+            val invite =
+                membershipDatastore
+                    .createInvite(
+                        email,
+                        organizationId,
+                        expiration = clock.now() + 14.days,
+                        role = role,
+                        inviteCode =
+                        UUID
+                            .random()
+                            .replace("-", "")
+                            .take(INVITE_CODE_LENGTH)
+                            .uppercase(),
+                    ).getOrThrow()
 
-        // Create a notification for the invited user
-        // If user doesn't exist yet, store the email for later association when they sign up
-        val notificationResult = notificationDatastore.createNotification(
-            recipientUserId = userId,
-            recipientEmail = if (userId == null) email else null,
-            notificationType = NotificationType.INVITE,
-            description = "You have been invited to join ${organization.name}.",
-            inviteId = invite.id,
-        ).onFailure { e ->
-            logW(TAG, "Failed to create invite notification", e)
-            throw e
+            // Create a notification for the invited user
+            // If user doesn't exist yet, store the email for later association when they sign up
+            val notificationResult =
+                notificationDatastore
+                    .createNotification(
+                        recipientUserId = userId,
+                        recipientEmail = if (userId == null) email else null,
+                        notificationType = NotificationType.INVITE,
+                        description = "You have been invited to join ${organization.name}.",
+                        inviteId = invite.id,
+                    ).onFailure { e ->
+                        logW(TAG, "Failed to create invite notification", e)
+                        throw e
+                    }
+            logD(TAG, "Invite notification created: ${notificationResult.getOrThrow().id}")
         }
-        logD(TAG, "Invite notification created: ${notificationResult.getOrThrow().id}")
-    }
 
     /**
      * Retrieves all pending invites for the provided [organizationId].
@@ -206,46 +218,50 @@ class UserService(
     suspend fun acceptInvite(
         userId: UserId,
         inviteId: InviteId,
-    ): Result<Unit> = runCatching {
-        logD(TAG, "acceptInvite: $inviteId for user: $userId")
+    ): Result<Unit> =
+        runCatching {
+            logD(TAG, "acceptInvite: $inviteId for user: $userId")
 
-        // Get the invite
-        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
+            // Get the invite
+            val invite =
+                membershipDatastore.getInviteById(inviteId).getOrThrow()
+                    ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
 
-        // Verify invite is not expired
-        if (invite.expiration < clock.now()) {
-            throw ClientRequestExceptions.InvalidRequestException("Invite has expired")
+            // Verify invite is not expired
+            if (invite.expiration < clock.now()) {
+                throw ClientRequestExceptions.InvalidRequestException("Invite has expired")
+            }
+
+            // Verify the user email matches the invite email
+            val user =
+                userDatastore.getUser(userId).getOrThrow()
+                    ?: throw ClientRequestExceptions.NotFoundException("User not found")
+
+            if (user.email != invite.email) {
+                throw ClientRequestExceptions.ForbiddenException(
+                    "This invite is not for your email address",
+                )
+            }
+
+            // Add user to organization with the specified role.
+            // RESIDENT invites create a unit_occupants row instead of an org membership row.
+            // Resident invite acceptance is handled via a separate unit-scoped endpoint (see #451).
+            if (invite.role == InviteRole.RESIDENT) {
+                throw ClientRequestExceptions.InvalidRequestException(
+                    "This invite is for a unit. Please use the unit invite link to join as a resident.",
+                )
+            }
+            membershipDatastore.acceptInviteByCode(inviteId, userId).getOrThrow()
+
+            val notification =
+                notificationDatastore.getNotificationByInvite(inviteId).getOrThrow()
+                    ?: throw ClientRequestExceptions.NotFoundException("Invite notification not found")
+
+            // Delete the notification for the invited user
+            notificationDatastore.deleteNotification(notification.id).getOrThrow()
+
+            logD(TAG, "User $userId successfully joined organization ${invite.organizationId}")
         }
-
-        // Verify the user email matches the invite email
-        val user = userDatastore.getUser(userId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("User not found")
-
-        if (user.email != invite.email) {
-            throw ClientRequestExceptions.ForbiddenException(
-                "This invite is not for your email address"
-            )
-        }
-
-        // Add user to organization with the specified role.
-        // RESIDENT invites create a unit_occupants row instead of an org membership row.
-        // Resident invite acceptance is handled via a separate unit-scoped endpoint (see #451).
-        if (invite.role == InviteRole.RESIDENT) {
-            throw ClientRequestExceptions.InvalidRequestException(
-                "This invite is for a unit. Please use the unit invite link to join as a resident."
-            )
-        }
-        membershipDatastore.acceptInviteByCode(inviteId, userId).getOrThrow()
-
-        val notification = notificationDatastore.getNotificationByInvite(inviteId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Invite notification not found")
-
-        // Delete the notification for the invited user
-        notificationDatastore.deleteNotification(notification.id).getOrThrow()
-
-        logD(TAG, "User $userId successfully joined organization ${invite.organizationId}")
-    }
 
     /**
      * Declines an invitation by removing it from the system.
@@ -255,34 +271,38 @@ class UserService(
     suspend fun declineInvite(
         userId: UserId,
         inviteId: InviteId,
-    ): Result<Unit> = runCatching {
-        logD(TAG, "declineInvite: $inviteId for user: $userId")
+    ): Result<Unit> =
+        runCatching {
+            logD(TAG, "declineInvite: $inviteId for user: $userId")
 
-        // Get the invite to verify ownership
-        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
+            // Get the invite to verify ownership
+            val invite =
+                membershipDatastore.getInviteById(inviteId).getOrThrow()
+                    ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
 
-        // Verify the user email matches the invite email
-        val user = userDatastore.getUser(userId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("User not found")
+            // Verify the user email matches the invite email
+            val user =
+                userDatastore.getUser(userId).getOrThrow()
+                    ?: throw ClientRequestExceptions.NotFoundException("User not found")
 
-        if (user.email != invite.email) {
-            throw ClientRequestExceptions.ForbiddenException(
-                "This invite is not for your email address"
-            )
+            if (user.email != invite.email) {
+                throw ClientRequestExceptions.ForbiddenException(
+                    "This invite is not for your email address",
+                )
+            }
+
+            val notification =
+                notificationDatastore.getNotificationByInvite(inviteId).getOrThrow()
+                    ?: throw ClientRequestExceptions.NotFoundException("Invite notification not found")
+
+            // Delete the notification for the invited user
+            notificationDatastore.deleteNotification(notification.id).getOrThrow()
+
+            // Cancel the invite
+            membershipDatastore.cancelInvite(inviteId).getOrThrow()
+
+            logD(TAG, "User $userId declined invite $inviteId")
         }
-
-        val notification = notificationDatastore.getNotificationByInvite(inviteId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Invite notification not found")
-
-        // Delete the notification for the invited user
-        notificationDatastore.deleteNotification(notification.id).getOrThrow()
-
-        // Cancel the invite
-        membershipDatastore.cancelInvite(inviteId).getOrThrow()
-
-        logD(TAG, "User $userId declined invite $inviteId")
-    }
 
     /**
      * Gets the organization ID for an invite.
@@ -291,14 +311,16 @@ class UserService(
      */
     suspend fun getInviteOrganization(
         inviteId: InviteId,
-    ): Result<OrganizationId> = runCatching {
-        logD(TAG, "getInviteOrganization: $inviteId")
+    ): Result<OrganizationId> =
+        runCatching {
+            logD(TAG, "getInviteOrganization: $inviteId")
 
-        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
+            val invite =
+                membershipDatastore.getInviteById(inviteId).getOrThrow()
+                    ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
 
-        invite.organizationId
-    }
+            invite.organizationId
+        }
 
     /**
      * Cancels a pending invite (manager action).
@@ -306,18 +328,20 @@ class UserService(
      */
     suspend fun cancelInvite(
         inviteId: InviteId,
-    ): Result<Unit> = runCatching {
-        logD(TAG, "cancelInvite: $inviteId")
+    ): Result<Unit> =
+        runCatching {
+            logD(TAG, "cancelInvite: $inviteId")
 
-        // Verify the invite exists
-        val invite = membershipDatastore.getInviteById(inviteId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
+            // Verify the invite exists
+            val invite =
+                membershipDatastore.getInviteById(inviteId).getOrThrow()
+                    ?: throw ClientRequestExceptions.NotFoundException("Invite not found")
 
-        // Cancel the invite
-        membershipDatastore.cancelInvite(inviteId).getOrThrow()
+            // Cancel the invite
+            membershipDatastore.cancelInvite(inviteId).getOrThrow()
 
-        logD(TAG, "Invite $inviteId cancelled for organization ${invite.organizationId}")
-    }
+            logD(TAG, "Invite $inviteId cancelled for organization ${invite.organizationId}")
+        }
 
     /**
      * Requests a password reset for the given [email] or [phoneNumber]. At least one must be non-null.

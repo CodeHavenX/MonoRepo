@@ -18,7 +18,7 @@ private fun ThemeColorPreviewer() {
         ColorPreviewer(
             Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+                .padding(16.dp),
         )
     }
 }
@@ -30,7 +30,7 @@ private fun ThemeShapePreviewer() {
         ShapePreviewer(
             Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+                .padding(16.dp),
         )
     }
 }
@@ -42,7 +42,7 @@ private fun ThemeTypographyPreviewer() {
         TypographyPreviewer(
             Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
+                .padding(16.dp),
         )
     }
 }

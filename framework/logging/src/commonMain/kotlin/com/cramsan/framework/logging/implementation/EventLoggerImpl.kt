@@ -15,7 +15,6 @@ class EventLoggerImpl(
     errorCallback: EventLoggerErrorCallback?,
     private val platformDelegate: EventLoggerDelegate,
 ) : EventLoggerInterface {
-
     private var _errorCallback = errorCallback
     val errorCallback: EventLoggerErrorCallback?
         get() = _errorCallback

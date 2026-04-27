@@ -17,17 +17,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.flyerboard.client.lib.features.application.FlyerBoardApplicationViewModel
+import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
-import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import flyerboard_lib.Res
 import flyerboard_lib.main_menu_screen_text_create_account
 import flyerboard_lib.main_menu_screen_text_first_name
 import flyerboard_lib.main_menu_screen_text_last_name
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * Main Menu screen.

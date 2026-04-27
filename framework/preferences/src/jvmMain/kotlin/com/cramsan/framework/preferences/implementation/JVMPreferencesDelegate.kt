@@ -10,10 +10,7 @@ import java.util.prefs.Preferences
  * Provide a [fqdn] (Fully Qualified Domain Name) to create a unique preferences node. Ensure that the FQDN is unique
  * across your application to avoid conflicts with other preferences.
  */
-class JVMPreferencesDelegate(
-    private val fqdn: String,
-) : PreferencesDelegate {
-
+class JVMPreferencesDelegate(private val fqdn: String) : PreferencesDelegate {
     private val prefs: Preferences = Preferences.userRoot().node(fqdn)
     private val mutex = ReentrantLock()
 

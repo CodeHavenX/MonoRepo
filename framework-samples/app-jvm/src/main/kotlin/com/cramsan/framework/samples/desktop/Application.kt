@@ -12,18 +12,20 @@ import org.koin.compose.scope.KoinScope
 /**
  * Main function for the desktop application.
  */
-fun main() = application {
-    ComposableKoinContext {
-        Window(
-            onCloseRequest = ::exitApplication,
-            title = "Framework Sample",
-            state = rememberWindowState(
-                size = DpSize(600.dp, 800.dp)
-            )
-        ) {
-            KoinScope<String>("root-window") {
-                ApplicationScreen()
+fun main() =
+    application {
+        ComposableKoinContext {
+            Window(
+                onCloseRequest = ::exitApplication,
+                title = "Framework Sample",
+                state =
+                rememberWindowState(
+                    size = DpSize(600.dp, 800.dp),
+                ),
+            ) {
+                KoinScope<String>("root-window") {
+                    ApplicationScreen()
+                }
             }
         }
     }
-}

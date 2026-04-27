@@ -10,69 +10,77 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Preview
 @Composable
-private fun SelectOrgScreenPreviewNoInvites() = AppTheme {
-    SelectOrgContent(
-        onCreateWorkspaceClicked = { },
-        onSignOutClicked = { },
-        onJoinOrganizationClicked = { _ -> },
-        uiState = SelectOrgUIState.Default
-    )
-}
+private fun SelectOrgScreenPreviewNoInvites() =
+    AppTheme {
+        SelectOrgContent(
+            onCreateWorkspaceClicked = { },
+            onSignOutClicked = { },
+            onJoinOrganizationClicked = { _ -> },
+            uiState = SelectOrgUIState.Default,
+        )
+    }
 
 /**
  * Preview for the SelectOrg screen with existing invites.
  */
 @Preview
 @Composable
-private fun SelectOrgScreenPreviewWithInvites() = AppTheme {
-    SelectOrgContent(
-        onCreateWorkspaceClicked = { },
-        onSignOutClicked = { },
-        onJoinOrganizationClicked = { _ -> },
-        uiState = SelectOrgUIState.Default.copy(
-            inviteList = listOf(
-                InviteItemUIModel(
-                    description = "You have been invited to join Acme Corp",
-                    inviteId = InviteId("invite-1"),
+private fun SelectOrgScreenPreviewWithInvites() =
+    AppTheme {
+        SelectOrgContent(
+            onCreateWorkspaceClicked = { },
+            onSignOutClicked = { },
+            onJoinOrganizationClicked = { _ -> },
+            uiState =
+            SelectOrgUIState.Default.copy(
+                inviteList =
+                listOf(
+                    InviteItemUIModel(
+                        description = "You have been invited to join Acme Corp",
+                        inviteId = InviteId("invite-1"),
+                    ),
+                    InviteItemUIModel(
+                        description = "You have been invited to join Beta LLC",
+                        inviteId = InviteId("invite-2"),
+                    ),
                 ),
-                InviteItemUIModel(
-                    description = "You have been invited to join Beta LLC",
-                    inviteId = InviteId("invite-2"),
-                )
-            )
+            ),
         )
-    )
-}
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun SelectOrgScreenPreviewNoInvites_ES() = AppTheme {
-    SelectOrgContent(
-        onCreateWorkspaceClicked = { },
-        onSignOutClicked = { },
-        onJoinOrganizationClicked = { _ -> },
-        uiState = SelectOrgUIState.Default
-    )
-}
+private fun SelectOrgScreenPreviewNoInvites_ES() =
+    AppTheme {
+        SelectOrgContent(
+            onCreateWorkspaceClicked = { },
+            onSignOutClicked = { },
+            onJoinOrganizationClicked = { _ -> },
+            uiState = SelectOrgUIState.Default,
+        )
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun SelectOrgScreenPreviewWithInvites_ES() = AppTheme {
-    SelectOrgContent(
-        onCreateWorkspaceClicked = { },
-        onSignOutClicked = { },
-        onJoinOrganizationClicked = { _ -> },
-        uiState = SelectOrgUIState.Default.copy(
-            inviteList = listOf(
-                InviteItemUIModel(
-                    description = "Has sido invitado a unirte a Acme Corp",
-                    inviteId = InviteId("invite-1"),
+private fun SelectOrgScreenPreviewWithInvites_ES() =
+    AppTheme {
+        SelectOrgContent(
+            onCreateWorkspaceClicked = { },
+            onSignOutClicked = { },
+            onJoinOrganizationClicked = { _ -> },
+            uiState =
+            SelectOrgUIState.Default.copy(
+                inviteList =
+                listOf(
+                    InviteItemUIModel(
+                        description = "Has sido invitado a unirte a Acme Corp",
+                        inviteId = InviteId("invite-1"),
+                    ),
+                    InviteItemUIModel(
+                        description = "Has sido invitado a unirte a Beta LLC",
+                        inviteId = InviteId("invite-2"),
+                    ),
                 ),
-                InviteItemUIModel(
-                    description = "Has sido invitado a unirte a Beta LLC",
-                    inviteId = InviteId("invite-2"),
-                )
-            )
+            ),
         )
-    )
-}
+    }

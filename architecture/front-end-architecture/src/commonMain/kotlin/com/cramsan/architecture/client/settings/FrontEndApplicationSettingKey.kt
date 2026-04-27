@@ -4,7 +4,6 @@ package com.cramsan.architecture.client.settings
  * Object holding the application setting keys for the front-end.
  */
 object FrontEndApplicationSettingKey {
-
     /**
      * Key for the logging level setting.
      */
@@ -18,7 +17,7 @@ object FrontEndApplicationSettingKey {
     /**
      * Key for halting on failure setting.
      */
-    val HaltOnFailure = SettingKey.boolean("halt_on_failure",)
+    val HaltOnFailure = SettingKey.boolean("halt_on_failure")
 
     /**
      * Key for the back-end URL setting.

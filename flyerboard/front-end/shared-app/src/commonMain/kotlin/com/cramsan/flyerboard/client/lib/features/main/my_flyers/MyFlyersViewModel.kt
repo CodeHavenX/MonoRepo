@@ -12,11 +12,8 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the My Flyers screen.
  */
-class MyFlyersViewModel(
-    dependencies: ViewModelDependencies,
-    private val flyerManager: FlyerManager,
-) : BaseViewModel<MyFlyersEvent, MyFlyersUIState>(dependencies, MyFlyersUIState.Initial, TAG) {
-
+class MyFlyersViewModel(dependencies: ViewModelDependencies, private val flyerManager: FlyerManager) :
+    BaseViewModel<MyFlyersEvent, MyFlyersUIState>(dependencies, MyFlyersUIState.Initial, TAG) {
     /**
      * Load the authenticated user's own flyers.
      */
@@ -24,7 +21,8 @@ class MyFlyersViewModel(
         logI(TAG, "loadFlyers")
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
-            flyerManager.listMyFlyers()
+            flyerManager
+                .listMyFlyers()
                 .onSuccess { paginated ->
                     updateUiState {
                         it.copy(
@@ -32,8 +30,7 @@ class MyFlyersViewModel(
                             flyers = paginated.flyers,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     updateUiState { it.copy(isLoading = false, errorMessage = error.message) }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(

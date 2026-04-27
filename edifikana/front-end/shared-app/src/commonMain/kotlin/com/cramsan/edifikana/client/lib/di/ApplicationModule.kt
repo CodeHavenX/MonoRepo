@@ -18,38 +18,39 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-internal val ApplicationModule = module {
+internal val ApplicationModule =
+    module {
 
-    single<String>(named(NamedDependency.DOMAIN_KEY)) { "EDIFIKANA" }
+        single<String>(named(NamedDependency.DOMAIN_KEY)) { "EDIFIKANA" }
 
-    singleOf(::Initializer)
+        singleOf(::Initializer)
 
-    single {
-        createJson()
-    }
-
-    scope<String> {
-        scoped(named(WindowIdentifier.DELEGATED_EVENT_BUS)) {
-            EventBus<EdifikanaWindowDelegatedEvent>()
-        } withOptions {
-            bind<EventEmitter<EdifikanaWindowDelegatedEvent>>()
-            bind<EventReceiver<EdifikanaWindowDelegatedEvent>>()
+        single {
+            createJson()
         }
 
-        viewModel {
-            EdifikanaWindowViewModel(
+        scope<String> {
+            scoped(named(WindowIdentifier.DELEGATED_EVENT_BUS)) {
+                EventBus<EdifikanaWindowDelegatedEvent>()
+            } withOptions {
+                bind<EventEmitter<EdifikanaWindowDelegatedEvent>>()
+                bind<EventReceiver<EdifikanaWindowDelegatedEvent>>()
+            }
+
+            viewModel {
+                EdifikanaWindowViewModel(
+                    get(),
+                    get(named(WindowIdentifier.EVENT_BUS)),
+                    get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
+                )
+            }
+        }
+
+        single {
+            EdifikanaApplicationViewModel(
                 get(),
-                get(named(WindowIdentifier.EVENT_BUS)),
-                get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
+                get(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)),
+                get(),
             )
         }
     }
-
-    single {
-        EdifikanaApplicationViewModel(
-            get(),
-            get(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)),
-            get(),
-        )
-    }
-}

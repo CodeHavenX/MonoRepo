@@ -8,10 +8,7 @@ import com.cramsan.framework.annotations.api.PathParam
  * Path parameters for canceling an invite.
  * The path will be formatted as "{organizationId}/{inviteId}".
  */
-data class CancelInvitePathParams(
-    val organizationId: OrganizationId,
-    val inviteId: InviteId,
-) : PathParam {
+data class CancelInvitePathParams(val organizationId: OrganizationId, val inviteId: InviteId) : PathParam {
     override fun toString(): String = "${organizationId.id}/${inviteId.id}"
 
     companion object {

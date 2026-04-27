@@ -18,7 +18,6 @@ import java.nio.file.Path
 import kotlin.test.assertEquals
 
 class DefaultStateDeriverTest {
-
     @TempDir
     lateinit var agenticDir: Path
 
@@ -26,22 +25,24 @@ class DefaultStateDeriverTest {
     private val worktreeManager = mockk<WorktreeManager>()
     private lateinit var deriver: DefaultStateDeriver
 
-    private val task = Task(
-        id = "task-001",
-        title = "My Task",
-        description = "Desc",
-        dependencies = emptyList(),
-    )
+    private val task =
+        Task(
+            id = "task-001",
+            title = "My Task",
+            description = "Desc",
+            dependencies = emptyList(),
+        )
 
-    private fun makePr(sourceBranch: String, state: PullRequestState = PullRequestState.OPEN) = PullRequest(
-        id = "pr-1",
-        url = "https://github.com/owner/repo/pull/1",
-        title = "Test PR",
-        state = state,
-        sourceBranch = sourceBranch,
-        targetBranch = "main",
-        labels = listOf("agentic-code"),
-    )
+    private fun makePr(sourceBranch: String, state: PullRequestState = PullRequestState.OPEN) =
+        PullRequest(
+            id = "pr-1",
+            url = "https://github.com/owner/repo/pull/1",
+            title = "Test PR",
+            state = state,
+            sourceBranch = sourceBranch,
+            targetBranch = "main",
+            labels = listOf("agentic-code"),
+        )
 
     private fun makeContext(
         merged: List<PullRequest> = emptyList(),
@@ -55,63 +56,76 @@ class DefaultStateDeriverTest {
     }
 
     @Test
-    fun `merged PR returns DONE`() = runTest {
-        val ctx = makeContext(merged = listOf(makePr("agentic/task-001", PullRequestState.MERGED)))
-        assertEquals(TaskStatus.DONE, deriver.statusOf(task, prContext = ctx))
-    }
+    fun `merged PR returns DONE`() =
+        runTest {
+            val ctx = makeContext(merged = listOf(makePr("agentic/task-001", PullRequestState.MERGED)))
+            assertEquals(TaskStatus.DONE, deriver.statusOf(task, prContext = ctx))
+        }
 
     @Test
-    fun `failed_txt exists returns FAILED`() = runTest {
-        val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
-        Files.createDirectories(failedFile.parent)
-        Files.writeString(failedFile, "timeout")
-        assertEquals(TaskStatus.FAILED, deriver.statusOf(task, prContext = makeContext()))
-    }
+    fun `failed_txt exists returns FAILED`() =
+        runTest {
+            val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
+            Files.createDirectories(failedFile.parent)
+            Files.writeString(failedFile, "timeout")
+            assertEquals(TaskStatus.FAILED, deriver.statusOf(task, prContext = makeContext()))
+        }
 
     @Test
-    fun `open PR with changes requested returns IN_PROGRESS`() = runTest {
-        coEvery { vcsProvider.pullRequestHasRequestedChanges("pr-1") } returns true
-        val ctx = makeContext(open = listOf(makePr("agentic/task-001")))
-        assertEquals(TaskStatus.IN_PROGRESS, deriver.statusOf(task, prContext = ctx))
-    }
+    fun `open PR with changes requested returns IN_PROGRESS`() =
+        runTest {
+            coEvery { vcsProvider.pullRequestHasRequestedChanges("pr-1") } returns true
+            val ctx = makeContext(open = listOf(makePr("agentic/task-001")))
+            assertEquals(TaskStatus.IN_PROGRESS, deriver.statusOf(task, prContext = ctx))
+        }
 
     @Test
-    fun `open PR without changes requested returns IN_REVIEW`() = runTest {
-        coEvery { vcsProvider.pullRequestHasRequestedChanges("pr-1") } returns false
-        val ctx = makeContext(open = listOf(makePr("agentic/task-001")))
-        assertEquals(TaskStatus.IN_REVIEW, deriver.statusOf(task, prContext = ctx))
-    }
+    fun `open PR without changes requested returns IN_REVIEW`() =
+        runTest {
+            coEvery { vcsProvider.pullRequestHasRequestedChanges("pr-1") } returns false
+            val ctx = makeContext(open = listOf(makePr("agentic/task-001")))
+            assertEquals(TaskStatus.IN_REVIEW, deriver.statusOf(task, prContext = ctx))
+        }
 
     @Test
-    fun `worktree exists returns IN_PROGRESS`() = runTest {
-        coEvery { worktreeManager.get("task-001") } returns Worktree("task-001", Path.of("/tmp/wt"), "agentic/task-001")
-        assertEquals(TaskStatus.IN_PROGRESS, deriver.statusOf(task, prContext = makeContext()))
-    }
+    fun `worktree exists returns IN_PROGRESS`() =
+        runTest {
+            coEvery {
+                worktreeManager.get(
+                    "task-001",
+                )
+            } returns Worktree("task-001", Path.of("/tmp/wt"), "agentic/task-001")
+            assertEquals(TaskStatus.IN_PROGRESS, deriver.statusOf(task, prContext = makeContext()))
+        }
 
     @Test
-    fun `no PR no worktree no deps returns PENDING`() = runTest {
-        assertEquals(TaskStatus.PENDING, deriver.statusOf(task, prContext = makeContext()))
-    }
+    fun `no PR no worktree no deps returns PENDING`() =
+        runTest {
+            assertEquals(TaskStatus.PENDING, deriver.statusOf(task, prContext = makeContext()))
+        }
 
     @Test
-    fun `all deps DONE returns PENDING`() = runTest {
-        val taskWithDeps = task.copy(dependencies = listOf("dep-1", "dep-2"))
-        val resolved = mapOf("dep-1" to TaskStatus.DONE, "dep-2" to TaskStatus.DONE)
-        assertEquals(TaskStatus.PENDING, deriver.statusOf(taskWithDeps, resolved, makeContext()))
-    }
+    fun `all deps DONE returns PENDING`() =
+        runTest {
+            val taskWithDeps = task.copy(dependencies = listOf("dep-1", "dep-2"))
+            val resolved = mapOf("dep-1" to TaskStatus.DONE, "dep-2" to TaskStatus.DONE)
+            assertEquals(TaskStatus.PENDING, deriver.statusOf(taskWithDeps, resolved, makeContext()))
+        }
 
     @Test
-    fun `one dep not DONE returns BLOCKED`() = runTest {
-        val taskWithDeps = task.copy(dependencies = listOf("dep-1", "dep-2"))
-        val resolved = mapOf("dep-1" to TaskStatus.DONE, "dep-2" to TaskStatus.IN_REVIEW)
-        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, resolved, makeContext()))
-    }
+    fun `one dep not DONE returns BLOCKED`() =
+        runTest {
+            val taskWithDeps = task.copy(dependencies = listOf("dep-1", "dep-2"))
+            val resolved = mapOf("dep-1" to TaskStatus.DONE, "dep-2" to TaskStatus.IN_REVIEW)
+            assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, resolved, makeContext()))
+        }
 
     @Test
-    fun `dep in task dependencies but absent from resolvedDependencies returns BLOCKED`() = runTest {
-        val taskWithDeps = task.copy(dependencies = listOf("dep-1", "dep-missing"))
-        // dep-missing is not present in the map at all
-        val resolved = mapOf("dep-1" to TaskStatus.DONE)
-        assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, resolved, makeContext()))
-    }
+    fun `dep in task dependencies but absent from resolvedDependencies returns BLOCKED`() =
+        runTest {
+            val taskWithDeps = task.copy(dependencies = listOf("dep-1", "dep-missing"))
+            // dep-missing is not present in the map at all
+            val resolved = mapOf("dep-1" to TaskStatus.DONE)
+            assertEquals(TaskStatus.BLOCKED, deriver.statusOf(taskWithDeps, resolved, makeContext()))
+        }
 }

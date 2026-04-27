@@ -7,7 +7,6 @@ import com.cramsan.framework.annotations.NetworkModel
  */
 @OptIn(NetworkModel::class)
 class RunasimiService {
-
     /**
      * Simple ping method to check if the service is alive.
      */

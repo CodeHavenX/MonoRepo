@@ -27,7 +27,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class DefaultValidationServiceTest {
-
     @TempDir
     lateinit var tempDir: Path
 
@@ -39,14 +38,15 @@ class DefaultValidationServiceTest {
     private lateinit var reviewerLoader: ReviewerLoader
     private lateinit var service: DefaultValidationService
 
-    private fun makeDocument(id: String, type: DocumentType, relativePath: String) = AgenticDocument(
-        id = id,
-        typeId = id,
-        type = type,
-        relativePath = relativePath,
-        status = DocumentStatus.UNREVIEWED,
-        lastModifiedEpochMs = System.currentTimeMillis(),
-    )
+    private fun makeDocument(id: String, type: DocumentType, relativePath: String) =
+        AgenticDocument(
+            id = id,
+            typeId = id,
+            type = type,
+            relativePath = relativePath,
+            status = DocumentStatus.UNREVIEWED,
+            lastModifiedEpochMs = System.currentTimeMillis(),
+        )
 
     @BeforeEach
     fun setUp() {
@@ -55,14 +55,15 @@ class DefaultValidationServiceTest {
         reviewerAgent = mockk()
         reviewerLoader = mockk()
 
-        service = DefaultValidationService(
-            documentStore = documentStore,
-            aiProvider = aiProvider,
-            reviewerAgents = listOf(reviewerAgent),
-            reviewerLoader = reviewerLoader,
-            json = json,
-            docsDir = tempDir,
-        )
+        service =
+            DefaultValidationService(
+                documentStore = documentStore,
+                aiProvider = aiProvider,
+                reviewerAgents = listOf(reviewerAgent),
+                reviewerLoader = reviewerLoader,
+                json = json,
+                docsDir = tempDir,
+            )
 
         Files.writeString(tempDir.resolve("goals-scope.md"), "# Goals & Scope\nContent here.")
         Files.writeString(tempDir.resolve("architecture-design.md"), "# Architecture\nContent here.")
@@ -71,98 +72,106 @@ class DefaultValidationServiceTest {
     }
 
     @Test
-    fun `reviewDocument with no blocking issues calls updateStatus with VALIDATED`() = runTest {
-        val doc = makeDocument("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md")
+    fun `reviewDocument with no blocking issues calls updateStatus with VALIDATED`() =
+        runTest {
+            val doc = makeDocument("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md")
 
-        coEvery {
-            aiProvider.chat(
-                systemPrompt = any(),
-                messages = any(),
-                tools = any(),
-            )
-        } returns AiResponse(
-            id = "resp-1",
-            stopReason = "end_turn",
-            content = listOf(AiContentBlock.Text("[]")),
-        )
+            coEvery {
+                aiProvider.chat(
+                    systemPrompt = any(),
+                    messages = any(),
+                    tools = any(),
+                )
+            } returns
+                AiResponse(
+                    id = "resp-1",
+                    stopReason = "end_turn",
+                    content = listOf(AiContentBlock.Text("[]")),
+                )
 
-        val issues = service.reviewDocument(doc)
+            val issues = service.reviewDocument(doc)
 
-        assertEquals(0, issues.size)
-        coVerify { aiProvider.chat(systemPrompt = any(), messages = any(), tools = any()) }
-        verify { documentStore.updateStatus("goals-scope", DocumentStatus.VALIDATED) }
-    }
-
-    @Test
-    fun `reviewDocument with blocking issues calls updateStatus with NEEDS_REVISION`() = runTest {
-        val doc = makeDocument("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md")
-
-        val blockingIssueJson = """
-            [{"id":"issue-1","documentId":"goals-scope","description":"Critical flaw","severity":"BLOCKING","status":"OPEN"}]
-        """.trimIndent()
-
-        coEvery {
-            aiProvider.chat(
-                systemPrompt = any(),
-                messages = any(),
-                tools = any(),
-            )
-        } returns AiResponse(
-            id = "resp-1",
-            stopReason = "end_turn",
-            content = listOf(AiContentBlock.Text(blockingIssueJson)),
-        )
-
-        val issues = service.reviewDocument(doc)
-
-        assertEquals(1, issues.size)
-        assertEquals(IssueSeverity.BLOCKING, issues.first().severity)
-        verify { documentStore.updateStatus("goals-scope", DocumentStatus.NEEDS_REVISION) }
-    }
-
-    @Test
-    fun `runValidationPass iterates over all documents calls reviewDocument for each and returns report`() = runTest {
-        val docs = listOf(
-            makeDocument("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md"),
-            makeDocument("architecture-design", DocumentType.ARCHITECTURE_DESIGN, "architecture-design.md"),
-            makeDocument("standards", DocumentType.STANDARDS, "standards.md"),
-            makeDocument("task-list", DocumentType.TASK_LIST, "task-list.md"),
-        )
-
-        every { documentStore.getAll() } returns docs
-
-        coEvery {
-            aiProvider.chat(
-                systemPrompt = any(),
-                messages = any(),
-                tools = any(),
-            )
-        } returns AiResponse(
-            id = "resp-1",
-            stopReason = "end_turn",
-            content = listOf(AiContentBlock.Text("[]")),
-        )
-
-        val reviewerDef = ReviewerDefinition(name = "security", systemPrompt = "You are a security reviewer.")
-        every { reviewerLoader.loadAll() } returns listOf(reviewerDef)
-
-        coEvery {
-            reviewerAgent.reviewDocuments(reviewerDef, docs)
-        } returns ReviewerFeedback(reviewerName = "security", content = "Looks good.")
-
-        val report = service.runValidationPass()
-
-        assertNotNull(report)
-        assertNotNull(report.runId)
-
-        verify(exactly = 4) { documentStore.updateStatus(any(), DocumentStatus.IN_REVIEW) }
-
-        coVerify(exactly = 4) {
-            aiProvider.chat(systemPrompt = any(), messages = any(), tools = any())
+            assertEquals(0, issues.size)
+            coVerify { aiProvider.chat(systemPrompt = any(), messages = any(), tools = any()) }
+            verify { documentStore.updateStatus("goals-scope", DocumentStatus.VALIDATED) }
         }
 
-        coVerify { reviewerAgent.reviewDocuments(reviewerDef, docs) }
+    @Test
+    fun `reviewDocument with blocking issues calls updateStatus with NEEDS_REVISION`() =
+        runTest {
+            val doc = makeDocument("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md")
 
-        assert(Files.exists(tempDir.resolve("validation-report.md")))
-    }
+            val blockingIssueJson =
+                """
+                [{"id":"issue-1","documentId":"goals-scope","description":"Critical flaw","severity":"BLOCKING","status":"OPEN"}]
+                """.trimIndent()
+
+            coEvery {
+                aiProvider.chat(
+                    systemPrompt = any(),
+                    messages = any(),
+                    tools = any(),
+                )
+            } returns
+                AiResponse(
+                    id = "resp-1",
+                    stopReason = "end_turn",
+                    content = listOf(AiContentBlock.Text(blockingIssueJson)),
+                )
+
+            val issues = service.reviewDocument(doc)
+
+            assertEquals(1, issues.size)
+            assertEquals(IssueSeverity.BLOCKING, issues.first().severity)
+            verify { documentStore.updateStatus("goals-scope", DocumentStatus.NEEDS_REVISION) }
+        }
+
+    @Test
+    fun `runValidationPass iterates over all documents calls reviewDocument for each and returns report`() =
+        runTest {
+            val docs =
+                listOf(
+                    makeDocument("goals-scope", DocumentType.GOALS_SCOPE, "goals-scope.md"),
+                    makeDocument("architecture-design", DocumentType.ARCHITECTURE_DESIGN, "architecture-design.md"),
+                    makeDocument("standards", DocumentType.STANDARDS, "standards.md"),
+                    makeDocument("task-list", DocumentType.TASK_LIST, "task-list.md"),
+                )
+
+            every { documentStore.getAll() } returns docs
+
+            coEvery {
+                aiProvider.chat(
+                    systemPrompt = any(),
+                    messages = any(),
+                    tools = any(),
+                )
+            } returns
+                AiResponse(
+                    id = "resp-1",
+                    stopReason = "end_turn",
+                    content = listOf(AiContentBlock.Text("[]")),
+                )
+
+            val reviewerDef = ReviewerDefinition(name = "security", systemPrompt = "You are a security reviewer.")
+            every { reviewerLoader.loadAll() } returns listOf(reviewerDef)
+
+            coEvery {
+                reviewerAgent.reviewDocuments(reviewerDef, docs)
+            } returns ReviewerFeedback(reviewerName = "security", content = "Looks good.")
+
+            val report = service.runValidationPass()
+
+            assertNotNull(report)
+            assertNotNull(report.runId)
+
+            verify(exactly = 4) { documentStore.updateStatus(any(), DocumentStatus.IN_REVIEW) }
+
+            coVerify(exactly = 4) {
+                aiProvider.chat(systemPrompt = any(), messages = any(), tools = any())
+            }
+
+            coVerify { reviewerAgent.reviewDocuments(reviewerDef, docs) }
+
+            assert(Files.exists(tempDir.resolve("validation-report.md")))
+        }
 }

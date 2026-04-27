@@ -3,11 +3,11 @@ package com.cramsan.agentic.ai
 import com.cramsan.agentic.ai.claude.ClaudeCliAiProvider
 import com.cramsan.agentic.vcs.github.ShellResult
 import com.cramsan.agentic.vcs.github.ShellRunner
-import io.mockk.coEvery
-import io.mockk.mockk
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.buildJsonObject
 import org.junit.jupiter.api.BeforeEach
@@ -25,7 +25,6 @@ import kotlin.test.assertTrue
  * the common behavioral requirements of the interface.
  */
 class AiProviderContractTest {
-
     private val shell = mockk<ShellRunner>()
 
     @BeforeEach
@@ -57,11 +56,12 @@ class AiProviderContractTest {
 
     @Test
     fun `AiResponse contains id content list and stopReason`() {
-        val response = AiResponse(
-            id = "resp-001",
-            content = listOf(AiContentBlock.Text("hello")),
-            stopReason = "end_turn",
-        )
+        val response =
+            AiResponse(
+                id = "resp-001",
+                content = listOf(AiContentBlock.Text("hello")),
+                stopReason = "end_turn",
+            )
         assertNotNull(response.id)
         assertTrue(response.content.isNotEmpty())
         assertNotNull(response.stopReason)
@@ -86,53 +86,58 @@ class AiProviderContractTest {
     // ── ClaudeCliAiProvider is NOT compatible with tool-use workloads ─────────
 
     @Test
-    fun `ClaudeCliAiProvider throws UnsupportedOperationException on any non-empty tools list`() = runTest {
-        val provider = ClaudeCliAiProvider(shell)
-        val anyTool = AiTool("some_tool", "description", buildJsonObject {})
+    fun `ClaudeCliAiProvider throws UnsupportedOperationException on any non-empty tools list`() =
+        runTest {
+            val provider = ClaudeCliAiProvider(shell)
+            val anyTool = AiTool("some_tool", "description", buildJsonObject {})
 
-        assertFailsWith<UnsupportedOperationException> {
-            provider.chat(
-                systemPrompt = "sys",
-                messages = listOf(AiMessage("user", "hi")),
-                tools = listOf(anyTool),
-            )
+            assertFailsWith<UnsupportedOperationException> {
+                provider.chat(
+                    systemPrompt = "sys",
+                    messages = listOf(AiMessage("user", "hi")),
+                    tools = listOf(anyTool),
+                )
+            }
         }
-    }
 
     @Test
-    fun `ClaudeCliAiProvider succeeds with empty tools list`() = runTest {
-        val provider = ClaudeCliAiProvider(shell)
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("plain text response", 0, "")
+    fun `ClaudeCliAiProvider succeeds with empty tools list`() =
+        runTest {
+            val provider = ClaudeCliAiProvider(shell)
+            coEvery { shell.run(*anyVararg()) } returns ShellResult("plain text response", 0, "")
 
-        val response = provider.chat(
-            systemPrompt = "sys",
-            messages = listOf(AiMessage("user", "hi")),
-            tools = emptyList(),
-        )
+            val response =
+                provider.chat(
+                    systemPrompt = "sys",
+                    messages = listOf(AiMessage("user", "hi")),
+                    tools = emptyList(),
+                )
 
-        assertNotNull(response)
-        assertTrue(response.content.isNotEmpty())
-    }
+            assertNotNull(response)
+            assertTrue(response.content.isNotEmpty())
+        }
 
     // ── AiProvider response always has an id ─────────────────────────────────
 
     @Test
-    fun `ClaudeCliAiProvider response id starts with cli-`() = runTest {
-        val provider = ClaudeCliAiProvider(shell)
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("output", 0, "")
+    fun `ClaudeCliAiProvider response id starts with cli-`() =
+        runTest {
+            val provider = ClaudeCliAiProvider(shell)
+            coEvery { shell.run(*anyVararg()) } returns ShellResult("output", 0, "")
 
-        val response = provider.chat("sys", listOf(AiMessage("user", "q")), emptyList())
+            val response = provider.chat("sys", listOf(AiMessage("user", "q")), emptyList())
 
-        assertTrue(response.id.startsWith("cli-"), "CLI provider id must start with 'cli-'. Got: ${response.id}")
-    }
+            assertTrue(response.id.startsWith("cli-"), "CLI provider id must start with 'cli-'. Got: ${response.id}")
+        }
 
     @Test
-    fun `ClaudeCliAiProvider response stopReason is end_turn`() = runTest {
-        val provider = ClaudeCliAiProvider(shell)
-        coEvery { shell.run(*anyVararg()) } returns ShellResult("output", 0, "")
+    fun `ClaudeCliAiProvider response stopReason is end_turn`() =
+        runTest {
+            val provider = ClaudeCliAiProvider(shell)
+            coEvery { shell.run(*anyVararg()) } returns ShellResult("output", 0, "")
 
-        val response = provider.chat("sys", listOf(AiMessage("user", "q")), emptyList())
+            val response = provider.chat("sys", listOf(AiMessage("user", "q")), emptyList())
 
-        assert(response.stopReason == "end_turn")
-    }
+            assert(response.stopReason == "end_turn")
+        }
 }

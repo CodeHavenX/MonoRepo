@@ -16,20 +16,22 @@ actual class IODependencies
  */
 actual fun readBytes(
     uri: CoreUri,
-    dependencies: IODependencies
-): Result<ByteArray> = runCatching {
-    val uriString = uri.getUri()
-    val file = if (uriString.startsWith("file:")) {
-        File(URI(uriString))
-    } else {
-        File(uriString)
+    dependencies: IODependencies,
+): Result<ByteArray> =
+    runCatching {
+        val uriString = uri.getUri()
+        val file =
+            if (uriString.startsWith("file:")) {
+                File(URI(uriString))
+            } else {
+                File(uriString)
+            }
+
+        require(file.exists()) { "File does not exist: $uriString" }
+        require(file.canRead()) { "File is not readable: $uriString" }
+
+        file.readBytes()
     }
-
-    require(file.exists()) { "File does not exist: $uriString" }
-    require(file.canRead()) { "File is not readable: $uriString" }
-
-    file.readBytes()
-}
 
 /**
  * Process image data (rotation correction, compression, etc.).
@@ -46,8 +48,9 @@ actual fun readBytes(
  * Current behavior: Returns the raw image data without any processing.
  * This means images may appear rotated incorrectly and files will be larger than on Android.
  */
-actual fun processImageData(data: ByteArray): Result<ByteArray> = runCatching {
-    // TODO: Implement image processing for JVM (EXIF rotation, compression)
-    // For now, return raw data to enable basic upload functionality
-    data
-}
+actual fun processImageData(data: ByteArray): Result<ByteArray> =
+    runCatching {
+        // TODO: Implement image processing for JVM (EXIF rotation, compression)
+        // For now, return raw data to enable basic upload functionality
+        data
+    }

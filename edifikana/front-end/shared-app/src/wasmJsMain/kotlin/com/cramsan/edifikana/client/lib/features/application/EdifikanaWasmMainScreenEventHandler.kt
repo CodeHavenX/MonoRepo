@@ -8,7 +8,6 @@ import com.cramsan.framework.logging.logE
  * Main screen event handler for JVM.
  */
 class EdifikanaWasmMainScreenEventHandler : EdifikanaMainScreenEventHandler {
-
     override fun openCamera(event: EdifikanaWindowsEvent.OpenCamera) {
         logE(TAG, "Opening camera is not supported on Wasm")
     }

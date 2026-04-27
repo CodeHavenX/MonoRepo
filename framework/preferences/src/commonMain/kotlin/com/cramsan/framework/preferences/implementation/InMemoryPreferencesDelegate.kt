@@ -10,7 +10,6 @@ import com.cramsan.framework.preferences.PreferencesDelegate
  * @created 11/22/2022
  */
 class InMemoryPreferencesDelegate : PreferencesDelegate {
-
     private val map = mutableMapOf<String, Any?>()
 
     override fun saveString(key: String, value: String?) {

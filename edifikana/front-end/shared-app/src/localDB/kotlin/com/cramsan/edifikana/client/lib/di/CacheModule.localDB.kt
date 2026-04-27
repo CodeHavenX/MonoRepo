@@ -9,18 +9,19 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-internal actual val CacheModule = module {
-    single { get<AppDatabase>().eventLogRecordDao() }
+internal actual val CacheModule =
+    module {
+        single { get<AppDatabase>().eventLogRecordDao() }
 
-    single { get<AppDatabase>().timeCardRecordDao() }
+        single { get<AppDatabase>().timeCardRecordDao() }
 
-    single { get<AppDatabase>().fileAttachmentDao() }
+        single { get<AppDatabase>().fileAttachmentDao() }
 
-    singleOf(::EventLogRoomCache) {
-        bind<EventLogCache>()
+        singleOf(::EventLogRoomCache) {
+            bind<EventLogCache>()
+        }
+
+        singleOf(::TimeCardRoomCache) {
+            bind<TimeCardCache>()
+        }
     }
-
-    singleOf(::TimeCardRoomCache) {
-        bind<TimeCardCache>()
-    }
-}

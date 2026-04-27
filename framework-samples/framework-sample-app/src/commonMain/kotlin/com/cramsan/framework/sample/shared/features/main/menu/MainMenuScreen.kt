@@ -49,7 +49,8 @@ internal fun MainMenuContent(
     ) { innerPadding ->
         // Render the screen
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding),
             sectionContent = { modifier ->
                 Button(

@@ -17,33 +17,34 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-internal val ApplicationModule = module {
+internal val ApplicationModule =
+    module {
 
-    single<String>(named(NamedDependency.DOMAIN_KEY)) { "TEMPLATE_REPLACE_ME" }
+        single<String>(named(NamedDependency.DOMAIN_KEY)) { "TEMPLATE_REPLACE_ME" }
 
-    singleOf(::Initializer)
+        singleOf(::Initializer)
 
-    scope<String> {
-        scoped(named(WindowIdentifier.DELEGATED_EVENT_BUS)) {
-            EventBus<RunasimiWindowDelegatedEvent>()
-        } withOptions {
-            bind<EventEmitter<RunasimiWindowDelegatedEvent>>()
-            bind<EventReceiver<RunasimiWindowDelegatedEvent>>()
+        scope<String> {
+            scoped(named(WindowIdentifier.DELEGATED_EVENT_BUS)) {
+                EventBus<RunasimiWindowDelegatedEvent>()
+            } withOptions {
+                bind<EventEmitter<RunasimiWindowDelegatedEvent>>()
+                bind<EventReceiver<RunasimiWindowDelegatedEvent>>()
+            }
+
+            viewModel {
+                RunasimiWindowViewModel(
+                    get(),
+                    get(named(WindowIdentifier.EVENT_BUS)),
+                    get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
+                )
+            }
         }
 
-        viewModel {
-            RunasimiWindowViewModel(
+        single {
+            RunasimiApplicationViewModel(
                 get(),
-                get(named(WindowIdentifier.EVENT_BUS)),
-                get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
+                get(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)),
             )
         }
     }
-
-    single {
-        RunasimiApplicationViewModel(
-            get(),
-            get(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)),
-        )
-    }
-}

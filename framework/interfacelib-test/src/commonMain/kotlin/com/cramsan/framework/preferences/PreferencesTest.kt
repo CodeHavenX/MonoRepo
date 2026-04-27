@@ -10,7 +10,6 @@ import kotlin.test.assertNull
  * @created 1/16/2021
  */
 abstract class PreferencesTest : CoroutineTest() {
-
     protected lateinit var preferences: Preferences
 
     /**

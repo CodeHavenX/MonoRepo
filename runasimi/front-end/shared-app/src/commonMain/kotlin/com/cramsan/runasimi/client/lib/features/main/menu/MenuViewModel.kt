@@ -10,22 +10,21 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Menu screen.
  **/
-class MenuViewModel(
-    dependencies: ViewModelDependencies,
-    private val preferencesManager: PreferencesManager,
-) : BaseViewModel<MenuEvent, MenuUIState>(
-    dependencies,
-    MenuUIState.Initial,
-    TAG,
-) {
-
+class MenuViewModel(dependencies: ViewModelDependencies, private val preferencesManager: PreferencesManager) :
+    BaseViewModel<MenuEvent, MenuUIState>(
+        dependencies,
+        MenuUIState.Initial,
+        TAG,
+    ) {
     /**
      * Initialize the ViewModel.
      */
     fun initialize() {
         viewModelScope.launch {
-            val selectedItemOrdinal = preferencesManager
-                .getIntPreference(RunasimiSettingKey.MainMenuSelectedDrawerItem).getOrNull()
+            val selectedItemOrdinal =
+                preferencesManager
+                    .getIntPreference(RunasimiSettingKey.MainMenuSelectedDrawerItem)
+                    .getOrNull()
             val selectedItem = selectedItemOrdinal?.let { SelectableDrawerItem.entries.getOrNull(it) }
             if (selectedItem != null) {
                 updateUiState {

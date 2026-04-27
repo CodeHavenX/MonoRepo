@@ -16,9 +16,8 @@ class ApplicationViewModel(
 ) : BaseViewModel<SampleApplicationViewModelEvent, ApplicationUIState>(
     dependencies,
     ApplicationUIState,
-    TAG
+    TAG,
 ) {
-
     init {
         viewModelScope.launch {
             initHandler.startStep()
@@ -34,9 +33,10 @@ class ApplicationViewModel(
      * Execute application-wide events. The implementation that handles the events is up to the
      * consumer of the view model's events.
      */
-    fun executeEvent(event: SampleApplicationViewModelEvent) = viewModelScope.launch {
-        emitEvent(event)
-    }
+    fun executeEvent(event: SampleApplicationViewModelEvent) =
+        viewModelScope.launch {
+            emitEvent(event)
+        }
 
     companion object {
         private const val TAG = "ApplicationViewModel"

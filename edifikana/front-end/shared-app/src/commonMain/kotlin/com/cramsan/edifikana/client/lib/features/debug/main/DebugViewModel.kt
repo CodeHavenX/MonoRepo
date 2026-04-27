@@ -29,7 +29,6 @@ class DebugViewModel(
     DebugUIModelUI.Initial,
     TAG,
 ) {
-
     // Buffered changes
     private var bufferedKey: SettingKey<*>? = null
     private var bufferedValue: PropertyValue? = null
@@ -65,7 +64,7 @@ class DebugViewModel(
         logI(TAG, "Debug key $key changed to $value")
         loadDataImpl()
         emitWindowEvent(
-            EdifikanaWindowsEvent.ShowSnackbar("Value saved.Restart the app to apply changes.")
+            EdifikanaWindowsEvent.ShowSnackbar("Value saved.Restart the app to apply changes."),
         )
     }
 
@@ -137,7 +136,7 @@ class DebugViewModel(
     fun navigateBack() {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }
@@ -145,28 +144,41 @@ class DebugViewModel(
     @Suppress("MaxLineLength", "MaximumLineLength", "LongMethod")
     private fun loadDataImpl() {
         viewModelScope.launch {
-            val supabaseOverrideUrl = preferencesManager.getStringPreference(
-                EdifikanaSettingKey.SupabaseOverrideUrl,
-            ).getOrNull()
-            val supabaseOverrideKey = preferencesManager.getStringPreference(
-                EdifikanaSettingKey.SupabaseOverrideKey,
-            ).getOrNull()
-            val haltOnFailure = preferencesManager.getBooleanPreference(
-                FrontEndApplicationSettingKey.HaltOnFailure,
-            ).getOrNull()
-            val openDebugWindow = preferencesManager.getBooleanPreference(
-                EdifikanaSettingKey.OpenDebugWindow,
-            ).getOrNull()
-            val backEndUrl = preferencesManager.getStringPreference(
-                FrontEndApplicationSettingKey.BackEndUrl,
-            ).getOrNull()
-            val loggingSeverity = preferencesManager.getStringPreference(
-                FrontEndApplicationSettingKey.LoggingLevel,
-            ).getOrNull()
+            val supabaseOverrideUrl =
+                preferencesManager
+                    .getStringPreference(
+                        EdifikanaSettingKey.SupabaseOverrideUrl,
+                    ).getOrNull()
+            val supabaseOverrideKey =
+                preferencesManager
+                    .getStringPreference(
+                        EdifikanaSettingKey.SupabaseOverrideKey,
+                    ).getOrNull()
+            val haltOnFailure =
+                preferencesManager
+                    .getBooleanPreference(
+                        FrontEndApplicationSettingKey.HaltOnFailure,
+                    ).getOrNull()
+            val openDebugWindow =
+                preferencesManager
+                    .getBooleanPreference(
+                        EdifikanaSettingKey.OpenDebugWindow,
+                    ).getOrNull()
+            val backEndUrl =
+                preferencesManager
+                    .getStringPreference(
+                        FrontEndApplicationSettingKey.BackEndUrl,
+                    ).getOrNull()
+            val loggingSeverity =
+                preferencesManager
+                    .getStringPreference(
+                        FrontEndApplicationSettingKey.LoggingLevel,
+                    ).getOrNull()
 
             updateUiState {
                 it.copy(
-                    fields = listOf(
+                    fields =
+                    listOf(
                         Field.Divider,
                         Field.Label(
                             "App Version",
@@ -209,7 +221,8 @@ class DebugViewModel(
                         Field.Label("Core Framework Settings"),
                         Field.BooleanField(
                             title = "Halt on failure",
-                            subtitle = "Enable the halt-on-faiilure mechanism when in a supported platform. " +
+                            subtitle =
+                            "Enable the halt-on-faiilure mechanism when in a supported platform. " +
                                 "This will cause the application to freeze when an error is found. Allowing " +
                                 "you the chance to connect the debugger and inspect tha application state.",
                             key = FrontEndApplicationSettingKey.HaltOnFailure,
@@ -251,7 +264,7 @@ class DebugViewModel(
                                 emitWindowEvent(
                                     EdifikanaWindowsEvent.NavigateToScreen(
                                         DebugDestination.ScreenSelectorDestination,
-                                    )
+                                    ),
                                 )
                             },
                         ),

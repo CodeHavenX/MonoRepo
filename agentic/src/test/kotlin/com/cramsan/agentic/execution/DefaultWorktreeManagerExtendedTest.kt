@@ -24,7 +24,6 @@ import kotlin.test.assertTrue
  * branch naming conventions from TECH_DESIGN.md §5.3 and ARCHITECTURE.md §3.1.
  */
 class DefaultWorktreeManagerExtendedTest {
-
     @TempDir
     lateinit var repoRoot: Path
 
@@ -44,81 +43,89 @@ class DefaultWorktreeManagerExtendedTest {
     // ── Branch naming convention ──────────────────────────────────────────────
 
     @Test
-    fun `getOrCreate uses branch name agentic-taskId`() = runTest {
-        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
+    fun `getOrCreate uses branch name agentic-taskId`() =
+        runTest {
+            coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
-        val manager = makeManager()
-        val worktree = manager.getOrCreate("task-123")
+            val manager = makeManager()
+            val worktree = manager.getOrCreate("task-123")
 
-        assertEquals("agentic/task-123", worktree.branchName)
-    }
+            assertEquals("agentic/task-123", worktree.branchName)
+        }
 
     @Test
-    fun `getOrCreate stores worktree under agenticDir-worktrees-taskId`() = runTest {
-        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
+    fun `getOrCreate stores worktree under agenticDir-worktrees-taskId`() =
+        runTest {
+            coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
-        val manager = makeManager()
-        val worktree = manager.getOrCreate("task-abc")
+            val manager = makeManager()
+            val worktree = manager.getOrCreate("task-abc")
 
-        val expectedPath = agenticDir.resolve("worktrees/task-abc")
-        assertEquals(expectedPath, worktree.path)
-    }
+            val expectedPath = agenticDir.resolve("worktrees/task-abc")
+            assertEquals(expectedPath, worktree.path)
+        }
 
     // ── Lazy creation ─────────────────────────────────────────────────────────
 
     @Test
-    fun `get returns null when worktree directory does not exist`() = runTest {
-        val manager = makeManager()
+    fun `get returns null when worktree directory does not exist`() =
+        runTest {
+            val manager = makeManager()
 
-        val result = manager.get("nonexistent-task")
+            val result = manager.get("nonexistent-task")
 
-        assertNull(result)
-    }
+            assertNull(result)
+        }
 
     @Test
-    fun `get returns worktree when directory exists on disk`() = runTest {
-        val manager = makeManager()
-        val worktreePath = agenticDir.resolve("worktrees/existing-task")
-        Files.createDirectories(worktreePath)
+    fun `get returns worktree when directory exists on disk`() =
+        runTest {
+            val manager = makeManager()
+            val worktreePath = agenticDir.resolve("worktrees/existing-task")
+            Files.createDirectories(worktreePath)
 
-        val result = manager.get("existing-task")
+            val result = manager.get("existing-task")
 
-        assertNotNull(result)
-        assertEquals("existing-task", result.taskId)
-        assertEquals(worktreePath, result.path)
-    }
+            assertNotNull(result)
+            assertEquals("existing-task", result.taskId)
+            assertEquals(worktreePath, result.path)
+        }
 
     // ── getOrCreate: returns existing worktree without running git ────────────
 
     @Test
-    fun `getOrCreate does not call git when worktree directory already exists`() = runTest {
-        val manager = makeManager()
-        val worktreePath = agenticDir.resolve("worktrees/task-exists")
-        Files.createDirectories(worktreePath)
+    fun `getOrCreate does not call git when worktree directory already exists`() =
+        runTest {
+            val manager = makeManager()
+            val worktreePath = agenticDir.resolve("worktrees/task-exists")
+            Files.createDirectories(worktreePath)
 
-        manager.getOrCreate("task-exists")
+            manager.getOrCreate("task-exists")
 
-        coVerify(exactly = 0) { shell.run(*anyVararg()) }
-    }
+            coVerify(exactly = 0) { shell.run(*anyVararg()) }
+        }
 
     @Test
-    fun `getOrCreate calls git worktree add when worktree does not exist`() = runTest {
-        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
+    fun `getOrCreate calls git worktree add when worktree does not exist`() =
+        runTest {
+            coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
-        val manager = makeManager()
-        manager.getOrCreate("new-task")
+            val manager = makeManager()
+            manager.getOrCreate("new-task")
 
-        coVerify {
-            shell.run(
-                "git", "worktree", "add",
-                any(), // path
-                any(), // -b or HEAD
-                any(), // branch name or base branch
-                *anyVararg(),
-                workingDir = any(),
-            )
+            coVerify {
+                shell.run(
+                    "git",
+                    "worktree",
+                    "add",
+                    any(), // path
+                    any(), // -b or HEAD
+                    any(), // branch name or base branch
+                    *anyVararg(),
+                    workingDir = any(),
+                )
+            }
         }
-    }
 
     // ── listAll ────────────────────────────────────────────────────────────────
 
@@ -130,20 +137,21 @@ class DefaultWorktreeManagerExtendedTest {
     }
 
     @Test
-    fun `listAll returns one Worktree per subdirectory in worktrees dir`() = runTest {
-        val manager = makeManager()
-        Files.createDirectories(agenticDir.resolve("worktrees/task-a"))
-        Files.createDirectories(agenticDir.resolve("worktrees/task-b"))
-        Files.createDirectories(agenticDir.resolve("worktrees/task-c"))
+    fun `listAll returns one Worktree per subdirectory in worktrees dir`() =
+        runTest {
+            val manager = makeManager()
+            Files.createDirectories(agenticDir.resolve("worktrees/task-a"))
+            Files.createDirectories(agenticDir.resolve("worktrees/task-b"))
+            Files.createDirectories(agenticDir.resolve("worktrees/task-c"))
 
-        val result = manager.listAll()
+            val result = manager.listAll()
 
-        assertEquals(3, result.size)
-        val ids = result.map { it.taskId }.toSet()
-        assertTrue("task-a" in ids)
-        assertTrue("task-b" in ids)
-        assertTrue("task-c" in ids)
-    }
+            assertEquals(3, result.size)
+            val ids = result.map { it.taskId }.toSet()
+            assertTrue("task-a" in ids)
+            assertTrue("task-b" in ids)
+            assertTrue("task-c" in ids)
+        }
 
     @Test
     fun `listAll ignores files (only directories are worktrees)`() {
@@ -161,41 +169,43 @@ class DefaultWorktreeManagerExtendedTest {
     // ── delete ─────────────────────────────────────────────────────────────────
 
     @Test
-    fun `delete invokes git worktree remove`() = runTest {
-        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
-        Files.createDirectories(agenticDir.resolve("worktrees/task-to-delete"))
+    fun `delete invokes git worktree remove`() =
+        runTest {
+            coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
+            Files.createDirectories(agenticDir.resolve("worktrees/task-to-delete"))
 
-        val manager = makeManager()
-        manager.delete("task-to-delete")
+            val manager = makeManager()
+            manager.delete("task-to-delete")
 
-        coVerify {
-            shell.run(
-                "git",
-                "worktree",
-                "remove",
-                any(),
-                *anyVararg(),
-                workingDir = any(),
-            )
+            coVerify {
+                shell.run(
+                    "git",
+                    "worktree",
+                    "remove",
+                    any(),
+                    *anyVararg(),
+                    workingDir = any(),
+                )
+            }
         }
-    }
 
     // ── worktree path is consistent across getOrCreate and get ────────────────
 
     @Test
-    fun `worktree path returned by getOrCreate matches path returned by get`() = runTest {
-        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
+    fun `worktree path returned by getOrCreate matches path returned by get`() =
+        runTest {
+            coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
-        val manager = makeManager()
-        val created = manager.getOrCreate("task-xyz")
+            val manager = makeManager()
+            val created = manager.getOrCreate("task-xyz")
 
-        // Simulate what git worktree add would have done: create the directory on disk
-        Files.createDirectories(created.path)
+            // Simulate what git worktree add would have done: create the directory on disk
+            Files.createDirectories(created.path)
 
-        val retrieved = manager.get("task-xyz")
+            val retrieved = manager.get("task-xyz")
 
-        assertNotNull(retrieved)
-        assertEquals(created.path, retrieved.path)
-        assertEquals(created.taskId, retrieved.taskId)
-    }
+            assertNotNull(retrieved)
+            assertEquals(created.path, retrieved.path)
+            assertEquals(created.taskId, retrieved.taskId)
+        }
 }

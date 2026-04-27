@@ -9,7 +9,6 @@ import com.cramsan.flyerboard.lib.model.FlyerStatus
  * Service for communicating with the FlyerBoard backend flyer and moderation APIs.
  */
 interface FlyerService {
-
     /**
      * Lists publicly visible flyers with optional filtering and pagination.
      */

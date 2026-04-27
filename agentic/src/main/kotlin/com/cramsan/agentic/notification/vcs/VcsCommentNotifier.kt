@@ -29,7 +29,6 @@ private const val NOTIFICATION_MARKER = "<!-- agentic-notification -->"
  * is restarted after a failure event was already delivered.
  */
 class VcsCommentNotifier(private val vcsProvider: VcsProvider) : Notifier {
-
     override suspend fun notify(event: AgenticEvent) {
         when (event) {
             is AgenticEvent.TaskFailed -> handleTaskFailed(event)
@@ -47,26 +46,32 @@ class VcsCommentNotifier(private val vcsProvider: VcsProvider) : Notifier {
             logW(TAG, "No open PR found for failed task ${event.task.id}, cannot post notification comment")
             return
         }
-        val comment = formatNotificationComment(
-            "Task Failed",
-            "Task **${event.task.title}** (${event.task.id}) failed with reason:\n\n${event.reason}",
-        )
+        val comment =
+            formatNotificationComment(
+                "Task Failed",
+                "Task **${event.task.title}** (${event.task.id}) failed with reason:\n\n${event.reason}",
+            )
         postCommentIfNotDuplicate(pr.id, comment)
     }
 
     private suspend fun handleRunDeadlocked(event: AgenticEvent.RunDeadlocked) {
-        logD(TAG, "handleRunDeadlocked called. Blocked tasks: ${event.blockedTasks.size}, failed tasks: ${event.failedTasks.size}")
+        logD(
+            TAG,
+            "handleRunDeadlocked called. Blocked tasks: ${event.blockedTasks.size}, failed tasks: ${event.failedTasks.size}",
+        )
         val openPrs = vcsProvider.listOpenPullRequests()
-        val pr = openPrs.maxByOrNull { it.id } ?: run {
-            logW(TAG, "No open PR found to post deadlock notification")
-            return
-        }
+        val pr =
+            openPrs.maxByOrNull { it.id } ?: run {
+                logW(TAG, "No open PR found to post deadlock notification")
+                return
+            }
         val blockedIds = event.blockedTasks.joinToString(", ") { it.id }
         val failedIds = event.failedTasks.joinToString(", ") { it.id }
-        val comment = formatNotificationComment(
-            "Run Deadlocked",
-            "The agentic run is deadlocked and cannot make further progress.\n\nBlocked tasks: $blockedIds\nFailed tasks: $failedIds",
-        )
+        val comment =
+            formatNotificationComment(
+                "Run Deadlocked",
+                "The agentic run is deadlocked and cannot make further progress.\n\nBlocked tasks: $blockedIds\nFailed tasks: $failedIds",
+            )
         postCommentIfNotDuplicate(pr.id, comment)
     }
 
@@ -85,11 +90,9 @@ class VcsCommentNotifier(private val vcsProvider: VcsProvider) : Notifier {
         logI(TAG, "Notification comment successfully posted to PR $prId")
     }
 
-    private fun formatNotificationComment(title: String, body: String): String {
-        return """$NOTIFICATION_MARKER
+    private fun formatNotificationComment(title: String, body: String): String = """$NOTIFICATION_MARKER
 ## :robot: Agentic Notification: $title
 
 $body
 """
-    }
 }

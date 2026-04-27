@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.service
 
+import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.service.models.Organization
 import com.cramsan.framework.logging.logD
@@ -10,10 +10,7 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for organization operations.
  */
-class OrganizationService(
-    private val organizationDatastore: OrganizationDatastore,
-) {
-
+class OrganizationService(private val organizationDatastore: OrganizationDatastore) {
     /**
      * Retrieves an organization with the provided [id].
      */
@@ -51,12 +48,14 @@ class OrganizationService(
 
         val organization = orgResult.getOrThrow()
         // Add the user as an owner of the organization
-        organizationDatastore.addUserToOrganization(userId, organization.id, OrgRole.OWNER)
+        organizationDatastore
+            .addUserToOrganization(userId, organization.id, OrgRole.OWNER)
             .onFailure { e ->
                 logD(TAG, "Failed to add user to organization: %s", e.message)
 
                 // Attempt to clean up the newly created organization to avoid leaving it orphaned
-                organizationDatastore.deleteOrganization(organization.id)
+                organizationDatastore
+                    .deleteOrganization(organization.id)
                     .onFailure { cleanupError ->
                         logD(
                             TAG,

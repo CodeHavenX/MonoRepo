@@ -38,7 +38,8 @@ fun EdifikanaImageSelector(
         Text(
             text = label,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxWidth()
                 .padding(bottom = Padding.X_SMALL),
         )

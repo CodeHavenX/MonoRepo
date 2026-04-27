@@ -21,11 +21,8 @@ import kotlin.time.ExperimentalTime
  * Supabase implementation of [PaymentRecordDatastore].
  */
 @OptIn(ExperimentalTime::class)
-class SupabasePaymentRecordDatastore(
-    private val postgrest: Postgrest,
-    private val clock: Clock,
-) : PaymentRecordDatastore {
-
+class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private val clock: Clock) :
+    PaymentRecordDatastore {
     /**
      * Inserts a new payment record row and returns the created [PaymentRecord].
      */
@@ -38,21 +35,26 @@ class SupabasePaymentRecordDatastore(
         dueDate: LocalDate?,
         recordedBy: UserId?,
         notes: String?,
-    ): Result<PaymentRecord> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating payment record for unit: %s", unitId)
-        val entity = CreatePaymentRecordEntity(
-            unitId = unitId,
-            paymentType = paymentType.name,
-            periodMonth = periodMonth,
-            amountDue = amountDue,
-            dueDate = dueDate,
-            recordedBy = recordedBy,
-            notes = notes,
-        )
-        postgrest.from(PaymentRecordEntity.COLLECTION).insert(entity) {
-            select()
-        }.decodeSingle<PaymentRecordEntity>().toPaymentRecord()
-    }
+    ): Result<PaymentRecord> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Creating payment record for unit: %s", unitId)
+            val entity =
+                CreatePaymentRecordEntity(
+                    unitId = unitId,
+                    paymentType = paymentType.name,
+                    periodMonth = periodMonth,
+                    amountDue = amountDue,
+                    dueDate = dueDate,
+                    recordedBy = recordedBy,
+                    notes = notes,
+                )
+            postgrest
+                .from(PaymentRecordEntity.COLLECTION)
+                .insert(entity) {
+                    select()
+                }.decodeSingle<PaymentRecordEntity>()
+                .toPaymentRecord()
+        }
 
     /**
      * Retrieves a single payment record by [paymentRecordId]. Returns null if not found or soft-deleted.
@@ -61,12 +63,15 @@ class SupabasePaymentRecordDatastore(
     override suspend fun getPaymentRecord(paymentRecordId: PaymentRecordId): Result<PaymentRecord?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting payment record: %s", paymentRecordId)
-            postgrest.from(PaymentRecordEntity.COLLECTION).select {
-                filter {
-                    PaymentRecordEntity::paymentRecordId eq paymentRecordId.paymentRecordId
-                    PaymentRecordEntity::deletedAt isExact null
-                }
-            }.decodeSingleOrNull<PaymentRecordEntity>()?.toPaymentRecord()
+            postgrest
+                .from(PaymentRecordEntity.COLLECTION)
+                .select {
+                    filter {
+                        PaymentRecordEntity::paymentRecordId eq paymentRecordId.paymentRecordId
+                        PaymentRecordEntity::deletedAt isExact null
+                    }
+                }.decodeSingleOrNull<PaymentRecordEntity>()
+                ?.toPaymentRecord()
         }
 
     /**
@@ -79,16 +84,20 @@ class SupabasePaymentRecordDatastore(
     override suspend fun listPaymentRecords(
         unitId: UnitId,
         periodMonth: String?,
-    ): Result<List<PaymentRecord>> = runSuspendCatching(TAG) {
-        logD(TAG, "Listing payment records for unit: %s, period: %s", unitId, periodMonth)
-        postgrest.from(PaymentRecordEntity.COLLECTION).select {
-            filter {
-                PaymentRecordEntity::unitId eq unitId.unitId
-                PaymentRecordEntity::deletedAt isExact null
-                periodMonth?.let { PaymentRecordEntity::periodMonth eq LocalDate.parse("$it-01") }
-            }
-        }.decodeList<PaymentRecordEntity>().map { it.toPaymentRecord() }
-    }
+    ): Result<List<PaymentRecord>> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Listing payment records for unit: %s, period: %s", unitId, periodMonth)
+            postgrest
+                .from(PaymentRecordEntity.COLLECTION)
+                .select {
+                    filter {
+                        PaymentRecordEntity::unitId eq unitId.unitId
+                        PaymentRecordEntity::deletedAt isExact null
+                        periodMonth?.let { PaymentRecordEntity::periodMonth eq LocalDate.parse("$it-01") }
+                    }
+                }.decodeList<PaymentRecordEntity>()
+                .map { it.toPaymentRecord() }
+        }
 
     /**
      * Updates an existing payment record. Only non-null parameters are applied.
@@ -100,21 +109,25 @@ class SupabasePaymentRecordDatastore(
         paidDate: LocalDate?,
         status: PaymentStatus?,
         notes: String?,
-    ): Result<PaymentRecord> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating payment record: %s", paymentRecordId)
-        postgrest.from(PaymentRecordEntity.COLLECTION).update({
-            amountPaid?.let { value -> PaymentRecordEntity::amountPaid setTo value }
-            paidDate?.let { value -> PaymentRecordEntity::paidDate setTo value }
-            status?.let { value -> PaymentRecordEntity::status setTo value.name }
-            notes?.let { value -> PaymentRecordEntity::notes setTo value }
-        }) {
-            select()
-            filter {
-                PaymentRecordEntity::paymentRecordId eq paymentRecordId.paymentRecordId
-                PaymentRecordEntity::deletedAt isExact null
-            }
-        }.decodeSingle<PaymentRecordEntity>().toPaymentRecord()
-    }
+    ): Result<PaymentRecord> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Updating payment record: %s", paymentRecordId)
+            postgrest
+                .from(PaymentRecordEntity.COLLECTION)
+                .update({
+                    amountPaid?.let { value -> PaymentRecordEntity::amountPaid setTo value }
+                    paidDate?.let { value -> PaymentRecordEntity::paidDate setTo value }
+                    status?.let { value -> PaymentRecordEntity::status setTo value.name }
+                    notes?.let { value -> PaymentRecordEntity::notes setTo value }
+                }) {
+                    select()
+                    filter {
+                        PaymentRecordEntity::paymentRecordId eq paymentRecordId.paymentRecordId
+                        PaymentRecordEntity::deletedAt isExact null
+                    }
+                }.decodeSingle<PaymentRecordEntity>()
+                .toPaymentRecord()
+        }
 
     /**
      * Soft-deletes a payment record by setting [PaymentRecordEntity.deletedAt].
@@ -124,15 +137,17 @@ class SupabasePaymentRecordDatastore(
     override suspend fun deletePaymentRecord(paymentRecordId: PaymentRecordId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Soft deleting payment record: %s", paymentRecordId)
-            postgrest.from(PaymentRecordEntity.COLLECTION).update({
-                PaymentRecordEntity::deletedAt setTo clock.now()
-            }) {
-                select()
-                filter {
-                    PaymentRecordEntity::paymentRecordId eq paymentRecordId.paymentRecordId
-                    PaymentRecordEntity::deletedAt isExact null
-                }
-            }.decodeSingleOrNull<PaymentRecordEntity>() != null
+            postgrest
+                .from(PaymentRecordEntity.COLLECTION)
+                .update({
+                    PaymentRecordEntity::deletedAt setTo clock.now()
+                }) {
+                    select()
+                    filter {
+                        PaymentRecordEntity::paymentRecordId eq paymentRecordId.paymentRecordId
+                        PaymentRecordEntity::deletedAt isExact null
+                    }
+                }.decodeSingleOrNull<PaymentRecordEntity>() != null
         }
 
     /**
@@ -142,12 +157,14 @@ class SupabasePaymentRecordDatastore(
     override suspend fun purgePaymentRecord(paymentRecordId: PaymentRecordId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Purging payment record: %s", paymentRecordId)
-            postgrest.from(PaymentRecordEntity.COLLECTION).delete {
-                select()
-                filter {
-                    PaymentRecordEntity::paymentRecordId eq paymentRecordId.paymentRecordId
-                }
-            }.decodeSingleOrNull<PaymentRecordEntity>() != null
+            postgrest
+                .from(PaymentRecordEntity.COLLECTION)
+                .delete {
+                    select()
+                    filter {
+                        PaymentRecordEntity::paymentRecordId eq paymentRecordId.paymentRecordId
+                    }
+                }.decodeSingleOrNull<PaymentRecordEntity>() != null
         }
 
     companion object {

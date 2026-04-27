@@ -13,10 +13,7 @@ import kotlinx.datetime.LocalDate
 /**
  * Service for managing payment records. Delegates persistence to [PaymentRecordDatastore].
  */
-class PaymentRecordService(
-    private val paymentRecordDatastore: PaymentRecordDatastore,
-) {
-
+class PaymentRecordService(private val paymentRecordDatastore: PaymentRecordDatastore) {
     /**
      * Creates a new payment record.
      */
@@ -30,15 +27,16 @@ class PaymentRecordService(
         notes: String?,
     ): PaymentRecord {
         logD(TAG, "createPaymentRecord")
-        return paymentRecordDatastore.createPaymentRecord(
-            unitId = unitId,
-            paymentType = paymentType,
-            periodMonth = periodMonth,
-            amountDue = amountDue,
-            dueDate = dueDate,
-            recordedBy = recordedBy,
-            notes = notes,
-        ).getOrThrow()
+        return paymentRecordDatastore
+            .createPaymentRecord(
+                unitId = unitId,
+                paymentType = paymentType,
+                periodMonth = periodMonth,
+                amountDue = amountDue,
+                dueDate = dueDate,
+                recordedBy = recordedBy,
+                notes = notes,
+            ).getOrThrow()
     }
 
     /**
@@ -59,10 +57,11 @@ class PaymentRecordService(
         periodMonth: String?,
     ): List<PaymentRecord> {
         logD(TAG, "listPaymentRecords")
-        return paymentRecordDatastore.listPaymentRecords(
-            unitId = unitId,
-            periodMonth = periodMonth,
-        ).getOrThrow()
+        return paymentRecordDatastore
+            .listPaymentRecords(
+                unitId = unitId,
+                periodMonth = periodMonth,
+            ).getOrThrow()
     }
 
     /**
@@ -76,13 +75,14 @@ class PaymentRecordService(
         notes: String?,
     ): PaymentRecord {
         logD(TAG, "updatePaymentRecord")
-        return paymentRecordDatastore.updatePaymentRecord(
-            paymentRecordId = paymentRecordId,
-            amountPaid = amountPaid,
-            paidDate = paidDate,
-            status = status,
-            notes = notes,
-        ).getOrThrow()
+        return paymentRecordDatastore
+            .updatePaymentRecord(
+                paymentRecordId = paymentRecordId,
+                amountPaid = amountPaid,
+                paidDate = paidDate,
+                status = status,
+                notes = notes,
+            ).getOrThrow()
     }
 
     companion object {

@@ -14,11 +14,8 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for user related operations.
  */
-class UserController(
-    private val userService: UserService,
-    private val contextRetriever: ContextRetriever<Unit>,
-) : Controller {
-
+class UserController(private val userService: UserService, private val contextRetriever: ContextRetriever<Unit>) :
+    Controller {
     /**
      * Creates a new user.
      *
@@ -27,10 +24,11 @@ class UserController(
      */
     @OptIn(NetworkModel::class)
     suspend fun createUser(createUserRequest: CreateUserNetworkRequest): UserNetworkResponse {
-        val newUserResult = userService.createUser(
-            firstName = createUserRequest.firstName,
-            lastName = createUserRequest.lastName,
-        )
+        val newUserResult =
+            userService.createUser(
+                firstName = createUserRequest.firstName,
+                lastName = createUserRequest.lastName,
+            )
 
         return newUserResult.getOrThrow().toUserNetworkResponse()
     }

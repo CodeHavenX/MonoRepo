@@ -10,7 +10,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 private fun ScreenSelectorScreenPreview() {
     ScreenSelectorContent(
-        content = ScreenSelectorUIState(
+        content =
+        ScreenSelectorUIState(
             title = "ScreenSelectorScreenPreview",
             isLoading = true,
         ),

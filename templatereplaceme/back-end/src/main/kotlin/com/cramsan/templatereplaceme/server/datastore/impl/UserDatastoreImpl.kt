@@ -13,16 +13,17 @@ import kotlinx.coroutines.delay
 class UserDatastoreImpl : UserDatastore {
     override suspend fun createUser(
         firstName: String,
-        lastName: String
-    ): Result<User> = runSuspendCatching(TAG) {
-        @Suppress("MagicNumber")
-        delay(2000) // Simulate network/database delay
-        User(
-            id = UserId(UUID.random()),
-            firstName = firstName,
-            lastName = lastName
-        )
-    }
+        lastName: String,
+    ): Result<User> =
+        runSuspendCatching(TAG) {
+            @Suppress("MagicNumber")
+            delay(2000) // Simulate network/database delay
+            User(
+                id = UserId(UUID.random()),
+                firstName = firstName,
+                lastName = lastName,
+            )
+        }
 
     companion object {
         private const val TAG = "UserDatastoreImpl"

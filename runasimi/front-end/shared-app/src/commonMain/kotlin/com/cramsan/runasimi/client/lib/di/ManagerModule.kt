@@ -7,9 +7,10 @@ import com.cramsan.runasimi.client.lib.manager.VerbTranslationRepository
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-internal val ManagerModule = module {
-    singleOf(::VerbTranslationRepository)
-    singleOf(::QuechuaManager)
-    singleOf(::QuestionsManager)
-    singleOf(::PreferencesManager)
-}
+internal val ManagerModule =
+    module {
+        singleOf(::VerbTranslationRepository)
+        singleOf(::QuechuaManager)
+        singleOf(::QuestionsManager)
+        singleOf(::PreferencesManager)
+    }

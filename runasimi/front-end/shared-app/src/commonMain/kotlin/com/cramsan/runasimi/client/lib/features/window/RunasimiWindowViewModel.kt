@@ -19,17 +19,16 @@ class RunasimiWindowViewModel(
 ) : BaseViewModel<RunasimiWindowViewModelEvent, RunasimiWindowUIState>(
     dependencies,
     RunasimiWindowUIState,
-    TAG
+    TAG,
 ) {
-
     init {
         viewModelScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")
                 emitEvent(
                     RunasimiWindowViewModelEvent.RunasimiWindowEventWrapper(
-                        event as RunasimiWindowsEvent
-                    )
+                        event as RunasimiWindowsEvent,
+                    ),
                 )
             }
         }

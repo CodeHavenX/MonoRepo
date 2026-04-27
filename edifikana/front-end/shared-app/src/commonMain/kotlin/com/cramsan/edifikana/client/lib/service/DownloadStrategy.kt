@@ -6,7 +6,6 @@ import com.cramsan.framework.core.CoreUri
  * Strategy for downloading files.
  */
 interface DownloadStrategy {
-
     /**
      * Check if the file is cached.
      */

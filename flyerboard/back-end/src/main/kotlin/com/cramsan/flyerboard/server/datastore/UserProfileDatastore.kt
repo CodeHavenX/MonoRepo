@@ -1,14 +1,13 @@
 package com.cramsan.flyerboard.server.datastore
 
-import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.flyerboard.server.service.models.UserProfile
 
 /**
  * Interface defining data operations for user profiles.
  */
 interface UserProfileDatastore {
-
     /**
      * Retrieves the user profile for [userId]. Returns null if no profile exists yet.
      */

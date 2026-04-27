@@ -10,7 +10,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class FlyerBoardWindowNavGraphDestination : NavigationGraphDestination {
-
     /**
      * Splash navigation graph destination.
      */

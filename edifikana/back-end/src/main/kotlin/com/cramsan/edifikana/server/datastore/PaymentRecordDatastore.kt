@@ -12,7 +12,6 @@ import kotlinx.datetime.LocalDate
  * Interface for the payment record datastore.
  */
 interface PaymentRecordDatastore {
-
     /**
      * Creates a new payment record. Returns the [Result] with the created [PaymentRecord].
      */

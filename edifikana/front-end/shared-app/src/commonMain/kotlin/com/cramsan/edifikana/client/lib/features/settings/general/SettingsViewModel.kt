@@ -14,15 +14,12 @@ import kotlinx.coroutines.launch
  * ViewModel for the Settings screen.
  * Responsible for reading and updating the selected theme preference.
  */
-class SettingsViewModel(
-    dependencies: ViewModelDependencies,
-    private val preferencesManager: PreferencesManager,
-) : BaseViewModel<SettingsEvent, SettingsUIState>(
-    dependencies,
-    SettingsUIState.Initial,
-    TAG,
-) {
-
+class SettingsViewModel(dependencies: ViewModelDependencies, private val preferencesManager: PreferencesManager) :
+    BaseViewModel<SettingsEvent, SettingsUIState>(
+        dependencies,
+        SettingsUIState.Initial,
+        TAG,
+    ) {
     /**
      * Initialize and start listening to preference changes.
      */
@@ -42,9 +39,11 @@ class SettingsViewModel(
     }
 
     private suspend fun loadSelectedTheme() {
-        val themeString = preferencesManager.getStringPreference(
-            EdifikanaSettingKey.SelectedTheme,
-        ).getOrNull()
+        val themeString =
+            preferencesManager
+                .getStringPreference(
+                    EdifikanaSettingKey.SelectedTheme,
+                ).getOrNull()
         val themeMode = Theme.fromString(themeString)
         updateUiState { it.copy(selectedTheme = themeMode.toSelectedTheme()) }
     }
@@ -54,16 +53,18 @@ class SettingsViewModel(
      */
     fun changeSelectedTheme(theme: SelectedTheme) {
         viewModelScope.launch {
-            val themeToSave = when (theme) {
-                SelectedTheme.LIGHT -> Theme.LIGHT
-                SelectedTheme.DARK -> Theme.DARK
-                SelectedTheme.SYSTEM_DEFAULT -> Theme.SYSTEM_DEFAULT
-            }
+            val themeToSave =
+                when (theme) {
+                    SelectedTheme.LIGHT -> Theme.LIGHT
+                    SelectedTheme.DARK -> Theme.DARK
+                    SelectedTheme.SYSTEM_DEFAULT -> Theme.SYSTEM_DEFAULT
+                }
             // Persist the preference
-            preferencesManager.updatePreference(
-                EdifikanaSettingKey.SelectedTheme,
-                themeToSave.name,
-            ).getOrThrow()
+            preferencesManager
+                .updatePreference(
+                    EdifikanaSettingKey.SelectedTheme,
+                    themeToSave.name,
+                ).getOrThrow()
             // Update UI state immediately
             updateUiState { it.copy(selectedTheme = theme) }
         }

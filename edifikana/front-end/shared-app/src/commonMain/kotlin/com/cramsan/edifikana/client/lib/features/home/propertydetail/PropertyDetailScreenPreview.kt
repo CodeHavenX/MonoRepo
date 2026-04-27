@@ -11,182 +11,196 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Preview
 @Composable
-private fun PropertyDetailScreenPreview() = AppTheme {
-    PropertyDetailContent(
-        content = PropertyDetailUIState(
-            isLoading = false,
-            propertyId = PropertyId("preview-property-id"),
-            name = "Sample Property",
-            address = "123 Main Street, City, State 12345",
-            imageUrl = "drawable:CASA",
-            isEditMode = false,
-        ),
-        onBackSelected = {},
-        onEditSelected = {},
-        onCancelEdit = {},
-        onSaveProperty = {},
-        onDeleteProperty = {},
-        onNameChanged = {},
-        onAddressChanged = {},
-        onOpenSelectorSelected = {},
-    )
-}
+private fun PropertyDetailScreenPreview() =
+    AppTheme {
+        PropertyDetailContent(
+            content =
+            PropertyDetailUIState(
+                isLoading = false,
+                propertyId = PropertyId("preview-property-id"),
+                name = "Sample Property",
+                address = "123 Main Street, City, State 12345",
+                imageUrl = "drawable:CASA",
+                isEditMode = false,
+            ),
+            onBackSelected = {},
+            onEditSelected = {},
+            onCancelEdit = {},
+            onSaveProperty = {},
+            onDeleteProperty = {},
+            onNameChanged = {},
+            onAddressChanged = {},
+            onOpenSelectorSelected = {},
+        )
+    }
 
 /**
  * Preview for the PropertyDetail feature screen in edit mode.
  */
 @Preview
 @Composable
-private fun PropertyDetailScreenEditModePreview() = AppTheme {
-    PropertyDetailContent(
-        content = PropertyDetailUIState(
-            isLoading = false,
-            propertyId = PropertyId("preview-property-id"),
-            name = "Sample Property",
-            address = "123 Main Street, City, State 12345",
-            imageUrl = "drawable:QUINTA",
-            isEditMode = true,
-        ),
-        onBackSelected = {},
-        onEditSelected = {},
-        onCancelEdit = {},
-        onSaveProperty = {},
-        onDeleteProperty = {},
-        onNameChanged = {},
-        onAddressChanged = {},
-        onOpenSelectorSelected = {},
-    )
-}
+private fun PropertyDetailScreenEditModePreview() =
+    AppTheme {
+        PropertyDetailContent(
+            content =
+            PropertyDetailUIState(
+                isLoading = false,
+                propertyId = PropertyId("preview-property-id"),
+                name = "Sample Property",
+                address = "123 Main Street, City, State 12345",
+                imageUrl = "drawable:QUINTA",
+                isEditMode = true,
+            ),
+            onBackSelected = {},
+            onEditSelected = {},
+            onCancelEdit = {},
+            onSaveProperty = {},
+            onDeleteProperty = {},
+            onNameChanged = {},
+            onAddressChanged = {},
+            onOpenSelectorSelected = {},
+        )
+    }
 
 /**
  * Preview for the PropertyDetail feature screen - Edit mode with uploading state.
  */
 @Preview
 @Composable
-private fun PropertyDetailScreenUploadingPreview() = AppTheme {
-    PropertyDetailContent(
-        content = PropertyDetailUIState(
-            isLoading = false,
-            propertyId = PropertyId("preview-property-id"),
-            name = "Sample Property",
-            address = "123 Main Street, City, State 12345",
-            imageUrl = "drawable:QUINTA",
-            isEditMode = true,
-            selectedIcon = null,
-            isUploading = true,
-            uploadError = null,
-        ),
-        onBackSelected = {},
-        onEditSelected = {},
-        onCancelEdit = {},
-        onSaveProperty = {},
-        onDeleteProperty = {},
-        onNameChanged = {},
-        onAddressChanged = {},
-        onOpenSelectorSelected = {},
-    )
-}
+private fun PropertyDetailScreenUploadingPreview() =
+    AppTheme {
+        PropertyDetailContent(
+            content =
+            PropertyDetailUIState(
+                isLoading = false,
+                propertyId = PropertyId("preview-property-id"),
+                name = "Sample Property",
+                address = "123 Main Street, City, State 12345",
+                imageUrl = "drawable:QUINTA",
+                isEditMode = true,
+                selectedIcon = null,
+                isUploading = true,
+                uploadError = null,
+            ),
+            onBackSelected = {},
+            onEditSelected = {},
+            onCancelEdit = {},
+            onSaveProperty = {},
+            onDeleteProperty = {},
+            onNameChanged = {},
+            onAddressChanged = {},
+            onOpenSelectorSelected = {},
+        )
+    }
 
 /**
  * Preview for the PropertyDetail feature screen - Edit mode with custom image selected.
  */
 @Preview
 @Composable
-private fun PropertyDetailScreenWithCustomImagePreview() = AppTheme {
-    PropertyDetailContent(
-        content = PropertyDetailUIState(
-            isLoading = false,
-            propertyId = PropertyId("preview-property-id"),
-            name = "Sample Property",
-            address = "123 Main Street, City, State 12345",
-            imageUrl = "drawable:QUINTA",
-            isEditMode = true,
-            selectedIcon = PropertyIconOptions.fromImageUrl("https://example.com/custom-image.jpg"),
-            isUploading = false,
-            uploadError = null,
-        ),
-        onBackSelected = {},
-        onEditSelected = {},
-        onCancelEdit = {},
-        onSaveProperty = {},
-        onDeleteProperty = {},
-        onNameChanged = {},
-        onAddressChanged = {},
-        onOpenSelectorSelected = {},
-    )
-}
+private fun PropertyDetailScreenWithCustomImagePreview() =
+    AppTheme {
+        PropertyDetailContent(
+            content =
+            PropertyDetailUIState(
+                isLoading = false,
+                propertyId = PropertyId("preview-property-id"),
+                name = "Sample Property",
+                address = "123 Main Street, City, State 12345",
+                imageUrl = "drawable:QUINTA",
+                isEditMode = true,
+                selectedIcon = PropertyIconOptions.fromImageUrl("https://example.com/custom-image.jpg"),
+                isUploading = false,
+                uploadError = null,
+            ),
+            onBackSelected = {},
+            onEditSelected = {},
+            onCancelEdit = {},
+            onSaveProperty = {},
+            onDeleteProperty = {},
+            onNameChanged = {},
+            onAddressChanged = {},
+            onOpenSelectorSelected = {},
+        )
+    }
 
 /**
  * Preview for the PropertyDetail feature screen - Edit mode with upload error.
  */
 @Preview
 @Composable
-private fun PropertyDetailScreenUploadErrorPreview() = AppTheme {
-    PropertyDetailContent(
-        content = PropertyDetailUIState(
-            isLoading = false,
-            propertyId = PropertyId("preview-property-id"),
-            name = "Sample Property",
-            address = "123 Main Street, City, State 12345",
-            imageUrl = "drawable:QUINTA",
-            isEditMode = true,
-            selectedIcon = null,
-            isUploading = false,
-            uploadError = "File size exceeds 10MB limit",
-        ),
-        onBackSelected = {},
-        onEditSelected = {},
-        onCancelEdit = {},
-        onSaveProperty = {},
-        onDeleteProperty = {},
-        onNameChanged = {},
-        onAddressChanged = {},
-        onOpenSelectorSelected = {},
-    )
-}
+private fun PropertyDetailScreenUploadErrorPreview() =
+    AppTheme {
+        PropertyDetailContent(
+            content =
+            PropertyDetailUIState(
+                isLoading = false,
+                propertyId = PropertyId("preview-property-id"),
+                name = "Sample Property",
+                address = "123 Main Street, City, State 12345",
+                imageUrl = "drawable:QUINTA",
+                isEditMode = true,
+                selectedIcon = null,
+                isUploading = false,
+                uploadError = "File size exceeds 10MB limit",
+            ),
+            onBackSelected = {},
+            onEditSelected = {},
+            onCancelEdit = {},
+            onSaveProperty = {},
+            onDeleteProperty = {},
+            onNameChanged = {},
+            onAddressChanged = {},
+            onOpenSelectorSelected = {},
+        )
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun PropertyDetailScreenPreview_ES() = AppTheme {
-    PropertyDetailContent(
-        content = PropertyDetailUIState(
-            isLoading = false,
-            propertyId = PropertyId("preview-property-id"),
-            name = "Edificio Las Palmeras",
-            address = "Av. Javier Prado 456, San Isidro, Lima",
-            imageUrl = "drawable:CASA",
-            isEditMode = false,
-        ),
-        onBackSelected = {},
-        onEditSelected = {},
-        onCancelEdit = {},
-        onSaveProperty = {},
-        onDeleteProperty = {},
-        onNameChanged = {},
-        onAddressChanged = {},
-        onOpenSelectorSelected = {},
+private fun PropertyDetailScreenPreview_ES() =
+    AppTheme {
+        PropertyDetailContent(
+            content =
+            PropertyDetailUIState(
+                isLoading = false,
+                propertyId = PropertyId("preview-property-id"),
+                name = "Edificio Las Palmeras",
+                address = "Av. Javier Prado 456, San Isidro, Lima",
+                imageUrl = "drawable:CASA",
+                isEditMode = false,
+            ),
+            onBackSelected = {},
+            onEditSelected = {},
+            onCancelEdit = {},
+            onSaveProperty = {},
+            onDeleteProperty = {},
+            onNameChanged = {},
+            onAddressChanged = {},
+            onOpenSelectorSelected = {},
         )
-}
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun PropertyDetailScreenEditModePreview_ES() = AppTheme {
-    PropertyDetailContent(
-        content = PropertyDetailUIState(
-            isLoading = false,
-            propertyId = PropertyId("preview-property-id"),
-            name = "Edificio Las Palmeras",
-            address = "Av. Javier Prado 456, San Isidro, Lima",
-            imageUrl = "drawable:QUINTA",
-            isEditMode = true,
-        ),
-        onBackSelected = {},
-        onEditSelected = {},
-        onCancelEdit = {},
-        onSaveProperty = {},
-        onDeleteProperty = {},
-        onNameChanged = {},
-        onAddressChanged = {},
-        onOpenSelectorSelected = {},
+private fun PropertyDetailScreenEditModePreview_ES() =
+    AppTheme {
+        PropertyDetailContent(
+            content =
+            PropertyDetailUIState(
+                isLoading = false,
+                propertyId = PropertyId("preview-property-id"),
+                name = "Edificio Las Palmeras",
+                address = "Av. Javier Prado 456, San Isidro, Lima",
+                imageUrl = "drawable:QUINTA",
+                isEditMode = true,
+            ),
+            onBackSelected = {},
+            onEditSelected = {},
+            onCancelEdit = {},
+            onSaveProperty = {},
+            onDeleteProperty = {},
+            onNameChanged = {},
+            onAddressChanged = {},
+            onOpenSelectorSelected = {},
         )
-}
+    }

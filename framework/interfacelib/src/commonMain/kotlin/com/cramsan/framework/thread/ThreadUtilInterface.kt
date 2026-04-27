@@ -4,7 +4,6 @@ package com.cramsan.framework.thread
  * Module with utility functions around threads and dispatching blocks
  */
 interface ThreadUtilInterface {
-
     /**
      * Return true is the current thread is the UI thread
      */

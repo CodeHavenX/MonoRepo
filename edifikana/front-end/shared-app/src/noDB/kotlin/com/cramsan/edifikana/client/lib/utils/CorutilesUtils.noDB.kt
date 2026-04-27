@@ -12,7 +12,7 @@ actual class IODependencies
  */
 actual fun readBytes(
     uri: CoreUri,
-    dependencies: IODependencies
+    dependencies: IODependencies,
 ): Result<ByteArray> {
     TODO("Not yet implemented")
 }

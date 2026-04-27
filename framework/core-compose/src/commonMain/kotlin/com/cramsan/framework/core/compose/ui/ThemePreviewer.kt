@@ -33,7 +33,7 @@ fun ColorPreviewer(
 ) {
     Row(modifier) {
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState())
+            modifier = Modifier.verticalScroll(rememberScrollState()),
         ) {
             ColorPreview(colorScheme.primary, "primary")
             ColorPreview(colorScheme.onPrimary, "onPrimary")
@@ -56,7 +56,7 @@ fun ColorPreviewer(
             ColorPreview(colorScheme.onSurfaceVariant, "onSurfaceVariant")
         }
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState())
+            modifier = Modifier.verticalScroll(rememberScrollState()),
         ) {
             ColorPreview(colorScheme.surfaceTint, "surfaceTint")
             ColorPreview(colorScheme.inverseSurface, "inverseSurface")
@@ -146,7 +146,8 @@ private fun ShapePreview(shape: Shape, name: String) {
             modifier = Modifier.padding(8.dp),
         ) {
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .size(100.dp)
                     .background(MaterialTheme.colorScheme.background)
                     .border(1.dp, MaterialTheme.colorScheme.onBackground, shape = shape),

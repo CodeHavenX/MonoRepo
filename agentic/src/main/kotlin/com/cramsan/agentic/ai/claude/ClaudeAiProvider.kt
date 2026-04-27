@@ -22,12 +22,12 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.put
+import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "ClaudeAiProvider"
 private const val ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
@@ -56,7 +56,6 @@ class ClaudeAiProvider(
     private val json: Json,
     private val model: String,
 ) : AiProvider {
-
     override suspend fun chat(
         systemPrompt: String,
         messages: List<AiMessage>,
@@ -91,41 +90,62 @@ class ClaudeAiProvider(
         var lastException: Exception? = null
 
         repeat(retryDelays.size + 1) { attempt ->
-            logI(TAG, "Sending HTTP request to Anthropic API: model=$model, messageCount=${messages.size}, attempt=${attempt + 1}")
+            logI(
+                TAG,
+                "Sending HTTP request to Anthropic API: model=$model, messageCount=${messages.size}, attempt=${attempt + 1}",
+            )
             try {
-                val response = httpClient.post(ANTHROPIC_API_URL) {
-                    headers {
-                        append("x-api-key", apiKey)
-                        append("anthropic-version", ANTHROPIC_VERSION)
+                val response =
+                    httpClient.post(ANTHROPIC_API_URL) {
+                        headers {
+                            append("x-api-key", apiKey)
+                            append("anthropic-version", ANTHROPIC_VERSION)
+                        }
+                        contentType(ContentType.Application.Json)
+                        setBody(requestBody.toString())
                     }
-                    contentType(ContentType.Application.Json)
-                    setBody(requestBody.toString())
-                }
 
                 logD(TAG, "Received HTTP response: status=${response.status.value}")
                 when {
                     response.status == HttpStatusCode.OK -> {
                         val bodyText = response.bodyAsText()
                         val claudeResponse = json.decodeFromString<ClaudeResponse>(bodyText)
-                        logI(TAG, "Successful response: id=${claudeResponse.id}, stopReason=${claudeResponse.stopReason}, contentBlockCount=${claudeResponse.content.size}")
+                        logI(
+                            TAG,
+                            "Successful response: id=${claudeResponse.id}, stopReason=${claudeResponse.stopReason}, contentBlockCount=${claudeResponse.content.size}",
+                        )
                         return claudeResponse.toAiResponse()
                     }
+
                     response.status.value == HttpStatusCode.TooManyRequests.value -> {
                         val body = response.bodyAsText()
                         logW(TAG, "Rate limit hit (429) on attempt ${attempt + 1}: $body")
-                        lastException = AiProviderException("Claude API error ${response.status.value}: $body", response.status.value)
+                        lastException =
+                            AiProviderException(
+                                "Claude API error ${response.status.value}: $body",
+                                response.status.value,
+                            )
                         if (attempt < retryDelays.size) delay(retryDelays[attempt])
                     }
+
                     response.status.value >= HttpStatusCode.InternalServerError.value -> {
                         val body = response.bodyAsText()
                         logW(TAG, "Server error (${response.status.value}) on attempt ${attempt + 1}: $body")
-                        lastException = AiProviderException("Claude API error ${response.status.value}: $body", response.status.value)
+                        lastException =
+                            AiProviderException(
+                                "Claude API error ${response.status.value}: $body",
+                                response.status.value,
+                            )
                         if (attempt < retryDelays.size) delay(retryDelays[attempt])
                     }
+
                     else -> {
                         val body = response.bodyAsText()
                         logE(TAG, "Non-retryable API error: status=${response.status.value}, body=$body")
-                        throw AiProviderException("Claude API error ${response.status.value}: $body", response.status.value)
+                        throw AiProviderException(
+                            "Claude API error ${response.status.value}: $body",
+                            response.status.value,
+                        )
                     }
                 }
             } catch (e: AiProviderException) {
@@ -141,14 +161,16 @@ class ClaudeAiProvider(
         throw lastException ?: AiProviderException("Unknown error after retries")
     }
 
-    private fun ClaudeResponse.toAiResponse(): AiResponse = AiResponse(
-        id = id,
-        content = content.map { block ->
-            when (block) {
-                is ClaudeContentBlock.Text -> AiContentBlock.Text(block.text)
-                is ClaudeContentBlock.ToolUse -> AiContentBlock.ToolCall(block.id, block.name, block.input)
-            }
-        },
-        stopReason = stopReason,
-    )
+    private fun ClaudeResponse.toAiResponse(): AiResponse =
+        AiResponse(
+            id = id,
+            content =
+            content.map { block ->
+                when (block) {
+                    is ClaudeContentBlock.Text -> AiContentBlock.Text(block.text)
+                    is ClaudeContentBlock.ToolUse -> AiContentBlock.ToolCall(block.id, block.name, block.input)
+                }
+            },
+            stopReason = stopReason,
+        )
 }

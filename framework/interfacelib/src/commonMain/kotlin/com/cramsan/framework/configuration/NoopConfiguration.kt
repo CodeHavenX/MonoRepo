@@ -5,7 +5,10 @@ package com.cramsan.framework.configuration
  */
 class NoopConfiguration : Configuration {
     override fun readString(key: String): String? = null
+
     override fun readInt(key: String): Int? = null
+
     override fun readLong(key: String): Long? = null
+
     override fun readBoolean(key: String): Boolean? = null
 }

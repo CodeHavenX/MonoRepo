@@ -10,7 +10,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class DebugDestination : Destination {
-
     /**
      * An example class representing navigating to a screen within the Debug nav graph.
      */

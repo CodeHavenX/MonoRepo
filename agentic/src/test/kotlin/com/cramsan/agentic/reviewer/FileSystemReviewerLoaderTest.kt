@@ -12,7 +12,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class FileSystemReviewerLoaderTest {
-
     @TempDir
     lateinit var reviewersDir: Path
 

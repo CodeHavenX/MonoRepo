@@ -18,9 +18,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun PropertyHomeScreenPreview() {
     AppTheme {
         PropertyHomeScreenContent(
-            uiState = PropertyHomeUIModel(
+            uiState =
+            PropertyHomeUIModel(
                 label = "Cenit, Barranco",
-                availableProperties = listOf(
+                availableProperties =
+                listOf(
                     PropertyUiModel(
                         propertyId = PropertyId("property-1"),
                         name = "Cenit",
@@ -60,9 +62,11 @@ private fun AccountDropDownPreview() {
 private fun PropertyHomeScreenPreview_ES() {
     AppTheme {
         PropertyHomeScreenContent(
-            uiState = PropertyHomeUIModel(
+            uiState =
+            PropertyHomeUIModel(
                 label = "Cenit, Barranco",
-                availableProperties = listOf(
+                availableProperties =
+                listOf(
                     PropertyUiModel(
                         propertyId = PropertyId("property-1"),
                         name = "Cenit",

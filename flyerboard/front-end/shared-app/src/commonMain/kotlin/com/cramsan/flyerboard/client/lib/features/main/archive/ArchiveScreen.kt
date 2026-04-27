@@ -129,13 +129,17 @@ internal fun ArchiveContent(
             contentAlignment = Alignment.Center,
         ) {
             when {
-                uiState.isLoading -> CircularProgressIndicator()
+                uiState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+
                 uiState.flyers.isEmpty() -> {
                     Text(
                         text = stringResource(Res.string.archive_screen_empty_message),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
+
                 else -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),

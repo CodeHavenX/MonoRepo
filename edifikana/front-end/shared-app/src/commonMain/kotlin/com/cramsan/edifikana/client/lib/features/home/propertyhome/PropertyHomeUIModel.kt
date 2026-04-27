@@ -19,13 +19,14 @@ data class PropertyHomeUIModel(
     val orgId: OrganizationId?,
 ) : ViewModelUIState {
     companion object {
-        val Empty = PropertyHomeUIModel(
-            label = "",
-            selectedTab = Tabs.None,
-            availableProperties = emptyList(),
-            propertyId = null,
-            orgId = null,
-        )
+        val Empty =
+            PropertyHomeUIModel(
+                label = "",
+                selectedTab = Tabs.None,
+                availableProperties = emptyList(),
+                propertyId = null,
+                orgId = null,
+            )
     }
 }
 
@@ -51,11 +52,7 @@ enum class Tabs {
 /**
  * UI model for a single property.
  */
-data class PropertyUiModel(
-    val propertyId: PropertyId,
-    val name: String,
-    val selected: Boolean,
-)
+data class PropertyUiModel(val propertyId: PropertyId, val name: String, val selected: Boolean)
 
 /**
  * Convert a property model to a UI model.

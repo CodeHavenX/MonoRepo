@@ -15,17 +15,17 @@ data class SignUpUIState(
     val registerEnabled: Boolean,
     val errorMessages: List<String>?,
 ) : ViewModelUIState {
-
     companion object {
-        val Initial = SignUpUIState(
-            isLoading = false,
-            firstName = "",
-            lastName = "",
-            email = "",
-            phoneNumber = "",
-            policyChecked = false,
-            registerEnabled = false,
-            errorMessages = null,
-        )
+        val Initial =
+            SignUpUIState(
+                isLoading = false,
+                firstName = "",
+                lastName = "",
+                email = "",
+                phoneNumber = "",
+                policyChecked = false,
+                registerEnabled = false,
+                errorMessages = null,
+            )
     }
 }

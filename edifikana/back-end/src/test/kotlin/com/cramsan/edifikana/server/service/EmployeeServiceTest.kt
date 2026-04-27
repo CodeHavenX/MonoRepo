@@ -52,151 +52,158 @@ class EmployeeServiceTest {
      * Tests that createEmployee creates an employee and returns it.
      */
     @Test
-    fun `createEmployee should call employeeDatastore and return employee`() = runTest {
-        // Arrange
-        val employee = mockk<Employee>()
-        val idType = IdType.DNI
-        val firstName = "John"
-        val lastName = "Doe"
-        val role = EmployeeRole.MANAGER
-        val propertyId = PropertyId("property-1")
-        coEvery {
-            employeeDatastore.createEmployee(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-            )
-        } returns Result.success(employee)
+    fun `createEmployee should call employeeDatastore and return employee`() =
+        runTest {
+            // Arrange
+            val employee = mockk<Employee>()
+            val idType = IdType.DNI
+            val firstName = "John"
+            val lastName = "Doe"
+            val role = EmployeeRole.MANAGER
+            val propertyId = PropertyId("property-1")
+            coEvery {
+                employeeDatastore.createEmployee(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns Result.success(employee)
 
-        // Act
-        val result = employeeService.createEmployee(idType, firstName, lastName, role, propertyId)
+            // Act
+            val result = employeeService.createEmployee(idType, firstName, lastName, role, propertyId)
 
-        // Assert
-        assertEquals(employee, result)
-        coVerify {
-            employeeDatastore.createEmployee(
-                idType,
-                firstName,
-                lastName,
-                role,
-                propertyId,
-            )
+            // Assert
+            assertEquals(employee, result)
+            coVerify {
+                employeeDatastore.createEmployee(
+                    idType,
+                    firstName,
+                    lastName,
+                    role,
+                    propertyId,
+                )
+            }
         }
-    }
 
     /**
      * Tests that getEmployee retrieves an employee by ID and returns it.
      */
     @Test
-    fun `getEmployee should call employeeDatastore and return employee`() = runTest {
-        // Arrange
-        val employee = mockk<Employee>()
-        val employeeId = EmployeeId("employee-1")
-        coEvery { employeeDatastore.getEmployee(any()) } returns Result.success(employee)
+    fun `getEmployee should call employeeDatastore and return employee`() =
+        runTest {
+            // Arrange
+            val employee = mockk<Employee>()
+            val employeeId = EmployeeId("employee-1")
+            coEvery { employeeDatastore.getEmployee(any()) } returns Result.success(employee)
 
-        // Act
-        val result = employeeService.getEmployee(employeeId)
+            // Act
+            val result = employeeService.getEmployee(employeeId)
 
-        // Assert
-        assertEquals(employee, result)
-        coVerify { employeeDatastore.getEmployee(employeeId) }
-    }
+            // Assert
+            assertEquals(employee, result)
+            coVerify { employeeDatastore.getEmployee(employeeId) }
+        }
 
     /**
      * Tests that getEmployee returns null if the employee is not found.
      */
     @Test
-    fun `getEmployee should return null if not found`() = runTest {
-        // Arrange
-        val employeeId = EmployeeId("employee-2")
-        coEvery { employeeDatastore.getEmployee(any()) } returns Result.failure(Exception("Not found"))
+    fun `getEmployee should return null if not found`() =
+        runTest {
+            // Arrange
+            val employeeId = EmployeeId("employee-2")
+            coEvery { employeeDatastore.getEmployee(any()) } returns Result.failure(Exception("Not found"))
 
-        // Act
-        val result = employeeService.getEmployee(employeeId)
+            // Act
+            val result = employeeService.getEmployee(employeeId)
 
-        // Assert
-        assertNull(result)
-        coVerify { employeeDatastore.getEmployee(employeeId) }
-    }
+            // Assert
+            assertNull(result)
+            coVerify { employeeDatastore.getEmployee(employeeId) }
+        }
 
     /**
      * Tests that getEmployees retrieves all employees and returns a list.
      */
     @Test
-    fun `getEmployees should call employeeDatastore and return list`() = runTest {
-        // Arrange
-        val employeeLists = listOf(mockk<Employee>(), mockk<Employee>())
-        val request = UserId("user-1")
-        val clientContext = ClientContext.AuthenticatedClientContext<SupabaseContextPayload>(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user-1"),
-            )
-        )
-        coEvery { employeeDatastore.getEmployees(request) } returns Result.success(employeeLists)
+    fun `getEmployees should call employeeDatastore and return list`() =
+        runTest {
+            // Arrange
+            val employeeLists = listOf(mockk<Employee>(), mockk<Employee>())
+            val request = UserId("user-1")
+            val clientContext =
+                ClientContext.AuthenticatedClientContext<SupabaseContextPayload>(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user-1"),
+                    ),
+                )
+            coEvery { employeeDatastore.getEmployees(request) } returns Result.success(employeeLists)
 
-        // Act
-        val result = employeeService.getEmployees(clientContext)
+            // Act
+            val result = employeeService.getEmployees(clientContext)
 
-        // Assert
-        assertEquals(employeeLists, result)
-        coVerify { employeeDatastore.getEmployees(request) }
-    }
+            // Assert
+            assertEquals(employeeLists, result)
+            coVerify { employeeDatastore.getEmployees(request) }
+        }
 
     /**
      * Tests that updateEmployee updates an employee and returns the updated employee.
      */
     @Test
-    fun `updateEmployee should call employeeDatastore and return updated employee`() = runTest {
-        // Arrange
-        val employee = mockk<Employee>()
-        val employeeId = EmployeeId("employee-3")
-        val idType = IdType.DNI
-        val firstName = "Jane"
-        val lastName = "Smith"
-        val role = EmployeeRole.MANAGER
-        coEvery {
-            employeeDatastore.updateEmployee(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-            )
-        } returns Result.success(employee)
+    fun `updateEmployee should call employeeDatastore and return updated employee`() =
+        runTest {
+            // Arrange
+            val employee = mockk<Employee>()
+            val employeeId = EmployeeId("employee-3")
+            val idType = IdType.DNI
+            val firstName = "Jane"
+            val lastName = "Smith"
+            val role = EmployeeRole.MANAGER
+            coEvery {
+                employeeDatastore.updateEmployee(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns Result.success(employee)
 
-        // Act
-        val result = employeeService.updateEmployee(employeeId, idType, firstName, lastName, role)
+            // Act
+            val result = employeeService.updateEmployee(employeeId, idType, firstName, lastName, role)
 
-        // Assert
-        assertEquals(employee, result)
-        coVerify {
-            employeeDatastore.updateEmployee(
-                employeeId,
-                idType,
-                firstName,
-                lastName,
-                role,
-            )
+            // Assert
+            assertEquals(employee, result)
+            coVerify {
+                employeeDatastore.updateEmployee(
+                    employeeId,
+                    idType,
+                    firstName,
+                    lastName,
+                    role,
+                )
+            }
         }
-    }
 
     /**
      * Tests that deleteEmployee deletes a employee and returns true.
      */
     @Test
-    fun `deleteEmployee should call employeeDatastore and return true`() = runTest {
-        // Arrange
-        val employeeId = EmployeeId("employee-4")
-        coEvery { employeeDatastore.deleteEmployee(any()) } returns Result.success(true)
+    fun `deleteEmployee should call employeeDatastore and return true`() =
+        runTest {
+            // Arrange
+            val employeeId = EmployeeId("employee-4")
+            coEvery { employeeDatastore.deleteEmployee(any()) } returns Result.success(true)
 
-        // Act
-        val result = employeeService.deleteEmployee(employeeId)
+            // Act
+            val result = employeeService.deleteEmployee(employeeId)
 
-        // Assert
-        assertEquals(true, result)
-        coVerify { employeeDatastore.deleteEmployee(employeeId) }
-    }
+            // Assert
+            assertEquals(true, result)
+            coVerify { employeeDatastore.deleteEmployee(employeeId) }
+        }
 }

@@ -12,10 +12,7 @@ import kotlin.reflect.KClass
  *
  * @property path The base path for the API.
  */
-open class Api(
-    val path: String,
-) {
-
+open class Api(val path: String) {
     // List of registered operations
     private val operations = mutableListOf<Operation<RequestBody, QueryParam, PathParam, ResponseBody>>()
 
@@ -31,9 +28,9 @@ open class Api(
         RequestType : RequestBody,
         QueryParamType : QueryParam,
         PathParamType : PathParam,
-        ResponseType : ResponseBody
+        ResponseType : ResponseBody,
         > registerOperation(
-        registrar: Operation<RequestType, QueryParamType, PathParamType, ResponseType>
+        registrar: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
     ) {
         operations.add(registrar as Operation<RequestBody, QueryParam, PathParam, ResponseBody>)
     }
@@ -64,15 +61,16 @@ open class Api(
         queryParamType: KClass<QueryParamType> = QueryParamType::class,
         pathParamType: KClass<PathParamType> = PathParamType::class,
         responseBodyType: KClass<ResponseType> = ResponseType::class,
-    ): Operation<RequestType, QueryParamType, PathParamType, ResponseType> = Operation(
-        method,
-        this.path,
-        path,
-        requestBodyType,
-        queryParamType,
-        pathParamType,
-        responseBodyType
-    ).also {
-        registerOperation(it)
-    }
+    ): Operation<RequestType, QueryParamType, PathParamType, ResponseType> =
+        Operation(
+            method,
+            this.path,
+            path,
+            requestBodyType,
+            queryParamType,
+            pathParamType,
+            responseBodyType,
+        ).also {
+            registerOperation(it)
+        }
 }

@@ -33,7 +33,6 @@ class DefaultScaffolder(
     private val reviewersConfig: ReviewersConfig,
     private val workflowStages: List<WorkflowStageConfig> = emptyList(),
 ) : Scaffolder {
-
     override fun scaffold(outputDir: Path) {
         // Step 1: Copy all template files from resources to outputDir
         copyTemplatesFromResources(outputDir)
@@ -47,7 +46,10 @@ class DefaultScaffolder(
 
         // Step 3: Scaffold reviewers based on configuration
         when (reviewersConfig) {
-            is ReviewersConfig.Inline -> scaffoldInlineReviewers(outputDir, reviewersConfig.reviewers)
+            is ReviewersConfig.Inline -> {
+                scaffoldInlineReviewers(outputDir, reviewersConfig.reviewers)
+            }
+
             is ReviewersConfig.Directory -> {
                 // Create the reviewers directory if it doesn't exist
                 val reviewersDir = resolvePath(outputDir, reviewersConfig.path)
@@ -60,9 +62,10 @@ class DefaultScaffolder(
     }
 
     private fun copyTemplatesFromResources(outputDir: Path) {
-        val templatePaths = collectDocumentTemplatePaths() +
-            collectReviewerTemplatePaths() +
-            collectWorkflowTemplatePaths()
+        val templatePaths =
+            collectDocumentTemplatePaths() +
+                collectReviewerTemplatePaths() +
+                collectWorkflowTemplatePaths()
 
         for (templatePath in templatePaths) {
             copyTemplateIfMissing(outputDir, templatePath)
@@ -70,21 +73,24 @@ class DefaultScaffolder(
     }
 
     private fun collectDocumentTemplatePaths(): Set<String> =
-        inputDocuments.mapNotNull { doc ->
-            (doc.template as? DocumentTemplateConfig.File)?.path
-        }.toSet()
+        inputDocuments
+            .mapNotNull { doc ->
+                (doc.template as? DocumentTemplateConfig.File)?.path
+            }.toSet()
 
     private fun collectReviewerTemplatePaths(): Set<String> {
         val inline = reviewersConfig as? ReviewersConfig.Inline ?: return emptySet()
-        return inline.reviewers.mapNotNull { reviewer ->
-            (reviewer.prompt as? ReviewerPromptConfig.File)?.path
-        }.toSet()
+        return inline.reviewers
+            .mapNotNull { reviewer ->
+                (reviewer.prompt as? ReviewerPromptConfig.File)?.path
+            }.toSet()
     }
 
     private fun collectWorkflowTemplatePaths(): Set<String> =
-        workflowStages.mapNotNull { stage ->
-            (stage.prompt as? WorkflowPromptConfig.File)?.path
-        }.toSet()
+        workflowStages
+            .mapNotNull { stage ->
+                (stage.prompt as? WorkflowPromptConfig.File)?.path
+            }.toSet()
 
     private fun copyTemplateIfMissing(outputDir: Path, templatePath: String) {
         val targetPath = resolvePath(outputDir, templatePath)
@@ -113,25 +119,29 @@ class DefaultScaffolder(
         }
     }
 
-    private fun resolveTemplate(baseDir: Path, template: DocumentTemplateConfig): String {
-        return when (template) {
-            is DocumentTemplateConfig.Inline -> template.content
+    private fun resolveTemplate(baseDir: Path, template: DocumentTemplateConfig): String =
+        when (template) {
+            is DocumentTemplateConfig.Inline -> {
+                template.content
+            }
+
             is DocumentTemplateConfig.File -> {
                 val templatePath = resolvePath(baseDir, template.path)
                 Files.readString(templatePath)
             }
         }
-    }
 
-    private fun resolvePrompt(baseDir: Path, prompt: ReviewerPromptConfig): String {
-        return when (prompt) {
-            is ReviewerPromptConfig.Inline -> prompt.systemPrompt
+    private fun resolvePrompt(baseDir: Path, prompt: ReviewerPromptConfig): String =
+        when (prompt) {
+            is ReviewerPromptConfig.Inline -> {
+                prompt.systemPrompt
+            }
+
             is ReviewerPromptConfig.File -> {
                 val promptPath = resolvePath(baseDir, prompt.path)
                 Files.readString(promptPath)
             }
         }
-    }
 
     private fun writeFile(path: Path, content: String) {
         if (Files.exists(path)) {

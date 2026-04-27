@@ -2,20 +2,15 @@ package com.cramsan.agentic.vcs.github
 
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration.Companion.seconds
 
 private const val TAG = "ShellRunner"
 
 /** Captured output from a subprocess invocation by [ShellRunner.run]. */
-data class ShellResult(
-    val stdout: String,
-    val exitCode: Int,
-    val stderr: String,
-)
+data class ShellResult(val stdout: String, val exitCode: Int, val stderr: String)
 
 /**
  * Executes shell commands as subprocesses on [kotlinx.coroutines.Dispatchers.IO].
@@ -32,61 +27,63 @@ data class ShellResult(
  * **No shell expansion**: args are passed directly to [ProcessBuilder] without shell interpretation.
  * Glob patterns, pipes, and redirections will not work as expected.
  */
-class ShellRunner(
-    private val dispatcher: CoroutineDispatcher,
-) {
+class ShellRunner(private val dispatcher: CoroutineDispatcher) {
     /**
      * Executes [args] as a subprocess, optionally under [workingDir]. Returns a [ShellResult]
      * with combined stdout, stderr, and exit code after all retry attempts are exhausted.
      * A non-zero exit code is always returned as a value — never thrown as an exception.
      */
-    suspend fun run(args: List<String>, workingDir: String? = null): ShellResult = withContext(dispatcher) {
-        val commandStr = args.joinToString(" ")
-        logD(TAG, "Running command: $commandStr")
-        if (workingDir != null) {
-            logD(TAG, "Working directory: $workingDir")
-        }
-
-        var lastResult: ShellResult? = null
-        val delays = listOf(1.seconds, 2.seconds, 4.seconds)
-
-        repeat(MAX_ATTEMPTS) { attempt ->
-            if (attempt > 0) {
-                logD(TAG, "Retrying command (attempt ${attempt + 1}): $commandStr")
+    suspend fun run(args: List<String>, workingDir: String? = null): ShellResult =
+        withContext(dispatcher) {
+            val commandStr = args.joinToString(" ")
+            logD(TAG, "Running command: $commandStr")
+            if (workingDir != null) {
+                logD(TAG, "Working directory: $workingDir")
             }
-            val process = ProcessBuilder(args)
-                .also { pb ->
-                    pb.redirectErrorStream(false)
-                    if (workingDir != null) pb.directory(java.io.File(workingDir))
+
+            var lastResult: ShellResult? = null
+            val delays = listOf(1.seconds, 2.seconds, 4.seconds)
+
+            repeat(MAX_ATTEMPTS) { attempt ->
+                if (attempt > 0) {
+                    logD(TAG, "Retrying command (attempt ${attempt + 1}): $commandStr")
                 }
-                .start()
+                val process =
+                    ProcessBuilder(args)
+                        .also { pb ->
+                            pb.redirectErrorStream(false)
+                            if (workingDir != null) pb.directory(java.io.File(workingDir))
+                        }.start()
 
-            val stdout = process.inputStream.bufferedReader().readText()
-            val stderr = process.errorStream.bufferedReader().readText()
-            val exitCode = process.waitFor()
+                val stdout = process.inputStream.bufferedReader().readText()
+                val stderr = process.errorStream.bufferedReader().readText()
+                val exitCode = process.waitFor()
 
-            logD(TAG, "Command exited with code=$exitCode: $commandStr")
-            if (stderr.isNotEmpty()) {
-                logW(TAG, "Command stderr (exitCode=$exitCode): $stderr")
+                logD(TAG, "Command exited with code=$exitCode: $commandStr")
+                if (stderr.isNotEmpty()) {
+                    logW(TAG, "Command stderr (exitCode=$exitCode): $stderr")
+                }
+
+                lastResult = ShellResult(stdout = stdout, exitCode = exitCode, stderr = stderr)
+
+                if (exitCode == 0) {
+                    logD(TAG, "Command succeeded: $commandStr")
+                    return@withContext lastResult
+                }
+
+                if (attempt < (MAX_ATTEMPTS - 1)) {
+                    val delay = delays[attempt]
+                    logW(
+                        TAG,
+                        "Command failed with exitCode=$exitCode on attempt ${attempt + 1}, retrying in $delay: $commandStr",
+                    )
+                    delay(delay)
+                }
             }
 
-            lastResult = ShellResult(stdout = stdout, exitCode = exitCode, stderr = stderr)
-
-            if (exitCode == 0) {
-                logD(TAG, "Command succeeded: $commandStr")
-                return@withContext lastResult
-            }
-
-            if (attempt < (MAX_ATTEMPTS - 1)) {
-                val delay = delays[attempt]
-                logW(TAG, "Command failed with exitCode=$exitCode on attempt ${attempt + 1}, retrying in ${delay}: $commandStr")
-                delay(delay)
-            }
+            logW(TAG, "Command exhausted all retry attempts with exitCode=${lastResult?.exitCode}: $commandStr")
+            requireNotNull(lastResult) { "No result captured after retry loop — this is a bug" }
         }
-
-        logW(TAG, "Command exhausted all retry attempts with exitCode=${lastResult?.exitCode}: $commandStr")
-        requireNotNull(lastResult) { "No result captured after retry loop — this is a bug" }
-    }
 
     /** Convenience overload for ad-hoc call sites with a known number of arguments. */
     suspend fun run(vararg args: String, workingDir: String? = null): ShellResult =

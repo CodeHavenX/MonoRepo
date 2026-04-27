@@ -21,32 +21,35 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object PaymentRecordApi : Api("payment-records") {
+    val createPaymentRecord =
+        operation<
+            CreatePaymentRecordNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            PaymentRecordNetworkResponse,
+            >(HttpMethod.Post)
 
-    val createPaymentRecord = operation<
-        CreatePaymentRecordNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        PaymentRecordNetworkResponse
-        >(HttpMethod.Post)
+    val getPaymentRecord =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            PaymentRecordId,
+            PaymentRecordNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getPaymentRecord = operation<
-        NoRequestBody,
-        NoQueryParam,
-        PaymentRecordId,
-        PaymentRecordNetworkResponse
-        >(HttpMethod.Get)
+    val listPaymentRecords =
+        operation<
+            NoRequestBody,
+            GetPaymentRecordsQueryParams,
+            NoPathParam,
+            PaymentRecordListNetworkResponse,
+            >(HttpMethod.Get)
 
-    val listPaymentRecords = operation<
-        NoRequestBody,
-        GetPaymentRecordsQueryParams,
-        NoPathParam,
-        PaymentRecordListNetworkResponse
-        >(HttpMethod.Get)
-
-    val updatePaymentRecord = operation<
-        UpdatePaymentRecordNetworkRequest,
-        NoQueryParam,
-        PaymentRecordId,
-        PaymentRecordNetworkResponse
-        >(HttpMethod.Put)
+    val updatePaymentRecord =
+        operation<
+            UpdatePaymentRecordNetworkRequest,
+            NoQueryParam,
+            PaymentRecordId,
+            PaymentRecordNetworkResponse,
+            >(HttpMethod.Put)
 }

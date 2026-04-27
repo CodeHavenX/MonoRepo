@@ -7,6 +7,7 @@ import org.koin.dsl.module
 /**
  * Class to initialize all the services level components.
  */
-internal val ServicesModule = module {
-    singleOf(::RunasimiService)
-}
+internal val ServicesModule =
+    module {
+        singleOf(::RunasimiService)
+    }

@@ -13,10 +13,11 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object HealthApi : Api("health") {
-    val healthCheck = operation<
-        NoRequestBody,
-        NoQueryParam,
-        NoPathParam,
-        HealthCheckNetworkResponse
-        >(HttpMethod.Get)
+    val healthCheck =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            HealthCheckNetworkResponse,
+            >(HttpMethod.Get)
 }

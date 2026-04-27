@@ -24,33 +24,34 @@ import org.koin.dsl.module
  * Provides JVM-specific implementations for threading, logging, halt utilities,
  * dispatcher providers, and preferences storage.
  */
-internal actual val FrameworkPlatformDelegatesModule = module {
+internal actual val FrameworkPlatformDelegatesModule =
+    module {
 
-    single<ThreadUtilDelegate> {
-        ThreadUtilJVM(
-            get(),
-            get(),
-        )
+        single<ThreadUtilDelegate> {
+            ThreadUtilJVM(
+                get(),
+                get(),
+            )
+        }
+
+        single<Logger> {
+            val settingsHolder: SettingsHolder = get()
+
+            Log4J2Helpers.getRootLogger(
+                settingsHolder.getBoolean(FrontEndApplicationSettingKey.LoggingEnableFileLogging) ?: false,
+                get(),
+            )
+        }
+
+        single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate() }
+
+        single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
+
+        single<HaltUtilDelegate> {
+            HaltUtilJVM(get())
+        }
+
+        single<DispatcherProvider> { UIDispatcherProvider() }
+
+        single<PreferencesDelegate> { JVMPreferencesDelegate(get(named(NamedDependency.DOMAIN_KEY))) }
     }
-
-    single<Logger> {
-        val settingsHolder: SettingsHolder = get()
-
-        Log4J2Helpers.getRootLogger(
-            settingsHolder.getBoolean(FrontEndApplicationSettingKey.LoggingEnableFileLogging) ?: false,
-            get(),
-        )
-    }
-
-    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate() }
-
-    single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
-
-    single<HaltUtilDelegate> {
-        HaltUtilJVM(get())
-    }
-
-    single<DispatcherProvider> { UIDispatcherProvider() }
-
-    single<PreferencesDelegate> { JVMPreferencesDelegate(get(named(NamedDependency.DOMAIN_KEY))) }
-}

@@ -9,25 +9,18 @@ import com.cramsan.framework.core.CoreUri
  * the event.
  */
 sealed class EdifikanaWindowDelegatedEvent {
-
     /**
      * Handle received image.
      */
-    data class HandleReceivedImage(
-        val uri: CoreUri,
-    ) : EdifikanaWindowDelegatedEvent()
+    data class HandleReceivedImage(val uri: CoreUri) : EdifikanaWindowDelegatedEvent()
 
     /**
      * Handle received images.
      */
-    data class HandleReceivedImages(
-        val uris: List<CoreUri>,
-    ) : EdifikanaWindowDelegatedEvent()
+    data class HandleReceivedImages(val uris: List<CoreUri>) : EdifikanaWindowDelegatedEvent()
 
     /**
      * Handle snackbar result.
      */
-    data class HandleSnackbarResult(
-        val result: SnackbarResult,
-    ) : EdifikanaWindowDelegatedEvent()
+    data class HandleSnackbarResult(val result: SnackbarResult) : EdifikanaWindowDelegatedEvent()
 }

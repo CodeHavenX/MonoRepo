@@ -8,21 +8,20 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for managing storage of files (assets).
  */
-class StorageService(
-    private val storageDatastore: StorageDatastore,
-) {
+class StorageService(private val storageDatastore: StorageDatastore) {
     /**
      * Creates a file with the provided [fileName] and [content].
      */
     suspend fun createAsset(
         fileName: String,
-        content: ByteArray
+        content: ByteArray,
     ): Asset {
         logD(TAG, "createFile")
-        return storageDatastore.createAsset(
-            fileName = fileName,
-            content = content,
-        ).getOrThrow()
+        return storageDatastore
+            .createAsset(
+                fileName = fileName,
+                content = content,
+            ).getOrThrow()
     }
 
     /**
@@ -32,9 +31,11 @@ class StorageService(
         id: AssetId,
     ): Asset? {
         logD(TAG, "getFile")
-        val file = storageDatastore.getAsset(
-            id = id,
-        ).getOrNull()
+        val file =
+            storageDatastore
+                .getAsset(
+                    id = id,
+                ).getOrNull()
 
         return file
     }

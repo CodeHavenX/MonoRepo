@@ -13,13 +13,15 @@ data class MenuUIState(
     val drawerItems: List<DrawerItem> = emptyList(),
 ) : ViewModelUIState {
     companion object {
-        val Initial = MenuUIState(
-            drawerItems = listOf(
-                DrawerItem.Selectable(SelectableDrawerItem.Numbers),
-                DrawerItem.Selectable(SelectableDrawerItem.Verbs),
-                DrawerItem.Selectable(SelectableDrawerItem.Questions),
-            ),
-        )
+        val Initial =
+            MenuUIState(
+                drawerItems =
+                listOf(
+                    DrawerItem.Selectable(SelectableDrawerItem.Numbers),
+                    DrawerItem.Selectable(SelectableDrawerItem.Verbs),
+                    DrawerItem.Selectable(SelectableDrawerItem.Questions),
+                ),
+            )
     }
 }
 
@@ -27,13 +29,10 @@ data class MenuUIState(
  * Represents an item in the navigation drawer.
  */
 sealed class DrawerItem {
-
     /**
      * A selectable item in the navigation drawer.
      */
-    data class Selectable(
-        val item: SelectableDrawerItem,
-    ) : DrawerItem()
+    data class Selectable(val item: SelectableDrawerItem) : DrawerItem()
 }
 
 /**

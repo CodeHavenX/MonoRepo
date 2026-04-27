@@ -55,7 +55,6 @@ class DefaultAgentSession(
     private val baseBranch: String,
     private val documentStore: DocumentStore,
 ) : AgentSession {
-
     override suspend fun execute(task: Task, worktree: Worktree): AgentResult {
         logI(TAG, "Starting agent session for task ${task.id}")
 
@@ -67,14 +66,15 @@ class DefaultAgentSession(
             val response = aiProvider.chat(systemPrompt, messages, ALL_AGENT_TOOLS)
             logI(TAG, "Got response with stopReason=${response.stopReason}, ${response.content.size} content blocks")
 
-            val assistantContent = buildString {
-                response.content.forEach { block ->
-                    when (block) {
-                        is AiContentBlock.Text -> appendLine(block.text)
-                        is AiContentBlock.ToolCall -> appendLine("[Tool call: ${block.name}(${block.input})]")
+            val assistantContent =
+                buildString {
+                    response.content.forEach { block ->
+                        when (block) {
+                            is AiContentBlock.Text -> appendLine(block.text)
+                            is AiContentBlock.ToolCall -> appendLine("[Tool call: ${block.name}(${block.input})]")
+                        }
                     }
-                }
-            }.trim()
+                }.trim()
             if (assistantContent.isNotBlank()) {
                 messages.add(AiMessage("assistant", assistantContent))
             }
@@ -86,43 +86,83 @@ class DefaultAgentSession(
                 if (toolResult is ToolResult.Terminal) {
                     return toolResult.agentResult
                 }
-                messages.add(AiMessage("user", "Tool result for ${toolCall.name}: ${(toolResult as ToolResult.Success).content}"))
+                messages.add(
+                    AiMessage(
+                        "user",
+                        "Tool result for ${toolCall.name}: ${(toolResult as ToolResult.Success).content}",
+                    ),
+                )
             }
 
             if (toolCalls.isEmpty() && response.stopReason == "end_turn") {
-                messages.add(AiMessage("user", "Please continue working on the task. Use the available tools to make progress, then call task_complete when done."))
+                messages.add(
+                    AiMessage(
+                        "user",
+                        "Please continue working on the task. Use the available tools to make progress, then call task_complete when done.",
+                    ),
+                )
             }
         }
     }
 
-    private sealed class ToolResult {
-        data class Success(val content: String) : ToolResult()
-        data class Terminal(val agentResult: AgentResult) : ToolResult()
+    private sealed interface ToolResult {
+        data class Success(val content: String) : ToolResult
+
+        data class Terminal(val agentResult: AgentResult) : ToolResult
     }
 
     private suspend fun dispatchTool(
         toolCall: AiContentBlock.ToolCall,
         task: Task,
         worktree: Worktree,
-    ): ToolResult = when (toolCall.name) {
-        "read_file" -> handleReadFile(toolCall, worktree)
-        "write_file" -> handleWriteFile(toolCall, worktree)
-        "delete_file" -> handleDeleteFile(toolCall, worktree)
-        "run_command" -> handleRunCommand(toolCall, worktree)
-        "list_files" -> handleListFiles(toolCall, worktree)
-        "task_complete" -> handleTaskComplete(toolCall, task)
-        "task_failed" -> handleTaskFailed(toolCall)
-        "propose_amendment" -> handleProposeAmendment(toolCall, task, worktree)
-        "split_task" -> handleSplitTask(toolCall, task)
-        else -> {
-            logW(TAG, "Unknown tool: ${toolCall.name}")
-            ToolResult.Success("Unknown tool: ${toolCall.name}")
+    ): ToolResult =
+        when (toolCall.name) {
+            "read_file" -> {
+                handleReadFile(toolCall, worktree)
+            }
+
+            "write_file" -> {
+                handleWriteFile(toolCall, worktree)
+            }
+
+            "delete_file" -> {
+                handleDeleteFile(toolCall, worktree)
+            }
+
+            "run_command" -> {
+                handleRunCommand(toolCall, worktree)
+            }
+
+            "list_files" -> {
+                handleListFiles(toolCall, worktree)
+            }
+
+            "task_complete" -> {
+                handleTaskComplete(toolCall, task)
+            }
+
+            "task_failed" -> {
+                handleTaskFailed(toolCall)
+            }
+
+            "propose_amendment" -> {
+                handleProposeAmendment(toolCall, task, worktree)
+            }
+
+            "split_task" -> {
+                handleSplitTask(toolCall, task)
+            }
+
+            else -> {
+                logW(TAG, "Unknown tool: ${toolCall.name}")
+                ToolResult.Success("Unknown tool: ${toolCall.name}")
+            }
         }
-    }
 
     private fun handleReadFile(toolCall: AiContentBlock.ToolCall, worktree: Worktree): ToolResult {
-        val path = toolCall.input["path"]?.jsonPrimitive?.content
-            ?: return ToolResult.Success("Error: missing path")
+        val path =
+            toolCall.input["path"]?.jsonPrimitive?.content
+                ?: return ToolResult.Success("Error: missing path")
         return try {
             ToolResult.Success(Files.readString(worktree.path.resolve(path)))
         } catch (e: Exception) {
@@ -131,9 +171,14 @@ class DefaultAgentSession(
     }
 
     private fun handleWriteFile(toolCall: AiContentBlock.ToolCall, worktree: Worktree): ToolResult {
-        val path = toolCall.input["path"]?.jsonPrimitive?.content
-            ?: return ToolResult.Success("Error: missing path")
-        val content = toolCall.input["content"]?.jsonPrimitive?.content.orEmpty()
+        val path =
+            toolCall.input["path"]?.jsonPrimitive?.content
+                ?: return ToolResult.Success("Error: missing path")
+        val content =
+            toolCall.input["content"]
+                ?.jsonPrimitive
+                ?.content
+                .orEmpty()
         return try {
             val fullPath = worktree.path.resolve(path)
             Files.createDirectories(fullPath.parent)
@@ -145,8 +190,9 @@ class DefaultAgentSession(
     }
 
     private fun handleDeleteFile(toolCall: AiContentBlock.ToolCall, worktree: Worktree): ToolResult {
-        val path = toolCall.input["path"]?.jsonPrimitive?.content
-            ?: return ToolResult.Success("Error: missing path")
+        val path =
+            toolCall.input["path"]?.jsonPrimitive?.content
+                ?: return ToolResult.Success("Error: missing path")
         return try {
             Files.deleteIfExists(worktree.path.resolve(path))
             ToolResult.Success("File deleted: $path")
@@ -156,21 +202,24 @@ class DefaultAgentSession(
     }
 
     private suspend fun handleRunCommand(toolCall: AiContentBlock.ToolCall, worktree: Worktree): ToolResult {
-        val command = toolCall.input["command"]?.jsonPrimitive?.content
-            ?: return ToolResult.Success("Error: missing command")
+        val command =
+            toolCall.input["command"]?.jsonPrimitive?.content
+                ?: return ToolResult.Success("Error: missing command")
         return try {
             val workingDirOverride = toolCall.input["workingDir"]?.jsonPrimitive?.content
-            val resolvedWorkingDir = if (workingDirOverride != null) {
-                worktree.path.resolve(workingDirOverride).toString()
-            } else {
-                worktree.path.toString()
-            }
+            val resolvedWorkingDir =
+                if (workingDirOverride != null) {
+                    worktree.path.resolve(workingDirOverride).toString()
+                } else {
+                    worktree.path.toString()
+                }
             val result = shell.run("sh", "-c", command, workingDir = resolvedWorkingDir)
-            val output = buildString {
-                if (result.stdout.isNotBlank()) append("stdout:\n${result.stdout}")
-                if (result.stderr.isNotBlank()) append("\nstderr:\n${result.stderr}")
-                append("\nexit code: ${result.exitCode}")
-            }
+            val output =
+                buildString {
+                    if (result.stdout.isNotBlank()) append("stdout:\n${result.stdout}")
+                    if (result.stderr.isNotBlank()) append("\nstderr:\n${result.stderr}")
+                    append("\nexit code: ${result.exitCode}")
+                }
             ToolResult.Success(output)
         } catch (e: Exception) {
             ToolResult.Success("Error running command: ${e.message}")
@@ -181,10 +230,12 @@ class DefaultAgentSession(
         val glob = toolCall.input["glob"]?.jsonPrimitive?.content ?: "**/*"
         return try {
             val matcher = worktree.path.fileSystem.getPathMatcher("glob:$glob")
-            val files = Files.walk(worktree.path)
-                .filter { matcher.matches(worktree.path.relativize(it)) }
-                .map { worktree.path.relativize(it).toString() }
-                .toList()
+            val files =
+                Files
+                    .walk(worktree.path)
+                    .filter { matcher.matches(worktree.path.relativize(it)) }
+                    .map { worktree.path.relativize(it).toString() }
+                    .toList()
             ToolResult.Success(files.joinToString("\n"))
         } catch (e: Exception) {
             ToolResult.Success("Error listing files: ${e.message}")
@@ -193,15 +244,20 @@ class DefaultAgentSession(
 
     private suspend fun handleTaskComplete(toolCall: AiContentBlock.ToolCall, task: Task): ToolResult {
         val prTitle = toolCall.input["prTitle"]?.jsonPrimitive?.content ?: "Task ${task.id}: ${task.title}"
-        val prBody = toolCall.input["prBody"]?.jsonPrimitive?.content.orEmpty()
+        val prBody =
+            toolCall.input["prBody"]
+                ?.jsonPrimitive
+                ?.content
+                .orEmpty()
         return try {
-            val pr = vcsProvider.createPullRequest(
-                sourceBranch = "agentic/${task.id}",
-                targetBranch = baseBranch,
-                title = prTitle,
-                body = prBody,
-                labels = listOf("agentic-code"),
-            )
+            val pr =
+                vcsProvider.createPullRequest(
+                    sourceBranch = "agentic/${task.id}",
+                    targetBranch = baseBranch,
+                    title = prTitle,
+                    body = prBody,
+                    labels = listOf("agentic-code"),
+                )
             logI(TAG, "Opened PR ${pr.id} for task ${task.id}")
             ToolResult.Terminal(AgentResult.PrOpened(pr.id, pr.url))
         } catch (e: Exception) {
@@ -219,23 +275,38 @@ class DefaultAgentSession(
         task: Task,
         worktree: Worktree,
     ): ToolResult {
-        val documentType = toolCall.input["documentType"]?.jsonPrimitive?.content.orEmpty()
-        val proposedChange = toolCall.input["proposedChange"]?.jsonPrimitive?.content.orEmpty()
-        val isCritical = toolCall.input["isCritical"]?.jsonPrimitive?.content?.toBooleanStrictOrNull() ?: false
+        val documentType =
+            toolCall.input["documentType"]
+                ?.jsonPrimitive
+                ?.content
+                .orEmpty()
+        val proposedChange =
+            toolCall.input["proposedChange"]
+                ?.jsonPrimitive
+                ?.content
+                .orEmpty()
+        val isCritical =
+            toolCall.input["isCritical"]
+                ?.jsonPrimitive
+                ?.content
+                ?.toBooleanStrictOrNull() ?: false
         return try {
-            val pr = vcsProvider.createPullRequest(
-                sourceBranch = "agentic/${task.id}/amendment",
-                targetBranch = baseBranch,
-                title = "Amendment: $documentType",
-                body = proposedChange,
-                labels = listOf("agentic-document"),
-            )
+            val pr =
+                vcsProvider.createPullRequest(
+                    sourceBranch = "agentic/${task.id}/amendment",
+                    targetBranch = baseBranch,
+                    title = "Amendment: $documentType",
+                    body = proposedChange,
+                    labels = listOf("agentic-document"),
+                )
             logI(TAG, "Proposed amendment PR ${pr.id} for task ${task.id}")
             if (isCritical) {
                 val closedWithoutMerge = awaitCriticalAmendment(pr.id, task.id, worktree)
                 if (closedWithoutMerge != null) return closedWithoutMerge
             }
-            ToolResult.Success("Amendment PR created: ${pr.url}" + if (isCritical) " (merged)" else " (non-critical, continuing)")
+            ToolResult.Success(
+                "Amendment PR created: ${pr.url}" + if (isCritical) " (merged)" else " (non-critical, continuing)",
+            )
         } catch (e: Exception) {
             ToolResult.Success("Error proposing amendment: ${e.message}")
         }
@@ -249,7 +320,9 @@ class DefaultAgentSession(
             val stillOpen = vcsProvider.listOpenPullRequests().any { it.id == prId }
             if (!stillOpen) {
                 clearAmendmentMarker(worktree)
-                return ToolResult.Success("Critical amendment PR $prId was closed without merging. Cannot continue. Use task_failed if the task cannot proceed without this change.")
+                return ToolResult.Success(
+                    "Critical amendment PR $prId was closed without merging. Cannot continue. Use task_failed if the task cannot proceed without this change.",
+                )
             }
             delay(AMENDMENT_POLL_INTERVAL)
         }
@@ -259,18 +332,28 @@ class DefaultAgentSession(
     }
 
     private suspend fun handleSplitTask(toolCall: AiContentBlock.ToolCall, task: Task): ToolResult {
-        val currentPrTitle = toolCall.input["currentPrTitle"]?.jsonPrimitive?.content ?: "Task ${task.id}: ${task.title}"
-        val currentPrBody = toolCall.input["currentPrBody"]?.jsonPrimitive?.content.orEmpty()
+        val currentPrTitle =
+            toolCall.input["currentPrTitle"]?.jsonPrimitive?.content ?: "Task ${task.id}: ${task.title}"
+        val currentPrBody =
+            toolCall.input["currentPrBody"]
+                ?.jsonPrimitive
+                ?.content
+                .orEmpty()
         val newTaskTitle = toolCall.input["newTaskTitle"]?.jsonPrimitive?.content ?: "Follow-up task"
-        val newTaskDescription = toolCall.input["newTaskDescription"]?.jsonPrimitive?.content.orEmpty()
+        val newTaskDescription =
+            toolCall.input["newTaskDescription"]
+                ?.jsonPrimitive
+                ?.content
+                .orEmpty()
         return try {
-            val codePr = vcsProvider.createPullRequest(
-                sourceBranch = "agentic/${task.id}",
-                targetBranch = baseBranch,
-                title = currentPrTitle,
-                body = currentPrBody,
-                labels = listOf("agentic-code"),
-            )
+            val codePr =
+                vcsProvider.createPullRequest(
+                    sourceBranch = "agentic/${task.id}",
+                    targetBranch = baseBranch,
+                    title = currentPrTitle,
+                    body = currentPrBody,
+                    labels = listOf("agentic-code"),
+                )
             vcsProvider.createPullRequest(
                 sourceBranch = "agentic/${task.id}/split",
                 targetBranch = baseBranch,
@@ -298,28 +381,31 @@ class DefaultAgentSession(
         task: Task,
         worktree: Worktree,
     ): Pair<String, List<AiMessage>> {
-        val openPrs = try {
-            vcsProvider.listOpenPullRequests(labels = listOf("agentic-code"))
-        } catch (e: Exception) {
-            logW(TAG, "Failed to list open PRs for task ${task.id}", e)
-            emptyList()
-        }
+        val openPrs =
+            try {
+                vcsProvider.listOpenPullRequests(labels = listOf("agentic-code"))
+            } catch (e: Exception) {
+                logW(TAG, "Failed to list open PRs for task ${task.id}", e)
+                emptyList()
+            }
         val taskPr = openPrs.firstOrNull { it.sourceBranch == "agentic/${task.id}" }
 
         if (taskPr != null) {
-            val hasChangesRequested = try {
-                vcsProvider.pullRequestHasRequestedChanges(taskPr.id)
-            } catch (e: Exception) {
-                logW(TAG, "Failed to check review status for PR ${taskPr.id}", e)
-                false
-            }
-            if (hasChangesRequested) {
-                val comments = try {
-                    vcsProvider.getPullRequestComments(taskPr.id)
+            val hasChangesRequested =
+                try {
+                    vcsProvider.pullRequestHasRequestedChanges(taskPr.id)
                 } catch (e: Exception) {
-                    logW(TAG, "Failed to fetch PR comments for ${taskPr.id}", e)
-                    emptyList()
+                    logW(TAG, "Failed to check review status for PR ${taskPr.id}", e)
+                    false
                 }
+            if (hasChangesRequested) {
+                val comments =
+                    try {
+                        vcsProvider.getPullRequestComments(taskPr.id)
+                    } catch (e: Exception) {
+                        logW(TAG, "Failed to fetch PR comments for ${taskPr.id}", e)
+                        emptyList()
+                    }
                 val diff = getGitDiff(worktree)
                 val prompt = buildChangesRequestedPrompt(task, diff, comments)
                 return prompt to listOf(AiMessage("user", "Begin addressing the review feedback."))
@@ -336,31 +422,32 @@ class DefaultAgentSession(
             return prompt to listOf(AiMessage("user", "Resume the task from where you left off."))
         }
 
-        val documents = try {
-            documentStore.getAll().map { doc ->
-                val content = try {
-                    Files.readString(Path.of(doc.relativePath))
-                } catch (e: Exception) {
-                    logW(TAG, "Could not read document ${doc.relativePath}", e)
-                    "(content unavailable: ${e.message})"
+        val documents =
+            try {
+                documentStore.getAll().map { doc ->
+                    val content =
+                        try {
+                            Files.readString(Path.of(doc.relativePath))
+                        } catch (e: Exception) {
+                            logW(TAG, "Could not read document ${doc.relativePath}", e)
+                            "(content unavailable: ${e.message})"
+                        }
+                    doc.relativePath to content
                 }
-                doc.relativePath to content
+            } catch (e: Exception) {
+                logW(TAG, "Failed to load documents for task ${task.id}", e)
+                emptyList()
             }
-        } catch (e: Exception) {
-            logW(TAG, "Failed to load documents for task ${task.id}", e)
-            emptyList()
-        }
         val prompt = buildTaskStartPrompt(task, documents)
         return prompt to listOf(AiMessage("user", "Begin working on the task."))
     }
 
-    private suspend fun getGitDiff(worktree: Worktree): String {
-        return try {
+    private suspend fun getGitDiff(worktree: Worktree): String =
+        try {
             val result = shell.run("git", "diff", baseBranch, "--", worktree.path.toString())
             result.stdout
         } catch (e: Exception) {
             logW(TAG, "Failed to get git diff for worktree ${worktree.path}", e)
             ""
         }
-    }
 }

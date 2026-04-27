@@ -7,9 +7,7 @@ import org.koin.core.module.Module
  * This means that the order in which they are loaded does not matter. Despite this we are keeping the order bases on
  * the estimated dependency order of the modules. This is to make it easier to understand the dependencies between the
  * modules.
- */
-
-/**
+ *
  * Generate the list of Koin modules that are loaded at the application level.
  */
 @Suppress("LongParameterList")

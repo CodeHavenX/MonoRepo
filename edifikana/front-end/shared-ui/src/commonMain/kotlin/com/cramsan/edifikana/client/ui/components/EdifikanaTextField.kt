@@ -59,7 +59,7 @@ fun EdifikanaTextField(
                 Text(
                     text = placeholder,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 )
             },
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
@@ -68,7 +68,8 @@ fun EdifikanaTextField(
             maxLines = maxLines,
             minLines = minLines,
             shape = RoundedCornerShape(25.dp),
-            colors = OutlinedTextFieldDefaults.colors(
+            colors =
+            OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,

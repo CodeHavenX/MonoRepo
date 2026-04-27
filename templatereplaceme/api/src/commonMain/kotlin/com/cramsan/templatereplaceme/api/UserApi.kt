@@ -13,12 +13,11 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object UserApi : Api("user") {
-
     val createUser =
         operation<
             CreateUserNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            UserNetworkResponse
+            UserNetworkResponse,
             >(HttpMethod.Post)
 }

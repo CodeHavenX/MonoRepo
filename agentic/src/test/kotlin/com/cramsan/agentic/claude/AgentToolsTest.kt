@@ -6,7 +6,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class AgentToolsTest {
-
     @Test
     fun `all tools have non-blank name, description, and inputSchema`() {
         for (tool in ALL_AGENT_TOOLS) {

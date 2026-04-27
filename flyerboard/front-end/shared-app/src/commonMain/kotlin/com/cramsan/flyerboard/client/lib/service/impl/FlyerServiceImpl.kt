@@ -9,7 +9,6 @@ import com.cramsan.flyerboard.client.lib.service.AuthService
 import com.cramsan.flyerboard.client.lib.service.FlyerService
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
-import com.cramsan.flyerboard.lib.model.network.FlyerListNetworkResponse
 import com.cramsan.flyerboard.lib.model.network.FlyerNetworkResponse
 import com.cramsan.flyerboard.lib.model.network.ListFlyersQueryParams
 import com.cramsan.flyerboard.lib.model.network.ModerationActionNetworkRequest
@@ -22,12 +21,12 @@ import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HeadersBuilder
 import io.ktor.http.HttpHeaders
@@ -40,11 +39,7 @@ import io.ktor.http.HttpHeaders
  * [BytesRequestBody] path only supports a single binary blob, not keyed form fields.
  */
 @OptIn(NetworkModel::class)
-class FlyerServiceImpl(
-    private val http: HttpClient,
-    private val authService: AuthService,
-) : FlyerService {
-
+class FlyerServiceImpl(private val http: HttpClient, private val authService: AuthService) : FlyerService {
     // ── JSON operations ───────────────────────────────────────────────────────
 
     override suspend fun listFlyers(
@@ -52,48 +47,63 @@ class FlyerServiceImpl(
         limit: Int,
         status: FlyerStatus?,
         query: String?,
-    ): Result<PaginatedFlyerModel> = runSuspendCatching(TAG) {
-        FlyerApi.listFlyers.buildRequest(
-            ListFlyersQueryParams(offset = offset, limit = limit, status = status, q = query),
-        ).execute(http).toPaginatedFlyerModel()
-    }
-
-    override suspend fun getFlyer(flyerId: FlyerId): Result<FlyerModel?> = runSuspendCatching(TAG) {
-        try {
-            FlyerApi.getFlyer.buildRequest(flyerId).execute(http).toFlyerModel()
-        } catch (e: ClientRequestExceptions.NotFoundException) {
-            logW(TAG, "Flyer not found: ${flyerId.flyerId}", e)
-            null
+    ): Result<PaginatedFlyerModel> =
+        runSuspendCatching(TAG) {
+            FlyerApi.listFlyers
+                .buildRequest(
+                    ListFlyersQueryParams(offset = offset, limit = limit, status = status, q = query),
+                ).execute(http)
+                .toPaginatedFlyerModel()
         }
-    }
+
+    override suspend fun getFlyer(flyerId: FlyerId): Result<FlyerModel?> =
+        runSuspendCatching(TAG) {
+            try {
+                FlyerApi.getFlyer
+                    .buildRequest(flyerId)
+                    .execute(http)
+                    .toFlyerModel()
+            } catch (e: ClientRequestExceptions.NotFoundException) {
+                logW(TAG, "Flyer not found: ${flyerId.flyerId}", e)
+                null
+            }
+        }
 
     override suspend fun listArchived(offset: Int, limit: Int): Result<PaginatedFlyerModel> =
         runSuspendCatching(TAG) {
-            FlyerApi.listArchived.buildRequest(
-                PaginationParams(offset = offset, limit = limit),
-            ).execute(http).toPaginatedFlyerModel()
+            FlyerApi.listArchived
+                .buildRequest(
+                    PaginationParams(offset = offset, limit = limit),
+                ).execute(http)
+                .toPaginatedFlyerModel()
         }
 
     override suspend fun listMyFlyers(offset: Int, limit: Int): Result<PaginatedFlyerModel> =
         runSuspendCatching(TAG) {
-            FlyerApi.listMyFlyers.buildRequest(
-                PaginationParams(offset = offset, limit = limit),
-            ).execute(http, authHeader()).toPaginatedFlyerModel()
+            FlyerApi.listMyFlyers
+                .buildRequest(
+                    PaginationParams(offset = offset, limit = limit),
+                ).execute(http, authHeader())
+                .toPaginatedFlyerModel()
         }
 
     override suspend fun listPendingFlyers(offset: Int, limit: Int): Result<PaginatedFlyerModel> =
         runSuspendCatching(TAG) {
-            ModerationApi.listPending.buildRequest(
-                PaginationParams(offset = offset, limit = limit),
-            ).execute(http, authHeader()).toPaginatedFlyerModel()
+            ModerationApi.listPending
+                .buildRequest(
+                    PaginationParams(offset = offset, limit = limit),
+                ).execute(http, authHeader())
+                .toPaginatedFlyerModel()
         }
 
     override suspend fun moderate(flyerId: FlyerId, action: String): Result<FlyerModel> =
         runSuspendCatching(TAG) {
-            ModerationApi.moderate.buildRequest(
-                flyerId,
-                ModerationActionNetworkRequest(action = action),
-            ).execute(http, authHeader()).toFlyerModel()
+            ModerationApi.moderate
+                .buildRequest(
+                    flyerId,
+                    ModerationActionNetworkRequest(action = action),
+                ).execute(http, authHeader())
+                .toFlyerModel()
         }
 
     // ── Multipart operations ──────────────────────────────────────────────────
@@ -105,29 +115,32 @@ class FlyerServiceImpl(
         fileBytes: ByteArray,
         fileName: String,
         mimeType: String,
-    ): Result<FlyerModel> = runSuspendCatching(TAG) {
-        val response: FlyerNetworkResponse = http.post(FlyerApi.path) {
-            headers { appendBearerToken() }
-            setBody(
-                MultiPartFormDataContent(
-                    formData {
-                        append("title", title)
-                        append("description", description)
-                        expiresAt?.let { append("expires_at", it) }
-                        append(
-                            "file",
-                            fileBytes,
-                            Headers.build {
-                                append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
-                                append(HttpHeaders.ContentType, mimeType)
-                            },
+    ): Result<FlyerModel> =
+        runSuspendCatching(TAG) {
+            val response: FlyerNetworkResponse =
+                http
+                    .post(FlyerApi.path) {
+                        headers { appendBearerToken() }
+                        setBody(
+                            MultiPartFormDataContent(
+                                formData {
+                                    append("title", title)
+                                    append("description", description)
+                                    expiresAt?.let { append("expires_at", it) }
+                                    append(
+                                        "file",
+                                        fileBytes,
+                                        Headers.build {
+                                            append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
+                                            append(HttpHeaders.ContentType, mimeType)
+                                        },
+                                    )
+                                },
+                            ),
                         )
-                    }
-                )
-            )
-        }.body()
-        response.toFlyerModel()
-    }
+                    }.body()
+            response.toFlyerModel()
+        }
 
     override suspend fun updateFlyer(
         flyerId: FlyerId,
@@ -137,31 +150,34 @@ class FlyerServiceImpl(
         fileBytes: ByteArray?,
         fileName: String?,
         mimeType: String?,
-    ): Result<FlyerModel> = runSuspendCatching(TAG) {
-        val response: FlyerNetworkResponse = http.put("${FlyerApi.path}/${flyerId.flyerId}") {
-            headers { appendBearerToken() }
-            setBody(
-                MultiPartFormDataContent(
-                    formData {
-                        title?.let { append("title", it) }
-                        description?.let { append("description", it) }
-                        expiresAt?.let { append("expires_at", it) }
-                        if (fileBytes != null && fileName != null && mimeType != null) {
-                            append(
-                                "file",
-                                fileBytes,
-                                Headers.build {
-                                    append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
-                                    append(HttpHeaders.ContentType, mimeType)
+    ): Result<FlyerModel> =
+        runSuspendCatching(TAG) {
+            val response: FlyerNetworkResponse =
+                http
+                    .put("${FlyerApi.path}/${flyerId.flyerId}") {
+                        headers { appendBearerToken() }
+                        setBody(
+                            MultiPartFormDataContent(
+                                formData {
+                                    title?.let { append("title", it) }
+                                    description?.let { append("description", it) }
+                                    expiresAt?.let { append("expires_at", it) }
+                                    if (fileBytes != null && fileName != null && mimeType != null) {
+                                        append(
+                                            "file",
+                                            fileBytes,
+                                            Headers.build {
+                                                append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
+                                                append(HttpHeaders.ContentType, mimeType)
+                                            },
+                                        )
+                                    }
                                 },
-                            )
-                        }
-                    }
-                )
-            )
-        }.body()
-        response.toFlyerModel()
-    }
+                            ),
+                        )
+                    }.body()
+            response.toFlyerModel()
+        }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 

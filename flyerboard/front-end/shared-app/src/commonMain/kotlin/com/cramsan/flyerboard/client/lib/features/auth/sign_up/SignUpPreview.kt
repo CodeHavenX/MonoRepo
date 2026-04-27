@@ -9,35 +9,39 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Preview
 @Composable
-private fun SignUpScreenPreview() = AppTheme {
-    SignUpContent(
-        uiState = SignUpUIState(
-            isLoading = false,
-            email = "",
-            password = "",
-        ),
-        onEmailChanged = {},
-        onPasswordChanged = {},
-        onSignUpClicked = {},
-        onSignInClicked = {},
-    )
-}
+private fun SignUpScreenPreview() =
+    AppTheme {
+        SignUpContent(
+            uiState =
+            SignUpUIState(
+                isLoading = false,
+                email = "",
+                password = "",
+            ),
+            onEmailChanged = {},
+            onPasswordChanged = {},
+            onSignUpClicked = {},
+            onSignInClicked = {},
+        )
+    }
 
 /**
  * Preview for the Sign Up screen in loading state.
  */
 @Preview
 @Composable
-private fun SignUpScreenLoadingPreview() = AppTheme {
-    SignUpContent(
-        uiState = SignUpUIState(
-            isLoading = true,
-            email = "new@example.com",
-            password = "",
-        ),
-        onEmailChanged = {},
-        onPasswordChanged = {},
-        onSignUpClicked = {},
-        onSignInClicked = {},
-    )
-}
+private fun SignUpScreenLoadingPreview() =
+    AppTheme {
+        SignUpContent(
+            uiState =
+            SignUpUIState(
+                isLoading = true,
+                email = "new@example.com",
+                password = "",
+            ),
+            onEmailChanged = {},
+            onPasswordChanged = {},
+            onSignUpClicked = {},
+            onSignInClicked = {},
+        )
+    }

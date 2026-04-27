@@ -17,17 +17,13 @@ import kotlin.io.path.nameWithoutExtension
  * - [ReviewersConfig.Directory]: Loads reviewers from .md files in the specified directory.
  * - [ReviewersConfig.Inline]: Uses reviewer definitions directly from configuration.
  */
-class ConfigurableReviewerLoader(
-    private val reviewersConfig: ReviewersConfig,
-    private val docsDir: Path,
-) : ReviewerLoader {
-
-    override fun loadAll(): List<ReviewerDefinition> {
-        return when (reviewersConfig) {
+class ConfigurableReviewerLoader(private val reviewersConfig: ReviewersConfig, private val docsDir: Path) :
+    ReviewerLoader {
+    override fun loadAll(): List<ReviewerDefinition> =
+        when (reviewersConfig) {
             is ReviewersConfig.Directory -> loadFromDirectory(reviewersConfig.path)
             is ReviewersConfig.Inline -> loadFromInlineConfig(reviewersConfig.reviewers)
         }
-    }
 
     private fun loadFromDirectory(directoryPath: String): List<ReviewerDefinition> {
         val reviewersDir = resolvePath(docsDir, directoryPath)
@@ -38,15 +34,15 @@ class ConfigurableReviewerLoader(
             return emptyList()
         }
 
-        return Files.list(reviewersDir)
+        return Files
+            .list(reviewersDir)
             .filter { it.extension == "md" }
             .map { file ->
                 val name = file.nameWithoutExtension
                 val systemPrompt = Files.readString(file)
                 logD(TAG, "Loaded reviewer from file: $name")
                 ReviewerDefinition(name = name, systemPrompt = systemPrompt)
-            }
-            .toList()
+            }.toList()
     }
 
     private fun loadFromInlineConfig(reviewers: List<com.cramsan.agentic.core.ReviewerConfig>): List<ReviewerDefinition> {
@@ -59,16 +55,18 @@ class ConfigurableReviewerLoader(
         }
     }
 
-    private fun resolvePrompt(prompt: ReviewerPromptConfig): String {
-        return when (prompt) {
-            is ReviewerPromptConfig.Inline -> prompt.systemPrompt
+    private fun resolvePrompt(prompt: ReviewerPromptConfig): String =
+        when (prompt) {
+            is ReviewerPromptConfig.Inline -> {
+                prompt.systemPrompt
+            }
+
             is ReviewerPromptConfig.File -> {
                 val promptPath = resolvePath(docsDir, prompt.path)
                 logD(TAG, "Loading reviewer prompt from file: $promptPath")
                 Files.readString(promptPath)
             }
         }
-    }
 
     companion object {
         private const val TAG = "ConfigurableReviewerLoader"

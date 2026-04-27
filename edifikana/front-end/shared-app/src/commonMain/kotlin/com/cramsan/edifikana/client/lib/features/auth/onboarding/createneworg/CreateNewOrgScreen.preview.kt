@@ -12,7 +12,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun CreateNewOrgScreenPreview() {
     AppTheme {
         CreateNewOrgContent(
-            content = CreateNewOrgUIState(
+            content =
+            CreateNewOrgUIState(
                 organizationName = "",
                 organizationDescription = "",
                 isLoading = false,
@@ -34,7 +35,8 @@ private fun CreateNewOrgScreenPreview() {
 private fun CreateNewOrgScreenWithContentPreview() {
     AppTheme {
         CreateNewOrgContent(
-            content = CreateNewOrgUIState(
+            content =
+            CreateNewOrgUIState(
                 organizationName = "Acme Properties",
                 organizationDescription = "Managing residential properties in downtown area.",
                 isLoading = false,
@@ -53,7 +55,8 @@ private fun CreateNewOrgScreenWithContentPreview() {
 private fun CreateNewOrgScreenPreview_ES() {
     AppTheme {
         CreateNewOrgContent(
-            content = CreateNewOrgUIState(
+            content =
+            CreateNewOrgUIState(
                 organizationName = "",
                 organizationDescription = "",
                 isLoading = false,
@@ -72,7 +75,8 @@ private fun CreateNewOrgScreenPreview_ES() {
 private fun CreateNewOrgScreenWithContentPreview_ES() {
     AppTheme {
         CreateNewOrgContent(
-            content = CreateNewOrgUIState(
+            content =
+            CreateNewOrgUIState(
                 organizationName = "Acme Propiedades",
                 organizationDescription = "Gestión de propiedades residenciales en el centro.",
                 isLoading = false,

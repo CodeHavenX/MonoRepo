@@ -15,7 +15,6 @@ class UserEventsImpl(
     private val platformDelegate: UserEventsDelegate,
     private val eventLoggerInterface: EventLoggerInterface,
 ) : UserEventsInterface {
-
     override fun initialize() {
         platformDelegate.initialize()
     }

@@ -22,9 +22,4 @@ data class FlyerModel(
 /**
  * A paginated list of [FlyerModel] items with total-count metadata.
  */
-data class PaginatedFlyerModel(
-    val flyers: List<FlyerModel>,
-    val total: Int,
-    val offset: Int,
-    val limit: Int,
-)
+data class PaginatedFlyerModel(val flyers: List<FlyerModel>, val total: Int, val offset: Int, val limit: Int)

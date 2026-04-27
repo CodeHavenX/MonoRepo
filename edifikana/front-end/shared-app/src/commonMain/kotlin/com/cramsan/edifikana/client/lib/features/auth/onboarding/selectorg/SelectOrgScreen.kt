@@ -54,19 +54,25 @@ fun SelectOrgScreen(
 
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
-            SelectOrgEvent.Noop -> Unit
+            SelectOrgEvent.Noop -> {
+                Unit
+            }
+
             SelectOrgEvent.ShowSignOutConfirmation -> {
-                val signOutDialog = SignOutConfirmationDialog(
-                    onConfirm = { viewModel.confirmSignOut() },
-                    onDismiss = { /* User cancelled */ }
-                )
+                val signOutDialog =
+                    SignOutConfirmationDialog(
+                        onConfirm = { viewModel.confirmSignOut() },
+                        onDismiss = { /* User cancelled */ },
+                    )
                 dialogController.showDialog(signOutDialog)
             }
+
             is SelectOrgEvent.ShowJoinOrgConfirmation -> {
-                val joinOrgDialog = JoinOrgConfirmationDialog(
-                    onConfirm = { viewModel.acceptInvite(event.inviteId) },
-                    onDismiss = { /* User cancelled */ }
-                )
+                val joinOrgDialog =
+                    JoinOrgConfirmationDialog(
+                        onConfirm = { viewModel.acceptInvite(event.inviteId) },
+                        onDismiss = { /* User cancelled */ },
+                    )
                 dialogController.showDialog(joinOrgDialog)
             }
         }
@@ -103,10 +109,11 @@ internal fun SelectOrgContent(
                 title = stringResource(Res.string.create_new_org_screen_title),
                 onNavigationIconSelected = onSignOutClicked,
             )
-        }
+        },
     ) { innerPadding ->
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             overlay = {
@@ -146,7 +153,8 @@ internal fun SelectOrgContent(
                         title = stringResource(Res.string.select_org_screen_join_team_title),
                         description = stringResource(Res.string.select_org_screen_join_team_description),
                         icon = Icons.Default.Groups,
-                        colors = CardDefaults.cardColors().copy(
+                        colors =
+                        CardDefaults.cardColors().copy(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
                             contentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
                         ),
@@ -163,7 +171,7 @@ internal fun SelectOrgContent(
                     onClick = onCreateWorkspaceClicked,
                     modifier = sectionModifier,
                 )
-            }
+            },
         )
     }
 }

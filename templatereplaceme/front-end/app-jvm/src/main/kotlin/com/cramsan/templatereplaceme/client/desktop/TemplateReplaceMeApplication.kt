@@ -21,44 +21,47 @@ import org.koin.core.annotation.KoinExperimentalAPI
  * Main function for the desktop application.
  */
 @OptIn(KoinExperimentalAPI::class)
-fun main() = application {
-    ComposableKoinContext {
-        val processViewModel: TemplateReplaceMeApplicationViewModel = koinInject()
-        val eventHandler = remember { TemplateReplaceMeJvmMainScreenEventHandler() }
-        val appState by processViewModel.uiState.collectAsState()
+fun main() =
+    application {
+        ComposableKoinContext {
+            val processViewModel: TemplateReplaceMeApplicationViewModel = koinInject()
+            val eventHandler = remember { TemplateReplaceMeJvmMainScreenEventHandler() }
+            val appState by processViewModel.uiState.collectAsState()
 
-        LaunchedEffect(Unit) {
-            processViewModel.initialize()
-        }
-
-        Window(
-            onCloseRequest = ::exitApplication,
-            title = "TemplateReplaceMe",
-            state = rememberWindowState(
-                size = DpSize(600.dp, 800.dp)
-            )
-        ) {
-            KoinScope<String>("root-window") {
-                TemplateReplaceMeWindowScreen(
-                    eventHandler = eventHandler,
-                )
+            LaunchedEffect(Unit) {
+                processViewModel.initialize()
             }
-        }
 
-        if (appState.showDebugWindow) {
             Window(
-                onCloseRequest = { processViewModel.setShowDebugWindow(false) },
-                title = "Debug Window - TemplateReplaceMe",
-                state = rememberWindowState(
-                    size = DpSize(400.dp, 600.dp)
-                )
+                onCloseRequest = ::exitApplication,
+                title = "TemplateReplaceMe",
+                state =
+                rememberWindowState(
+                    size = DpSize(600.dp, 800.dp),
+                ),
             ) {
-                KoinScope<String>("debug-window") {
+                KoinScope<String>("root-window") {
                     TemplateReplaceMeWindowScreen(
                         eventHandler = eventHandler,
                     )
                 }
             }
+
+            if (appState.showDebugWindow) {
+                Window(
+                    onCloseRequest = { processViewModel.setShowDebugWindow(false) },
+                    title = "Debug Window - TemplateReplaceMe",
+                    state =
+                    rememberWindowState(
+                        size = DpSize(400.dp, 600.dp),
+                    ),
+                ) {
+                    KoinScope<String>("debug-window") {
+                        TemplateReplaceMeWindowScreen(
+                            eventHandler = eventHandler,
+                        )
+                    }
+                }
+            }
         }
     }
-}

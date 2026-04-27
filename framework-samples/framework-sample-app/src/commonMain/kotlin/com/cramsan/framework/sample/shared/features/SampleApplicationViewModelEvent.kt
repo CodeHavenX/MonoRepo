@@ -7,11 +7,8 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * triggered by a feature screen, and it will be handled by the application.
  */
 sealed class SampleApplicationViewModelEvent : ViewModelEvent {
-
     /**
      * Wrapper for [SampleWindowEvent] to be used in the view model.
      */
-    data class SampleApplicationEventWrapper(
-        val event: SampleWindowEvent,
-    ) : SampleApplicationViewModelEvent()
+    data class SampleApplicationEventWrapper(val event: SampleWindowEvent) : SampleApplicationViewModelEvent()
 }

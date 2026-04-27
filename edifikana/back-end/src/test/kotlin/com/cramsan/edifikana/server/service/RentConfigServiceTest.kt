@@ -28,7 +28,6 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 class RentConfigServiceTest {
-
     private lateinit var rentConfigDatastore: RentConfigDatastore
     private lateinit var rentConfigService: RentConfigService
 
@@ -52,34 +51,36 @@ class RentConfigServiceTest {
      * Tests that getRentConfig returns the config when found.
      */
     @Test
-    fun `getRentConfig should return config when found`() = runTest {
-        // Arrange
-        val unitId = UnitId("unit123")
-        val config = rentConfig(RentConfigId("rc123"), unitId)
-        coEvery { rentConfigDatastore.getRentConfig(unitId) } returns Result.success(config)
+    fun `getRentConfig should return config when found`() =
+        runTest {
+            // Arrange
+            val unitId = UnitId("unit123")
+            val config = rentConfig(RentConfigId("rc123"), unitId)
+            coEvery { rentConfigDatastore.getRentConfig(unitId) } returns Result.success(config)
 
-        // Act
-        val result = rentConfigService.getRentConfig(unitId)
+            // Act
+            val result = rentConfigService.getRentConfig(unitId)
 
-        // Assert
-        assertEquals(config, result)
-    }
+            // Assert
+            assertEquals(config, result)
+        }
 
     /**
      * Tests that getRentConfig returns null when no config exists for the unit.
      */
     @Test
-    fun `getRentConfig should return null when not found`() = runTest {
-        // Arrange
-        val unitId = UnitId("unit123")
-        coEvery { rentConfigDatastore.getRentConfig(unitId) } returns Result.success(null)
+    fun `getRentConfig should return null when not found`() =
+        runTest {
+            // Arrange
+            val unitId = UnitId("unit123")
+            coEvery { rentConfigDatastore.getRentConfig(unitId) } returns Result.success(null)
 
-        // Act
-        val result = rentConfigService.getRentConfig(unitId)
+            // Act
+            val result = rentConfigService.getRentConfig(unitId)
 
-        // Assert
-        assertNull(result)
-    }
+            // Assert
+            assertNull(result)
+        }
 
     // -------------------------------------------------------------------------
     // setRentConfig
@@ -89,42 +90,44 @@ class RentConfigServiceTest {
      * Tests that setRentConfig delegates to the datastore and returns the saved config.
      */
     @Test
-    fun `setRentConfig should delegate to datastore and return saved config`() = runTest {
-        // Arrange
-        val unitId = UnitId("unit123")
-        val updatedBy = UserId("user123")
-        val config = rentConfig(RentConfigId("rc123"), unitId)
-        coEvery {
-            rentConfigDatastore.setRentConfig(
-                unitId = unitId,
-                monthlyAmount = 120000.0,
-                dueDay = 1,
-                currency = "USD",
-                updatedBy = updatedBy,
-            )
-        } returns Result.success(config)
+    fun `setRentConfig should delegate to datastore and return saved config`() =
+        runTest {
+            // Arrange
+            val unitId = UnitId("unit123")
+            val updatedBy = UserId("user123")
+            val config = rentConfig(RentConfigId("rc123"), unitId)
+            coEvery {
+                rentConfigDatastore.setRentConfig(
+                    unitId = unitId,
+                    monthlyAmount = 120000.0,
+                    dueDay = 1,
+                    currency = "USD",
+                    updatedBy = updatedBy,
+                )
+            } returns Result.success(config)
 
-        // Act
-        val result = rentConfigService.setRentConfig(
-            unitId = unitId,
-            monthlyAmount = 120000.0,
-            dueDay = 1,
-            currency = "USD",
-            updatedBy = updatedBy,
-        )
+            // Act
+            val result =
+                rentConfigService.setRentConfig(
+                    unitId = unitId,
+                    monthlyAmount = 120000.0,
+                    dueDay = 1,
+                    currency = "USD",
+                    updatedBy = updatedBy,
+                )
 
-        // Assert
-        assertEquals(config, result)
-        coVerify {
-            rentConfigDatastore.setRentConfig(
-                unitId = unitId,
-                monthlyAmount = 120000.0,
-                dueDay = 1,
-                currency = "USD",
-                updatedBy = updatedBy,
-            )
+            // Assert
+            assertEquals(config, result)
+            coVerify {
+                rentConfigDatastore.setRentConfig(
+                    unitId = unitId,
+                    monthlyAmount = 120000.0,
+                    dueDay = 1,
+                    currency = "USD",
+                    updatedBy = updatedBy,
+                )
+            }
         }
-    }
 
     // -------------------------------------------------------------------------
     // Private helpers

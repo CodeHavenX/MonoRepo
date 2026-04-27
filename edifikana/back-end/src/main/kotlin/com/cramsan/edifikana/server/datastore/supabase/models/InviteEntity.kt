@@ -38,7 +38,6 @@ data class InviteEntity(
     @SerialName("deleted_at")
     val deletedAt: Instant? = null,
 ) {
-
     /**
      * Supabase entity representing a create invite request.
      */

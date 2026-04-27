@@ -10,42 +10,42 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Manager to handle authentication operations.
  */
-class AuthManager(
-    private val dependencies: ManagerDependencies,
-    private val authService: AuthService,
-) {
-
+class AuthManager(private val dependencies: ManagerDependencies, private val authService: AuthService) {
     /**
      * Registers a new user with [email] and [password].
      */
-    suspend fun signUp(email: String, password: String): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "signUp")
-        authService.signUp(email, password).getOrThrow()
-    }
+    suspend fun signUp(email: String, password: String): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "signUp")
+            authService.signUp(email, password).getOrThrow()
+        }
 
     /**
      * Signs in an existing user with [email] and [password].
      */
-    suspend fun signIn(email: String, password: String): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "signIn")
-        authService.signIn(email, password).getOrThrow()
-    }
+    suspend fun signIn(email: String, password: String): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "signIn")
+            authService.signIn(email, password).getOrThrow()
+        }
 
     /**
      * Signs out the currently authenticated user.
      */
-    suspend fun signOut(): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "signOut")
-        authService.signOut().getOrThrow()
-    }
+    suspend fun signOut(): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "signOut")
+            authService.signOut().getOrThrow()
+        }
 
     /**
      * Returns true if a user session is currently active.
      */
-    suspend fun isAuthenticated(): Result<Boolean> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "isAuthenticated")
-        authService.isAuthenticated().getOrThrow()
-    }
+    suspend fun isAuthenticated(): Result<Boolean> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "isAuthenticated")
+            authService.isAuthenticated().getOrThrow()
+        }
 
     /**
      * Returns the current session's access token for attaching to backend API calls.

@@ -29,74 +29,82 @@ class EventLogManager(
     /**
      * Get all event log records.
      */
-    suspend fun getRecords(propertyId: PropertyId): Result<List<EventLogRecordModel>> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getRecords")
+    suspend fun getRecords(propertyId: PropertyId): Result<List<EventLogRecordModel>> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getRecords")
 
-        val cachedData = eventLogCache.getRecords()
+            val cachedData = eventLogCache.getRecords()
 
-        val onlineData = eventLogService.getRecords(propertyId)
-            .getOrThrow()
+            val onlineData =
+                eventLogService
+                    .getRecords(propertyId)
+                    .getOrThrow()
 
-        (cachedData + onlineData).sortedByDescending { it.timeRecorded }
-    }
+            (cachedData + onlineData).sortedByDescending { it.timeRecorded }
+        }
 
     /**
      * Get a specific event log record.
      */
     suspend fun getRecord(
         eventLogRecordPK: EventLogEntryId,
-    ): Result<EventLogRecordModel> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getRecord")
-        val record = eventLogService.getRecord(eventLogRecordPK).getOrThrow()
-        record.copy(
-            attachments = record.attachments,
-        )
-    }
+    ): Result<EventLogRecordModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getRecord")
+            val record = eventLogService.getRecord(eventLogRecordPK).getOrThrow()
+            record.copy(
+                attachments = record.attachments,
+            )
+        }
 
     /**
      * Add a new event log record.
      */
-    suspend fun addRecord(eventLogRecord: EventLogRecordModel) = dependencies.getOrCatch(TAG) {
-        logI(TAG, "addRecord")
-        eventLogCache.addRecord(eventLogRecord)
+    suspend fun addRecord(eventLogRecord: EventLogRecordModel) =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "addRecord")
+            eventLogCache.addRecord(eventLogRecord)
 
-        coroutineScope {
-            uploadRecord(eventLogRecord)
-            triggerFullUpload()
+            coroutineScope {
+                uploadRecord(eventLogRecord)
+                triggerFullUpload()
+            }
+            Unit
         }
-        Unit
-    }
 
-    private suspend fun uploadRecord(eventLogRecord: EventLogRecordModel) = runCatching {
-        logI(TAG, "uploadRecord")
-        mutex.withLock {
-            eventLogService.addRecord(eventLogRecord).getOrThrow()
+    private suspend fun uploadRecord(eventLogRecord: EventLogRecordModel) =
+        runCatching {
+            logI(TAG, "uploadRecord")
+            mutex.withLock {
+                eventLogService.addRecord(eventLogRecord).getOrThrow()
 
-            eventLogCache.deleteRecord(eventLogRecord)
-        }
-    }.onFailure { logE(TAG, "Failed to upload event record", it) }
+                eventLogCache.deleteRecord(eventLogRecord)
+            }
+        }.onFailure { logE(TAG, "Failed to upload event record", it) }
 
     private suspend fun triggerFullUpload(): Job {
         logI(TAG, "triggerFullUpload")
         uploadJob?.cancel()
-        return dependencies.appScope.launch {
-            val pending = eventLogCache.getRecords()
+        return dependencies.appScope
+            .launch {
+                val pending = eventLogCache.getRecords()
 
-            pending.forEach { record ->
-                uploadRecord(record)
+                pending.forEach { record ->
+                    uploadRecord(record)
+                }
+            }.also {
+                uploadJob = it
             }
-        }.also {
-            uploadJob = it
-        }
     }
 
     /**
      * Start the upload process.
      */
-    suspend fun startUpload(): Result<Job> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "startUpload")
-        triggerFullUpload()
-    }
+    suspend fun startUpload(): Result<Job> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "startUpload")
+            triggerFullUpload()
+        }
 
     companion object {
         private const val TAG = "EventLogManager"

@@ -50,7 +50,6 @@ class RBACService(
     private val rentConfigDatastore: RentConfigDatastore,
     private val occupantDatastore: OccupantDatastore,
 ) {
-
     private val propertyNotFoundException = "ERROR: PROPERTY NOT FOUND!"
     private val employeeNotFoundException = "ERROR: EMPLOYEE NOT FOUND!"
     private val timecardEventNotFoundException = "ERROR: TIMECARD EVENT NOT FOUND!"
@@ -221,10 +220,11 @@ class RBACService(
      */
     private suspend fun getUserRoleForEventLogEntryAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        targetEventLogId: EventLogEntryId
+        targetEventLogId: EventLogEntryId,
     ): UserRole {
-        val eventLog = eventLogDatastore.getEventLogEntry(targetEventLogId).getOrThrow()
-            ?: throw InvalidRequestException(eventLogNotFound)
+        val eventLog =
+            eventLogDatastore.getEventLogEntry(targetEventLogId).getOrThrow()
+                ?: throw InvalidRequestException(eventLogNotFound)
         return getUserRoleForPropertyAction(context, eventLog.propertyId)
     }
 
@@ -273,8 +273,9 @@ class RBACService(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetDocumentId: DocumentId,
     ): UserRole {
-        val document = documentDatastore.getDocument(targetDocumentId).getOrThrow()
-            ?: return UserRole.UNAUTHORIZED
+        val document =
+            documentDatastore.getDocument(targetDocumentId).getOrThrow()
+                ?: return UserRole.UNAUTHORIZED
         return getUserRoleForOrganizationAction(context, document.orgId)
     }
 
@@ -320,8 +321,9 @@ class RBACService(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetCommonAreaId: CommonAreaId,
     ): UserRole {
-        val commonArea = commonAreaDatastore.getCommonArea(targetCommonAreaId).getOrThrow()
-            ?: return UserRole.UNAUTHORIZED
+        val commonArea =
+            commonAreaDatastore.getCommonArea(targetCommonAreaId).getOrThrow()
+                ?: return UserRole.UNAUTHORIZED
         return getUserRoleForPropertyAction(context, commonArea.propertyId)
     }
 
@@ -370,8 +372,9 @@ class RBACService(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetUnitId: UnitId,
     ): UserRole {
-        val unit = unitDatastore.getUnit(targetUnitId).getOrThrow()
-            ?: return UserRole.UNAUTHORIZED
+        val unit =
+            unitDatastore.getUnit(targetUnitId).getOrThrow()
+                ?: return UserRole.UNAUTHORIZED
         return getUserRoleForOrganizationAction(context, unit.orgId)
     }
 
@@ -418,7 +421,7 @@ class RBACService(
      */
     suspend fun getUserRoleForOrganizationAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        org: OrganizationId
+        org: OrganizationId,
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val role = orgDataStore.getUserRole(context.payload.userId, org).getOrNull()
@@ -439,7 +442,7 @@ class RBACService(
      */
     private suspend fun getUserRoleForPropertyAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        targetProperty: PropertyId
+        targetProperty: PropertyId,
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val requestedProperty = propertyDatastore.getProperty(targetProperty)
@@ -463,16 +466,17 @@ class RBACService(
      */
     private suspend fun getUserRoleForEmployeeAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        targetEmployee: EmployeeId
+        targetEmployee: EmployeeId,
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
         val employee =
             employeeDatastore.getEmployee(targetEmployee).getOrThrow() ?: throw InvalidRequestException(
-                employeeNotFoundException
+                employeeNotFoundException,
             )
-        val property = propertyDatastore.getProperty(employee.propertyId).getOrThrow() ?: throw InvalidRequestException(
-            propertyNotFoundException
-        )
+        val property =
+            propertyDatastore.getProperty(employee.propertyId).getOrThrow() ?: throw InvalidRequestException(
+                propertyNotFoundException,
+            )
         val role = orgDataStore.getUserRole(context.payload.userId, property.organizationId).getOrNull()
 
         if (role != null) {
@@ -492,11 +496,12 @@ class RBACService(
      */
     private suspend fun getUserRoleForTimeCardEventAction(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        targetTimecardId: TimeCardEventId
+        targetTimecardId: TimeCardEventId,
     ): UserRole {
         logI(TAG, "Retrieving user role(s) for ${context.payload.userId}")
-        val timeCardEvent = timeCardDatastore.getTimeCardEvent(targetTimecardId).getOrThrow()
-            ?: throw InvalidRequestException(timecardEventNotFoundException)
+        val timeCardEvent =
+            timeCardDatastore.getTimeCardEvent(targetTimecardId).getOrThrow()
+                ?: throw InvalidRequestException(timecardEventNotFoundException)
         return getUserRoleForPropertyAction(context, timeCardEvent.propertyId)
     }
 
@@ -542,8 +547,9 @@ class RBACService(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetPaymentRecordId: PaymentRecordId,
     ): UserRole {
-        val paymentRecord = paymentRecordDatastore.getPaymentRecord(targetPaymentRecordId).getOrThrow()
-            ?: return UserRole.UNAUTHORIZED
+        val paymentRecord =
+            paymentRecordDatastore.getPaymentRecord(targetPaymentRecordId).getOrThrow()
+                ?: return UserRole.UNAUTHORIZED
         return getUserRoleForUnitAction(context, paymentRecord.unitId)
     }
 
@@ -589,8 +595,9 @@ class RBACService(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetRentConfigId: RentConfigId,
     ): UserRole {
-        val rentConfig = rentConfigDatastore.getRentConfigById(targetRentConfigId).getOrThrow()
-            ?: return UserRole.UNAUTHORIZED
+        val rentConfig =
+            rentConfigDatastore.getRentConfigById(targetRentConfigId).getOrThrow()
+                ?: return UserRole.UNAUTHORIZED
         return getUserRoleForUnitAction(context, rentConfig.unitId)
     }
 
@@ -636,8 +643,9 @@ class RBACService(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetTaskId: TaskId,
     ): UserRole {
-        val task = taskDatastore.getTask(targetTaskId).getOrThrow()
-            ?: return UserRole.UNAUTHORIZED
+        val task =
+            taskDatastore.getTask(targetTaskId).getOrThrow()
+                ?: return UserRole.UNAUTHORIZED
         return getUserRoleForPropertyAction(context, task.propertyId)
     }
 

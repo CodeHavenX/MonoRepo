@@ -19,38 +19,43 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object EventLogApi : Api("event_log") {
-    val createEventLogEntry = operation<
-        CreateEventLogEntryNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        EventLogEntryNetworkResponse
-        >(HttpMethod.Post)
+    val createEventLogEntry =
+        operation<
+            CreateEventLogEntryNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            EventLogEntryNetworkResponse,
+            >(HttpMethod.Post)
 
-    val getEventLogEntry = operation<
-        NoRequestBody,
-        NoQueryParam,
-        EventLogEntryId,
-        EventLogEntryNetworkResponse
-        >(HttpMethod.Get)
+    val getEventLogEntry =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            EventLogEntryId,
+            EventLogEntryNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getEventLogEntries = operation<
-        NoRequestBody,
-        GetEventLogEntriesQueryParams,
-        NoPathParam,
-        EventLogEntryListNetworkResponse
-        >(HttpMethod.Get)
+    val getEventLogEntries =
+        operation<
+            NoRequestBody,
+            GetEventLogEntriesQueryParams,
+            NoPathParam,
+            EventLogEntryListNetworkResponse,
+            >(HttpMethod.Get)
 
-    val updateEventLogEntry = operation<
-        UpdateEventLogEntryNetworkRequest,
-        NoQueryParam,
-        EventLogEntryId,
-        EventLogEntryNetworkResponse
-        >(HttpMethod.Put)
+    val updateEventLogEntry =
+        operation<
+            UpdateEventLogEntryNetworkRequest,
+            NoQueryParam,
+            EventLogEntryId,
+            EventLogEntryNetworkResponse,
+            >(HttpMethod.Put)
 
-    val deleteEventLogEntry = operation<
-        NoRequestBody,
-        NoQueryParam,
-        EventLogEntryId,
-        NoResponseBody
-        >(HttpMethod.Delete)
+    val deleteEventLogEntry =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            EventLogEntryId,
+            NoResponseBody,
+            >(HttpMethod.Delete)
 }

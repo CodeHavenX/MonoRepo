@@ -10,25 +10,27 @@ import com.cramsan.framework.annotations.NetworkModel
  * Maps a [FlyerNetworkResponse] to a [FlyerModel].
  */
 @OptIn(NetworkModel::class)
-fun FlyerNetworkResponse.toFlyerModel(): FlyerModel = FlyerModel(
-    id = id,
-    title = title,
-    description = description,
-    fileUrl = fileUrl,
-    status = status,
-    expiresAt = expiresAt,
-    uploaderId = uploaderId,
-    createdAt = createdAt,
-    updatedAt = updatedAt,
-)
+fun FlyerNetworkResponse.toFlyerModel(): FlyerModel =
+    FlyerModel(
+        id = id,
+        title = title,
+        description = description,
+        fileUrl = fileUrl,
+        status = status,
+        expiresAt = expiresAt,
+        uploaderId = uploaderId,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )
 
 /**
  * Maps a [FlyerListNetworkResponse] to a [PaginatedFlyerModel].
  */
 @OptIn(NetworkModel::class)
-fun FlyerListNetworkResponse.toPaginatedFlyerModel(): PaginatedFlyerModel = PaginatedFlyerModel(
-    flyers = flyers.map { it.toFlyerModel() },
-    total = total,
-    offset = offset,
-    limit = limit,
-)
+fun FlyerListNetworkResponse.toPaginatedFlyerModel(): PaginatedFlyerModel =
+    PaginatedFlyerModel(
+        flyers = flyers.map { it.toFlyerModel() },
+        total = total,
+        offset = offset,
+        limit = limit,
+    )

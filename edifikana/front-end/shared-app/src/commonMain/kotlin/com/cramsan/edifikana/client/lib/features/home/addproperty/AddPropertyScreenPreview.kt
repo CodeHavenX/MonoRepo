@@ -10,111 +10,123 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Preview
 @Composable
-private fun AddPropertyScreenPreview() = AppTheme {
-    AddPropertyContent(
-        content = AddPropertyUIState(
-            isLoading = false,
-            orgId = null,
-            selectedIcon = null,
-            isUploading = false,
-            uploadError = null,
-        ),
-        onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
-        onOpenSelectorSelected = { },
-    )
-}
+private fun AddPropertyScreenPreview() =
+    AppTheme {
+        AddPropertyContent(
+            content =
+            AddPropertyUIState(
+                isLoading = false,
+                orgId = null,
+                selectedIcon = null,
+                isUploading = false,
+                uploadError = null,
+            ),
+            onBackSelected = {},
+            onAddPropertySelected = { _, _, _ -> },
+            onOpenSelectorSelected = { },
+        )
+    }
 
 /**
  * Preview for the AddProperty feature screen - Uploading state.
  */
 @Preview
 @Composable
-private fun AddPropertyScreenUploadingPreview() = AppTheme {
-    AddPropertyContent(
-        content = AddPropertyUIState(
-            isLoading = false,
-            orgId = null,
-            selectedIcon = null,
-            isUploading = true,
-            uploadError = null,
-        ),
-        onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
-        onOpenSelectorSelected = { },
-    )
-}
+private fun AddPropertyScreenUploadingPreview() =
+    AppTheme {
+        AddPropertyContent(
+            content =
+            AddPropertyUIState(
+                isLoading = false,
+                orgId = null,
+                selectedIcon = null,
+                isUploading = true,
+                uploadError = null,
+            ),
+            onBackSelected = {},
+            onAddPropertySelected = { _, _, _ -> },
+            onOpenSelectorSelected = { },
+        )
+    }
 
 /**
  * Preview for the AddProperty feature screen - With uploaded custom image.
  */
 @Preview
 @Composable
-private fun AddPropertyScreenWithCustomImagePreview() = AppTheme {
-    AddPropertyContent(
-        content = AddPropertyUIState(
-            isLoading = false,
-            orgId = null,
-            selectedIcon = PropertyIconOptions.fromImageUrl("https://example.com/custom-image.jpg"),
-            isUploading = false,
-            uploadError = null,
-        ),
-        onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
-        onOpenSelectorSelected = { },
-    )
-}
+private fun AddPropertyScreenWithCustomImagePreview() =
+    AppTheme {
+        AddPropertyContent(
+            content =
+            AddPropertyUIState(
+                isLoading = false,
+                orgId = null,
+                selectedIcon = PropertyIconOptions.fromImageUrl("https://example.com/custom-image.jpg"),
+                isUploading = false,
+                uploadError = null,
+            ),
+            onBackSelected = {},
+            onAddPropertySelected = { _, _, _ -> },
+            onOpenSelectorSelected = { },
+        )
+    }
 
 /**
  * Preview for the AddProperty feature screen - Upload error state.
  */
 @Preview
 @Composable
-private fun AddPropertyScreenUploadErrorPreview() = AppTheme {
-    AddPropertyContent(
-        content = AddPropertyUIState(
-            isLoading = false,
-            orgId = null,
-            selectedIcon = null,
-            isUploading = false,
-            uploadError = "File size exceeds 10MB limit",
-        ),
-        onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
-        onOpenSelectorSelected = { },
-    )
-}
+private fun AddPropertyScreenUploadErrorPreview() =
+    AppTheme {
+        AddPropertyContent(
+            content =
+            AddPropertyUIState(
+                isLoading = false,
+                orgId = null,
+                selectedIcon = null,
+                isUploading = false,
+                uploadError = "File size exceeds 10MB limit",
+            ),
+            onBackSelected = {},
+            onAddPropertySelected = { _, _, _ -> },
+            onOpenSelectorSelected = { },
+        )
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun AddPropertyScreenPreview_ES() = AppTheme {
-    AddPropertyContent(
-        content = AddPropertyUIState(
-            isLoading = false,
-            orgId = null,
-            selectedIcon = null,
-            isUploading = false,
-            uploadError = null,
-        ),
-        onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
-        onOpenSelectorSelected = { },
-    )
-}
+private fun AddPropertyScreenPreview_ES() =
+    AppTheme {
+        AddPropertyContent(
+            content =
+            AddPropertyUIState(
+                isLoading = false,
+                orgId = null,
+                selectedIcon = null,
+                isUploading = false,
+                uploadError = null,
+            ),
+            onBackSelected = {},
+            onAddPropertySelected = { _, _, _ -> },
+            onOpenSelectorSelected = { },
+        )
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun AddPropertyScreenUploadingPreview_ES() = AppTheme {
-    AddPropertyContent(
-        content = AddPropertyUIState(
-            isLoading = false,
-            orgId = null,
-            selectedIcon = null,
-            isUploading = true,
-            uploadError = null,
-        ),
-        onBackSelected = {},
-        onAddPropertySelected = { _, _, _ -> },
-        onOpenSelectorSelected = { },
-    )
-}
+private fun AddPropertyScreenUploadingPreview_ES() =
+    AppTheme {
+        AddPropertyContent(
+            content =
+            AddPropertyUIState(
+                isLoading = false,
+                orgId = null,
+                selectedIcon = null,
+                isUploading = true,
+                uploadError = null,
+            ),
+            onBackSelected = {},
+            onAddPropertySelected = { _, _, _ -> },
+            onOpenSelectorSelected = { },
+        )
+    }

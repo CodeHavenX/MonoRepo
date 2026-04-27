@@ -7,7 +7,6 @@ package com.cramsan.flyerboard.server.service
  * script injection or oversized content can reach storage.
  */
 object InputSanitizer {
-
     private val HTML_TAG_REGEX = Regex("<[^>]*>")
 
     /**

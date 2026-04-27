@@ -8,7 +8,6 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
  * Service for managing event logs.
  */
 interface EventLogService {
-
     /**
      * Get all event log records.
      */

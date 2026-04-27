@@ -11,9 +11,7 @@ import com.cramsan.framework.logging.logI
 /**
  * Caching for time cards.
  */
-class TimeCardRoomCache(
-    private val timeCardRecordDao: TimeCardRecordDao,
-) : TimeCardCache {
+class TimeCardRoomCache(private val timeCardRecordDao: TimeCardRecordDao) : TimeCardCache {
     /**
      * Get all time card records for a employee member.
      */

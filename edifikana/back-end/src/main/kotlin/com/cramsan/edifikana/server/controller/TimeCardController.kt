@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.TimeCardApi
-import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.timeCard.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.lib.model.network.timeCard.GetTimeCardEventsQueryParams
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
+import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.TimeCardService
 import com.cramsan.edifikana.server.service.authorization.RBACService
@@ -34,7 +34,6 @@ class TimeCardController(
     private val rbacService: RBACService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     /**
      * Handles the creation of a new time card event. Validates the request and user permissions,
      * then creates the time card event using the [timeCardService].
@@ -45,24 +44,26 @@ class TimeCardController(
             CreateTimeCardEventNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): TimeCardEventNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(
                 "User does not have permission to create time card events " +
-                    "for property ${request.requestBody.propertyId}"
+                    "for property ${request.requestBody.propertyId}",
             )
         }
 
-        val newTimeCard = timeCardService.createTimeCardEvent(
-            employeeId = request.requestBody.employeeId,
-            fallbackEmployeeName = request.requestBody.fallbackEmployeeName,
-            propertyId = request.requestBody.propertyId,
-            type = request.requestBody.type,
-            imageUrl = request.requestBody.imageUrl,
-            timestamp = Chronos.currentInstant(),
-        ).toTimeCardEventNetworkResponse()
+        val newTimeCard =
+            timeCardService
+                .createTimeCardEvent(
+                    employeeId = request.requestBody.employeeId,
+                    fallbackEmployeeName = request.requestBody.fallbackEmployeeName,
+                    propertyId = request.requestBody.propertyId,
+                    type = request.requestBody.type,
+                    imageUrl = request.requestBody.imageUrl,
+                    timestamp = Chronos.currentInstant(),
+                ).toTimeCardEventNetworkResponse()
         return newTimeCard
     }
 
@@ -75,16 +76,17 @@ class TimeCardController(
             NoRequestBody,
             NoQueryParam,
             TimeCardEventId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): TimeCardEventNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
             throw UnauthorizedException("User does not have permission to view time card event ${request.pathParam}")
         }
 
-        return timeCardService.getTimeCardEvent(
-            request.pathParam,
-        )?.toTimeCardEventNetworkResponse()
+        return timeCardService
+            .getTimeCardEvent(
+                request.pathParam,
+            )?.toTimeCardEventNetworkResponse()
     }
 
     /**
@@ -98,7 +100,7 @@ class TimeCardController(
             NoRequestBody,
             GetTimeCardEventsQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): TimeCardEventListNetworkResponse {
         val targetEmployeeId = request.queryParam.employeeId
@@ -108,7 +110,7 @@ class TimeCardController(
             if (!rbacService.hasRoleOrHigher(request.context, it, UserRole.EMPLOYEE)) {
                 throw UnauthorizedException(
                     "User does not have permission to view time card events for employee " +
-                        "${request.queryParam.employeeId}"
+                        "${request.queryParam.employeeId}",
                 )
             }
         }
@@ -116,13 +118,15 @@ class TimeCardController(
         if (!rbacService.hasRoleOrHigher(request.context, targetPropertyId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(
                 "User does not have permission to view time card events for property " +
-                    "${request.queryParam.propertyId}"
+                    "${request.queryParam.propertyId}",
             )
         }
 
-        val timeCards = timeCardService.getTimeCardEvents(
-            employeeId = request.queryParam.employeeId,
-        ).map { it.toTimeCardEventNetworkResponse() }
+        val timeCards =
+            timeCardService
+                .getTimeCardEvents(
+                    employeeId = request.queryParam.employeeId,
+                ).map { it.toTimeCardEventNetworkResponse() }
         return TimeCardEventListNetworkResponse(timeCards)
     }
 

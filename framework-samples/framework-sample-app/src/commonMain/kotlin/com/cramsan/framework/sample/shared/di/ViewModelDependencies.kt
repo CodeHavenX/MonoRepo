@@ -18,47 +18,48 @@ import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-internal val ViewModelModule = module {
+internal val ViewModelModule =
+    module {
 
-    scope<String> {
-        scoped(named(WindowIdentifier.EVENT_BUS)) {
-            EventBus<WindowEvent>()
-        } withOptions {
-            bind<EventEmitter<WindowEvent>>()
-            bind<EventReceiver<WindowEvent>>()
+        scope<String> {
+            scoped(named(WindowIdentifier.EVENT_BUS)) {
+                EventBus<WindowEvent>()
+            } withOptions {
+                bind<EventEmitter<WindowEvent>>()
+                bind<EventReceiver<WindowEvent>>()
+            }
+
+            scoped(named(WindowIdentifier.DELEGATED_EVENT_BUS)) {
+                EventBus<SampleWindowDelegatedEvent>()
+            } withOptions {
+                bind<EventEmitter<SampleWindowDelegatedEvent>>()
+                bind<EventReceiver<SampleWindowDelegatedEvent>>()
+            }
+
+            scoped {
+                ViewModelDependencies(
+                    get(),
+                    get(),
+                    get(),
+                    get(named(WindowIdentifier.EVENT_BUS)),
+                    InvalidEventBus(),
+                )
+            }
+
+            viewModel {
+                ApplicationViewModel(
+                    get(),
+                    get(),
+                    get(named(WindowIdentifier.EVENT_BUS)),
+                )
+            }
+
+            // These objects are scoped to the screen in which they are used.
+            viewModelOf(::HaltUtilViewModel)
+            viewModelOf(::MainMenuViewModel)
+            viewModelOf(::LoggingViewModel)
         }
-
-        scoped(named(WindowIdentifier.DELEGATED_EVENT_BUS)) {
-            EventBus<SampleWindowDelegatedEvent>()
-        } withOptions {
-            bind<EventEmitter<SampleWindowDelegatedEvent>>()
-            bind<EventReceiver<SampleWindowDelegatedEvent>>()
-        }
-
-        scoped {
-            ViewModelDependencies(
-                get(),
-                get(),
-                get(),
-                get(named(WindowIdentifier.EVENT_BUS)),
-                InvalidEventBus(),
-            )
-        }
-
-        viewModel {
-            ApplicationViewModel(
-                get(),
-                get(),
-                get(named(WindowIdentifier.EVENT_BUS)),
-            )
-        }
-
-        // These objects are scoped to the screen in which they are used.
-        viewModelOf(::HaltUtilViewModel)
-        viewModelOf(::MainMenuViewModel)
-        viewModelOf(::LoggingViewModel)
     }
-}
 
 /**
  * Identifiers for various window-level components.

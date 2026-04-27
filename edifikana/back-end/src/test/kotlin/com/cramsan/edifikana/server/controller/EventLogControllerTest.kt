@@ -44,8 +44,9 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class EventLogControllerTest : CoroutineTest(), KoinTest {
-
+class EventLogControllerTest :
+    CoroutineTest(),
+    KoinTest {
     /**
      * Setup the test.
      */
@@ -68,129 +69,26 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
 
     // Something about public/private and the file name under the function was located.
     @Test
-    fun `test createEventLog`() = testBackEndApplication {
-        // Configure
-        val requestBody = readFileContent("requests/create_event_log_entry_request.json")
-        val expectedResponse = readFileContent("requests/create_event_log_entry_response.json")
-        val rbacService = get<RBACService>()
-        val userService = get<EventLogService>()
-        coEvery {
-            userService.createEventLogEntry(
-                employeeId = EmployeeId("emp456"),
-                fallbackEmployeeName = "John Doe",
-                propertyId = PropertyId("property789"),
-                type = EventLogEventType.MAINTENANCE_SERVICE,
-                fallbackEventType = "General Maintenance",
-                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
-                title = "Routine Check",
-                description = "Performed routine maintenance check.",
-                unit = UnitId("Unit 101"),
-            )
-        }.answers {
-            EventLogEntry(
-                id = EventLogEntryId("event123"),
-                employeeId = EmployeeId("emp456"),
-                fallbackEmployeeName = "John Doe",
-                propertyId = PropertyId("property789"),
-                type = EventLogEventType.MAINTENANCE_SERVICE,
-                fallbackEventType = "General Maintenance",
-                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
-                title = "Routine Check",
-                description = "Performed routine maintenance check.",
-                unit = UnitId("Unit 101"),
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, PropertyId("property789"), UserRole.EMPLOYEE)
-        }.answers {
-            true
-        }
-
-        // Act
-        val response = client.post("event_log") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
-        }
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
-
-    @Test
-    fun `test getEventLogEntry`() = testBackEndApplication {
-        // Configure
-        val expectedResponse = readFileContent("requests/get_event_log_entry_response.json")
-        val userService = get<EventLogService>()
-        val rbacService = get<RBACService>()
-        coEvery {
-            userService.getEventLogEntry(
-                EventLogEntryId("event123"),
-            )
-        }.answers {
-            EventLogEntry(
-                id = EventLogEntryId("event123"),
-                employeeId = EmployeeId("emp456"),
-                fallbackEmployeeName = "John Doe",
-                propertyId = PropertyId("property789"),
-                type = EventLogEventType.MAINTENANCE_SERVICE,
-                fallbackEventType = "General Maintenance",
-                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
-                title = "Routine Check",
-                description = "Performed routine maintenance check.",
-                unit = UnitId("Unit 101"),
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, EventLogEntryId("event123"), UserRole.EMPLOYEE)
-        }.answers {
-            true
-        }
-
-        // Act
-        val response = client.get("event_log/event123")
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
-
-    @Ignore
-    @Test
-    fun `test getEventLogEntries`() = testBackEndApplication {
-        // Configure
-        val expectedResponse = readFileContent("requests/get_event_log_entries_response.json")
-        val userService = get<EventLogService>()
-        val rbacService = get<RBACService>()
-        val propertyId = PropertyId("property1")
-        coEvery {
-            userService.getEventLogEntries(propertyId)
-        }.answers {
-            listOf(
+    fun `test createEventLog`() =
+        testBackEndApplication {
+            // Configure
+            val requestBody = readFileContent("requests/create_event_log_entry_request.json")
+            val expectedResponse = readFileContent("requests/create_event_log_entry_response.json")
+            val rbacService = get<RBACService>()
+            val userService = get<EventLogService>()
+            coEvery {
+                userService.createEventLogEntry(
+                    employeeId = EmployeeId("emp456"),
+                    fallbackEmployeeName = "John Doe",
+                    propertyId = PropertyId("property789"),
+                    type = EventLogEventType.MAINTENANCE_SERVICE,
+                    fallbackEventType = "General Maintenance",
+                    timestamp = Instant.parse("2024-01-01T00:00:00Z"),
+                    title = "Routine Check",
+                    description = "Performed routine maintenance check.",
+                    unit = UnitId("Unit 101"),
+                )
+            }.answers {
                 EventLogEntry(
                     id = EventLogEntryId("event123"),
                     employeeId = EmployeeId("emp456"),
@@ -202,133 +100,248 @@ class EventLogControllerTest : CoroutineTest(), KoinTest {
                     title = "Routine Check",
                     description = "Performed routine maintenance check.",
                     unit = UnitId("Unit 101"),
-                ),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, PropertyId("property789"), UserRole.EMPLOYEE)
+            }.answers {
+                true
+            }
+
+            // Act
+            val response =
+                client.post("event_log") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `test getEventLogEntry`() =
+        testBackEndApplication {
+            // Configure
+            val expectedResponse = readFileContent("requests/get_event_log_entry_response.json")
+            val userService = get<EventLogService>()
+            val rbacService = get<RBACService>()
+            coEvery {
+                userService.getEventLogEntry(
+                    EventLogEntryId("event123"),
+                )
+            }.answers {
                 EventLogEntry(
-                    id = EventLogEntryId("event456"),
-                    employeeId = EmployeeId("emp789"),
-                    fallbackEmployeeName = "Jane Doe",
-                    propertyId = PropertyId("property101"),
+                    id = EventLogEntryId("event123"),
+                    employeeId = EmployeeId("emp456"),
+                    fallbackEmployeeName = "John Doe",
+                    propertyId = PropertyId("property789"),
                     type = EventLogEventType.MAINTENANCE_SERVICE,
                     fallbackEventType = "General Maintenance",
-                    timestamp = Instant.parse("2024-02-01T00:00:00Z"),
+                    timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                     title = "Routine Check",
                     description = "Performed routine maintenance check.",
                     unit = UnitId("Unit 101"),
-                ),
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, EventLogEntryId("event123"), UserRole.EMPLOYEE)
+            }.answers {
+                true
+            }
+
+            // Act
+            val response = client.get("event_log/event123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
 
-        // Act
-        val response = client.get("event_log?propertyId=property1")
+    @Ignore
+    @Test
+    fun `test getEventLogEntries`() =
+        testBackEndApplication {
+            // Configure
+            val expectedResponse = readFileContent("requests/get_event_log_entries_response.json")
+            val userService = get<EventLogService>()
+            val rbacService = get<RBACService>()
+            val propertyId = PropertyId("property1")
+            coEvery {
+                userService.getEventLogEntries(propertyId)
+            }.answers {
+                listOf(
+                    EventLogEntry(
+                        id = EventLogEntryId("event123"),
+                        employeeId = EmployeeId("emp456"),
+                        fallbackEmployeeName = "John Doe",
+                        propertyId = PropertyId("property789"),
+                        type = EventLogEventType.MAINTENANCE_SERVICE,
+                        fallbackEventType = "General Maintenance",
+                        timestamp = Instant.parse("2024-01-01T00:00:00Z"),
+                        title = "Routine Check",
+                        description = "Performed routine maintenance check.",
+                        unit = UnitId("Unit 101"),
+                    ),
+                    EventLogEntry(
+                        id = EventLogEntryId("event456"),
+                        employeeId = EmployeeId("emp789"),
+                        fallbackEmployeeName = "Jane Doe",
+                        propertyId = PropertyId("property101"),
+                        type = EventLogEventType.MAINTENANCE_SERVICE,
+                        fallbackEventType = "General Maintenance",
+                        timestamp = Instant.parse("2024-02-01T00:00:00Z"),
+                        title = "Routine Check",
+                        description = "Performed routine maintenance check.",
+                        unit = UnitId("Unit 101"),
+                    ),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Act
+            val response = client.get("event_log?propertyId=property1")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 
     @Test
-    fun `test updateEventLogEntry`() = testBackEndApplication {
-        // Configure
-        val requestBody = readFileContent("requests/update_event_log_entry_request.json")
-        val expectedResponse = readFileContent("requests/update_event_log_entry_response.json")
-        val userService = get<EventLogService>()
-        val rbacService = get<RBACService>()
-        coEvery {
-            userService.updateEventLogEntry(
-                id = EventLogEntryId("event123"),
-                type = EventLogEventType.INCIDENT,
-                fallbackEventType = "Inspection",
-                title = "Monthly check",
-                description = "Performed monthly inspection.",
-                unit = UnitId("Unit 202"),
-            )
-        }.answers {
-            EventLogEntry(
-                id = EventLogEntryId("event123"),
-                employeeId = EmployeeId("emp456"),
-                fallbackEmployeeName = "John Doe",
-                propertyId = PropertyId("property789"),
-                type = EventLogEventType.INCIDENT,
-                fallbackEventType = "Inspection",
-                timestamp = Instant.parse("2024-02-01T00:00:00Z"),
-                title = "Monthly check",
-                description = "Performed monthly inspection.",
-                unit = UnitId("Unit 202"),
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, EventLogEntryId("event123"), UserRole.EMPLOYEE)
-        }.answers {
-            true
-        }
+    fun `test updateEventLogEntry`() =
+        testBackEndApplication {
+            // Configure
+            val requestBody = readFileContent("requests/update_event_log_entry_request.json")
+            val expectedResponse = readFileContent("requests/update_event_log_entry_response.json")
+            val userService = get<EventLogService>()
+            val rbacService = get<RBACService>()
+            coEvery {
+                userService.updateEventLogEntry(
+                    id = EventLogEntryId("event123"),
+                    type = EventLogEventType.INCIDENT,
+                    fallbackEventType = "Inspection",
+                    title = "Monthly check",
+                    description = "Performed monthly inspection.",
+                    unit = UnitId("Unit 202"),
+                )
+            }.answers {
+                EventLogEntry(
+                    id = EventLogEntryId("event123"),
+                    employeeId = EmployeeId("emp456"),
+                    fallbackEmployeeName = "John Doe",
+                    propertyId = PropertyId("property789"),
+                    type = EventLogEventType.INCIDENT,
+                    fallbackEventType = "Inspection",
+                    timestamp = Instant.parse("2024-02-01T00:00:00Z"),
+                    title = "Monthly check",
+                    description = "Performed monthly inspection.",
+                    unit = UnitId("Unit 202"),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, EventLogEntryId("event123"), UserRole.EMPLOYEE)
+            }.answers {
+                true
+            }
 
-        // Act
-        val response = client.put("event_log/event123") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
-        }
+            // Act
+            val response =
+                client.put("event_log/event123") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 
     @Test
-    fun `test deleteEventLogEntry`() = testBackEndApplication {
-        // Configure
-        val userService = get<EventLogService>()
-        val rbacService = get<RBACService>()
-        coEvery {
-            userService.deleteEventLogEntry(EventLogEntryId("event123"))
-        }.answers {
-            true
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, EventLogEntryId("event123"), UserRole.EMPLOYEE)
-        }.answers {
-            true
-        }
+    fun `test deleteEventLogEntry`() =
+        testBackEndApplication {
+            // Configure
+            val userService = get<EventLogService>()
+            val rbacService = get<RBACService>()
+            coEvery {
+                userService.deleteEventLogEntry(EventLogEntryId("event123"))
+            }.answers {
+                true
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, EventLogEntryId("event123"), UserRole.EMPLOYEE)
+            }.answers {
+                true
+            }
 
-        // Act
-        val response = client.delete("event_log/event123")
+            // Act
+            val response = client.delete("event_log/event123")
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+        }
 }

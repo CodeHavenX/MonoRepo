@@ -14,7 +14,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class GetTimeCardEventsQueryParams(
-    val employeeId: EmployeeId?,
-    val propertyId: PropertyId,
-) : QueryParam
+data class GetTimeCardEventsQueryParams(val employeeId: EmployeeId?, val propertyId: PropertyId) : QueryParam

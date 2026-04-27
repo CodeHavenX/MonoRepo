@@ -39,7 +39,6 @@ class FileSystemDocumentStore(
     private val json: Json,
     private val inputDocuments: List<InputDocumentConfig>,
 ) : DocumentStore {
-
     @Serializable
     private data class DocumentMeta(
         val id: String,
@@ -69,15 +68,16 @@ class FileSystemDocumentStore(
         documents[id] = updated
 
         // Compute content hash when validating
-        val contentHash = if (status == DocumentStatus.VALIDATED) {
-            val filePath = resolvePath(docsDir, existing.relativePath)
-            val content = Files.readString(filePath)
-            computeContentHash(content).also {
-                logD(TAG, "Computed content hash for $id: $it")
+        val contentHash =
+            if (status == DocumentStatus.VALIDATED) {
+                val filePath = resolvePath(docsDir, existing.relativePath)
+                val content = Files.readString(filePath)
+                computeContentHash(content).also {
+                    logD(TAG, "Computed content hash for $id: $it")
+                }
+            } else {
+                null
             }
-        } else {
-            null
-        }
         writeSidecar(updated, contentHash)
     }
 
@@ -125,29 +125,36 @@ class FileSystemDocumentStore(
                 val currentHash = computeContentHash(currentContent)
                 if (currentHash != sidecar.contentHash) {
                     logW(TAG, "Document $id content changed since validation (hash mismatch). Resetting to UNREVIEWED.")
-                    logD(TAG, "Expected hash: ${sidecar.contentHash.take(HASH_PREVIEW_LENGTH)}..., actual: ${currentHash.take(HASH_PREVIEW_LENGTH)}...")
+                    logD(
+                        TAG,
+                        "Expected hash: ${sidecar.contentHash.take(
+                            HASH_PREVIEW_LENGTH,
+                        )}..., actual: ${currentHash.take(HASH_PREVIEW_LENGTH)}...",
+                    )
                     status = DocumentStatus.UNREVIEWED
                     // Update the sidecar to reflect the reset status
-                    val resetDoc = AgenticDocument(
-                        id = id,
-                        typeId = docConfig.id,
-                        relativePath = docConfig.filename,
-                        status = status,
-                        lastModifiedEpochMs = lastModified,
-                    )
+                    val resetDoc =
+                        AgenticDocument(
+                            id = id,
+                            typeId = docConfig.id,
+                            relativePath = docConfig.filename,
+                            status = status,
+                            lastModifiedEpochMs = lastModified,
+                        )
                     writeSidecar(resetDoc, null)
                 } else {
                     logD(TAG, "Document $id hash verified, status remains VALIDATED")
                 }
             }
 
-            val doc = AgenticDocument(
-                id = id,
-                typeId = docConfig.id,
-                relativePath = docConfig.filename,
-                status = status,
-                lastModifiedEpochMs = lastModified,
-            )
+            val doc =
+                AgenticDocument(
+                    id = id,
+                    typeId = docConfig.id,
+                    relativePath = docConfig.filename,
+                    status = status,
+                    lastModifiedEpochMs = lastModified,
+                )
             result[id] = doc
             logI(TAG, "Loaded document: id=$id, typeId=${docConfig.id}, status=$status, lastModified=$lastModified")
         }
@@ -179,14 +186,20 @@ class FileSystemDocumentStore(
         val path = sidecarPath(document.id)
         logD(TAG, "Writing sidecar for document ${document.id} to $path")
         Files.createDirectories(path.parent)
-        val meta = DocumentMeta(
-            id = document.id,
-            status = document.status,
-            lastModifiedEpochMs = document.lastModifiedEpochMs,
-            contentHash = contentHash,
-        )
+        val meta =
+            DocumentMeta(
+                id = document.id,
+                status = document.status,
+                lastModifiedEpochMs = document.lastModifiedEpochMs,
+                contentHash = contentHash,
+            )
         Files.writeString(path, json.encodeToString(DocumentMeta.serializer(), meta))
-        logD(TAG, "Sidecar written for document ${document.id}: status=${document.status}, hash=${contentHash?.take(HASH_PREVIEW_LENGTH)}...")
+        logD(
+            TAG,
+            "Sidecar written for document ${document.id}: status=${document.status}, hash=${contentHash?.take(
+                HASH_PREVIEW_LENGTH,
+            )}...",
+        )
     }
 
     private fun computeContentHash(content: String): String {

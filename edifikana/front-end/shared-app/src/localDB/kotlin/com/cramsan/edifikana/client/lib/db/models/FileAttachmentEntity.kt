@@ -19,7 +19,6 @@ data class FileAttachmentEntity(
     val fileUri: String? = null,
 ) {
     companion object {
-
         /**
          * Create a new [FileAttachmentEntity] with the given [eventLogRecordPK], [clock], and [fileUri]
          */

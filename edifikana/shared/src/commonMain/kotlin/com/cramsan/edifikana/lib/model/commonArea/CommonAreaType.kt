@@ -8,17 +8,22 @@ import kotlinx.serialization.SerialName
 enum class CommonAreaType {
     @SerialName("LOBBY")
     LOBBY,
+
     @SerialName("POOL")
     POOL,
+
     @SerialName("GYM")
     GYM,
+
     @SerialName("PARKING")
     PARKING,
+
     @SerialName("LAUNDRY")
     LAUNDRY,
+
     @SerialName("ROOFTOP")
     ROOFTOP,
+
     @SerialName("OTHER")
     OTHER,
-    ;
 }

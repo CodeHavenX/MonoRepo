@@ -7,7 +7,6 @@ import com.cramsan.edifikana.lib.model.organization.OrganizationId
  * Service interface for managing organizations.
  */
 interface OrganizationService {
-
     /**
      * Fetches a single organization by its ID.
      *

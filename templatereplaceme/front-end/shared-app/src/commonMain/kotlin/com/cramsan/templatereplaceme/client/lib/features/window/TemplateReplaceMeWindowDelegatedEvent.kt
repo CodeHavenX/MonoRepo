@@ -8,11 +8,8 @@ import androidx.compose.material3.SnackbarResult
  * the event.
  */
 sealed class TemplateReplaceMeWindowDelegatedEvent {
-
     /**
      * Handle the result of a snackbar.
      */
-    data class HandleSnackbarResult(
-        val result: SnackbarResult,
-    ) : TemplateReplaceMeWindowDelegatedEvent()
+    data class HandleSnackbarResult(val result: SnackbarResult) : TemplateReplaceMeWindowDelegatedEvent()
 }

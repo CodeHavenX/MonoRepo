@@ -8,7 +8,6 @@ import com.cramsan.framework.logging.EventLoggerInterface
  * No-Op implementation of [AssertUtilInterface].
  */
 class NoopAssertUtil : AssertUtilInterface {
-
     override val haltOnFailure: Boolean = false
 
     override val eventLogger: EventLoggerInterface? = null

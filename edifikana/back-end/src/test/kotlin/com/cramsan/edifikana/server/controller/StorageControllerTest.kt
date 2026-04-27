@@ -36,7 +36,9 @@ import kotlin.test.assertEquals
  * Unit tests for StorageController.
  */
 @OptIn(NetworkModel::class)
-class StorageControllerTest : CoroutineTest(), KoinTest {
+class StorageControllerTest :
+    CoroutineTest(),
+    KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
@@ -52,32 +54,34 @@ class StorageControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `createAsset should return HttpResponse with OK and asset`() = testBackEndApplication {
-        // Arrange
-        val expectedResponse = readFileContent("requests/create_asset_response.json")
-        val call = mockk<ApplicationCall>(relaxed = true)
-        val request = CreateAssetNetworkRequest("dummy.png", byteArrayOf(1, 2, 3))
-        coEvery { call.receive<CreateAssetNetworkRequest>() } returns request
-        val storageService = get<StorageService>()
-        coEvery {
-            storageService.createAsset(
-                fileName = any(),
-                content = any()
-            )
-        } returns ASSET_1
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers { mockk() }
+    fun `createAsset should return HttpResponse with OK and asset`() =
+        testBackEndApplication {
+            // Arrange
+            val expectedResponse = readFileContent("requests/create_asset_response.json")
+            val call = mockk<ApplicationCall>(relaxed = true)
+            val request = CreateAssetNetworkRequest("dummy.png", byteArrayOf(1, 2, 3))
+            coEvery { call.receive<CreateAssetNetworkRequest>() } returns request
+            val storageService = get<StorageService>()
+            coEvery {
+                storageService.createAsset(
+                    fileName = any(),
+                    content = any(),
+                )
+            } returns ASSET_1
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers { mockk() }
 
-        // Act
-        val response = client.post("storage?filename=${ASSET_1.fileName}") {
-            setBody(ASSET_1.content)
-            contentType(ContentType.Image.PNG)
+            // Act
+            val response =
+                client.post("storage?filename=${ASSET_1.fileName}") {
+                    setBody(ASSET_1.content)
+                    contentType(ContentType.Image.PNG)
+                }
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
 }

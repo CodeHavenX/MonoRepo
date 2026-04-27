@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class AgenticDocumentTest {
-
     private val json = Json { prettyPrint = false }
 
     @Test
     fun `AgenticDocument round-trips through JSON`() {
-        val original = AgenticDocument(
-            id = "doc-001",
-            typeId = "architecture-design",
-            type = DocumentType.ARCHITECTURE_DESIGN,
-            relativePath = "docs/architecture.md",
-            status = DocumentStatus.UNREVIEWED,
-            lastModifiedEpochMs = 1700000000000L,
-        )
+        val original =
+            AgenticDocument(
+                id = "doc-001",
+                typeId = "architecture-design",
+                type = DocumentType.ARCHITECTURE_DESIGN,
+                relativePath = "docs/architecture.md",
+                status = DocumentStatus.UNREVIEWED,
+                lastModifiedEpochMs = 1700000000000L,
+            )
 
         val encoded = json.encodeToString(original)
         val decoded = json.decodeFromString<AgenticDocument>(encoded)
@@ -51,14 +51,15 @@ class AgenticDocumentTest {
 
         for (type in types) {
             for (status in statuses) {
-                val doc = AgenticDocument(
-                    id = "doc-$type-$status",
-                    typeId = type.name.lowercase().replace('_', '-'),
-                    type = type,
-                    relativePath = "docs/test.md",
-                    status = status,
-                    lastModifiedEpochMs = 0L,
-                )
+                val doc =
+                    AgenticDocument(
+                        id = "doc-$type-$status",
+                        typeId = type.name.lowercase().replace('_', '-'),
+                        type = type,
+                        relativePath = "docs/test.md",
+                        status = status,
+                        lastModifiedEpochMs = 0L,
+                    )
                 val encoded = json.encodeToString(doc)
                 val decoded = json.decodeFromString<AgenticDocument>(encoded)
                 assertEquals(doc, decoded)

@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class CheckUserNetworkResponse(
-    val isUserRegistered: Boolean,
-) : ResponseBody
+data class CheckUserNetworkResponse(val isUserRegistered: Boolean) : ResponseBody

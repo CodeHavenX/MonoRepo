@@ -14,10 +14,7 @@ import kotlin.time.Instant
  * Service for time card operations.
  */
 @OptIn(ExperimentalTime::class)
-class TimeCardService(
-    private val timeCardDatastore: TimeCardDatastore,
-) {
-
+class TimeCardService(private val timeCardDatastore: TimeCardDatastore) {
     /**
      * Creates a time card event with the provided parameters.
      */
@@ -30,14 +27,15 @@ class TimeCardService(
         timestamp: Instant,
     ): TimeCardEvent {
         logD(TAG, "createTimeCardEvent")
-        return timeCardDatastore.createTimeCardEvent(
-            employeeId = employeeId,
-            fallbackEmployeeName = fallbackEmployeeName,
-            propertyId = propertyId,
-            type = type,
-            imageUrl = imageUrl,
-            timestamp = timestamp,
-        ).getOrThrow()
+        return timeCardDatastore
+            .createTimeCardEvent(
+                employeeId = employeeId,
+                fallbackEmployeeName = fallbackEmployeeName,
+                propertyId = propertyId,
+                type = type,
+                imageUrl = imageUrl,
+                timestamp = timestamp,
+            ).getOrThrow()
     }
 
     /**
@@ -47,9 +45,11 @@ class TimeCardService(
         id: TimeCardEventId,
     ): TimeCardEvent? {
         logD(TAG, "getTimeCardEvent")
-        val timeCard = timeCardDatastore.getTimeCardEvent(
-            id = id,
-        ).getOrNull()
+        val timeCard =
+            timeCardDatastore
+                .getTimeCardEvent(
+                    id = id,
+                ).getOrNull()
 
         return timeCard
     }
@@ -61,9 +61,11 @@ class TimeCardService(
         employeeId: EmployeeId?,
     ): List<TimeCardEvent> {
         logD(TAG, "getTimeCardEvents")
-        val timeCards = timeCardDatastore.getTimeCardEvents(
-            employeeId = employeeId,
-        ).getOrThrow()
+        val timeCards =
+            timeCardDatastore
+                .getTimeCardEvents(
+                    employeeId = employeeId,
+                ).getOrThrow()
         return timeCards
     }
 

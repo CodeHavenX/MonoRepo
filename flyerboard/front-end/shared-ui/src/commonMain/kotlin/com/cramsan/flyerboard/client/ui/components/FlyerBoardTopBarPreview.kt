@@ -6,9 +6,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-private fun FlyerBoardTopBarPreview() = AppTheme {
-    FlyerBoardTopBar(
-        title = "Title",
-        onNavigationIconSelected = {},
-    )
-}
+private fun FlyerBoardTopBarPreview() =
+    AppTheme {
+        FlyerBoardTopBar(
+            title = "Title",
+            onNavigationIconSelected = {},
+        )
+    }

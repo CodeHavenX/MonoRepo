@@ -4,7 +4,6 @@ package com.cramsan.framework.core
  * Interface for a URI object. This URI is safe to use in a cross-platform environment.
  */
 actual class CoreUri {
-
     /**
      * Get the URI as a string.
      */
@@ -13,7 +12,6 @@ actual class CoreUri {
     }
 
     actual companion object {
-
         /**
          * Create a URI object from a string.
          */

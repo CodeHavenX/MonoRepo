@@ -72,21 +72,25 @@ internal fun RenderContent(
     onSubmitSelected: () -> Unit,
 ) {
     Card(
-        modifier = Modifier
+        modifier =
+        Modifier
             .width(IntrinsicSize.Min)
             .height(IntrinsicSize.Min),
-        colors = androidx.compose.material3.CardDefaults.cardColors(
+        colors =
+        androidx.compose.material3.CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
     ) {
         Box {
             Column(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .padding(Padding.MEDIUM),
             ) {
                 Text(
                     text = stringResource(Res.string.change_password_dialog_title),
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .fillMaxWidth(),
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Start,
@@ -98,21 +102,23 @@ internal fun RenderContent(
                             onCurrentPasswordChange(it)
                         },
                         label = stringResource(Res.string.change_password_dialog_current_password),
-                        modifier = Modifier
+                        modifier =
+                        Modifier
                             .fillMaxWidth(),
                         supportingText = {
                             uiState.currentPasswordMessage?.let {
                                 Text(
                                     text = it,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = if (uiState.currentPasswordInError) {
+                                    color =
+                                    if (uiState.currentPasswordInError) {
                                         MaterialTheme.colorScheme.error
                                     } else {
                                         MaterialTheme.colorScheme.onSurface
                                     },
                                 )
                             }
-                        }
+                        },
                     )
                 }
                 EdifikanaPasswordTextField(
@@ -121,7 +127,8 @@ internal fun RenderContent(
                         onNewPasswordChange(it)
                     },
                     label = stringResource(Res.string.change_password_dialog_new_password),
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .fillMaxWidth(),
                     supportingText = {
                         uiState.newPasswordMessage?.let {
@@ -131,7 +138,7 @@ internal fun RenderContent(
                                 color = MaterialTheme.colorScheme.error,
                             )
                         }
-                    }
+                    },
                 )
                 EdifikanaPasswordTextField(
                     value = uiState.confirmPassword.reveal(),
@@ -139,7 +146,8 @@ internal fun RenderContent(
                         onConfirmPasswordChange(it)
                     },
                     label = stringResource(Res.string.change_password_dialog_confirm_password),
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .fillMaxWidth(),
                     supportingText = {
                         uiState.confirmPasswordMessage?.let {
@@ -149,10 +157,11 @@ internal fun RenderContent(
                                 color = MaterialTheme.colorScheme.error,
                             )
                         }
-                    }
+                    },
                 )
                 Row(
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End,

@@ -22,15 +22,16 @@ import org.jetbrains.compose.resources.painterResource
 fun Content() {
     var visible by remember { mutableStateOf(true) }
     Column(
-        modifier = Modifier.clickable {
+        modifier =
+        Modifier.clickable {
             visible = !visible
-        }
+        },
     ) {
         Text("Hello World!")
         AnimatedVisibility(visible) {
             Image(
                 painter = painterResource(Res.drawable.compose),
-                contentDescription = null
+                contentDescription = null,
             )
         }
     }

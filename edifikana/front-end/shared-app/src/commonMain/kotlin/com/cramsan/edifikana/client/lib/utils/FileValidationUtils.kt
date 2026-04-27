@@ -10,23 +10,25 @@ const val MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024L // 10MB
 /**
  * Supported image MIME types for upload validation.
  */
-val SUPPORTED_IMAGE_MIME_TYPES = setOf(
-    "image/jpeg",
-    "image/jpg",
-    "image/png",
-    "image/gif",
-    "image/webp",
-)
+val SUPPORTED_IMAGE_MIME_TYPES =
+    setOf(
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+    )
 
 /**
  * Supported document MIME types for upload validation.
  */
-val SUPPORTED_DOCUMENT_MIME_TYPES = setOf(
-    "application/pdf",
-    "application/msword", // .doc
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
-    "text/plain", // .txt
-)
+val SUPPORTED_DOCUMENT_MIME_TYPES =
+    setOf(
+        "application/pdf",
+        "application/msword", // .doc
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+        "text/plain", // .txt
+    )
 
 /**
  * All supported MIME types (images + documents).
@@ -37,7 +39,6 @@ val ALL_SUPPORTED_MIME_TYPES = SUPPORTED_IMAGE_MIME_TYPES + SUPPORTED_DOCUMENT_M
  * File validation utilities for checking file size and type before upload.
  */
 object FileValidationUtils {
-
     /**
      * Validates that the file size is within the allowed limit.
      *
@@ -53,8 +54,8 @@ object FileValidationUtils {
                     val maxSizeMB = MAX_FILE_SIZE_BYTES / (1024.0 * 1024.0)
                     Result.failure(
                         IllegalArgumentException(
-                            "File size $sizeMB MB exceeds maximum allowed size $maxSizeMB MB"
-                        )
+                            "File size $sizeMB MB exceeds maximum allowed size $maxSizeMB MB",
+                        ),
                     )
                 } else {
                     Result.success(Unit)
@@ -62,7 +63,7 @@ object FileValidationUtils {
             },
             onFailure = { error ->
                 Result.failure(IllegalArgumentException("Unable to determine file size: ${error.message}"))
-            }
+            },
         )
     }
 
@@ -77,7 +78,7 @@ object FileValidationUtils {
     fun validateFileType(
         uri: CoreUri,
         dependencies: IODependencies,
-        imagesOnly: Boolean = true
+        imagesOnly: Boolean = true,
     ): Result<String> {
         return getMimeType(uri, dependencies).fold(
             onSuccess = { mimeType ->
@@ -85,21 +86,22 @@ object FileValidationUtils {
                 if (mimeType.lowercase() in supportedTypes) {
                     Result.success(mimeType)
                 } else {
-                    val allowedFormats = if (imagesOnly) {
-                        "JPG, PNG, GIF, or WebP"
-                    } else {
-                        "JPG, PNG, GIF, WebP, PDF, DOC, DOCX, or TXT"
-                    }
+                    val allowedFormats =
+                        if (imagesOnly) {
+                            "JPG, PNG, GIF, or WebP"
+                        } else {
+                            "JPG, PNG, GIF, WebP, PDF, DOC, DOCX, or TXT"
+                        }
                     Result.failure(
                         IllegalArgumentException(
-                            "Unsupported file type: $mimeType. Please select a valid $allowedFormats file."
-                        )
+                            "Unsupported file type: $mimeType. Please select a valid $allowedFormats file.",
+                        ),
                     )
                 }
             },
             onFailure = { error ->
                 Result.failure(IllegalArgumentException("Unable to determine file type: ${error.message}"))
-            }
+            },
         )
     }
 

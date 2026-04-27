@@ -49,13 +49,16 @@ class DefaultValidationService(
     private val json: Json,
     private val docsDir: Path,
 ) : ValidationService {
-
     override suspend fun reviewDocument(document: AgenticDocument): List<ValidationIssue> {
-        logI(TAG, "Starting review for document id=${document.id}, path=${document.relativePath}, typeId=${document.typeId}")
+        logI(
+            TAG,
+            "Starting review for document id=${document.id}, path=${document.relativePath}, typeId=${document.typeId}",
+        )
         val fileContent = Files.readString(resolvePath(docsDir, document.relativePath))
         logD(TAG, "Document ${document.id} content length: ${fileContent.length} chars")
 
-        val systemPrompt = """
+        val systemPrompt =
+            """
             You are a document reviewer. Your response must be a raw JSON array and nothing else.
             Do not include any explanation, preamble, or markdown formatting.
             Review the provided document and return a JSON array of ValidationIssue objects.
@@ -67,14 +70,15 @@ class DefaultValidationService(
               - status: always "OPEN"
             If there are no issues, return an empty JSON array: []
             Your entire response must start with '[' and end with ']'. No other text is allowed.
-        """.trimIndent()
+            """.trimIndent()
 
         logD(TAG, "Invoking AI reviewer for document ${document.id}")
-        val response = aiProvider.chat(
-            systemPrompt = systemPrompt,
-            messages = listOf(AiMessage("user", fileContent)),
-            tools = emptyList(),
-        )
+        val response =
+            aiProvider.chat(
+                systemPrompt = systemPrompt,
+                messages = listOf(AiMessage("user", fileContent)),
+                tools = emptyList(),
+            )
 
         val textContent = response.content.filterIsInstance<AiContentBlock.Text>().firstOrNull()
         if (textContent == null) {
@@ -83,29 +87,43 @@ class DefaultValidationService(
             logD(TAG, "AI response for document ${document.id} text length: ${textContent.text.length} chars")
         }
 
-        val issues: List<ValidationIssue> = if (textContent != null) {
-            val rawText = textContent.text.trim()
-            val startIdx = rawText.indexOf('[')
-            val endIdx = rawText.lastIndexOf(']')
-            if (startIdx == -1 || endIdx == -1 || startIdx > endIdx) {
-                logW(TAG, "AI response for document ${document.id} did not contain a JSON array; returning empty issue list. Response: ${rawText.take(MAX_LOG_PREVIEW_LENGTH)}")
-                emptyList()
-            } else {
-                val rawJson = rawText.substring(startIdx, endIdx + 1)
-                try {
-                    json.decodeFromString(rawJson)
-                } catch (e: Exception) {
-                    logW(TAG, "Failed to parse AI response as JSON for document ${document.id}: ${e.message}. Raw JSON: ${rawJson.take(MAX_LOG_PREVIEW_LENGTH)}")
+        val issues: List<ValidationIssue> =
+            if (textContent != null) {
+                val rawText = textContent.text.trim()
+                val startIdx = rawText.indexOf('[')
+                val endIdx = rawText.lastIndexOf(']')
+                if (startIdx == -1 || endIdx == -1 || startIdx > endIdx) {
+                    logW(
+                        TAG,
+                        "AI response for document ${document.id} did not contain a JSON array; returning empty issue list. Response: ${rawText.take(
+                            MAX_LOG_PREVIEW_LENGTH,
+                        )}",
+                    )
                     emptyList()
+                } else {
+                    val rawJson = rawText.substring(startIdx, endIdx + 1)
+                    try {
+                        json.decodeFromString(rawJson)
+                    } catch (e: Exception) {
+                        logW(
+                            TAG,
+                            "Failed to parse AI response as JSON for document ${document.id}: ${e.message}. Raw JSON: ${rawJson.take(
+                                MAX_LOG_PREVIEW_LENGTH,
+                            )}",
+                        )
+                        emptyList()
+                    }
                 }
+            } else {
+                emptyList()
             }
-        } else {
-            emptyList()
-        }
 
         val blockingCount = issues.count { it.severity == IssueSeverity.BLOCKING }
         val advisoryCount = issues.count { it.severity == IssueSeverity.ADVISORY }
-        logI(TAG, "Document ${document.id} review complete: ${issues.size} issues (blocking=$blockingCount, advisory=$advisoryCount)")
+        logI(
+            TAG,
+            "Document ${document.id} review complete: ${issues.size} issues (blocking=$blockingCount, advisory=$advisoryCount)",
+        )
 
         val hasBlockingIssues = blockingCount > 0
         val newStatus = if (hasBlockingIssues) DocumentStatus.NEEDS_REVISION else DocumentStatus.VALIDATED
@@ -133,40 +151,53 @@ class DefaultValidationService(
         logI(TAG, "Per-document review complete: ${allIssues.size} total issues across ${docs.size} documents")
 
         val reviewerDefinitions = reviewerLoader.loadAll()
-        logI(TAG, "Loaded ${reviewerDefinitions.size} reviewer definitions; ${reviewerAgents.size} reviewer agent(s) available")
+        logI(
+            TAG,
+            "Loaded ${reviewerDefinitions.size} reviewer definitions; ${reviewerAgents.size} reviewer agent(s) available",
+        )
         if (reviewerDefinitions.isNotEmpty()) {
             logD(TAG, "Dispatching ${reviewerDefinitions.size * reviewerAgents.size} async reviewer agent invocations")
             coroutineScope {
-                reviewerDefinitions.map { reviewerDef ->
-                    reviewerAgents.map { agent ->
-                        logD(TAG, "Invoking reviewer agent ${agent::class.simpleName} with reviewer '${reviewerDef.name}'")
-                        async { agent.reviewDocuments(reviewerDef, docs) }
-                    }
-                }.flatten().awaitAll()
+                reviewerDefinitions
+                    .map { reviewerDef ->
+                        reviewerAgents.map { agent ->
+                            logD(
+                                TAG,
+                                "Invoking reviewer agent ${agent::class.simpleName} with reviewer '${reviewerDef.name}'",
+                            )
+                            async { agent.reviewDocuments(reviewerDef, docs) }
+                        }
+                    }.flatten()
+                    .awaitAll()
             }.forEach { feedback ->
                 logI(TAG, "Reviewer '${feedback.reviewerName}' feedback length: ${feedback.content.length} chars")
                 println("=== Reviewer: ${feedback.reviewerName} ===\n${feedback.content}")
             }
         }
 
-        val report = ValidationReport(
-            runId = java.util.UUID.randomUUID().toString(),
-            timestampEpochMs = System.currentTimeMillis(),
-            issues = allIssues,
-        )
+        val report =
+            ValidationReport(
+                runId =
+                java.util.UUID
+                    .randomUUID()
+                    .toString(),
+                timestampEpochMs = System.currentTimeMillis(),
+                issues = allIssues,
+            )
         logI(TAG, "Validation report created: runId=${report.runId}, totalIssues=${report.issues.size}")
 
-        val reportContent = buildString {
-            appendLine("# Validation Report")
-            appendLine()
-            appendLine("Run ID: ${report.runId}")
-            appendLine("Timestamp: ${report.timestampEpochMs}")
-            appendLine("Total Issues: ${report.issues.size}")
-            appendLine()
-            appendLine("```json")
-            appendLine(json.encodeToString(ValidationReport.serializer(), report))
-            appendLine("```")
-        }
+        val reportContent =
+            buildString {
+                appendLine("# Validation Report")
+                appendLine()
+                appendLine("Run ID: ${report.runId}")
+                appendLine("Timestamp: ${report.timestampEpochMs}")
+                appendLine("Total Issues: ${report.issues.size}")
+                appendLine()
+                appendLine("```json")
+                appendLine(json.encodeToString(ValidationReport.serializer(), report))
+                appendLine("```")
+            }
 
         val reportPath = docsDir.resolve("validation-report.md")
         Files.writeString(reportPath, reportContent)

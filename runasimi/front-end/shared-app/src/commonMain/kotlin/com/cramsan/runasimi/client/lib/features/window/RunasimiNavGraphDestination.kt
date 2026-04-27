@@ -15,7 +15,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class RunasimiNavGraphDestination : NavigationGraphDestination {
-
     /**
      * A class representing navigating to the main screen.
      */

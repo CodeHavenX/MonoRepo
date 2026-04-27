@@ -24,20 +24,15 @@ private const val TAG = "DefaultDependencyGraph"
  * // TODO: add a factory method that accepts live TaskListProvider to rebuild if the task list changes.
  */
 class DefaultDependencyGraph(private val tasks: List<Task>) : DependencyGraph {
-
     // dependents[taskId] = set of task IDs that directly depend on taskId
     private val dependents: Map<String, Set<String>> = buildDependentsMap()
 
     // Precomputed BFS result for every task ID — immutable after construction
     private val downstreamCounts: Map<String, Int> = buildDownstreamCounts()
 
-    override fun downstreamCount(taskId: String): Int {
-        return downstreamCounts[taskId] ?: 0
-    }
+    override fun downstreamCount(taskId: String): Int = downstreamCounts[taskId] ?: 0
 
-    override fun dependentsOf(taskId: String): Set<String> {
-        return dependents[taskId].orEmpty()
-    }
+    override fun dependentsOf(taskId: String): Set<String> = dependents[taskId].orEmpty()
 
     private fun buildDependentsMap(): Map<String, Set<String>> {
         logD(TAG, "Building dependents map for ${tasks.size} tasks")

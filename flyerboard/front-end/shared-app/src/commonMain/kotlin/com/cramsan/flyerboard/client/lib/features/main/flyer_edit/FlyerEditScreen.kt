@@ -35,7 +35,6 @@ import flyerboard_lib.flyer_edit_screen_label_description
 import flyerboard_lib.flyer_edit_screen_label_expires_at
 import flyerboard_lib.flyer_edit_screen_label_title
 import flyerboard_lib.flyer_edit_screen_navigate_back
-import flyerboard_lib.flyer_edit_screen_not_found
 import flyerboard_lib.flyer_edit_screen_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -107,14 +106,19 @@ internal fun FlyerEditContent(
             contentAlignment = Alignment.Center,
         ) {
             when {
-                uiState.isLoading -> CircularProgressIndicator()
-                else -> FlyerEditForm(
-                    uiState = uiState,
-                    onTitleChanged = onTitleChanged,
-                    onDescriptionChanged = onDescriptionChanged,
-                    onExpiresAtChanged = onExpiresAtChanged,
-                    onSave = onSave,
-                )
+                uiState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+
+                else -> {
+                    FlyerEditForm(
+                        uiState = uiState,
+                        onTitleChanged = onTitleChanged,
+                        onDescriptionChanged = onDescriptionChanged,
+                        onExpiresAtChanged = onExpiresAtChanged,
+                        onSave = onSave,
+                    )
+                }
             }
         }
     }
@@ -130,7 +134,8 @@ private fun FlyerEditForm(
     onSave: () -> Unit,
 ) {
     Column(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(Padding.MEDIUM),

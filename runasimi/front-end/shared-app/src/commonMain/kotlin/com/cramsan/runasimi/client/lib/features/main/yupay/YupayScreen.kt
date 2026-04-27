@@ -44,9 +44,7 @@ fun YupayScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.generateNewNumber()
     }
@@ -91,7 +89,8 @@ internal fun YupayContent(
         },
     ) { innerPadding ->
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             sectionContent = { sectionModifier ->
@@ -103,15 +102,16 @@ internal fun YupayContent(
                 ) {
                     Switch(
                         startInFront,
-                        { startInFront = it }
+                        { startInFront = it },
                     )
                 }
 
                 // Wrap the Card in a non-clipping layer so animated children can overflow
                 Box(
-                    modifier = sectionModifier
+                    modifier =
+                    sectionModifier
                         .graphicsLayer { clip = false }
-                        .zIndex(1f) // optional: ensure it draws above other siblings
+                        .zIndex(1f), // optional: ensure it draws above other siblings
                 ) {
                     Card(
                         content.content?.original,
@@ -123,7 +123,7 @@ internal fun YupayContent(
             buttonContent = { buttonModifier ->
                 Row(
                     buttonModifier,
-                    horizontalArrangement = Arrangement.spacedBy(Size.x_small)
+                    horizontalArrangement = Arrangement.spacedBy(Size.x_small),
                 ) {
                     Button(
                         onNewNumberRequested,
@@ -132,7 +132,7 @@ internal fun YupayContent(
                         Text("Next")
                     }
                 }
-            }
+            },
         )
     }
 }

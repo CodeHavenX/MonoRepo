@@ -44,10 +44,11 @@ class PlanCommand : CliktCommand(name = "plan", help = "Planning phase commands"
     }
 }
 
-private class PlanStatusSubcommand : CliktCommand(
-    name = "status",
-    help = "Print current planning phase and next required action",
-) {
+private class PlanStatusSubcommand :
+    CliktCommand(
+        name = "status",
+        help = "Print current planning phase and next required action",
+    ) {
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
 
     override fun run() {
@@ -70,25 +71,28 @@ private class PlanStatusSubcommand : CliktCommand(
         }
     }
 
-    private fun formatStatus(status: WorkflowStatus): String = when (status) {
-        WorkflowStatus.NotStarted -> "NOT_STARTED"
-        is WorkflowStatus.StageInProgress -> "STAGE_IN_PROGRESS (${status.stageId})"
-        is WorkflowStatus.StagePendingApproval -> "STAGE_PENDING_APPROVAL (${status.stageId})"
-        WorkflowStatus.Complete -> "COMPLETE"
-    }
+    private fun formatStatus(status: WorkflowStatus): String =
+        when (status) {
+            WorkflowStatus.NotStarted -> "NOT_STARTED"
+            is WorkflowStatus.StageInProgress -> "STAGE_IN_PROGRESS (${status.stageId})"
+            is WorkflowStatus.StagePendingApproval -> "STAGE_PENDING_APPROVAL (${status.stageId})"
+            WorkflowStatus.Complete -> "COMPLETE"
+        }
 
-    private fun nextActionMessage(status: WorkflowStatus, stageId: String?): String = when (status) {
-        WorkflowStatus.NotStarted -> "Next: provide input documents and run 'agentic plan start'."
-        is WorkflowStatus.StageInProgress -> "Next: run 'agentic plan start' to produce the ${stageId ?: "next"} output."
-        is WorkflowStatus.StagePendingApproval -> "Next: review output, then run 'agentic plan approve $stageId' or 'agentic plan revise $stageId'."
-        WorkflowStatus.Complete -> "Planning is complete. Run 'agentic start' to begin execution."
-    }
+    private fun nextActionMessage(status: WorkflowStatus, stageId: String?): String =
+        when (status) {
+            WorkflowStatus.NotStarted -> "Next: provide input documents and run 'agentic plan start'."
+            is WorkflowStatus.StageInProgress -> "Next: run 'agentic plan start' to produce the ${stageId ?: "next"} output."
+            is WorkflowStatus.StagePendingApproval -> "Next: review output, then run 'agentic plan approve $stageId' or 'agentic plan revise $stageId'."
+            WorkflowStatus.Complete -> "Planning is complete. Run 'agentic start' to begin execution."
+        }
 }
 
-private class PlanStartSubcommand : CliktCommand(
-    name = "start",
-    help = "Start a planning stage (auto-advances if no stage ID provided)",
-) {
+private class PlanStartSubcommand :
+    CliktCommand(
+        name = "start",
+        help = "Start a planning stage (auto-advances if no stage ID provided)",
+    ) {
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
     private val stageId by argument(help = "Stage ID to start (optional, auto-advances if omitted)").optional()
 
@@ -115,29 +119,35 @@ private class PlanStartSubcommand : CliktCommand(
                     echo("Cannot start planning: no input documents found.")
                     exitProcess(1)
                 }
+
                 is WorkflowStatus.StagePendingApproval -> {
                     val pendingStageId = state.status.stageId
                     echo("Stage '$pendingStageId' is awaiting approval.")
                     echo("Run 'agentic plan approve $pendingStageId' or 'agentic plan revise $pendingStageId'.")
                     exitProcess(1)
                 }
+
                 WorkflowStatus.Complete -> {
                     echo("Planning is already complete. Run 'agentic start' to begin execution.")
                     exitProcess(1)
                 }
+
                 is WorkflowStatus.StageInProgress -> {
                     val targetStageId = stageId ?: state.status.stageId
-                    val stage = workflowService.getStageConfig(targetStageId)
-                        ?: run {
-                            echo("Unknown stage: $targetStageId")
-                            echo("Run 'agentic plan stages' to see available stages.")
-                            exitProcess(1)
-                        }
+                    val stage =
+                        workflowService.getStageConfig(targetStageId)
+                            ?: run {
+                                echo("Unknown stage: $targetStageId")
+                                echo("Run 'agentic plan stages' to see available stages.")
+                                exitProcess(1)
+                            }
 
                     echo("Starting stage: ${stage.name} ($targetStageId)...")
                     val doc = runBlocking { workflowService.startStage(targetStageId) }
                     echo("Output written to ${doc.path}")
-                    echo("Review the output and run 'agentic plan approve $targetStageId' or 'agentic plan revise $targetStageId'.")
+                    echo(
+                        "Review the output and run 'agentic plan approve $targetStageId' or 'agentic plan revise $targetStageId'.",
+                    )
                 }
             }
         } finally {
@@ -146,10 +156,11 @@ private class PlanStartSubcommand : CliktCommand(
     }
 }
 
-private class PlanApproveSubcommand : CliktCommand(
-    name = "approve",
-    help = "Approve a planning stage output",
-) {
+private class PlanApproveSubcommand :
+    CliktCommand(
+        name = "approve",
+        help = "Approve a planning stage output",
+    ) {
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
     private val stageId by argument(help = "Stage ID to approve")
 
@@ -159,12 +170,13 @@ private class PlanApproveSubcommand : CliktCommand(
 
         try {
             val workflowService = koin.get<WorkflowService>()
-            val stage = workflowService.getStageConfig(stageId)
-                ?: run {
-                    echo("Unknown stage: $stageId")
-                    echo("Run 'agentic plan stages' to see available stages.")
-                    exitProcess(1)
-                }
+            val stage =
+                workflowService.getStageConfig(stageId)
+                    ?: run {
+                        echo("Unknown stage: $stageId")
+                        echo("Run 'agentic plan stages' to see available stages.")
+                        exitProcess(1)
+                    }
 
             workflowService.approveStage(stageId)
             echo("Stage '${stage.name}' ($stageId) approved.")
@@ -182,10 +194,11 @@ private class PlanApproveSubcommand : CliktCommand(
     }
 }
 
-private class PlanReviseSubcommand : CliktCommand(
-    name = "revise",
-    help = "Re-run a planning stage after annotating the document with feedback",
-) {
+private class PlanReviseSubcommand :
+    CliktCommand(
+        name = "revise",
+        help = "Re-run a planning stage after annotating the document with feedback",
+    ) {
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
     private val stageId by argument(help = "Stage ID to revise")
 
@@ -195,12 +208,13 @@ private class PlanReviseSubcommand : CliktCommand(
 
         try {
             val workflowService = koin.get<WorkflowService>()
-            val stage = workflowService.getStageConfig(stageId)
-                ?: run {
-                    echo("Unknown stage: $stageId")
-                    echo("Run 'agentic plan stages' to see available stages.")
-                    exitProcess(1)
-                }
+            val stage =
+                workflowService.getStageConfig(stageId)
+                    ?: run {
+                        echo("Unknown stage: $stageId")
+                        echo("Run 'agentic plan stages' to see available stages.")
+                        exitProcess(1)
+                    }
 
             echo("Revising stage: ${stage.name} ($stageId)...")
             val doc = runBlocking { workflowService.reviseStage(stageId) }
@@ -212,10 +226,11 @@ private class PlanReviseSubcommand : CliktCommand(
     }
 }
 
-private class PlanStagesSubcommand : CliktCommand(
-    name = "stages",
-    help = "List all configured workflow stages",
-) {
+private class PlanStagesSubcommand :
+    CliktCommand(
+        name = "stages",
+        help = "List all configured workflow stages",
+    ) {
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
 
     override fun run() {
@@ -231,14 +246,24 @@ private class PlanStagesSubcommand : CliktCommand(
             echo("-".repeat(WIDTH))
 
             for (stage in stages) {
-                val status = when {
-                    stage.id in state.completedStages -> "[APPROVED]"
-                    state.currentStage?.id == stage.id -> {
-                        if (state.status is WorkflowStatus.StagePendingApproval) "[PENDING APPROVAL]"
-                        else "[IN PROGRESS]"
+                val status =
+                    when {
+                        stage.id in state.completedStages -> {
+                            "[APPROVED]"
+                        }
+
+                        state.currentStage?.id == stage.id -> {
+                            if (state.status is WorkflowStatus.StagePendingApproval) {
+                                "[PENDING APPROVAL]"
+                            } else {
+                                "[IN PROGRESS]"
+                            }
+                        }
+
+                        else -> {
+                            "[NOT STARTED]"
+                        }
                     }
-                    else -> "[NOT STARTED]"
-                }
                 echo("  ${stage.id}: ${stage.name} $status")
                 echo("    Output: ${stage.outputFile}")
                 if (stage.inputDependencies.isNotEmpty()) {

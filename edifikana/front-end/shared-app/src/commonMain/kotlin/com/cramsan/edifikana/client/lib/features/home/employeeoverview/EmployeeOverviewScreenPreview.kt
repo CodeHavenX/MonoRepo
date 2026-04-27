@@ -14,10 +14,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun EmployeeOverviewScreenPreview() {
     AppTheme {
         EmployeeOverviewContent(
-            content = EmployeeOverviewUIState(
+            content =
+            EmployeeOverviewUIState(
                 isLoading = false,
                 orgId = OrganizationId("org-1"),
-                employeeList = listOf(
+                employeeList =
+                listOf(
                     UserItemUIModel(
                         id = UserId("user-1"),
                         name = "John Doe",
@@ -32,7 +34,7 @@ private fun EmployeeOverviewScreenPreview() {
                     ),
                     InviteItemUIModel(
                         email = "another.user@gmail.com",
-                    )
+                    ),
                 ),
             ),
         )
@@ -44,10 +46,12 @@ private fun EmployeeOverviewScreenPreview() {
 private fun EmployeeOverviewScreenPreview_ES() {
     AppTheme {
         EmployeeOverviewContent(
-            content = EmployeeOverviewUIState(
+            content =
+            EmployeeOverviewUIState(
                 isLoading = false,
                 orgId = OrganizationId("org-1"),
-                employeeList = listOf(
+                employeeList =
+                listOf(
                     UserItemUIModel(
                         id = UserId("user-1"),
                         name = "Juan García",
@@ -62,7 +66,7 @@ private fun EmployeeOverviewScreenPreview_ES() {
                     ),
                     InviteItemUIModel(
                         email = "otro.usuario@gmail.com",
-                    )
+                    ),
                 ),
             ),
         )

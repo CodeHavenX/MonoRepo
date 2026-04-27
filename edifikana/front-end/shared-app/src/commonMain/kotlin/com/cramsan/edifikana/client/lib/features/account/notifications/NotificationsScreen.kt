@@ -64,9 +64,7 @@ fun NotificationsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.initialize()
     }
@@ -131,6 +129,7 @@ internal fun NotificationsContent(
                                     modifier = sectionModifier,
                                 )
                             }
+
                             is SystemNotificationUIModel -> {
                                 SystemNotificationItem(
                                     notification = notification,
@@ -147,7 +146,7 @@ internal fun NotificationsContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading)
-            }
+            },
         )
     }
 }
@@ -187,14 +186,14 @@ private fun InviteNotificationItem(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
+        modifier =
+        modifier
             .clip(MaterialTheme.shapes.medium)
             .border(
                 width = 1.dp,
                 color = if (notification.isRead) Color.LightGray else MaterialTheme.colorScheme.primary,
                 shape = MaterialTheme.shapes.medium,
-            )
-            .padding(Padding.MEDIUM),
+            ).padding(Padding.MEDIUM),
         verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
     ) {
         Row(
@@ -252,14 +251,14 @@ private fun SystemNotificationItem(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
+        modifier =
+        modifier
             .clip(MaterialTheme.shapes.medium)
             .border(
                 width = 1.dp,
                 color = if (notification.isRead) Color.LightGray else MaterialTheme.colorScheme.primary,
                 shape = MaterialTheme.shapes.medium,
-            )
-            .padding(Padding.MEDIUM)
+            ).padding(Padding.MEDIUM)
             .clickable { onMarkAsRead() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
@@ -289,8 +288,10 @@ private fun SystemNotificationItem(
                 imageVector = Icons.Sharp.Close,
                 contentDescription = stringResource(Res.string.edifikana_string_cancel),
                 // tint = Color.White,
-                modifier = Modifier.fillMaxSize()
-                    .padding(5.dp)
+                modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(5.dp),
             )
         }
     }

@@ -25,7 +25,6 @@ class NotificationsViewModel(
     NotificationsUIState.Initial,
     TAG,
 ) {
-
     /**
      * Initialize the ViewModel and load notifications.
      */
@@ -48,8 +47,8 @@ class NotificationsViewModel(
             .onFailure { throwable ->
                 emitWindowEvent(
                     EdifikanaWindowsEvent.ShowSnackbar(
-                        "Failed to load notifications: ${throwable.message ?: "Unknown error"}"
-                    )
+                        "Failed to load notifications: ${throwable.message ?: "Unknown error"}",
+                    ),
                 )
                 updateUiState {
                     it.copy(
@@ -57,11 +56,11 @@ class NotificationsViewModel(
                         notifications = emptyList(),
                     )
                 }
-            }
-            .onSuccess { notifications ->
-                val uiModels = notifications.mapNotNull { notification ->
-                    notification.toUIModel()
-                }
+            }.onSuccess { notifications ->
+                val uiModels =
+                    notifications.mapNotNull { notification ->
+                        notification.toUIModel()
+                    }
                 updateUiState {
                     it.copy(
                         isLoading = false,
@@ -83,6 +82,7 @@ class NotificationsViewModel(
                     inviteId = inviteId,
                 )
             }
+
             NotificationType.SYSTEM -> {
                 SystemNotificationUIModel(
                     id = id,
@@ -106,18 +106,18 @@ class NotificationsViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
 
-            authManager.acceptInvite(inviteId)
+            authManager
+                .acceptInvite(inviteId)
                 .onSuccess {
                     emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar("Invitation accepted successfully")
+                        EdifikanaWindowsEvent.ShowSnackbar("Invitation accepted successfully"),
                     )
                     loadNotifications()
-                }
-                .onFailure { throwable ->
+                }.onFailure { throwable ->
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to accept invitation: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to accept invitation: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
                     updateUiState { it.copy(isLoading = false) }
                 }
@@ -131,18 +131,18 @@ class NotificationsViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
 
-            authManager.declineInvite(inviteId)
+            authManager
+                .declineInvite(inviteId)
                 .onSuccess {
                     emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar("Invitation declined")
+                        EdifikanaWindowsEvent.ShowSnackbar("Invitation declined"),
                     )
                     loadNotifications()
-                }
-                .onFailure { throwable ->
+                }.onFailure { throwable ->
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to decline invitation: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to decline invitation: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
                     updateUiState { it.copy(isLoading = false) }
                 }
@@ -154,15 +154,15 @@ class NotificationsViewModel(
      */
     fun markAsRead(notificationId: NotificationId) {
         viewModelScope.launch {
-            notificationManager.markAsRead(notificationId)
+            notificationManager
+                .markAsRead(notificationId)
                 .onFailure { throwable ->
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to mark notification as read: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to mark notification as read: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
-                }
-                .onSuccess {
+                }.onSuccess {
                     loadNotifications()
                 }
         }
@@ -173,15 +173,15 @@ class NotificationsViewModel(
      */
     fun deleteNotification(notificationId: NotificationId) {
         viewModelScope.launch {
-            notificationManager.deleteNotification(notificationId)
+            notificationManager
+                .deleteNotification(notificationId)
                 .onFailure { throwable ->
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to delete notification: ${throwable.message ?: "Unknown error"}"
-                        )
+                            "Failed to delete notification: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
-                }
-                .onSuccess {
+                }.onSuccess {
                     loadNotifications()
                 }
         }

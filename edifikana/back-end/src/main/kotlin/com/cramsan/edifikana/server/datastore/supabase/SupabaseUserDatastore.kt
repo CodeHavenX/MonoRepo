@@ -33,7 +33,6 @@ class SupabaseUserDatastore(
     private val clock: Clock,
     private val auth: Auth,
 ) : UserDatastore {
-
     /**
      * Creates a new user with the given credentials. Transient users skip Supabase Auth.
      */
@@ -45,59 +44,63 @@ class SupabaseUserDatastore(
         firstName: String,
         lastName: String,
         isTransient: Boolean,
-    ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating user: %s", email)
+    ): Result<User> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Creating user: %s", email)
 
-        val createOtpAccount = isTransient
+            val createOtpAccount = isTransient
 
-        // Validate that if the account is not transient, a password is provided
-        when (isTransient) {
-            true -> assert(password.isNullOrBlank(), TAG, "Transient accounts must not have a password")
-            false -> assert(!password.isNullOrBlank(), TAG, "Non-transient accounts must have a password")
-        }
+            // Validate that if the account is not transient, a password is provided
+            when (isTransient) {
+                true -> assert(password.isNullOrBlank(), TAG, "Transient accounts must not have a password")
+                false -> assert(!password.isNullOrBlank(), TAG, "Non-transient accounts must have a password")
+            }
 
-        val userId = if (!createOtpAccount) {
-            // Create the user in Supabase Auth
-            try {
-                val supabaseUserInfo = adminApi.createUserWithEmail {
-                    this.email = email
-                    this.password = password.orEmpty()
-                    autoConfirm = true
-                }
-                supabaseUserInfo.id
-            } catch (e: AuthRestException) {
-                logD(TAG, "Error creating user: %s", e.message)
-                if (e.statusCode == HttpStatusCode.UnprocessableEntity.value) {
-                    // Conflict error, user already exists
-                    throw ClientRequestExceptions.ConflictException(
-                        message = "Error: User with email $email already exists.",
-                    )
+            val userId =
+                if (!createOtpAccount) {
+                    // Create the user in Supabase Auth
+                    try {
+                        val supabaseUserInfo =
+                            adminApi.createUserWithEmail {
+                                this.email = email
+                                this.password = password.orEmpty()
+                                autoConfirm = true
+                            }
+                        supabaseUserInfo.id
+                    } catch (e: AuthRestException) {
+                        logD(TAG, "Error creating user: %s", e.message)
+                        if (e.statusCode == HttpStatusCode.UnprocessableEntity.value) {
+                            // Conflict error, user already exists
+                            throw ClientRequestExceptions.ConflictException(
+                                message = "Error: User with email $email already exists.",
+                            )
+                        } else {
+                            throw e
+                        }
+                    }
                 } else {
-                    throw e
+                    UUID.random().also {
+                        logD(TAG, "Creating user without password, using UUID: %s", it)
+                    }
                 }
-            }
-        } else {
-            UUID.random().also {
-                logD(TAG, "Creating user without password, using UUID: %s", it)
-            }
+
+            // Create the user entity in our database
+            val requestEntity: UserEntity.CreateUserEntity =
+                CreateUserEntity(
+                    userId = UserId(userId),
+                    email = email,
+                    phoneNumber = phoneNumber,
+                    firstName = firstName,
+                    lastName = lastName,
+                    pendingAssociation = createOtpAccount,
+                    canPasswordAuth = !createOtpAccount,
+                    hashedPassword = null,
+                )
+            val createdUser = createUserEntity(requestEntity)
+
+            // Return the created user as a domain model
+            createdUser.toUser()
         }
-
-        // Create the user entity in our database
-        val requestEntity: UserEntity.CreateUserEntity = CreateUserEntity(
-            userId = UserId(userId),
-            email = email,
-            phoneNumber = phoneNumber,
-            firstName = firstName,
-            lastName = lastName,
-            pendingAssociation = createOtpAccount,
-            canPasswordAuth = !createOtpAccount,
-            hashedPassword = null,
-        )
-        val createdUser = createUserEntity(requestEntity)
-
-        // Return the created user as a domain model
-        createdUser.toUser()
-    }
 
     /**
      * Associates a Supabase Auth user with an existing transient user record.
@@ -105,111 +108,122 @@ class SupabaseUserDatastore(
     override suspend fun associateUser(
         userId: UserId,
         email: String,
-    ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Associating user: %s", email)
+    ): Result<User> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Associating user: %s", email)
 
-        val supabaseUser = runCatching { adminApi.retrieveUserById(userId.userId) }.getOrNull()
-        // Check that the user exists in Supabase Auth
-        if (supabaseUser == null) {
-            logD(TAG, "Supabase user not found with ID: %s", userId)
-            throw ClientRequestExceptions.NotFoundException(
-                message = "Error: User with ID $userId does not exist in Supabase.",
-            )
-        }
-
-        // Check if the user already exists in our database by email. We need to that there is one entry for a temp
-        // user pending association.
-        val temporaryUser = getUserByEmail(email)
-        if (temporaryUser != null) {
-            if (!temporaryUser.authMetadata.pendingAssociation) {
-                logW(TAG, "User already exists in our database with email: $email")
-                throw ClientRequestExceptions.ConflictException(
-                    message = "Error: User with email $email already exists in our database.",
+            val supabaseUser = runCatching { adminApi.retrieveUserById(userId.userId) }.getOrNull()
+            // Check that the user exists in Supabase Auth
+            if (supabaseUser == null) {
+                logD(TAG, "Supabase user not found with ID: %s", userId)
+                throw ClientRequestExceptions.NotFoundException(
+                    message = "Error: User with ID $userId does not exist in Supabase.",
                 )
             }
-        } else {
-            logD(TAG, "No existing user found with email: %s", email)
-            throw ClientRequestExceptions.NotFoundException(
-                message = "Error: User with email $email not found in our database.",
-            )
-        }
 
-        // Update the temporary user's ID and auth metadata instead of creating a new user
-        // NOTE: This operation updates the primary key, which requires that no foreign key references
-        // exist yet. The workflow must call associateUser before creating any FK references
-        // (user_property_mapping, user_organization_mapping, etc.). Consider migrating to a design
-        // with a separate supabase_auth_id column to avoid PK updates.
-        val updatedUser = runCatching {
-            postgrest.from(UserEntity.COLLECTION).update(
-                {
-                    UserEntity::id setTo userId.userId
-                    UserEntity::authMetadata setTo temporaryUser.authMetadata.copy(
-                        pendingAssociation = false,
+            // Check if the user already exists in our database by email. We need to that there is one entry for a temp
+            // user pending association.
+            val temporaryUser = getUserByEmail(email)
+            if (temporaryUser != null) {
+                if (!temporaryUser.authMetadata.pendingAssociation) {
+                    logW(TAG, "User already exists in our database with email: $email")
+                    throw ClientRequestExceptions.ConflictException(
+                        message = "Error: User with email $email already exists in our database.",
                     )
                 }
-            ) {
-                select()
-                filter {
-                    UserEntity::id eq temporaryUser.id
-                    UserEntity::deletedAt isExact null
+            } else {
+                logD(TAG, "No existing user found with email: %s", email)
+                throw ClientRequestExceptions.NotFoundException(
+                    message = "Error: User with email $email not found in our database.",
+                )
+            }
+
+            // Update the temporary user's ID and auth metadata instead of creating a new user
+            // NOTE: This operation updates the primary key, which requires that no foreign key references
+            // exist yet. The workflow must call associateUser before creating any FK references
+            // (user_property_mapping, user_organization_mapping, etc.). Consider migrating to a design
+            // with a separate supabase_auth_id column to avoid PK updates.
+            val updatedUser =
+                runCatching {
+                    postgrest
+                        .from(UserEntity.COLLECTION)
+                        .update(
+                            {
+                                UserEntity::id setTo userId.userId
+                                UserEntity::authMetadata setTo
+                                    temporaryUser.authMetadata.copy(
+                                        pendingAssociation = false,
+                                    )
+                            },
+                        ) {
+                            select()
+                            filter {
+                                UserEntity::id eq temporaryUser.id
+                                UserEntity::deletedAt isExact null
+                            }
+                        }.decodeSingleOrNull<UserEntity>()
+                }.getOrElse { exception ->
+                    logW(TAG, "Failed to update temporary user", exception)
+                    throw ClientRequestExceptions.InvalidRequestException(
+                        message = "Error: Failed to associate user account. Please try again.",
+                    )
                 }
-            }.decodeSingleOrNull<UserEntity>()
-        }.getOrElse { exception ->
-            logW(TAG, "Failed to update temporary user", exception)
-            throw ClientRequestExceptions.InvalidRequestException(
-                message = "Error: Failed to associate user account. Please try again.",
-            )
-        }
 
-        if (updatedUser == null) {
-            logW(TAG, "No user was updated - user may have been deleted or modified concurrently")
-            throw ClientRequestExceptions.NotFoundException(
-                message = "Error: The temporary user account was not found or has been modified.",
-            )
-        }
+            if (updatedUser == null) {
+                logW(TAG, "No user was updated - user may have been deleted or modified concurrently")
+                throw ClientRequestExceptions.NotFoundException(
+                    message = "Error: The temporary user account was not found or has been modified.",
+                )
+            }
 
-        // Return the updated user as a domain model
-        updatedUser.toUser()
-    }
+            // Return the updated user as a domain model
+            updatedUser.toUser()
+        }
 
     /**
      * Retrieves a user by [id]. Returns the [User] if found, null otherwise.
      */
     override suspend fun getUser(
         id: UserId,
-    ): Result<User?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting user: %s", id)
+    ): Result<User?> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting user: %s", id)
 
-        val userEntity = getUserImpl(id)
+            val userEntity = getUserImpl(id)
 
-        userEntity?.toUser()
-    }
+            userEntity?.toUser()
+        }
 
     /**
      * Retrieves a user by [email]. Returns the [User] if found, null otherwise.
      */
-    override suspend fun getUser(email: String): Result<User?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting user by email: %s", email)
-        val userEntity = getUserByEmail(email)
-        userEntity?.toUser()
-    }
+    override suspend fun getUser(email: String): Result<User?> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting user by email: %s", email)
+            val userEntity = getUserByEmail(email)
+            userEntity?.toUser()
+        }
 
     private suspend fun getUserImpl(id: UserId): UserEntity? {
-        return postgrest.from(UserEntity.COLLECTION).select {
-            filter {
-                UserEntity::id eq id.userId
-                UserEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<UserEntity>()
+        return postgrest
+            .from(UserEntity.COLLECTION)
+            .select {
+                filter {
+                    UserEntity::id eq id.userId
+                    UserEntity::deletedAt isExact null
+                }
+            }.decodeSingleOrNull<UserEntity>()
     }
 
     private suspend fun getUserByEmail(email: String): UserEntity? {
-        return postgrest.from(UserEntity.COLLECTION).select {
-            filter {
-                UserEntity::email eq email
-                UserEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<UserEntity>()
+        return postgrest
+            .from(UserEntity.COLLECTION)
+            .select {
+                filter {
+                    UserEntity::email eq email
+                    UserEntity::deletedAt isExact null
+                }
+            }.decodeSingleOrNull<UserEntity>()
     }
 
     /**
@@ -217,23 +231,26 @@ class SupabaseUserDatastore(
      */
     override suspend fun getUsers(
         organizationId: OrganizationId,
-    ): Result<List<User>> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting all users")
+    ): Result<List<User>> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting all users")
 
-        val organizations = postgrest.from(UserOrganizationMappingEntity.COLLECTION).select(
-            // HINT: Here we are using the POSTgREST feature to select related rows and spread them into the result.
-            // https://supabase.com/blog/postgrest-11-prerelease
-            Columns.list("...${UserEntity.COLLECTION}(*)")
-        ) {
-            filter {
-                UserOrganizationMappingEntity::organizationId eq organizationId.id
-            }
+            val organizations =
+                postgrest.from(UserOrganizationMappingEntity.COLLECTION).select(
+                    // HINT: Here we are using the POSTgREST feature to select related rows and spread them into the result.
+                    // https://supabase.com/blog/postgrest-11-prerelease
+                    Columns.list("...${UserEntity.COLLECTION}(*)"),
+                ) {
+                    filter {
+                        UserOrganizationMappingEntity::organizationId eq organizationId.id
+                    }
+                }
+            // Filter out soft-deleted users
+            organizations
+                .decodeList<UserEntity>()
+                .filter { it.deletedAt == null }
+                .map { it.toUser() }
         }
-        // Filter out soft-deleted users
-        organizations.decodeList<UserEntity>()
-            .filter { it.deletedAt == null }
-            .map { it.toUser() }
-    }
 
     /**
      * Updates a user's attributes. Only non-null parameters are updated.
@@ -241,14 +258,15 @@ class SupabaseUserDatastore(
     override suspend fun updateUser(
         id: UserId,
         email: String?,
-    ): Result<User> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating user: %s", id)
+    ): Result<User> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Updating user: %s", id)
 
-        updateUserImpl(
-            id,
-            email = email,
-        ).toUser()
-    }
+            updateUserImpl(
+                id,
+                email = email,
+            ).toUser()
+        }
 
     private suspend fun updateUserImpl(
         id: UserId,
@@ -258,20 +276,22 @@ class SupabaseUserDatastore(
         phoneNumber: String? = null,
         authMetadata: AuthMetadataEntity? = null,
     ): UserEntity {
-        return postgrest.from(UserEntity.COLLECTION).update(
-            {
-                email?.let { UserEntity::email setTo it }
-                firstName?.let { UserEntity::firstName setTo it }
-                lastName?.let { UserEntity::lastName setTo it }
-                phoneNumber?.let { UserEntity::phoneNumber setTo it }
-                authMetadata?.let { UserEntity::authMetadata setTo it }
-            }
-        ) {
-            select()
-            filter {
-                UserEntity::id eq id.userId
-            }
-        }.decodeSingle<UserEntity>()
+        return postgrest
+            .from(UserEntity.COLLECTION)
+            .update(
+                {
+                    email?.let { UserEntity::email setTo it }
+                    firstName?.let { UserEntity::firstName setTo it }
+                    lastName?.let { UserEntity::lastName setTo it }
+                    phoneNumber?.let { UserEntity::phoneNumber setTo it }
+                    authMetadata?.let { UserEntity::authMetadata setTo it }
+                },
+            ) {
+                select()
+                filter {
+                    UserEntity::id eq id.userId
+                }
+            }.decodeSingle<UserEntity>()
     }
 
     /**
@@ -279,40 +299,48 @@ class SupabaseUserDatastore(
      */
     override suspend fun deleteUser(
         id: UserId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Soft deleting user: %s", id)
+    ): Result<Boolean> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Soft deleting user: %s", id)
 
-        val user = getUserImpl(id) ?: throw ClientRequestExceptions.NotFoundException(
-            message = "Error: User with ID $id not found in our database.",
-        )
+            val user =
+                getUserImpl(id) ?: throw ClientRequestExceptions.NotFoundException(
+                    message = "Error: User with ID $id not found in our database.",
+                )
 
-        // Soft delete in our database first
-        val softDeleted = postgrest.from(UserEntity.COLLECTION).update({
-            UserEntity::deletedAt setTo clock.now()
-        }) {
-            select()
-            filter {
-                UserEntity::id eq id.userId
-                UserEntity::deletedAt isExact null
+            // Soft delete in our database first
+            val softDeleted =
+                postgrest
+                    .from(UserEntity.COLLECTION)
+                    .update({
+                        UserEntity::deletedAt setTo clock.now()
+                    }) {
+                        select()
+                        filter {
+                            UserEntity::id eq id.userId
+                            UserEntity::deletedAt isExact null
+                        }
+                    }.decodeSingleOrNull<UserEntity>()
+
+            // Auth deletion can fail without affecting our soft delete
+            // A background process can retry failed auth deletions later
+            if (softDeleted != null && !user.authMetadata.pendingAssociation) {
+                runCatching { adminApi.deleteUser(id.userId) }
             }
-        }.decodeSingleOrNull<UserEntity>()
 
-        // Auth deletion can fail without affecting our soft delete
-        // A background process can retry failed auth deletions later
-        if (softDeleted != null && !user.authMetadata.pendingAssociation) {
-            runCatching { adminApi.deleteUser(id.userId) }
+            softDeleted != null
         }
-
-        softDeleted != null
-    }
 
     private suspend fun createUserEntity(
         userEntity: UserEntity.CreateUserEntity,
     ): UserEntity {
         // Create the user entity in our database
-        val createdUser = postgrest.from(UserEntity.COLLECTION).insert(userEntity) {
-            select()
-        }.decodeSingle<UserEntity>()
+        val createdUser =
+            postgrest
+                .from(UserEntity.COLLECTION)
+                .insert(userEntity) {
+                    select()
+                }.decodeSingle<UserEntity>()
         logD(TAG, "User created userId: %s", createdUser.id)
         return createdUser
     }
@@ -323,29 +351,33 @@ class SupabaseUserDatastore(
      */
     override suspend fun purgeUser(
         id: UserId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Purging soft-deleted user: %s", id)
+    ): Result<Boolean> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Purging soft-deleted user: %s", id)
 
-        // First verify the record exists and is soft-deleted
-        val entity = postgrest.from(UserEntity.COLLECTION).select {
-            filter {
-                UserEntity::id eq id.userId
+            // First verify the record exists and is soft-deleted
+            val entity =
+                postgrest
+                    .from(UserEntity.COLLECTION)
+                    .select {
+                        filter {
+                            UserEntity::id eq id.userId
+                        }
+                    }.decodeSingleOrNull<UserEntity>()
+
+            // Only purge if it exists and is soft-deleted
+            if (entity?.deletedAt == null) {
+                return@runSuspendCatching false
             }
-        }.decodeSingleOrNull<UserEntity>()
 
-        // Only purge if it exists and is soft-deleted
-        if (entity?.deletedAt == null) {
-            return@runSuspendCatching false
-        }
-
-        // Delete the record
-        postgrest.from(UserEntity.COLLECTION).delete {
-            filter {
-                UserEntity::id eq id.userId
+            // Delete the record
+            postgrest.from(UserEntity.COLLECTION).delete {
+                filter {
+                    UserEntity::id eq id.userId
+                }
             }
+            true
         }
-        true
-    }
 
     /**
      * Sends a password reset notification via Supabase Auth.

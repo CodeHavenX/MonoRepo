@@ -17,10 +17,11 @@ class NotificationManager(
     /**
      * Gets all notifications for the current user.
      */
-    suspend fun getNotifications(): Result<List<Notification>> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getNotifications")
-        notificationService.getNotifications().getOrThrow()
-    }
+    suspend fun getNotifications(): Result<List<Notification>> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getNotifications")
+            notificationService.getNotifications().getOrThrow()
+        }
 
     /**
      * Gets a specific notification by ID.

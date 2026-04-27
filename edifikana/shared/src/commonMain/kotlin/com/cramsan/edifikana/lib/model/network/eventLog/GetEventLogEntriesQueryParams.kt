@@ -10,6 +10,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class GetEventLogEntriesQueryParams(
-    val propertyId: PropertyId,
-) : QueryParam
+data class GetEventLogEntriesQueryParams(val propertyId: PropertyId) : QueryParam

@@ -14,9 +14,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun MenuScreenPreview() {
     AppTheme {
         MenuContent(
-            content = MenuUIState(
+            content =
+            MenuUIState(
                 selectedItem = null,
-                drawerItems = listOf(
+                drawerItems =
+                listOf(
                     DrawerItem.Selectable(SelectableDrawerItem.Numbers),
                     DrawerItem.Selectable(SelectableDrawerItem.Verbs),
                     DrawerItem.Selectable(SelectableDrawerItem.Questions),

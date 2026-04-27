@@ -5,16 +5,13 @@ import com.cramsan.framework.core.compose.ViewModelUIState
 /**
  * UI state for the Sign In screen.
  */
-data class SignInUIState(
-    val isLoading: Boolean,
-    val email: String,
-    val password: String,
-) : ViewModelUIState {
+data class SignInUIState(val isLoading: Boolean, val email: String, val password: String) : ViewModelUIState {
     companion object {
-        val Initial = SignInUIState(
-            isLoading = false,
-            email = "",
-            password = "",
-        )
+        val Initial =
+            SignInUIState(
+                isLoading = false,
+                email = "",
+                password = "",
+            )
     }
 }

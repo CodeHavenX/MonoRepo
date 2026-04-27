@@ -14,13 +14,14 @@ data class FlyerEditUIState(
     val errorMessage: String?,
 ) : ViewModelUIState {
     companion object {
-        val Initial = FlyerEditUIState(
-            isLoading = false,
-            isSaving = false,
-            title = "",
-            description = "",
-            expiresAt = null,
-            errorMessage = null,
-        )
+        val Initial =
+            FlyerEditUIState(
+                isLoading = false,
+                isSaving = false,
+                title = "",
+                description = "",
+                expiresAt = null,
+                errorMessage = null,
+            )
     }
 }

@@ -13,10 +13,7 @@ import kotlin.time.Duration.Companion.hours
  * Files are stored in the private `flyer-files` bucket. Each uploaded file is given a
  * UUID-prefixed name to prevent collisions between uploads with the same original filename.
  */
-class SupabaseFileDatastore(
-    private val storage: Storage,
-) : FileDatastore {
-
+class SupabaseFileDatastore(private val storage: Storage) : FileDatastore {
     override suspend fun uploadFile(fileName: String, content: ByteArray): Result<String> =
         runSuspendCatching(TAG) {
             // Strip any directory components from the caller-supplied name to prevent path traversal.

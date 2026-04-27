@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class CreateAssetQueryParams(
-    val filename: String,
-) : QueryParam
+data class CreateAssetQueryParams(val filename: String) : QueryParam

@@ -7,11 +7,12 @@ import com.cramsan.runasimi.client.lib.features.main.yupay.YupayViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-internal val ViewModelModule = module {
-    scope<String> {
-        viewModelOf(::VerbsViewModel)
-        viewModelOf(::MenuViewModel)
-        viewModelOf(::YupayViewModel)
-        viewModelOf(::QuestionsViewModel)
+internal val ViewModelModule =
+    module {
+        scope<String> {
+            viewModelOf(::VerbsViewModel)
+            viewModelOf(::MenuViewModel)
+            viewModelOf(::YupayViewModel)
+            viewModelOf(::QuestionsViewModel)
+        }
     }
-}

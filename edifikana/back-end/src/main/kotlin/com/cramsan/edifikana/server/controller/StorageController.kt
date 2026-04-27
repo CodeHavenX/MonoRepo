@@ -25,7 +25,6 @@ class StorageController(
     private val storageService: StorageService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     /**
      * Handles the creation of a new asset (file upload).
      * Expects a byte array as the request body and a filename as a query parameter.
@@ -36,16 +35,17 @@ class StorageController(
             BytesRequestBody,
             CreateAssetQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): AssetNetworkResponse {
         val uploadFile = request.requestBody.bytes
         val fileName = requireNotBlank(request.queryParam.filename)
 
-        val newAsset = storageService.createAsset(
-            fileName = fileName,
-            content = uploadFile,
-        )
+        val newAsset =
+            storageService.createAsset(
+                fileName = fileName,
+                content = uploadFile,
+            )
         return newAsset.toAssetNetworkResponse()
     }
 

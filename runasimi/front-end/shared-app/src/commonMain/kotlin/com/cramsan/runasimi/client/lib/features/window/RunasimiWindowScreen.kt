@@ -95,6 +95,7 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is RunasimiWindowsEvent.NavigateToScreen -> {
             handleNavigationEvent(
                 navController = navController,
@@ -102,17 +103,21 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is RunasimiWindowsEvent.NavigateBack -> {
             navController.popBackStack()
         }
+
         is RunasimiWindowsEvent.CloseNavGraph -> {
-            val currentNavGraph = navController.currentBackStack.value.reversed().find {
-                it.destination.navigatorName == "navigation"
-            }
+            val currentNavGraph =
+                navController.currentBackStack.value.reversed().find {
+                    it.destination.navigatorName == "navigation"
+                }
             currentNavGraph?.destination?.route?.let {
                 navController.popBackStack(it, inclusive = true)
             }
         }
+
         is RunasimiWindowsEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
@@ -149,11 +154,12 @@ private suspend fun handleSnackbarEvent(
     onResult: (SnackbarResult) -> Unit,
 ) {
     snackbarHostState.currentSnackbarData?.dismiss()
-    val result = snackbarHostState
-        .showSnackbar(
-            message = event.message,
-            duration = SnackbarDuration.Short,
-        )
+    val result =
+        snackbarHostState
+            .showSnackbar(
+                message = event.message,
+                duration = SnackbarDuration.Short,
+            )
     onResult(result)
 }
 
@@ -162,9 +168,10 @@ private fun WindowNavigationHost(
     navHostController: NavHostController,
     startDestination: RunasimiNavGraphDestination,
 ) {
-    val typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = remember {
-        mapOf()
-    }
+    val typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> =
+        remember {
+            mapOf()
+        }
     NavHost(
         navController = navHostController,
         startDestination = startDestination,

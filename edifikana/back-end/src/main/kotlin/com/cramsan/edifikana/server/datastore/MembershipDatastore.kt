@@ -13,7 +13,6 @@ import kotlin.time.Instant
  * Interface for interacting with organization membership data.
  */
 interface MembershipDatastore {
-
     /**
      * Returns all active members of [orgId] via the v_org_members view.
      */

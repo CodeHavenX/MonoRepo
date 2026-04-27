@@ -2,5 +2,6 @@ package com.cramsan.runasimi.client.lib.di
 
 import org.koin.dsl.module
 
-internal val DatabaseModule = module {
-}
+internal val DatabaseModule =
+    module {
+    }

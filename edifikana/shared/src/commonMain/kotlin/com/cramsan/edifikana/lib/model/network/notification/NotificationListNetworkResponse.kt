@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class NotificationListNetworkResponse(
-    val content: List<NotificationNetworkResponse>,
-) : ResponseBody
+data class NotificationListNetworkResponse(val content: List<NotificationNetworkResponse>) : ResponseBody

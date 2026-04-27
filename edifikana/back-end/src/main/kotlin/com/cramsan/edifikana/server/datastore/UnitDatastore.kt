@@ -8,7 +8,6 @@ import com.cramsan.edifikana.server.service.models.Unit
  * Interface for the unit datastore.
  */
 interface UnitDatastore {
-
     /**
      * Creates a new unit record. Returns the [Result] of the operation with the created [Unit].
      */

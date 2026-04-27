@@ -37,7 +37,6 @@ enum class Severity {
     ;
 
     companion object {
-
         /**
          * Get a [Severity] from a string. If the string is not a valid [Severity], the [default] value
          * is returned.

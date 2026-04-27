@@ -12,10 +12,7 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for property operations.
  */
-class PropertyService(
-    private val propertyDatastore: PropertyDatastore,
-) {
-
+class PropertyService(private val propertyDatastore: PropertyDatastore) {
     /**
      * Creates a property with the provided [name].
      */
@@ -27,13 +24,14 @@ class PropertyService(
         clientContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
     ): Property {
         logD(TAG, "createProperty")
-        return propertyDatastore.createProperty(
-            name = name,
-            address = address,
-            creatorUserId = clientContext.payload.userId,
-            organizationId = organizationId,
-            imageUrl = imageUrl,
-        ).getOrThrow()
+        return propertyDatastore
+            .createProperty(
+                name = name,
+                address = address,
+                creatorUserId = clientContext.payload.userId,
+                organizationId = organizationId,
+                imageUrl = imageUrl,
+            ).getOrThrow()
     }
 
     /**
@@ -43,9 +41,11 @@ class PropertyService(
         id: PropertyId,
     ): Property? {
         logD(TAG, "getProperty")
-        val property = propertyDatastore.getProperty(
-            propertyId = id,
-        ).getOrNull()
+        val property =
+            propertyDatastore
+                .getProperty(
+                    propertyId = id,
+                ).getOrNull()
 
         return property
     }
@@ -57,9 +57,11 @@ class PropertyService(
         userId: UserId,
     ): List<Property> {
         logD(TAG, "getProperties")
-        val properties = propertyDatastore.getProperties(
-            userId,
-        ).getOrThrow()
+        val properties =
+            propertyDatastore
+                .getProperties(
+                    userId,
+                ).getOrThrow()
         return properties
     }
 
@@ -73,12 +75,13 @@ class PropertyService(
         imageUrl: String? = null,
     ): Property {
         logD(TAG, "updateProperty")
-        return propertyDatastore.updateProperty(
-            propertyId = id,
-            name = name,
-            address = address,
-            imageUrl = imageUrl,
-        ).getOrThrow()
+        return propertyDatastore
+            .updateProperty(
+                propertyId = id,
+                name = name,
+                address = address,
+                imageUrl = imageUrl,
+            ).getOrThrow()
     }
 
     /**
@@ -88,9 +91,10 @@ class PropertyService(
         id: PropertyId,
     ): Boolean {
         logD(TAG, "deleteProperty")
-        return propertyDatastore.deleteProperty(
-            propertyId = id,
-        ).getOrThrow()
+        return propertyDatastore
+            .deleteProperty(
+                propertyId = id,
+            ).getOrThrow()
     }
 
     companion object {

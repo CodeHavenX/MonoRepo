@@ -28,11 +28,13 @@ fun EdifikanaPrimaryButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth(),
         enabled = enabled,
         shape = RoundedCornerShape(25.dp),
-        colors = ButtonDefaults.buttonColors(
+        colors =
+        ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
         ),
@@ -61,11 +63,13 @@ fun EdifikanaSecondaryButton(
 ) {
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth(),
         enabled = enabled,
         shape = RoundedCornerShape(25.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
+        colors =
+        ButtonDefaults.outlinedButtonColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),

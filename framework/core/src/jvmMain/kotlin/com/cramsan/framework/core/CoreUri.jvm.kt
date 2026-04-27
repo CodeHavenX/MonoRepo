@@ -3,10 +3,7 @@ package com.cramsan.framework.core
 /**
  * Interface for a URI object. This URI is safe to use in a cross-platform environment.
  */
-actual class CoreUri(
-    private var uri: String,
-) {
-
+actual class CoreUri(private var uri: String) {
     /**
      * Get the URI as a string.
      */
@@ -26,8 +23,8 @@ actual class CoreUri(
     actual override fun hashCode(): Int {
         return uri.hashCode()
     }
-    actual companion object {
 
+    actual companion object {
         /**
          * Create a URI object from a string.
          */

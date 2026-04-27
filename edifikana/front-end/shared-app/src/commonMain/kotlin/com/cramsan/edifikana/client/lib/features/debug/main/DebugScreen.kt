@@ -48,9 +48,7 @@ fun DebugScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.loadData()
     }
@@ -66,6 +64,7 @@ fun DebugScreen(
             DebugEvent.CloseApplication -> {
                 viewModel.closeApplication()
             }
+
             DebugEvent.ClearPreferences -> {
                 viewModel.clearPreferences()
             }
@@ -108,7 +107,8 @@ internal fun DebugContent(
     ) { innerPadding ->
         // Render the screen
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             sectionContent = { modifier ->
@@ -135,7 +135,7 @@ internal fun DebugContent(
                         }
                     }
                 }
-            }
+            },
         )
     }
 }
@@ -166,27 +166,29 @@ private fun BooleanRow(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Row(
-        modifier = Modifier
+        modifier =
+        Modifier
             .clickable(
                 interactionSource = interactionSource,
                 enabled = field.enabled,
                 indication = ripple(),
-                onClick = { onValueChanged(field.key, !field.value) }
-            )
-            .then(modifier),
+                onClick = { onValueChanged(field.key, !field.value) },
+            ).then(modifier),
         horizontalArrangement = Arrangement.spacedBy(Padding.SMALL),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .wrapContentHeight()
-                .weight(1f)
+                .weight(1f),
         ) {
-            val textColor = if (field.enabled) {
-                MaterialTheme.colorScheme.onSurface
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-            }
+            val textColor =
+                if (field.enabled) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                }
             Text(
                 field.title,
                 style = MaterialTheme.typography.labelLarge,
@@ -219,14 +221,15 @@ private fun StringRow(
     var stringValue by remember(field.value) { mutableStateOf(field.value) }
     var hasValueChanged by remember { mutableStateOf(false) }
 
-    val fieldModifier = Modifier
-        .fillMaxWidth()
-        .hasLostFocus {
-            if (hasValueChanged) {
-                saveChanges(field.key, stringValue)
-                hasValueChanged = false
+    val fieldModifier =
+        Modifier
+            .fillMaxWidth()
+            .hasLostFocus {
+                if (hasValueChanged) {
+                    saveChanges(field.key, stringValue)
+                    hasValueChanged = false
+                }
             }
-        }
 
     Column(
         modifier = modifier,
@@ -288,12 +291,12 @@ private fun ActionRow(
     onAction: (Field.ActionField) -> Unit,
 ) {
     Column(
-        modifier = Modifier
+        modifier =
+        Modifier
             .clickable(
                 enabled = field.enabled,
                 onClick = { onAction(field) },
-            )
-            .then(modifier),
+            ).then(modifier),
     ) {
         Text(
             text = field.title,

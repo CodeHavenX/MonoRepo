@@ -39,8 +39,4 @@ enum class IssueStatus { OPEN, ADDRESSED, DISMISSED }
  * A new report overwrites the previous one; history is not retained.
  */
 @Serializable
-data class ValidationReport(
-    val runId: String,
-    val timestampEpochMs: Long,
-    val issues: List<ValidationIssue>,
-)
+data class ValidationReport(val runId: String, val timestampEpochMs: Long, val issues: List<ValidationIssue>)

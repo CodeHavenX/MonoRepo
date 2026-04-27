@@ -49,15 +49,16 @@ fun TestTimeSource.asClock(
     nanosecond: Int = 0,
     timeZone: TimeZone = TimeZone.UTC,
 ): Clock {
-    val dateTime = LocalDateTime(
-        year,
-        month,
-        dayOfMonth,
-        hour,
-        minute,
-        second,
-        nanosecond,
-    )
+    val dateTime =
+        LocalDateTime(
+            year,
+            month,
+            dayOfMonth,
+            hour,
+            minute,
+            second,
+            nanosecond,
+        )
     val instant = dateTime.toInstant(timeZone)
     return asClock(instant)
 }

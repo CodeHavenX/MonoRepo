@@ -15,10 +15,7 @@ import com.cramsan.framework.core.CoreUri
  * - Returns raw image data without processing (JVM limitation documented in CorutilesUtils)
  * - Extracts filenames from file:// URIs
  */
-class FileServiceImpl(
-    private val ioDependencies: IODependencies
-) : FileService {
-
+class FileServiceImpl(private val ioDependencies: IODependencies) : FileService {
     override suspend fun readFileBytes(uri: CoreUri): Result<ByteArray> {
         return readBytes(uri, ioDependencies)
     }

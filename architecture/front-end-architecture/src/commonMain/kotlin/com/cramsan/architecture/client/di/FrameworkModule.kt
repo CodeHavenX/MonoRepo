@@ -24,49 +24,50 @@ import org.koin.dsl.module
  * This module provides essential components like assertion utilities, event loggers,
  * halt utilities, thread utilities, and preferences.
  */
-internal val FrameworkModule = module(createdAtStart = true) {
+internal val FrameworkModule =
+    module(createdAtStart = true) {
 
-    single<AssertUtilInterface> {
-        val settingsHolder: SettingsHolder = get()
-        AssertUtilImpl(
-            settingsHolder.getBoolean(FrontEndApplicationSettingKey.HaltOnFailure) ?: false,
-            get(),
-            get(),
-        ).also {
-            AssertUtil.setInstance(it)
+        single<AssertUtilInterface> {
+            val settingsHolder: SettingsHolder = get()
+            AssertUtilImpl(
+                settingsHolder.getBoolean(FrontEndApplicationSettingKey.HaltOnFailure) ?: false,
+                get(),
+                get(),
+            ).also {
+                AssertUtil.setInstance(it)
+            }
+        }
+
+        single<EventLoggerErrorCallback> {
+            EventLoggerErrorCallbackImpl(get(), get())
+        }
+
+        single<Severity> {
+            val settingsHolder: SettingsHolder = get()
+
+            Severity.fromStringOrDefault(
+                settingsHolder.getString(FrontEndApplicationSettingKey.LoggingLevel),
+                Severity.DEBUG,
+            )
+        }
+
+        single<EventLoggerInterface> {
+            EventLoggerImpl(
+                get(),
+                get(),
+                get(),
+            ).also {
+                EventLogger.setInstance(it)
+            }
+        }
+
+        single<HaltUtil> { HaltUtilImpl(get()) }
+
+        single<ThreadUtilInterface> {
+            ThreadUtilImpl(get())
+        }
+
+        single<Preferences> {
+            PreferencesImpl(get())
         }
     }
-
-    single<EventLoggerErrorCallback> {
-        EventLoggerErrorCallbackImpl(get(), get())
-    }
-
-    single<Severity> {
-        val settingsHolder: SettingsHolder = get()
-
-        Severity.fromStringOrDefault(
-            settingsHolder.getString(FrontEndApplicationSettingKey.LoggingLevel),
-            Severity.DEBUG,
-        )
-    }
-
-    single<EventLoggerInterface> {
-        EventLoggerImpl(
-            get(),
-            get(),
-            get(),
-        ).also {
-            EventLogger.setInstance(it)
-        }
-    }
-
-    single<HaltUtil> { HaltUtilImpl(get()) }
-
-    single<ThreadUtilInterface> {
-        ThreadUtilImpl(get())
-    }
-
-    single<Preferences> {
-        PreferencesImpl(get())
-    }
-}

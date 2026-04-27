@@ -14,10 +14,7 @@ import com.cramsan.framework.logging.logD
  * Service for managing document metadata. Delegates persistence to [DocumentDatastore].
  * Actual file content is managed separately via [StorageService].
  */
-class DocumentService(
-    private val documentDatastore: DocumentDatastore,
-) {
-
+class DocumentService(private val documentDatastore: DocumentDatastore) {
     /**
      * Creates a new document metadata record.
      */
@@ -32,16 +29,17 @@ class DocumentService(
         createdBy: UserId?,
     ): Document {
         logD(TAG, "createDocument")
-        return documentDatastore.createDocument(
-            orgId = orgId,
-            propertyId = propertyId,
-            unitId = unitId,
-            filename = filename,
-            mimeType = mimeType,
-            documentType = documentType,
-            assetId = assetId,
-            createdBy = createdBy,
-        ).getOrThrow()
+        return documentDatastore
+            .createDocument(
+                orgId = orgId,
+                propertyId = propertyId,
+                unitId = unitId,
+                filename = filename,
+                mimeType = mimeType,
+                documentType = documentType,
+                assetId = assetId,
+                createdBy = createdBy,
+            ).getOrThrow()
     }
 
     /**
@@ -61,11 +59,12 @@ class DocumentService(
         unitId: UnitId?,
     ): List<Document> {
         logD(TAG, "getDocuments")
-        return documentDatastore.getDocuments(
-            orgId = orgId,
-            propertyId = propertyId,
-            unitId = unitId,
-        ).getOrThrow()
+        return documentDatastore
+            .getDocuments(
+                orgId = orgId,
+                propertyId = propertyId,
+                unitId = unitId,
+            ).getOrThrow()
     }
 
     /**
@@ -77,11 +76,12 @@ class DocumentService(
         documentType: DocumentType?,
     ): Document {
         logD(TAG, "updateDocument")
-        return documentDatastore.updateDocument(
-            documentId = documentId,
-            filename = filename,
-            documentType = documentType,
-        ).getOrThrow()
+        return documentDatastore
+            .updateDocument(
+                documentId = documentId,
+                filename = filename,
+                documentType = documentType,
+            ).getOrThrow()
     }
 
     /**

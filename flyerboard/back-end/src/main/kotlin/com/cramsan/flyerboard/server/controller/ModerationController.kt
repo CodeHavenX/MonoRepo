@@ -22,19 +22,19 @@ class ModerationController(
     private val moderationService: ModerationService,
     private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>,
 ) : Controller {
-
     override fun registerRoutes(route: Routing) {
         ModerationApi.register(route) {
-
             // GET /api/v1/moderation — list pending flyers (admin-only)
             handler(api.listPending, contextRetriever) { request ->
                 if (request.context.payload.role != UserRole.ADMIN) {
                     throw ClientRequestExceptions.ForbiddenException("Admin role required")
                 }
-                moderationService.listPendingFlyers(
-                    offset = request.queryParam.offset,
-                    limit = request.queryParam.limit,
-                ).getOrThrow().toFlyerListNetworkResponse()
+                moderationService
+                    .listPendingFlyers(
+                        offset = request.queryParam.offset,
+                        limit = request.queryParam.limit,
+                    ).getOrThrow()
+                    .toFlyerListNetworkResponse()
             }
 
             // POST /api/v1/moderation/{param} — approve or reject a flyer (admin-only)
@@ -46,9 +46,11 @@ class ModerationController(
                 val flyerId = request.pathParam
                 when (request.requestBody.action) {
                     "approve" -> moderationService.approveFlyer(flyerId, adminUserId)
+
                     "reject" -> moderationService.rejectFlyer(flyerId, adminUserId)
+
                     else -> throw ClientRequestExceptions.InvalidRequestException(
-                        "Invalid action '${request.requestBody.action}'. Must be 'approve' or 'reject'."
+                        "Invalid action '${request.requestBody.action}'. Must be 'approve' or 'reject'.",
                     )
                 }.getOrThrow().toFlyerNetworkResponse()
             }

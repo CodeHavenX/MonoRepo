@@ -6,16 +6,14 @@ import com.cramsan.framework.core.compose.ViewModelUIState
 /**
  * UI state for the Archive screen.
  */
-data class ArchiveUIState(
-    val isLoading: Boolean,
-    val flyers: List<FlyerModel>,
-    val errorMessage: String?,
-) : ViewModelUIState {
+data class ArchiveUIState(val isLoading: Boolean, val flyers: List<FlyerModel>, val errorMessage: String?) :
+    ViewModelUIState {
     companion object {
-        val Initial = ArchiveUIState(
-            isLoading = false,
-            flyers = emptyList(),
-            errorMessage = null,
-        )
+        val Initial =
+            ArchiveUIState(
+                isLoading = false,
+                flyers = emptyList(),
+                errorMessage = null,
+            )
     }
 }

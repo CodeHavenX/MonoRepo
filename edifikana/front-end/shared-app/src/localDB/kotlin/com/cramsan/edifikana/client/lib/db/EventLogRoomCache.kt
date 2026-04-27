@@ -9,9 +9,7 @@ import com.cramsan.framework.logging.logI
 /**
  * Cache for event logs.
  */
-class EventLogRoomCache(
-    private val eventLogRecordDao: EventLogRecordDao,
-) : EventLogCache {
+class EventLogRoomCache(private val eventLogRecordDao: EventLogRecordDao) : EventLogCache {
     /**
      * Get all event log records.
      */

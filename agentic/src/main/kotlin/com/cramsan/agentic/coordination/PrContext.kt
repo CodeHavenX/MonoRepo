@@ -14,7 +14,4 @@ import com.cramsan.agentic.core.PullRequest
  * will only be reflected on the **next** poll tick. This is expected and does not cause
  * correctness issues — at worst it delays DONE detection by one poll interval.
  */
-data class PrContext(
-    val mergedPrs: List<PullRequest>,
-    val openPrs: List<PullRequest>,
-)
+data class PrContext(val mergedPrs: List<PullRequest>, val openPrs: List<PullRequest>)

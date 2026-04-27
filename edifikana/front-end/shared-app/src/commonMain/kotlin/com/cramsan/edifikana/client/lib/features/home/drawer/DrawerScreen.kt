@@ -58,6 +58,7 @@ fun DrawerScreen(
                     }
                 }
             }
+
             DrawerEvent.CloseDrawer -> {
                 if (!drawerState.isAnimationRunning) {
                     drawerState.close()
@@ -66,9 +67,7 @@ fun DrawerScreen(
         }
     }
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         // Call this feature's viewModel
     }
@@ -103,7 +102,7 @@ internal fun DrawerContent(
             ModalDrawerSheet {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
-                    modifier = Modifier.padding(horizontal = Padding.MEDIUM)
+                    modifier = Modifier.padding(horizontal = Padding.MEDIUM),
                 ) {
                     content.drawerItems.forEach { item ->
                         DrawerItem(item, content.selectedItem) {
@@ -123,11 +122,18 @@ internal fun DrawerContent(
                 SelectableDrawerItem.Property -> {
                     PropertyHomeScreen()
                 }
+
                 SelectableDrawerItem.Organization -> {
                     OrganizationHomeScreen()
                 }
-                SelectableDrawerItem.ResidentMode -> Unit
-                null -> Unit
+
+                SelectableDrawerItem.ResidentMode -> {
+                    Unit
+                }
+
+                null -> {
+                    Unit
+                }
             }
         }
     }
@@ -141,7 +147,10 @@ private fun DrawerItem(
     onClick: (SelectableDrawerItem) -> Unit = {},
 ) {
     when (item) {
-        DrawerItem.Divider -> HorizontalDivider()
+        DrawerItem.Divider -> {
+            HorizontalDivider()
+        }
+
         is DrawerItem.Selectable -> {
             SelectableDrawerItem(
                 item = item.item,
@@ -149,6 +158,7 @@ private fun DrawerItem(
                 onClick = onClick,
             )
         }
+
         is DrawerItem.Title -> {
             Text(
                 item.title,
@@ -166,16 +176,18 @@ private fun SelectableDrawerItem(
     onClick: (SelectableDrawerItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val text = when (item) {
-        SelectableDrawerItem.Property -> "Properties"
-        SelectableDrawerItem.Organization -> "Organization"
-        SelectableDrawerItem.ResidentMode -> "Resident Mode"
-    }
-    val icon = when (item) {
-        SelectableDrawerItem.Property -> Icons.Default.Apartment
-        SelectableDrawerItem.Organization -> Icons.Default.ViewCarousel
-        SelectableDrawerItem.ResidentMode -> Icons.Default.Person
-    }
+    val text =
+        when (item) {
+            SelectableDrawerItem.Property -> "Properties"
+            SelectableDrawerItem.Organization -> "Organization"
+            SelectableDrawerItem.ResidentMode -> "Resident Mode"
+        }
+    val icon =
+        when (item) {
+            SelectableDrawerItem.Property -> Icons.Default.Apartment
+            SelectableDrawerItem.Organization -> Icons.Default.ViewCarousel
+            SelectableDrawerItem.ResidentMode -> Icons.Default.Person
+        }
     NavigationDrawerItem(
         label = { Text(text = text, style = MaterialTheme.typography.labelLarge) },
         icon = { Icon(icon, contentDescription = "") },

@@ -61,9 +61,7 @@ fun EventLogScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         viewModel.loadEvents(propertyId)
     }
@@ -107,7 +105,8 @@ internal fun EventLogContent(
             }
         } else {
             LazyColumn(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxSize()
                     .padding(horizontal = Padding.MEDIUM),
                 verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
@@ -136,7 +135,8 @@ internal fun EventLogContent(
         // Floating Action Button
         ExtendedFloatingActionButton(
             onClick = onAddEventClick,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .align(Alignment.BottomEnd)
                 .padding(Padding.MEDIUM),
             icon = {
@@ -163,7 +163,8 @@ private fun EventLogItem(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .padding(vertical = Padding.SMALL),
         verticalAlignment = Alignment.CenterVertically,
@@ -171,7 +172,8 @@ private fun EventLogItem(
     ) {
         // Event type icon in circular background
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .size(48.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceVariant),

@@ -97,14 +97,15 @@ private fun WindowsContent(
         }
     }
 
-    val darkTheme = when (applicationUIState.theme) {
-        SelectedTheme.LIGHT -> false
-        SelectedTheme.DARK -> true
-        SelectedTheme.SYSTEM_DEFAULT -> isSystemInDarkTheme()
-    }
+    val darkTheme =
+        when (applicationUIState.theme) {
+            SelectedTheme.LIGHT -> false
+            SelectedTheme.DARK -> true
+            SelectedTheme.SYSTEM_DEFAULT -> isSystemInDarkTheme()
+        }
     AppTheme(
         coil3 = koinInject<Coil3Provider>().coil3Integration,
-        darkTheme = darkTheme
+        darkTheme = darkTheme,
     ) {
         Scaffold(
             snackbarHost = {
@@ -131,15 +132,19 @@ private fun handleWindowEvent(
         is EdifikanaWindowsEvent.OpenCamera -> {
             eventHandler.openCamera(event)
         }
+
         is EdifikanaWindowsEvent.OpenImageExternally -> {
             eventHandler.openImageExternally(event)
         }
+
         is EdifikanaWindowsEvent.OpenPhotoPicker -> {
             eventHandler.openPhotoPicker(event)
         }
+
         is EdifikanaWindowsEvent.ShareContent -> {
             eventHandler.shareContent(event)
         }
+
         is EdifikanaWindowsEvent.NavigateToNavGraph -> {
             handleNavigationEvent(
                 navController = navController,
@@ -147,6 +152,7 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is EdifikanaWindowsEvent.NavigateToScreen -> {
             handleNavigationEvent(
                 navController = navController,
@@ -154,17 +160,21 @@ private fun handleWindowEvent(
             )
             navController.navigate(event.destination)
         }
+
         is EdifikanaWindowsEvent.NavigateBack -> {
             navController.popBackStack()
         }
+
         is EdifikanaWindowsEvent.CloseNavGraph -> {
-            val currentNavGraph = navController.currentBackStack.value.reversed().find {
-                it.destination.navigatorName == "navigation"
-            }
+            val currentNavGraph =
+                navController.currentBackStack.value.reversed().find {
+                    it.destination.navigatorName == "navigation"
+                }
             currentNavGraph?.destination?.route?.let {
                 navController.popBackStack(it, inclusive = true)
             }
         }
+
         is EdifikanaWindowsEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
@@ -201,11 +211,12 @@ private suspend fun handleSnackbarEvent(
     onResult: (SnackbarResult) -> Unit,
 ) {
     snackbarHostState.currentSnackbarData?.dismiss()
-    val result = snackbarHostState
-        .showSnackbar(
-            message = event.message,
-            duration = SnackbarDuration.Short,
-        )
+    val result =
+        snackbarHostState
+            .showSnackbar(
+                message = event.message,
+                duration = SnackbarDuration.Short,
+            )
     onResult(result)
 }
 
@@ -214,16 +225,17 @@ private fun WindowNavigationHost(
     navHostController: NavHostController,
     startDestination: EdifikanaNavGraphDestination,
 ) {
-    val typeMap = remember {
-        mapOf(
-            typeOf<EventLogEntryId>() to EventLogEntryIdNavType(),
-            typeOf<PropertyId>() to PropertyIdNavType(),
-            typeOf<TimeCardEventId>() to TimeCardEventIdNavType(),
-            typeOf<UserId>() to UserIdNavType(),
-            typeOf<EmployeeId>() to EmployeeIdNavType(),
-            typeOf<OrganizationId>() to OrganizationIdNavType(),
-        )
-    }
+    val typeMap =
+        remember {
+            mapOf(
+                typeOf<EventLogEntryId>() to EventLogEntryIdNavType(),
+                typeOf<PropertyId>() to PropertyIdNavType(),
+                typeOf<TimeCardEventId>() to TimeCardEventIdNavType(),
+                typeOf<UserId>() to UserIdNavType(),
+                typeOf<EmployeeId>() to EmployeeIdNavType(),
+                typeOf<OrganizationId>() to OrganizationIdNavType(),
+            )
+        }
     NavHost(
         navController = navHostController,
         startDestination = startDestination,

@@ -28,22 +28,21 @@ import kotlin.time.Instant
  * Supabase implementation of [MembershipDatastore].
  */
 @OptIn(SupabaseModel::class)
-class SupabaseMembershipDatastore(
-    private val postgrest: Postgrest,
-    private val clock: Clock,
-) : MembershipDatastore {
-
+class SupabaseMembershipDatastore(private val postgrest: Postgrest, private val clock: Clock) : MembershipDatastore {
     /**
      * Returns all active members of [orgId] from the v_org_members view.
      */
     override suspend fun getMembers(orgId: OrganizationId): Result<List<OrgMemberView>> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting members for org: %s", orgId)
-            postgrest.from(OrgMemberViewEntity.COLLECTION).select {
-                filter {
-                    OrgMemberViewEntity::organizationId eq orgId
-                }
-            }.decodeList<OrgMemberViewEntity>().map { it.toOrgMemberView() }
+            postgrest
+                .from(OrgMemberViewEntity.COLLECTION)
+                .select {
+                    filter {
+                        OrgMemberViewEntity::organizationId eq orgId
+                    }
+                }.decodeList<OrgMemberViewEntity>()
+                .map { it.toOrgMemberView() }
         }
 
     /**
@@ -52,12 +51,15 @@ class SupabaseMembershipDatastore(
     override suspend fun getMember(orgId: OrganizationId, userId: UserId): Result<OrgMemberView?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting member %s in org: %s", userId, orgId)
-            postgrest.from(OrgMemberViewEntity.COLLECTION).select {
-                filter {
-                    OrgMemberViewEntity::organizationId eq orgId
-                    OrgMemberViewEntity::userId eq userId
-                }
-            }.decodeSingleOrNull<OrgMemberViewEntity>()?.toOrgMemberView()
+            postgrest
+                .from(OrgMemberViewEntity.COLLECTION)
+                .select {
+                    filter {
+                        OrgMemberViewEntity::organizationId eq orgId
+                        OrgMemberViewEntity::userId eq userId
+                    }
+                }.decodeSingleOrNull<OrgMemberViewEntity>()
+                ?.toOrgMemberView()
         }
 
     /**
@@ -67,17 +69,18 @@ class SupabaseMembershipDatastore(
         orgId: OrganizationId,
         userId: UserId,
         role: OrgRole,
-    ): Result<Unit> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating role for user %s in org %s to %s", userId, orgId, role)
-        postgrest.from(UserOrganizationMappingEntity.COLLECTION).update({
-            UserOrganizationMappingEntity::role setTo role
-        }) {
-            filter {
-                UserOrganizationMappingEntity::organizationId eq orgId.id
-                UserOrganizationMappingEntity::userId eq userId.userId
+    ): Result<Unit> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Updating role for user %s in org %s to %s", userId, orgId, role)
+            postgrest.from(UserOrganizationMappingEntity.COLLECTION).update({
+                UserOrganizationMappingEntity::role setTo role
+            }) {
+                filter {
+                    UserOrganizationMappingEntity::organizationId eq orgId.id
+                    UserOrganizationMappingEntity::userId eq userId.userId
+                }
             }
         }
-    }
 
     /**
      * Soft-removes [userId] from [orgId] by setting status to INACTIVE.
@@ -101,12 +104,15 @@ class SupabaseMembershipDatastore(
     override suspend fun purgeOrgMember(orgId: OrganizationId, userId: UserId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Purging org member %s from org %s", userId, orgId)
-            val existing = postgrest.from(UserOrganizationMappingEntity.COLLECTION).select {
-                filter {
-                    UserOrganizationMappingEntity::organizationId eq orgId.id
-                    UserOrganizationMappingEntity::userId eq userId.userId
-                }
-            }.decodeSingleOrNull<UserOrganizationMappingEntity>()
+            val existing =
+                postgrest
+                    .from(UserOrganizationMappingEntity.COLLECTION)
+                    .select {
+                        filter {
+                            UserOrganizationMappingEntity::organizationId eq orgId.id
+                            UserOrganizationMappingEntity::userId eq userId.userId
+                        }
+                    }.decodeSingleOrNull<UserOrganizationMappingEntity>()
 
             if (existing == null) return@runSuspendCatching false
 
@@ -126,16 +132,18 @@ class SupabaseMembershipDatastore(
         orgId: OrganizationId,
         newOwnerId: UserId,
         callerId: UserId,
-    ): Result<Unit> = runSuspendCatching(TAG) {
-        logD(TAG, "Transferring ownership of org %s from %s to %s", orgId, callerId, newOwnerId)
-        val params = TransferOwnershipParams(
-            pOrgId = orgId.id,
-            pNewOwnerId = newOwnerId.userId,
-            pCallerId = callerId.userId,
-        )
-        val jsonParams = Json.encodeToJsonElement(TransferOwnershipParams.serializer(), params).jsonObject
-        postgrest.rpc("transfer_ownership", jsonParams)
-    }
+    ): Result<Unit> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Transferring ownership of org %s from %s to %s", orgId, callerId, newOwnerId)
+            val params =
+                TransferOwnershipParams(
+                    pOrgId = orgId.id,
+                    pNewOwnerId = newOwnerId.userId,
+                    pCallerId = callerId.userId,
+                )
+            val jsonParams = Json.encodeToJsonElement(TransferOwnershipParams.serializer(), params).jsonObject
+            postgrest.rpc("transfer_ownership", jsonParams)
+        }
 
     /**
      * Sets assignee_id = NULL on all non-terminal tasks in [orgId] assigned to [userId].
@@ -145,12 +153,16 @@ class SupabaseMembershipDatastore(
     override suspend fun unassignTasksForMember(orgId: OrganizationId, userId: UserId): Result<Unit> =
         runSuspendCatching(TAG) {
             logD(TAG, "Unassigning tasks for member %s in org %s", userId, orgId)
-            val propertyIds = postgrest.from(PROPERTIES_COLLECTION).select {
-                filter {
-                    eq("organization_id", orgId.id)
-                    exact("deleted_at", null)
-                }
-            }.decodeList<PropertyIdEntity>().map { it.id }
+            val propertyIds =
+                postgrest
+                    .from(PROPERTIES_COLLECTION)
+                    .select {
+                        filter {
+                            eq("organization_id", orgId.id)
+                            exact("deleted_at", null)
+                        }
+                    }.decodeList<PropertyIdEntity>()
+                    .map { it.id }
 
             if (propertyIds.isEmpty()) return@runSuspendCatching
 
@@ -175,22 +187,25 @@ class SupabaseMembershipDatastore(
         expiration: Instant,
         role: InviteRole,
         inviteCode: String,
-    ): Result<Invite> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating invite for email: %s with role: %s", email, role)
-        val inviteEntity = InviteEntity.Create(
-            email = email,
-            organizationId = organizationId,
-            createdAt = clock.now(),
-            expiration = expiration,
-            role = role,
-            inviteCode = inviteCode,
-        )
+    ): Result<Invite> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Creating invite for email: %s with role: %s", email, role)
+            val inviteEntity =
+                InviteEntity.Create(
+                    email = email,
+                    organizationId = organizationId,
+                    createdAt = clock.now(),
+                    expiration = expiration,
+                    role = role,
+                    inviteCode = inviteCode,
+                )
 
-        val data = postgrest.from(InviteEntity.COLLECTION).insert(inviteEntity) {
-            select()
+            val data =
+                postgrest.from(InviteEntity.COLLECTION).insert(inviteEntity) {
+                    select()
+                }
+            data.decodeSingle<InviteEntity>().toInvite()
         }
-        data.decodeSingle<InviteEntity>().toInvite()
-    }
 
     /**
      * Updates the invite code and expiry for a resend operation.
@@ -199,20 +214,24 @@ class SupabaseMembershipDatastore(
         inviteId: InviteId,
         newCode: String,
         newExpiry: Instant,
-    ): Result<Invite> = runSuspendCatching(TAG) {
-        logD(TAG, "Resending invite: %s", inviteId)
-        postgrest.from(InviteEntity.COLLECTION).update({
-            InviteEntity::inviteCode setTo newCode
-            InviteEntity::expiration setTo newExpiry
-        }) {
-            select()
-            filter {
-                InviteEntity::id eq inviteId.id
-                InviteEntity::deletedAt isExact null
-                InviteEntity::acceptedAt isExact null
-            }
-        }.decodeSingle<InviteEntity>().toInvite()
-    }
+    ): Result<Invite> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Resending invite: %s", inviteId)
+            postgrest
+                .from(InviteEntity.COLLECTION)
+                .update({
+                    InviteEntity::inviteCode setTo newCode
+                    InviteEntity::expiration setTo newExpiry
+                }) {
+                    select()
+                    filter {
+                        InviteEntity::id eq inviteId.id
+                        InviteEntity::deletedAt isExact null
+                        InviteEntity::acceptedAt isExact null
+                    }
+                }.decodeSingle<InviteEntity>()
+                .toInvite()
+        }
 
     /**
      * Accepts an invite: sets accepted_at = now() and upserts the org membership row.
@@ -222,26 +241,31 @@ class SupabaseMembershipDatastore(
             logD(TAG, "Accepting invite %s for user %s", inviteId, userId)
 
             // Mark invite as accepted
-            val invite = postgrest.from(InviteEntity.COLLECTION).update({
-                InviteEntity::acceptedAt setTo clock.now()
-            }) {
-                select()
-                filter {
-                    InviteEntity::id eq inviteId.id
-                    InviteEntity::deletedAt isExact null
-                    InviteEntity::acceptedAt isExact null
-                }
-            }.decodeSingle<InviteEntity>().toInvite()
+            val invite =
+                postgrest
+                    .from(InviteEntity.COLLECTION)
+                    .update({
+                        InviteEntity::acceptedAt setTo clock.now()
+                    }) {
+                        select()
+                        filter {
+                            InviteEntity::id eq inviteId.id
+                            InviteEntity::deletedAt isExact null
+                            InviteEntity::acceptedAt isExact null
+                        }
+                    }.decodeSingle<InviteEntity>()
+                    .toInvite()
 
             // Upsert the org membership row; sets status=ACTIVE and joined_at=now()
             // so a previously-inactive member is reactivated with the new role.
-            val mapping = UserOrganizationMappingEntity.AcceptInviteEntity(
-                userId = userId.userId,
-                organizationId = invite.organizationId.id,
-                role = invite.role.toOrgRole(),
-                status = OrgMemberStatus.ACTIVE,
-                joinedAt = clock.now(),
-            )
+            val mapping =
+                UserOrganizationMappingEntity.AcceptInviteEntity(
+                    userId = userId.userId,
+                    organizationId = invite.organizationId.id,
+                    role = invite.role.toOrgRole(),
+                    status = OrgMemberStatus.ACTIVE,
+                    joinedAt = clock.now(),
+                )
             postgrest.from(UserOrganizationMappingEntity.COLLECTION).upsert(mapping) {
                 onConflict = "user_id, organization_id"
             }
@@ -253,14 +277,17 @@ class SupabaseMembershipDatastore(
     override suspend fun listPendingInvites(orgId: OrganizationId): Result<List<Invite>> =
         runSuspendCatching(TAG) {
             logD(TAG, "Listing pending invites for org: %s", orgId)
-            postgrest.from(InviteEntity.COLLECTION).select {
-                filter {
-                    InviteEntity::organizationId eq orgId.id
-                    InviteEntity::deletedAt isExact null
-                    InviteEntity::acceptedAt isExact null
-                    gt("expiration", clock.now())
-                }
-            }.decodeList<InviteEntity>().map { it.toInvite() }
+            postgrest
+                .from(InviteEntity.COLLECTION)
+                .select {
+                    filter {
+                        InviteEntity::organizationId eq orgId.id
+                        InviteEntity::deletedAt isExact null
+                        InviteEntity::acceptedAt isExact null
+                        gt("expiration", clock.now())
+                    }
+                }.decodeList<InviteEntity>()
+                .map { it.toInvite() }
         }
 
     /**
@@ -269,30 +296,36 @@ class SupabaseMembershipDatastore(
     override suspend fun getInviteByCode(inviteCode: String): Result<Invite?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting invite by code")
-            postgrest.from(InviteEntity.COLLECTION).select {
-                filter {
-                    InviteEntity::inviteCode eq inviteCode
-                    InviteEntity::deletedAt isExact null
-                    InviteEntity::acceptedAt isExact null
-                    gt("expiration", clock.now())
-                }
-            }.decodeSingleOrNull<InviteEntity>()?.toInvite()
+            postgrest
+                .from(InviteEntity.COLLECTION)
+                .select {
+                    filter {
+                        InviteEntity::inviteCode eq inviteCode
+                        InviteEntity::deletedAt isExact null
+                        InviteEntity::acceptedAt isExact null
+                        gt("expiration", clock.now())
+                    }
+                }.decodeSingleOrNull<InviteEntity>()
+                ?.toInvite()
         }
-
 
     /**
      * Retrieves an invite by [inviteId], or null if not found / soft-deleted.
      */
-    override suspend fun getInviteById(inviteId: InviteId): Result<Invite?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting invite by ID: %s", inviteId)
+    override suspend fun getInviteById(inviteId: InviteId): Result<Invite?> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting invite by ID: %s", inviteId)
 
-        postgrest.from(InviteEntity.COLLECTION).select {
-            filter {
-                InviteEntity::id eq inviteId.id
-                InviteEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<InviteEntity>()?.toInvite()
-    }
+            postgrest
+                .from(InviteEntity.COLLECTION)
+                .select {
+                    filter {
+                        InviteEntity::id eq inviteId.id
+                        InviteEntity::deletedAt isExact null
+                    }
+                }.decodeSingleOrNull<InviteEntity>()
+                ?.toInvite()
+        }
 
     /**
      * Soft-cancels an invite by setting deleted_at = now().
@@ -314,26 +347,30 @@ class SupabaseMembershipDatastore(
      * Permanently deletes a soft-deleted invite by [inviteId]. Returns true if successful.
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
-    override suspend fun purgeInvite(inviteId: InviteId): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Purging soft-deleted invite: %s", inviteId)
+    override suspend fun purgeInvite(inviteId: InviteId): Result<Boolean> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Purging soft-deleted invite: %s", inviteId)
 
-        val entity = postgrest.from(InviteEntity.COLLECTION).select {
-            filter {
-                InviteEntity::id eq inviteId.id
+            val entity =
+                postgrest
+                    .from(InviteEntity.COLLECTION)
+                    .select {
+                        filter {
+                            InviteEntity::id eq inviteId.id
+                        }
+                    }.decodeSingleOrNull<InviteEntity>()
+
+            if (entity?.deletedAt == null) {
+                return@runSuspendCatching false
             }
-        }.decodeSingleOrNull<InviteEntity>()
 
-        if (entity?.deletedAt == null) {
-            return@runSuspendCatching false
-        }
-
-        postgrest.from(InviteEntity.COLLECTION).delete {
-            filter {
-                InviteEntity::id eq inviteId.id
+            postgrest.from(InviteEntity.COLLECTION).delete {
+                filter {
+                    InviteEntity::id eq inviteId.id
+                }
             }
+            true
         }
-        true
-    }
 
     @Serializable
     private data class TransferOwnershipParams(

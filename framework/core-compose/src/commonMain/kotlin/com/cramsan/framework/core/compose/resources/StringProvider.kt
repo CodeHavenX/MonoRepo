@@ -6,7 +6,6 @@ import org.jetbrains.compose.resources.StringResource
  * Interface for a string provider. This is used to provide strings from resources.
  */
 interface StringProvider {
-
     /**
      * Get a string from resources.
      *

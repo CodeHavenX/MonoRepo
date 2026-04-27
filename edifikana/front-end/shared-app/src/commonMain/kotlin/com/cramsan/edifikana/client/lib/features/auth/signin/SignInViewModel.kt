@@ -31,7 +31,6 @@ class SignInViewModel(
     private val stringProvider: StringProvider,
     private val preferencesManager: PreferencesManager,
 ) : BaseViewModel<SignInEvent, SignInUIState>(dependencies, SignInUIState.Initial, TAG) {
-
     /**
      * Initialize the page.
      */
@@ -88,19 +87,20 @@ class SignInViewModel(
             updateUiState { it.copy(isLoading = true) }
             val email = uiState.value.email.trim()
             val password = uiState.value.password
-            auth.signInWithPassword(
-                email = email,
-                password = password,
-            ).onFailure { error ->
-                val message = getErrorMessage(error)
-                updateUiState {
-                    it.copy(
-                        errorMessages = listOf(message),
-                        isLoading = false,
-                    )
+            auth
+                .signInWithPassword(
+                    email = email,
+                    password = password,
+                ).onFailure { error ->
+                    val message = getErrorMessage(error)
+                    updateUiState {
+                        it.copy(
+                            errorMessages = listOf(message),
+                            isLoading = false,
+                        )
+                    }
+                    return@launch
                 }
-                return@launch
-            }
 
             val organizations = organizationManager.getOrganizations().getOrNull()
 
@@ -109,14 +109,14 @@ class SignInViewModel(
                     EdifikanaWindowsEvent.NavigateToScreen(
                         AuthDestination.SelectOrgDestination,
                         clearTop = true,
-                    )
+                    ),
                 )
             } else {
                 emitWindowEvent(
                     EdifikanaWindowsEvent.NavigateToNavGraph(
                         EdifikanaNavGraphDestination.HomeNavGraphDestination,
                         clearTop = true,
-                    )
+                    ),
                 )
             }
         }
@@ -134,19 +134,23 @@ class SignInViewModel(
             }
             val result = auth.checkUserExists(email)
             result.onFailure {
-                updateUiState { it.copy(errorMessages = listOf(stringProvider.getString(Res.string.error_message_unexpected_error))) }
+                updateUiState {
+                    it.copy(
+                        errorMessages = listOf(stringProvider.getString(Res.string.error_message_unexpected_error)),
+                    )
+                }
                 return@launch
             }
             val registeredUser = result.getOrNull() ?: false
             if (registeredUser) {
                 emitWindowEvent(
                     EdifikanaWindowsEvent.NavigateToScreen(
-                        AuthDestination.ValidationDestination(email, accountCreationFlow = false)
-                    )
+                        AuthDestination.ValidationDestination(email, accountCreationFlow = false),
+                    ),
                 )
             } else {
                 emitWindowEvent(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email))
+                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email)),
                 )
             }
         }
@@ -159,7 +163,7 @@ class SignInViewModel(
         viewModelScope.launch {
             val email = uiState.value.email.trim()
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email))
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email)),
             )
         }
     }
@@ -170,7 +174,7 @@ class SignInViewModel(
     fun navigateToDebugPage() {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination)
+                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination),
             )
         }
     }
@@ -188,14 +192,14 @@ class SignInViewModel(
             logD(TAG, "email field found to be invalid.")
             updateUiState {
                 it.copy(
-                    errorMessages = errorMessages
+                    errorMessages = errorMessages,
                 )
             }
             return false
         }
         updateUiState {
             it.copy(
-                errorMessages = emptyList()
+                errorMessages = emptyList(),
             )
         }
         return true
@@ -206,10 +210,13 @@ class SignInViewModel(
      */
     private suspend fun getErrorMessage(exception: Throwable): String {
         return when (exception) {
-            is ClientRequestExceptions.UnauthorizedException ->
+            is ClientRequestExceptions.UnauthorizedException -> {
                 stringProvider.getString(Res.string.error_message_invalid_credentials)
+            }
 
-            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
+            else -> {
+                stringProvider.getString(Res.string.error_message_unexpected_error)
+            }
         }
     }
 
@@ -218,15 +225,17 @@ class SignInViewModel(
      */
     fun changeSelectedTheme(theme: SelectedTheme) {
         viewModelScope.launch {
-            val themeToSave = when (theme) {
-                SelectedTheme.LIGHT -> Theme.LIGHT
-                SelectedTheme.DARK -> Theme.DARK
-                SelectedTheme.SYSTEM_DEFAULT -> Theme.SYSTEM_DEFAULT
-            }
-            preferencesManager.updatePreference(
-                EdifikanaSettingKey.SelectedTheme,
-                themeToSave.name,
-            ).getOrThrow()
+            val themeToSave =
+                when (theme) {
+                    SelectedTheme.LIGHT -> Theme.LIGHT
+                    SelectedTheme.DARK -> Theme.DARK
+                    SelectedTheme.SYSTEM_DEFAULT -> Theme.SYSTEM_DEFAULT
+                }
+            preferencesManager
+                .updatePreference(
+                    EdifikanaSettingKey.SelectedTheme,
+                    themeToSave.name,
+                ).getOrThrow()
         }
     }
 }

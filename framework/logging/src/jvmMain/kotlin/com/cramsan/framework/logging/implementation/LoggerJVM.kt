@@ -10,11 +10,7 @@ import org.apache.logging.log4j.core.config.Configurator
 /**
  * Logger that prints to stdout.
  */
-class LoggerJVM(
-    private val logger: Logger,
-    targetSeverity: Severity,
-) : EventLoggerDelegate {
-
+class LoggerJVM(private val logger: Logger, targetSeverity: Severity) : EventLoggerDelegate {
     init {
         // Set the logger level to the target severity
         Configurator.setAllLevels(
@@ -31,17 +27,17 @@ class LoggerJVM(
         vararg args: Any?,
     ) {
         val level = severity.toLevel()
-        val formattedMessage = if (args.isNotEmpty()) {
-            message.format(*args)
-        } else {
-            message
-        }
+        val formattedMessage =
+            if (args.isNotEmpty()) {
+                message.format(*args)
+            } else {
+                message
+            }
         val logMessage = "[$tag]$formattedMessage"
         logger.log(level, logMessage, throwable)
     }
 
     companion object {
-
         const val FILENAME = "app.log"
 
         /**

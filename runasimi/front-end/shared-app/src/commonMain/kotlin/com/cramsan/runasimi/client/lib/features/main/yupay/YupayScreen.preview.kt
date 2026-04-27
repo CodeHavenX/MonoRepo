@@ -13,12 +13,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun YupayScreenPreview() {
     AppTheme {
         YupayContent(
-            content = YupayUIState(
+            content =
+            YupayUIState(
                 Content(
                     translated = "Iskay chunka pichqayuq",
                     original = "25",
-                )
-            )
+                ),
+            ),
         )
     }
 }

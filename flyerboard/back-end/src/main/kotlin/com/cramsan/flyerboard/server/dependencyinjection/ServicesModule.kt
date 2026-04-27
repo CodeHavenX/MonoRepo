@@ -10,9 +10,10 @@ import org.koin.dsl.module
 /**
  * Class to initialize all the services level components.
  */
-internal val ServicesModule = module {
-    singleOf(::UserService)
-    singleOf(::FlyerService)
-    singleOf(::ModerationService)
-    singleOf(::ExpiryService)
-}
+internal val ServicesModule =
+    module {
+        singleOf(::UserService)
+        singleOf(::FlyerService)
+        singleOf(::ModerationService)
+        singleOf(::ExpiryService)
+    }

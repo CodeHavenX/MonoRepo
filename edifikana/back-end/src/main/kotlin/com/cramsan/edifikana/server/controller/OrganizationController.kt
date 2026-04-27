@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.OrganizationApi
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.network.organization.CreateOrganizationNetworkRequest
 import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.UpdateOrganizationNetworkRequest
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.OrganizationService
 import com.cramsan.edifikana.server.service.authorization.RBACService
@@ -33,7 +33,6 @@ class OrganizationController(
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action."
 
     /**
@@ -42,13 +41,12 @@ class OrganizationController(
      * Throws [UnauthorizedException] if the user does not have permission.
      */
     suspend fun getOrganization(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             OrganizationId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OrganizationNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -62,17 +60,17 @@ class OrganizationController(
      * Returns a list of organizations as a network response.
      */
     suspend fun getOrganizationList(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OrganizationNetworkListNetworkResponse {
-        val orgs = organizationService.getOrganizations(request.context.payload.userId).map {
-            it.toOrganizationNetworkResponse()
-        }
+        val orgs =
+            organizationService.getOrganizations(request.context.payload.userId).map {
+                it.toOrganizationNetworkResponse()
+            }
         return OrganizationNetworkListNetworkResponse(orgs)
     }
 
@@ -81,24 +79,25 @@ class OrganizationController(
      * The authenticated user becomes the owner with OWNER role.
      */
     suspend fun createOrganization(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             CreateOrganizationNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OrganizationNetworkResponse {
         // Validate the request body
         if (request.requestBody.name.isBlank()) {
             throw ClientRequestExceptions.InvalidRequestException("Organization name cannot be blank.")
         }
 
-        val organization = organizationService.createOrganization(
-            userId = request.context.payload.userId,
-            name = request.requestBody.name,
-            description = request.requestBody.description,
-        ).getOrThrow()
+        val organization =
+            organizationService
+                .createOrganization(
+                    userId = request.context.payload.userId,
+                    name = request.requestBody.name,
+                    description = request.requestBody.description,
+                ).getOrThrow()
         return organization.toOrganizationNetworkResponse()
     }
 
@@ -107,22 +106,23 @@ class OrganizationController(
      * The authenticated user must be an admin of the organization.
      */
     suspend fun updateOrganization(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             UpdateOrganizationNetworkRequest,
             NoQueryParam,
             OrganizationId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OrganizationNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val organization = organizationService.updateOrganization(
-            id = request.pathParam,
-            name = request.requestBody.name,
-            description = request.requestBody.description,
-        ).getOrThrow()
+        val organization =
+            organizationService
+                .updateOrganization(
+                    id = request.pathParam,
+                    name = request.requestBody.name,
+                    description = request.requestBody.description,
+                ).getOrThrow()
         return organization.toOrganizationNetworkResponse()
     }
 

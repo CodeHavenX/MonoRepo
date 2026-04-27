@@ -11,30 +11,33 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Preview
 @Composable
-private fun SignInScreenPreview() = AppTheme {
-    SignInContent(
-        uiState = SignInUIState(
-            isLoading = false,
-            email = "",
-            password = "",
-            showPassword = false,
-            errorMessages = null,
-        ),
-        applicationUIState = EdifikanaApplicationUIState(
-            theme = SelectedTheme.SYSTEM_DEFAULT,
-            applicationLoaded = true,
-            showDebugWindow = false,
-        ),
-        onUsernameValueChange = { },
-        onPasswordValueChange = { },
-        onContinueWithPWClicked = { },
-        onPWSignInClicked = {},
-        onSignInOtpClicked = { },
-        onSignUpClicked = { },
-        onThemeSelected = { _ -> },
-        onInfoClicked = { },
-    )
-}
+private fun SignInScreenPreview() =
+    AppTheme {
+        SignInContent(
+            uiState =
+            SignInUIState(
+                isLoading = false,
+                email = "",
+                password = "",
+                showPassword = false,
+                errorMessages = null,
+            ),
+            applicationUIState =
+            EdifikanaApplicationUIState(
+                theme = SelectedTheme.SYSTEM_DEFAULT,
+                applicationLoaded = true,
+                showDebugWindow = false,
+            ),
+            onUsernameValueChange = { },
+            onPasswordValueChange = { },
+            onContinueWithPWClicked = { },
+            onPWSignInClicked = {},
+            onSignInOtpClicked = { },
+            onSignUpClicked = { },
+            onThemeSelected = { _ -> },
+            onInfoClicked = { },
+        )
+    }
 
 /**
  * SignIn preview when user chooses to Contine with Password.
@@ -42,27 +45,30 @@ private fun SignInScreenPreview() = AppTheme {
  */
 @Preview
 @Composable
-private fun SignInContentPreview() = AppTheme {
-    SignInContent(
-        uiState = SignInUIState(
-            isLoading = true,
-            email = "username",
-            password = "password",
-            showPassword = true,
-            errorMessages = null,
-        ),
-        applicationUIState = EdifikanaApplicationUIState(
-            theme = SelectedTheme.LIGHT,
-            applicationLoaded = true,
-            showDebugWindow = false,
-        ),
-        onUsernameValueChange = {},
-        onPasswordValueChange = {},
-        onContinueWithPWClicked = { },
-        onPWSignInClicked = {},
-        onSignInOtpClicked = { },
-        onSignUpClicked = {},
-        onThemeSelected = { _ -> },
-        onInfoClicked = {},
-    )
-}
+private fun SignInContentPreview() =
+    AppTheme {
+        SignInContent(
+            uiState =
+            SignInUIState(
+                isLoading = true,
+                email = "username",
+                password = "password",
+                showPassword = true,
+                errorMessages = null,
+            ),
+            applicationUIState =
+            EdifikanaApplicationUIState(
+                theme = SelectedTheme.LIGHT,
+                applicationLoaded = true,
+                showDebugWindow = false,
+            ),
+            onUsernameValueChange = {},
+            onPasswordValueChange = {},
+            onContinueWithPWClicked = { },
+            onPWSignInClicked = {},
+            onSignInOtpClicked = { },
+            onSignUpClicked = {},
+            onThemeSelected = { _ -> },
+            onInfoClicked = {},
+        )
+    }

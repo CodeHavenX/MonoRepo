@@ -13,7 +13,6 @@ import kotlin.native.concurrent.ThreadLocal
  */
 @ThreadLocal
 object AssertUtil {
-
     private lateinit var _singleton: AssertUtilInterface
 
     /**
@@ -35,10 +34,6 @@ object AssertUtil {
         _singleton = assertUtil
     }
 }
-
-/**
- * List of global functions to provide an easy API for assertions
- */
 
 /**
  * Global function that delegates to [AssertUtil._singleton] and calls [AssertUtilInterface.assert].

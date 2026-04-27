@@ -8,7 +8,4 @@ package com.cramsan.flyerboard.server.datastore
  * [PaginatedList][com.cramsan.flyerboard.server.service.models.PaginatedList]
  * responses without issuing a separate round-trip.
  */
-data class PagedResult<T>(
-    val items: List<T>,
-    val total: Long,
-)
+data class PagedResult<T>(val items: List<T>, val total: Long)

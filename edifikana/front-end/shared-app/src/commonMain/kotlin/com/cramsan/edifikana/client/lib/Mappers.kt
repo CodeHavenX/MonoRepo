@@ -12,11 +12,11 @@ import com.cramsan.framework.core.compose.resources.StringProvider
 import com.cramsan.framework.utils.time.Chronos
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import edifikana_lib.Res
+import edifikana_lib.edifikana_string_other
 import edifikana_lib.event_type_delivery
 import edifikana_lib.event_type_guest
 import edifikana_lib.event_type_incident
 import edifikana_lib.event_type_maintenance_service
-import edifikana_lib.edifikana_string_other
 import edifikana_lib.id_type_ce
 import edifikana_lib.id_type_dni
 import edifikana_lib.id_type_passport

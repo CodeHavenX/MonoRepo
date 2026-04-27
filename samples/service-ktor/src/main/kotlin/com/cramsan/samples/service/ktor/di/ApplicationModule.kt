@@ -9,13 +9,14 @@ import org.koin.dsl.module
 /**
  * Class to initialize all the application level components.
  */
-internal val ApplicationModule = module {
+internal val ApplicationModule =
+    module {
 
-    single<CoroutineScope> {
-        GlobalScope
-    }
+        single<CoroutineScope> {
+            GlobalScope
+        }
 
-    single<Json> {
-        createJson()
+        single<Json> {
+            createJson()
+        }
     }
-}

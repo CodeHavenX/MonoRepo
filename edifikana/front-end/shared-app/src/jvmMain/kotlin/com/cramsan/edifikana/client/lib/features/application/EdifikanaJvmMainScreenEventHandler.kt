@@ -28,7 +28,6 @@ class EdifikanaJvmMainScreenEventHandler(
     private val scope: CoroutineScope,
     private val onPhotoPickerResult: (List<CoreUri>) -> Unit = {},
 ) : EdifikanaMainScreenEventHandler {
-
     override fun openCamera(event: EdifikanaWindowsEvent.OpenCamera) {
         logE(TAG, "Opening camera is not supported on JVM")
     }
@@ -45,19 +44,20 @@ class EdifikanaJvmMainScreenEventHandler(
         // AWT FileDialog is synchronous and will block, so we need to run it off the main thread
         scope.launch(Dispatchers.IO) {
             // Use AWT FileDialog for native file picker
-            val fileDialog = FileDialog(null as Frame?, "Select Image Files", FileDialog.LOAD).apply {
-                // Set filter for image files
-                setFilenameFilter { _, name ->
-                    val lowercaseName = name.lowercase()
-                    lowercaseName.endsWith(".jpg") ||
-                        lowercaseName.endsWith(".jpeg") ||
-                        lowercaseName.endsWith(".png") ||
-                        lowercaseName.endsWith(".gif") ||
-                        lowercaseName.endsWith(".webp")
+            val fileDialog =
+                FileDialog(null as Frame?, "Select Image Files", FileDialog.LOAD).apply {
+                    // Set filter for image files
+                    setFilenameFilter { _, name ->
+                        val lowercaseName = name.lowercase()
+                        lowercaseName.endsWith(".jpg") ||
+                            lowercaseName.endsWith(".jpeg") ||
+                            lowercaseName.endsWith(".png") ||
+                            lowercaseName.endsWith(".gif") ||
+                            lowercaseName.endsWith(".webp")
+                    }
+                    // Enable multiple file selection
+                    isMultipleMode = true
                 }
-                // Enable multiple file selection
-                isMultipleMode = true
-            }
 
             // Show dialog (blocks this coroutine until user selects or cancels)
             fileDialog.isVisible = true
@@ -66,9 +66,10 @@ class EdifikanaJvmMainScreenEventHandler(
             val selectedFiles = fileDialog.files
             if (selectedFiles != null && selectedFiles.isNotEmpty()) {
                 logI(TAG, "User selected ${selectedFiles.size} file(s)")
-                val uris = selectedFiles.map { file ->
-                    CoreUri(file.toURI().toString())
-                }
+                val uris =
+                    selectedFiles.map { file ->
+                        CoreUri(file.toURI().toString())
+                    }
                 onPhotoPickerResult(uris)
             } else {
                 logI(TAG, "User cancelled file selection")

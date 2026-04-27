@@ -25,7 +25,6 @@ class FlyerService(
     private val fileDatastore: FileDatastore,
     private val settingsHolder: SettingsHolder,
 ) {
-
     /**
      * Creates a new flyer with [PENDING][FlyerStatus.PENDING] status.
      *
@@ -48,21 +47,26 @@ class FlyerService(
         val sanitizedTitle = InputSanitizer.sanitizeText(title, maxLength = TITLE_MAX_LENGTH)
         val sanitizedDescription = InputSanitizer.sanitizeText(description, maxLength = DESCRIPTION_MAX_LENGTH)
 
-        val filePath = fileDatastore.uploadFile(fileName, fileContent)
-            .getOrElse { return Result.failure(it) }
+        val filePath =
+            fileDatastore
+                .uploadFile(fileName, fileContent)
+                .getOrElse { return Result.failure(it) }
 
-        return flyerDatastore.createFlyer(
-            title = sanitizedTitle,
-            description = sanitizedDescription,
-            filePath = filePath,
-            uploaderId = uploaderId,
-            expiresAt = expiresAt,
-        ).map { flyer ->
-            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
-                .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
-                .getOrNull()
-            flyer.copy(fileUrl = fileUrl)
-        }
+        return flyerDatastore
+            .createFlyer(
+                title = sanitizedTitle,
+                description = sanitizedDescription,
+                filePath = filePath,
+                uploaderId = uploaderId,
+                expiresAt = expiresAt,
+            ).map { flyer ->
+                val fileUrl =
+                    fileDatastore
+                        .getSignedUrl(flyer.filePath)
+                        .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                        .getOrNull()
+                flyer.copy(fileUrl = fileUrl)
+            }
     }
 
     /**
@@ -73,9 +77,11 @@ class FlyerService(
         logD(TAG, "getFlyer: %s", flyerId)
         return flyerDatastore.getFlyer(flyerId).map { flyer ->
             if (flyer == null) return@map null
-            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
-                .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
-                .getOrNull()
+            val fileUrl =
+                fileDatastore
+                    .getSignedUrl(flyer.filePath)
+                    .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                    .getOrNull()
             flyer.copy(fileUrl = fileUrl)
         }
     }
@@ -93,12 +99,15 @@ class FlyerService(
     ): Result<PaginatedList<Flyer>> {
         logD(TAG, "listFlyers status=%s query=%s offset=%d limit=%d", status, query, offset, limit)
         return flyerDatastore.listFlyers(status, query, offset, limit).map { page ->
-            val withUrls = page.items.map { flyer ->
-                val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
-                    .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
-                    .getOrNull()
-                flyer.copy(fileUrl = fileUrl)
-            }
+            val withUrls =
+                page.items.map { flyer ->
+                    val fileUrl =
+                        fileDatastore
+                            .getSignedUrl(flyer.filePath)
+                            .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                            .getOrNull()
+                    flyer.copy(fileUrl = fileUrl)
+                }
             PaginatedList(items = withUrls, total = page.total.toInt(), offset = offset, limit = limit)
         }
     }
@@ -121,17 +130,19 @@ class FlyerService(
     ): Result<Flyer> {
         logD(TAG, "updateFlyer: %s requester=%s", flyerId, requesterId)
 
-        val existing = flyerDatastore.getFlyer(flyerId)
-            .getOrElse { return Result.failure(it) }
-            ?: return Result.failure(
-                ClientRequestExceptions.NotFoundException("Flyer not found: ${flyerId.flyerId}")
-            )
+        val existing =
+            flyerDatastore
+                .getFlyer(flyerId)
+                .getOrElse { return Result.failure(it) }
+                ?: return Result.failure(
+                    ClientRequestExceptions.NotFoundException("Flyer not found: ${flyerId.flyerId}"),
+                )
 
         if (existing.uploaderId != requesterId) {
             return Result.failure(
                 ClientRequestExceptions.ForbiddenException(
-                    "User ${requesterId.userId} does not own flyer ${flyerId.flyerId}"
-                )
+                    "User ${requesterId.userId} does not own flyer ${flyerId.flyerId}",
+                ),
             )
         }
 
@@ -140,29 +151,41 @@ class FlyerService(
         if (fileContent != null && fileName != null && mimeType != null) {
             validateMimeType(mimeType).getOrElse { return Result.failure(it) }
             validateFileSize(fileContent.size.toLong()).getOrElse { return Result.failure(it) }
-            newFilePath = fileDatastore.uploadFile(fileName, fileContent)
-                .getOrElse { return Result.failure(it) }
-            fileDatastore.deleteFile(existing.filePath)
-                .onFailure { logE(TAG, "Failed to delete old file ${existing.filePath} for flyer ${flyerId.flyerId}", it) }
+            newFilePath =
+                fileDatastore
+                    .uploadFile(fileName, fileContent)
+                    .getOrElse { return Result.failure(it) }
+            fileDatastore
+                .deleteFile(existing.filePath)
+                .onFailure {
+                    logE(
+                        TAG,
+                        "Failed to delete old file ${existing.filePath} for flyer ${flyerId.flyerId}",
+                        it,
+                    )
+                }
         }
 
         val sanitizedTitle = title?.let { InputSanitizer.sanitizeText(it, maxLength = TITLE_MAX_LENGTH) }
         val sanitizedDescription =
             description?.let { InputSanitizer.sanitizeText(it, maxLength = DESCRIPTION_MAX_LENGTH) }
 
-        return flyerDatastore.updateFlyer(
-            id = flyerId,
-            title = sanitizedTitle,
-            description = sanitizedDescription,
-            filePath = newFilePath,
-            status = FlyerStatus.PENDING,
-            expiresAt = expiresAt,
-        ).map { flyer ->
-            val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
-                .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
-                .getOrNull()
-            flyer.copy(fileUrl = fileUrl)
-        }
+        return flyerDatastore
+            .updateFlyer(
+                id = flyerId,
+                title = sanitizedTitle,
+                description = sanitizedDescription,
+                filePath = newFilePath,
+                status = FlyerStatus.PENDING,
+                expiresAt = expiresAt,
+            ).map { flyer ->
+                val fileUrl =
+                    fileDatastore
+                        .getSignedUrl(flyer.filePath)
+                        .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                        .getOrNull()
+                flyer.copy(fileUrl = fileUrl)
+            }
     }
 
     /**
@@ -175,12 +198,15 @@ class FlyerService(
     ): Result<PaginatedList<Flyer>> {
         logD(TAG, "listFlyersByUploader: %s offset=%d limit=%d", uploaderId, offset, limit)
         return flyerDatastore.listFlyersByUploader(uploaderId, offset, limit).map { page ->
-            val withUrls = page.items.map { flyer ->
-                val fileUrl = fileDatastore.getSignedUrl(flyer.filePath)
-                    .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
-                    .getOrNull()
-                flyer.copy(fileUrl = fileUrl)
-            }
+            val withUrls =
+                page.items.map { flyer ->
+                    val fileUrl =
+                        fileDatastore
+                            .getSignedUrl(flyer.filePath)
+                            .onFailure { logE(TAG, "Failed to get signed URL for ${flyer.filePath}", it) }
+                            .getOrNull()
+                    flyer.copy(fileUrl = fileUrl)
+                }
             PaginatedList(items = withUrls, total = page.total.toInt(), offset = offset, limit = limit)
         }
     }
@@ -193,22 +219,23 @@ class FlyerService(
         } else {
             Result.failure(
                 ClientRequestExceptions.InvalidRequestException(
-                    "Unsupported file type: $mimeType. Allowed: ${ALLOWED_MIME_TYPES.joinToString()}"
-                )
+                    "Unsupported file type: $mimeType. Allowed: ${ALLOWED_MIME_TYPES.joinToString()}",
+                ),
             )
         }
     }
 
     private fun validateFileSize(sizeBytes: Long): Result<Unit> {
-        val maxBytes = settingsHolder.getLong(FlyerBoardSettingKey.MaxFileSizeBytes)
-            ?: DEFAULT_MAX_FILE_SIZE_BYTES
+        val maxBytes =
+            settingsHolder.getLong(FlyerBoardSettingKey.MaxFileSizeBytes)
+                ?: DEFAULT_MAX_FILE_SIZE_BYTES
         return if (sizeBytes <= maxBytes) {
             Result.success(Unit)
         } else {
             Result.failure(
                 ClientRequestExceptions.InvalidRequestException(
-                    "File size ${sizeBytes}B exceeds maximum allowed ${maxBytes}B"
-                )
+                    "File size ${sizeBytes}B exceeds maximum allowed ${maxBytes}B",
+                ),
             )
         }
     }
@@ -219,11 +246,12 @@ class FlyerService(
         private const val DESCRIPTION_MAX_LENGTH = 2000
         private const val DEFAULT_MAX_FILE_SIZE_BYTES = 10L * 1024L * 1024L // 10 MB
 
-        private val ALLOWED_MIME_TYPES = setOf(
-            "image/jpeg",
-            "image/png",
-            "image/webp",
-            "application/pdf",
-        )
+        private val ALLOWED_MIME_TYPES =
+            setOf(
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+                "application/pdf",
+            )
     }
 }

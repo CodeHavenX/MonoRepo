@@ -9,14 +9,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the ScreenSelector screen.
  **/
-class ScreenSelectorViewModel(
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<ScreenSelectorEvent, ScreenSelectorUIState>(
-    dependencies,
-    ScreenSelectorUIState.Initial,
-    TAG,
-) {
-
+class ScreenSelectorViewModel(dependencies: ViewModelDependencies) :
+    BaseViewModel<ScreenSelectorEvent, ScreenSelectorUIState>(
+        dependencies,
+        ScreenSelectorUIState.Initial,
+        TAG,
+    ) {
     /**
      * Trigger the back event.
      */
@@ -34,7 +32,7 @@ class ScreenSelectorViewModel(
     fun navigateToDestination(destination: Destination) {
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(destination)
+                EdifikanaWindowsEvent.NavigateToScreen(destination),
             )
         }
     }

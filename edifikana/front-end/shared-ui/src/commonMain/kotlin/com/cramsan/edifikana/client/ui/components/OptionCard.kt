@@ -51,17 +51,18 @@ fun OptionCard(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth(),
         colors = colors,
         shape = MaterialTheme.shapes.large,
     ) {
         Row(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .clickable(enabled = onClick != null) {
                     onClick?.invoke()
-                }
-                .fillMaxWidth()
+                }.fillMaxWidth()
                 .padding(Padding.MEDIUM),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -86,7 +87,8 @@ fun OptionCard(
 
             // Icon with circular background
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .size(Size.xx_large)
                     .clip(CircleShape)
                     .background(colors.containerColor.copy(alpha = 0.3f)),
@@ -105,26 +107,29 @@ fun OptionCard(
 
 @Preview
 @Composable
-private fun OptionCardPreview_Disabled_Card() = AppTheme {
-    OptionCard(
-        title = "Join an existing team",
-        description = "I have an invite code or want to search for my company.",
-        icon = Icons.Default.Groups,
-        colors = CardDefaults.cardColors().copy(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
-        ),
-        onClick = null,
-    )
-}
+private fun OptionCardPreview_Disabled_Card() =
+    AppTheme {
+        OptionCard(
+            title = "Join an existing team",
+            description = "I have an invite code or want to search for my company.",
+            icon = Icons.Default.Groups,
+            colors =
+            CardDefaults.cardColors().copy(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+            ),
+            onClick = null,
+        )
+    }
 
 @Preview
 @Composable
-private fun OptionCardPreview_Enabled_Card() = AppTheme {
-    OptionCard(
-        title = "Create a new workspace",
-        description = "I want to set up a new property portfolio for my team.",
-        icon = Icons.Default.Domain,
-        onClick = { },
-    )
-}
+private fun OptionCardPreview_Enabled_Card() =
+    AppTheme {
+        OptionCard(
+            title = "Create a new workspace",
+            description = "I want to set up a new property portfolio for my team.",
+            icon = Icons.Default.Domain,
+            onClick = { },
+        )
+    }

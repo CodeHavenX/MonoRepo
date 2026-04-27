@@ -6,7 +6,4 @@ import io.github.jan.supabase.auth.user.UserInfo
 /**
  * Payload for the auth context that uses Supabase information.
  */
-data class SupabaseContextPayload(
-    val userInfo: UserInfo,
-    val userId: UserId,
-)
+data class SupabaseContextPayload(val userInfo: UserInfo, val userId: UserId)

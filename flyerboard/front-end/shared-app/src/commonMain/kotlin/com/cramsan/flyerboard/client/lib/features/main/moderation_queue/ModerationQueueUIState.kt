@@ -12,10 +12,11 @@ data class ModerationQueueUIState(
     val errorMessage: String?,
 ) : ViewModelUIState {
     companion object {
-        val Initial = ModerationQueueUIState(
-            isLoading = false,
-            pendingFlyers = emptyList(),
-            errorMessage = null,
-        )
+        val Initial =
+            ModerationQueueUIState(
+                isLoading = false,
+                pendingFlyers = emptyList(),
+                errorMessage = null,
+            )
     }
 }

@@ -42,8 +42,9 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class RentConfigControllerTest : CoroutineTest(), KoinTest {
-
+class RentConfigControllerTest :
+    CoroutineTest(),
+    KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
@@ -63,137 +64,149 @@ class RentConfigControllerTest : CoroutineTest(), KoinTest {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `test getRentConfig returns 200 when found and user has EMPLOYEE role`() = testBackEndApplication {
-        // Arrange
-        val expectedResponse = readFileContent("requests/get_rent_config_response.json")
-        val rentConfigService = get<RentConfigService>()
-        val rbacService = get<RBACService>()
-        val unitId = UnitId("unit123")
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123"))
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.EMPLOYEE) } returns true
-        coEvery { rentConfigService.getRentConfig(unitId) }.answers {
-            rentConfig(RentConfigId("rc123"), unitId)
+    fun `test getRentConfig returns 200 when found and user has EMPLOYEE role`() =
+        testBackEndApplication {
+            // Arrange
+            val expectedResponse = readFileContent("requests/get_rent_config_response.json")
+            val rentConfigService = get<RentConfigService>()
+            val rbacService = get<RBACService>()
+            val unitId = UnitId("unit123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123")),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.EMPLOYEE) } returns true
+            coEvery { rentConfigService.getRentConfig(unitId) }.answers {
+                rentConfig(RentConfigId("rc123"), unitId)
+            }
+
+            // Act
+            val response = client.get("rent-config/unit123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
 
-        // Act
-        val response = client.get("rent-config/unit123")
+    @Test
+    fun `test getRentConfig returns 404 when config not found`() =
+        testBackEndApplication {
+            // Arrange
+            val rentConfigService = get<RentConfigService>()
+            val rbacService = get<RBACService>()
+            val unitId = UnitId("unit123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123")),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.EMPLOYEE) } returns true
+            coEvery { rentConfigService.getRentConfig(unitId) } returns null
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Act
+            val response = client.get("rent-config/unit123")
+
+            // Assert
+            assertEquals(HttpStatusCode.NotFound, response.status)
+        }
 
     @Test
-    fun `test getRentConfig returns 404 when config not found`() = testBackEndApplication {
-        // Arrange
-        val rentConfigService = get<RentConfigService>()
-        val rbacService = get<RBACService>()
-        val unitId = UnitId("unit123")
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123"))
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.EMPLOYEE) } returns true
-        coEvery { rentConfigService.getRentConfig(unitId) } returns null
+    fun `test getRentConfig returns 404 when user is unauthorized`() =
+        testBackEndApplication {
+            // Arrange
+            val rentConfigService = get<RentConfigService>()
+            val rbacService = get<RBACService>()
+            val unitId = UnitId("unit123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123")),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.EMPLOYEE) } returns false
 
-        // Act
-        val response = client.get("rent-config/unit123")
+            // Act
+            val response = client.get("rent-config/unit123")
 
-        // Assert
-        assertEquals(HttpStatusCode.NotFound, response.status)
-    }
-
-    @Test
-    fun `test getRentConfig returns 404 when user is unauthorized`() = testBackEndApplication {
-        // Arrange
-        val rentConfigService = get<RentConfigService>()
-        val rbacService = get<RBACService>()
-        val unitId = UnitId("unit123")
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123"))
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.EMPLOYEE) } returns false
-
-        // Act
-        val response = client.get("rent-config/unit123")
-
-        // Assert
-        coVerify { rentConfigService wasNot Called }
-        assertEquals(HttpStatusCode.NotFound, response.status)
-    }
+            // Assert
+            coVerify { rentConfigService wasNot Called }
+            assertEquals(HttpStatusCode.NotFound, response.status)
+        }
 
     // -------------------------------------------------------------------------
     // setRentConfig
     // -------------------------------------------------------------------------
 
     @Test
-    fun `test setRentConfig succeeds when user has ADMIN role`() = testBackEndApplication {
-        // Arrange
-        val requestBody = readFileContent("requests/set_rent_config_request.json")
-        val expectedResponse = readFileContent("requests/set_rent_config_response.json")
-        val rentConfigService = get<RentConfigService>()
-        val rbacService = get<RBACService>()
-        val unitId = UnitId("unit123")
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123"))
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.ADMIN) } returns true
-        coEvery {
-            rentConfigService.setRentConfig(
-                unitId = unitId,
-                monthlyAmount = 120000.0,
-                dueDay = 1,
-                currency = "USD",
-                updatedBy = UserId("user123"),
-            )
-        }.answers { rentConfig(RentConfigId("rc123"), unitId) }
+    fun `test setRentConfig succeeds when user has ADMIN role`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/set_rent_config_request.json")
+            val expectedResponse = readFileContent("requests/set_rent_config_response.json")
+            val rentConfigService = get<RentConfigService>()
+            val rbacService = get<RBACService>()
+            val unitId = UnitId("unit123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123")),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.ADMIN) } returns true
+            coEvery {
+                rentConfigService.setRentConfig(
+                    unitId = unitId,
+                    monthlyAmount = 120000.0,
+                    dueDay = 1,
+                    currency = "USD",
+                    updatedBy = UserId("user123"),
+                )
+            }.answers { rentConfig(RentConfigId("rc123"), unitId) }
 
-        // Act
-        val response = client.put("rent-config/unit123") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
+            // Act
+            val response =
+                client.put("rent-config/unit123") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
 
     @Test
-    fun `test setRentConfig fails when user lacks ADMIN role`() = testBackEndApplication {
-        // Arrange
-        val requestBody = readFileContent("requests/set_rent_config_request.json")
-        val expectedResponse = "You are not authorized to perform this action in your organization."
-        val rentConfigService = get<RentConfigService>()
-        val rbacService = get<RBACService>()
-        val unitId = UnitId("unit123")
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123"))
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.ADMIN) } returns false
+    fun `test setRentConfig fails when user lacks ADMIN role`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/set_rent_config_request.json")
+            val expectedResponse = "You are not authorized to perform this action in your organization."
+            val rentConfigService = get<RentConfigService>()
+            val rbacService = get<RBACService>()
+            val unitId = UnitId("unit123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = UserId("user123")),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.ADMIN) } returns false
 
-        // Act
-        val response = client.put("rent-config/unit123") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
+            // Act
+            val response =
+                client.put("rent-config/unit123") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
+
+            // Assert
+            coVerify { rentConfigService wasNot Called }
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
-
-        // Assert
-        coVerify { rentConfigService wasNot Called }
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
 
     // -------------------------------------------------------------------------
     // Private helpers

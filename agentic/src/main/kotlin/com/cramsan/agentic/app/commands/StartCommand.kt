@@ -3,7 +3,6 @@ package com.cramsan.agentic.app.commands
 import com.cramsan.agentic.app.agenticModule
 import com.cramsan.agentic.coordination.OrchestratorConfig
 import com.cramsan.agentic.core.AiProviderConfig
-import java.nio.file.Files
 import com.cramsan.framework.logging.logI
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
@@ -13,6 +12,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import java.nio.file.Files
 import java.nio.file.Path
 
 private const val TAG = "StartCommand"
@@ -32,7 +32,6 @@ private const val TAG = "StartCommand"
  * invocation without modifying `config.json`.
  */
 class StartCommand : CliktCommand(name = "start", help = "Start the agentic orchestrator") {
-
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
     private val agentPoolSizeOverride by option("--agents", help = "Number of concurrent agents").int()
     private val dryRun by option("--dry-run", help = "Print task order without running agents").flag()
@@ -41,9 +40,10 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val repoRoot = Path.of(".")
 
-        val koin = startKoin {
-            modules(agenticModule(agenticDir, repoRoot))
-        }.koin
+        val koin =
+            startKoin {
+                modules(agenticModule(agenticDir, repoRoot))
+            }.koin
 
         try {
             validatePlanningComplete(agenticDir)
@@ -53,10 +53,11 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
 
             validateAiProvider(agenticConfig)
 
-            val orchConfig = OrchestratorConfig(
-                agentPoolSize = agentPoolSizeOverride ?: agenticConfig.agentPoolSize,
-                baseBranch = agenticConfig.baseBranch,
-            )
+            val orchConfig =
+                OrchestratorConfig(
+                    agentPoolSize = agentPoolSizeOverride ?: agenticConfig.agentPoolSize,
+                    baseBranch = agenticConfig.baseBranch,
+                )
 
             logI(
                 TAG,
@@ -86,7 +87,8 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
                     "Run 'agentic plan generate' and approve each stage before starting.",
                 err = true,
             )
-            throw com.github.ajalt.clikt.core.ProgramResult(1)
+            throw com.github.ajalt.clikt.core
+                .ProgramResult(1)
         }
     }
 
@@ -100,13 +102,15 @@ class StartCommand : CliktCommand(name = "start", help = "Start the agentic orch
                     "to enable autonomous agent mode, or switch to 'claude-api'.",
                 err = true,
             )
-            throw com.github.ajalt.clikt.core.ProgramResult(1)
+            throw com.github.ajalt.clikt.core
+                .ProgramResult(1)
         }
         if (provider is AiProviderConfig.ClaudeApi) {
             val keyVar = provider.anthropicApiKeyEnvVar
             if (System.getenv(keyVar).isNullOrBlank()) {
                 echo("ERROR: Environment variable '$keyVar' is not set or empty.", err = true)
-                throw com.github.ajalt.clikt.core.ProgramResult(1)
+                throw com.github.ajalt.clikt.core
+                    .ProgramResult(1)
             }
         }
     }

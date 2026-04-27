@@ -9,7 +9,6 @@ import com.cramsan.edifikana.server.service.models.CommonArea
  * Interface for the common area datastore.
  */
 interface CommonAreaDatastore {
-
     /**
      * Creates a new common area record. Returns the [Result] with the created [CommonArea].
      */

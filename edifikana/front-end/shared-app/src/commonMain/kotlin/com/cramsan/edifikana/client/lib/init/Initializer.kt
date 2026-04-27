@@ -17,7 +17,6 @@ class Initializer(
     private val authManager: AuthManager,
     private val settingsHolder: SettingsHolder,
 ) : KoinComponent {
-
     /**
      * Start the initialization steps.
      */

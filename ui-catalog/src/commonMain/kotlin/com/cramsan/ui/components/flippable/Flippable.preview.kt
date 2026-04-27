@@ -19,7 +19,8 @@ private fun FlippablePreview() {
         Flippable(
             frontSide = {
                 Box(
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .size(200.dp)
                         .background(Color(0xFF4CAF50)),
                     contentAlignment = Alignment.Center,
@@ -33,7 +34,8 @@ private fun FlippablePreview() {
             },
             backSide = {
                 Box(
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .size(200.dp)
                         .background(Color(0xFFF44336)),
                     contentAlignment = Alignment.Center,

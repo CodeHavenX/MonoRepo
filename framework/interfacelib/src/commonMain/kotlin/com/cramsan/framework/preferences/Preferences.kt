@@ -5,7 +5,6 @@ package com.cramsan.framework.preferences
  * operations that do not require high performance.
  */
 interface Preferences {
-
     /**
      * Save [value] of type [String] as the specified [key]
      */

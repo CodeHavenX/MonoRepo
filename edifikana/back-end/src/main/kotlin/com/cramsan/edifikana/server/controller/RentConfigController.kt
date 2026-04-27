@@ -37,7 +37,6 @@ class RentConfigController(
     private val rbacService: RBACService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -49,8 +48,8 @@ class RentConfigController(
             NoRequestBody,
             NoQueryParam,
             UnitId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): RentConfigNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
             throw NotFoundException("Rent configuration not found.")
@@ -67,19 +66,20 @@ class RentConfigController(
             RentConfigNetworkRequest,
             NoQueryParam,
             UnitId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): RentConfigNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return rentConfigService.setRentConfig(
-            unitId = request.pathParam,
-            monthlyAmount = request.requestBody.monthlyAmount,
-            dueDay = request.requestBody.dueDay,
-            currency = request.requestBody.currency,
-            updatedBy = request.context.payload.userId,
-        ).toRentConfigNetworkResponse()
+        return rentConfigService
+            .setRentConfig(
+                unitId = request.pathParam,
+                monthlyAmount = request.requestBody.monthlyAmount,
+                dueDay = request.requestBody.dueDay,
+                currency = request.requestBody.currency,
+                updatedBy = request.context.payload.userId,
+            ).toRentConfigNetworkResponse()
     }
 
     /**

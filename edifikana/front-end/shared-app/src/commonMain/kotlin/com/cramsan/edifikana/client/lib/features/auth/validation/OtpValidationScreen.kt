@@ -49,9 +49,7 @@ fun OtpValidationScreen(
     val uiState by viewModel.uiState.collectAsState()
     val screenScope = rememberCoroutineScope()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initializeOTPValidationScreen(destination.userEmail, destination.accountCreationFlow)
     }
@@ -105,7 +103,8 @@ internal fun OtpValidationContent(
     ) { innerPadding ->
         // Render the screen
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             sectionContent = { sectionModifier ->
@@ -113,9 +112,10 @@ internal fun OtpValidationContent(
                 Image(
                     painter = painterResource(Res.drawable.alpacaIcon),
                     contentDescription = stringResource(Res.string.otp_validation_screen_image_description),
-                    modifier = sectionModifier.size(
+                    modifier =
+                    sectionModifier.size(
                         width = 150.dp,
-                        height = 150.dp
+                        height = 150.dp,
                     ),
                 )
                 // Display text message
@@ -124,7 +124,8 @@ internal fun OtpValidationContent(
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
-                    modifier = sectionModifier
+                    modifier =
+                    sectionModifier
                         .wrapContentWidth(),
                 )
 
@@ -139,7 +140,8 @@ internal fun OtpValidationContent(
                             it,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.error,
-                            modifier = sectionModifier
+                            modifier =
+                            sectionModifier
                                 .wrapContentWidth(),
                         )
                     }
@@ -148,7 +150,8 @@ internal fun OtpValidationContent(
                 OtpSection(
                     uiState.otpCode,
                     onValueChanged,
-                    modifier = sectionModifier
+                    modifier =
+                    sectionModifier
                         .wrapContentWidth(),
                 )
 
@@ -158,9 +161,10 @@ internal fun OtpValidationContent(
                         onLoginClicked()
                     },
                     enabled = uiState.enabledContinueButton,
-                    modifier = sectionModifier
+                    modifier =
+                    sectionModifier
                         .padding(top = 16.dp)
-                        .wrapContentWidth()
+                        .wrapContentWidth(),
                 ) {
                     Text(stringResource(Res.string.otp_validation_screen_login_button))
                 }

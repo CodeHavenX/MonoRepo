@@ -21,9 +21,8 @@ class EdifikanaApplicationViewModel(
 ) : BaseViewModel<EdifikanaApplicationViewModelEvent, EdifikanaApplicationUIState>(
     dependencies,
     EdifikanaApplicationUIState.Initial,
-    TAG
+    TAG,
 ) {
-
     /**
      * Initialize the view model and all required state for the entire application.
      */
@@ -59,9 +58,11 @@ class EdifikanaApplicationViewModel(
     }
 
     private suspend fun loadSelectedThemeSetting() {
-        val themeModeString = preferences.getStringPreference(
-            EdifikanaSettingKey.SelectedTheme,
-        ).getOrNull()
+        val themeModeString =
+            preferences
+                .getStringPreference(
+                    EdifikanaSettingKey.SelectedTheme,
+                ).getOrNull()
         val themeMode = Theme.fromString(themeModeString)
         updateUiState {
             it.copy(
@@ -71,9 +72,11 @@ class EdifikanaApplicationViewModel(
     }
 
     private suspend fun loadDebugWindowSettings() {
-        val showDebugWindow = preferences.getBooleanPreference(
-            EdifikanaSettingKey.OpenDebugWindow,
-        ).getOrNull() ?: false
+        val showDebugWindow =
+            preferences
+                .getBooleanPreference(
+                    EdifikanaSettingKey.OpenDebugWindow,
+                ).getOrNull() ?: false
         if (showDebugWindow) {
             logI(TAG, "Debug window is enabled.")
         } else {
@@ -81,7 +84,7 @@ class EdifikanaApplicationViewModel(
         }
         updateUiState {
             it.copy(
-                showDebugWindow = showDebugWindow
+                showDebugWindow = showDebugWindow,
             )
         }
     }

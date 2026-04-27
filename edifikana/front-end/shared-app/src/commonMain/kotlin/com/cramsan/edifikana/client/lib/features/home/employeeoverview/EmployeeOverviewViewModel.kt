@@ -11,14 +11,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the EmployeeOverview screen.
  **/
-class EmployeeOverviewViewModel(
-    dependencies: ViewModelDependencies,
-    private val authManager: AuthManager,
-) : BaseViewModel<EmployeeOverviewEvent, EmployeeOverviewUIState>(
-    dependencies,
-    EmployeeOverviewUIState.Initial,
-    TAG,
-) {
+class EmployeeOverviewViewModel(dependencies: ViewModelDependencies, private val authManager: AuthManager) :
+    BaseViewModel<EmployeeOverviewEvent, EmployeeOverviewUIState>(
+        dependencies,
+        EmployeeOverviewUIState.Initial,
+        TAG,
+    ) {
     /**
      * Initialize the ViewModel.
      */
@@ -45,51 +43,61 @@ class EmployeeOverviewViewModel(
 
         updateUiState { it.copy(isLoading = true) }
 
-        val employeesResult = authManager.getUsers(orgId)
-            .onFailure { throwable ->
-                emitWindowEvent(
-                    EdifikanaWindowsEvent.ShowSnackbar(
-                        "Failed to load employees: ${throwable.message ?: "Unknown error"}"
+        val employeesResult =
+            authManager
+                .getUsers(orgId)
+                .onFailure { throwable ->
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.ShowSnackbar(
+                            "Failed to load employees: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
-                )
-            }
+                }
 
-        val invitesResult = authManager.getInvites(orgId)
-            .onFailure { throwable ->
-                emitWindowEvent(
-                    EdifikanaWindowsEvent.ShowSnackbar(
-                        "Failed to load invites: ${throwable.message ?: "Unknown error"}"
+        val invitesResult =
+            authManager
+                .getInvites(orgId)
+                .onFailure { throwable ->
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.ShowSnackbar(
+                            "Failed to load invites: ${throwable.message ?: "Unknown error"}",
+                        ),
                     )
-                )
+                }
+
+        val inviteModels =
+            invitesResult
+                .getOrNull()
+                ?.map { invite ->
+                    InviteItemUIModel(
+                        email = invite.email,
+                    )
+                }.orEmpty()
+
+        val employeeModels =
+            employeesResult
+                .getOrNull()
+                ?.map { user ->
+                    UserItemUIModel(
+                        id = user.id,
+                        name = "${user.firstName} ${user.lastName}".trim(),
+                        email = user.email,
+                        imageUrl = null,
+                    )
+                }.orEmpty()
+
+        val combinedList =
+            (employeeModels + inviteModels).sortedBy {
+                when (it) {
+                    is UserItemUIModel -> it.name.lowercase()
+                    is InviteItemUIModel -> it.email.lowercase()
+                }
             }
-
-        val inviteModels = invitesResult.getOrNull()?.map { invite ->
-            InviteItemUIModel(
-                email = invite.email,
-            )
-        }.orEmpty()
-
-        val employeeModels = employeesResult.getOrNull()?.map { user ->
-            UserItemUIModel(
-                id = user.id,
-                name = "${user.firstName} ${user.lastName}".trim(),
-                email = user.email,
-                imageUrl = null,
-            )
-        }.orEmpty()
-
-        val combinedList = (employeeModels + inviteModels).sortedBy {
-            when (it) {
-                is UserItemUIModel -> it.name.lowercase()
-                is InviteItemUIModel -> it.email.lowercase()
-            }
-        }
 
         updateUiState {
             it.copy(
                 isLoading = false,
                 employeeList = combinedList,
-
             )
         }
     }
@@ -104,8 +112,8 @@ class EmployeeOverviewViewModel(
                     EdifikanaWindowsEvent.NavigateToScreen(
                         HomeDestination.InviteStaffMemberDestination(
                             orgId = orgId,
-                        )
-                    )
+                        ),
+                    ),
                 )
             }
         }

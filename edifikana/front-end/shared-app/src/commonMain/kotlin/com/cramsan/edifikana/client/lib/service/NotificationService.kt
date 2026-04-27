@@ -7,7 +7,6 @@ import com.cramsan.edifikana.lib.model.notification.NotificationId
  * Service for managing notifications.
  */
 interface NotificationService {
-
     /**
      * Get all notifications for the authenticated user.
      */

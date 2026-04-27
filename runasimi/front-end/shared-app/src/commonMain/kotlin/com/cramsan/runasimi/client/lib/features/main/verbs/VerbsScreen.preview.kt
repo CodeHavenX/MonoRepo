@@ -13,11 +13,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun VerbsScreenPreview() {
     AppTheme {
         VerbsContent(
-            content = VerbsUIState(
+            content =
+            VerbsUIState(
                 Content(
                     translated = "Iskay chunka pichqayuq",
                     original = "25",
-                )
+                ),
             ),
         )
     }

@@ -6,7 +6,6 @@ import com.cramsan.framework.core.CoreUri
  * Download strategy for Wasm.
  */
 class WasmDownloadStrategy : DownloadStrategy {
-
     override fun isFileCached(targetRef: String): Boolean {
         return false
     }

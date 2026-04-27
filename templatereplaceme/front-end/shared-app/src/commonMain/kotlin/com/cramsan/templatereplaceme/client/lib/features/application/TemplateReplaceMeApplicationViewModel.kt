@@ -14,7 +14,7 @@ class TemplateReplaceMeApplicationViewModel(
 ) : BaseViewModel<TemplateReplaceMeApplicationViewModelEvent, TemplateReplaceMeApplicationUIState>(
     dependencies,
     TemplateReplaceMeApplicationUIState(),
-    TAG
+    TAG,
 ) {
     /**
      * Initialize the view model and all required state for the entire application.

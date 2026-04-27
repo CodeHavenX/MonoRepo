@@ -8,19 +8,23 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class AgenticConfigTest {
-
     private val json = Json { prettyPrint = false }
 
     @Test
     fun `AgenticConfig round-trips through JSON with claude-api provider`() {
-        val original = AgenticConfig(
-            agentPoolSize = 4,
-            defaultTaskTimeoutSeconds = 3600L,
-            baseBranch = "main",
-            docsDir = ".ai/docs",
-            aiProvider = AiProviderConfig.ClaudeApi(model = "claude-opus-4-6", anthropicApiKeyEnvVar = "ANTHROPIC_API_KEY"),
-            vcsProvider = VcsProviderConfig.GitHub(owner = "cramsan", repo = "MonoRepo"),
-        )
+        val original =
+            AgenticConfig(
+                agentPoolSize = 4,
+                defaultTaskTimeoutSeconds = 3600L,
+                baseBranch = "main",
+                docsDir = ".ai/docs",
+                aiProvider =
+                AiProviderConfig.ClaudeApi(
+                    model = "claude-opus-4-6",
+                    anthropicApiKeyEnvVar = "ANTHROPIC_API_KEY",
+                ),
+                vcsProvider = VcsProviderConfig.GitHub(owner = "cramsan", repo = "MonoRepo"),
+            )
 
         val encoded = json.encodeToString(original)
         val decoded = json.decodeFromString<AgenticConfig>(encoded)
@@ -30,13 +34,14 @@ class AgenticConfigTest {
 
     @Test
     fun `AgenticConfig round-trips through JSON with claude-cli provider`() {
-        val original = AgenticConfig(
-            agentPoolSize = 2,
-            baseBranch = "main",
-            docsDir = "docs",
-            aiProvider = AiProviderConfig.ClaudeCli(cliPath = "/usr/local/bin/claude"),
-            vcsProvider = VcsProviderConfig.GitHub(owner = "owner", repo = "repo"),
-        )
+        val original =
+            AgenticConfig(
+                agentPoolSize = 2,
+                baseBranch = "main",
+                docsDir = "docs",
+                aiProvider = AiProviderConfig.ClaudeCli(cliPath = "/usr/local/bin/claude"),
+                vcsProvider = VcsProviderConfig.GitHub(owner = "owner", repo = "repo"),
+            )
 
         val encoded = json.encodeToString(original)
         val decoded = json.decodeFromString<AgenticConfig>(encoded)
@@ -95,12 +100,13 @@ class AgenticConfigTest {
 
     @Test
     fun `AgenticConfig default values are applied correctly`() {
-        val config = AgenticConfig(
-            agentPoolSize = 2,
-            baseBranch = "main",
-            docsDir = "docs",
-            vcsProvider = VcsProviderConfig.GitHub(owner = "owner", repo = "repo"),
-        )
+        val config =
+            AgenticConfig(
+                agentPoolSize = 2,
+                baseBranch = "main",
+                docsDir = "docs",
+                vcsProvider = VcsProviderConfig.GitHub(owner = "owner", repo = "repo"),
+            )
 
         assertEquals(3600L, config.defaultTaskTimeoutSeconds)
         assertIs<AiProviderConfig.ClaudeCli>(config.aiProvider)

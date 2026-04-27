@@ -11,11 +11,8 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Main Menu screen.
  */
-class MainMenuViewModel(
-    dependencies: ViewModelDependencies,
-    private val userManager: UserManager,
-) : BaseViewModel<MainMenuEvent, MainMenuUIState>(dependencies, MainMenuUIState.Initial, TAG) {
-
+class MainMenuViewModel(dependencies: ViewModelDependencies, private val userManager: UserManager) :
+    BaseViewModel<MainMenuEvent, MainMenuUIState>(dependencies, MainMenuUIState.Initial, TAG) {
     /**
      * Handle first name value change.
      */
@@ -49,24 +46,26 @@ class MainMenuViewModel(
             updateUiState { it.copy(isLoading = true) }
             val firstName = uiState.value.firstName
             val lastName = uiState.value.lastName
-            val newUser = userManager.createUser(
-                firstName = firstName,
-                lastName = lastName,
-            ).onFailure {
-                updateUiState { it.copy(isLoading = false) }
-                emitWindowEvent(
-                    TemplateReplaceMeWindowsEvent.ShowSnackbar(
-                        message = "Failed to create user: ${it.message}"
-                    )
-                )
-            }.onSuccess {
-                updateUiState { it.copy(isLoading = false) }
-                emitWindowEvent(
-                    TemplateReplaceMeWindowsEvent.ShowSnackbar(
-                        message = "User $firstName $lastName created successfully!"
-                    )
-                )
-            }.getOrThrow()
+            val newUser =
+                userManager
+                    .createUser(
+                        firstName = firstName,
+                        lastName = lastName,
+                    ).onFailure {
+                        updateUiState { it.copy(isLoading = false) }
+                        emitWindowEvent(
+                            TemplateReplaceMeWindowsEvent.ShowSnackbar(
+                                message = "Failed to create user: ${it.message}",
+                            ),
+                        )
+                    }.onSuccess {
+                        updateUiState { it.copy(isLoading = false) }
+                        emitWindowEvent(
+                            TemplateReplaceMeWindowsEvent.ShowSnackbar(
+                                message = "User $firstName $lastName created successfully!",
+                            ),
+                        )
+                    }.getOrThrow()
 
             logI(TAG, "User created: $newUser")
         }

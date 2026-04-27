@@ -12,14 +12,14 @@ data class SignInUIState(
     val showPassword: Boolean,
     val errorMessages: List<String>?,
 ) : ViewModelUIState {
-
     companion object {
-        val Initial = SignInUIState(
-            isLoading = false,
-            email = "",
-            password = "",
-            showPassword = false,
-            errorMessages = null,
-        )
+        val Initial =
+            SignInUIState(
+                isLoading = false,
+                email = "",
+                password = "",
+                showPassword = false,
+                errorMessages = null,
+            )
     }
 }

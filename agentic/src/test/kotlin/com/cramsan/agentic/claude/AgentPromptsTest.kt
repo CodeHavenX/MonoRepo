@@ -10,13 +10,13 @@ import kotlin.test.assertTrue
  * by TECH_DESIGN.md §7.3 (context reset strategy) and ARCHITECTURE.md §3.5.
  */
 class AgentPromptsTest {
-
-    private val task = Task(
-        id = "task-abc",
-        title = "Implement auth module",
-        description = "Add JWT-based authentication following the standards document.",
-        dependencies = emptyList(),
-    )
+    private val task =
+        Task(
+            id = "task-abc",
+            title = "Implement auth module",
+            description = "Add JWT-based authentication following the standards document.",
+            dependencies = emptyList(),
+        )
 
     // ── buildTaskStartPrompt ──────────────────────────────────────────────────
 
@@ -40,12 +40,16 @@ class AgentPromptsTest {
 
     @Test
     fun `buildTaskStartPrompt includes provided document content`() {
-        val docs = listOf(
-            "standards.md" to "# Standards\nAll code must have unit tests.",
-            "architecture.md" to "# Architecture\nUse hexagonal architecture.",
-        )
+        val docs =
+            listOf(
+                "standards.md" to "# Standards\nAll code must have unit tests.",
+                "architecture.md" to "# Architecture\nUse hexagonal architecture.",
+            )
         val prompt = buildTaskStartPrompt(task, docs)
-        assertTrue(prompt.contains("All code must have unit tests"), "Prompt must include document content. Got: $prompt")
+        assertTrue(
+            prompt.contains("All code must have unit tests"),
+            "Prompt must include document content. Got: $prompt",
+        )
         assertTrue(prompt.contains("hexagonal architecture"), "Prompt must include all documents. Got: $prompt")
     }
 
@@ -53,7 +57,12 @@ class AgentPromptsTest {
     fun `buildTaskStartPrompt instructs agent to commit and push before task_complete`() {
         val prompt = buildTaskStartPrompt(task, emptyList())
         // Spec requires explicit git commit+push instructions before calling task_complete
-        val hasGitInstructions = prompt.contains("git add") || prompt.contains("git commit") || prompt.contains("git push")
+        val hasGitInstructions =
+            prompt.contains(
+                "git add",
+            ) ||
+                prompt.contains("git commit") ||
+                prompt.contains("git push")
         assertTrue(hasGitInstructions, "Prompt must include git commit/push instructions. Got: $prompt")
     }
 
@@ -66,7 +75,10 @@ class AgentPromptsTest {
     @Test
     fun `buildTaskStartPrompt instructs agent to use task_failed on blocker`() {
         val prompt = buildTaskStartPrompt(task, emptyList())
-        assertTrue(prompt.contains("task_failed"), "Prompt must reference task_failed for unresolvable blockers. Got: $prompt")
+        assertTrue(
+            prompt.contains("task_failed"),
+            "Prompt must reference task_failed for unresolvable blockers. Got: $prompt",
+        )
     }
 
     @Test
@@ -113,20 +125,32 @@ class AgentPromptsTest {
 
     @Test
     fun `buildChangesRequestedPrompt includes reviewer comments`() {
-        val comments = listOf(
-            PullRequestComment(author = "reviewer1", body = "Please add tests for edge cases.", createdAtEpochMs = 0L),
-            PullRequestComment(author = "reviewer2", body = "Variable name is misleading.", createdAtEpochMs = 0L),
-        )
+        val comments =
+            listOf(
+                PullRequestComment(
+                    author = "reviewer1",
+                    body = "Please add tests for edge cases.",
+                    createdAtEpochMs = 0L,
+                ),
+                PullRequestComment(author = "reviewer2", body = "Variable name is misleading.", createdAtEpochMs = 0L),
+            )
         val prompt = buildChangesRequestedPrompt(task, "", comments)
-        assertTrue(prompt.contains("Please add tests for edge cases."), "Prompt must include reviewer comment body. Got: $prompt")
-        assertTrue(prompt.contains("Variable name is misleading."), "Prompt must include all reviewer comments. Got: $prompt")
+        assertTrue(
+            prompt.contains("Please add tests for edge cases."),
+            "Prompt must include reviewer comment body. Got: $prompt",
+        )
+        assertTrue(
+            prompt.contains("Variable name is misleading."),
+            "Prompt must include all reviewer comments. Got: $prompt",
+        )
     }
 
     @Test
     fun `buildChangesRequestedPrompt includes reviewer author names`() {
-        val comments = listOf(
-            PullRequestComment(author = "alice", body = "Fix this", createdAtEpochMs = 0L),
-        )
+        val comments =
+            listOf(
+                PullRequestComment(author = "alice", body = "Fix this", createdAtEpochMs = 0L),
+            )
         val prompt = buildChangesRequestedPrompt(task, "", comments)
         assertTrue(prompt.contains("alice"), "Prompt must include reviewer author names. Got: $prompt")
     }
@@ -134,9 +158,20 @@ class AgentPromptsTest {
     @Test
     fun `buildChangesRequestedPrompt instructs agent to commit push and call task_complete`() {
         val prompt = buildChangesRequestedPrompt(task, "", emptyList())
-        val hasGitInstructions = prompt.contains("git commit") || prompt.contains("git push") || prompt.contains("git add")
-        assertTrue(hasGitInstructions, "Changes-requested prompt must include git commit/push instructions. Got: $prompt")
-        assertTrue(prompt.contains("task_complete"), "Changes-requested prompt must reference task_complete. Got: $prompt")
+        val hasGitInstructions =
+            prompt.contains(
+                "git commit",
+            ) ||
+                prompt.contains("git push") ||
+                prompt.contains("git add")
+        assertTrue(
+            hasGitInstructions,
+            "Changes-requested prompt must include git commit/push instructions. Got: $prompt",
+        )
+        assertTrue(
+            prompt.contains("task_complete"),
+            "Changes-requested prompt must reference task_complete. Got: $prompt",
+        )
     }
 
     // ── buildResumeFromWorktreePrompt ─────────────────────────────────────────
@@ -151,14 +186,22 @@ class AgentPromptsTest {
     fun `buildResumeFromWorktreePrompt includes existing git diff`() {
         val diff = "+ half-implemented function body"
         val prompt = buildResumeFromWorktreePrompt(task, diff)
-        assertTrue(prompt.contains("half-implemented function body"), "Resume prompt must include current git diff. Got: $prompt")
+        assertTrue(
+            prompt.contains("half-implemented function body"),
+            "Resume prompt must include current git diff. Got: $prompt",
+        )
     }
 
     @Test
     fun `buildResumeFromWorktreePrompt signals the agent session was interrupted`() {
         val prompt = buildResumeFromWorktreePrompt(task, "")
-        val hasResumeCue = prompt.contains("interrupted") || prompt.contains("resume") || prompt.contains("Resume") ||
-            prompt.contains("previous") || prompt.contains("pick up") || prompt.contains("continuing")
+        val hasResumeCue =
+            prompt.contains("interrupted") ||
+                prompt.contains("resume") ||
+                prompt.contains("Resume") ||
+                prompt.contains("previous") ||
+                prompt.contains("pick up") ||
+                prompt.contains("continuing")
         assertTrue(hasResumeCue, "Resume prompt must convey that the session was interrupted. Got: $prompt")
     }
 

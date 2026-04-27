@@ -17,7 +17,6 @@ data class EmployeeModel(
     val role: EmployeeRole,
     val email: String?,
 ) {
-
     /**
      * Request to create a new employee.
      */

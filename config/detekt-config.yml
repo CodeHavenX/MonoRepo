@@ -78,15 +78,220 @@ coroutines:
   InjectDispatcher:
     ignoreAnnotated: [ 'BackgroundDispatcher', 'UIThreadDispatcher' ]
 
-# ktlint rules (detekt 2.0 uses ktlint-wrapper with different config schema)
+# ktlint-wrapper rules (detekt 2.0 alpha exposes them under ruleset id `ktlint`).
+# Ruleset is enabled so that autoCorrect-capable rules can rewrite code,
+# but every rule is opt-in: only NoUnusedImports is active. To enable
+# additional formatting autofixes, flip the relevant rule's `active` flag
+# to true. See the ktlint-wrapper jar's bundled config/config.yml for the
+# full list of rules and their default options.
 ktlint:
-  active: false
+  active: true
+  autoCorrect: true
   excludes:
     - '**/build/generated/**'
+  NoUnusedImports:
+    active: true
+    autoCorrect: true
+  AnnotationOnSeparateLine:
+    active: true
+  AnnotationSpacing:
+    active: true
+  ArgumentListWrapping:
+    active: true
+  BackingPropertyNaming:
+    active: false
+  BinaryExpressionWrapping:
+    active: true
+  BlankLineBeforeDeclaration:
+    active: true
+  BlankLineBetweenWhenConditions:
+    active: true
+  BlockCommentInitialStarAlignment:
+    active: false
+  ChainMethodContinuation:
+    active: true
+  ChainWrapping:
+    active: true
+  ClassName:
+    active: true
   ClassSignature:
+    active: true
+  CommentSpacing:
+    active: true
+  CommentWrapping:
+    active: true
+  ConditionWrapping:
+    active: true
+  ContextReceiverListWrapping:
+    active: true
+  ContextReceiverMapping:
+    active: true
+  EnumEntryNameCase:
+    active: true
+  EnumWrapping:
+    active: true
+  ExpressionOperandWrapping:
+    active: true
+  Filename:
+    active: true
+  FinalNewline:
+    active: true
+  FunKeywordSpacing:
+    active: true
+  FunctionExpressionBody:
+    active: false
+  FunctionLiteral:
+    active: true
+  FunctionName:
+    active: true
+    ignoreAnnotated: [ 'Composable', 'Preview', 'Test' ]
+  FunctionReturnTypeSpacing:
     active: false
   FunctionSignature:
     active: false
+  FunctionStartOfBodySpacing:
+    active: true
+  FunctionTypeModifierSpacing:
+    active: true
+  FunctionTypeReferenceSpacing:
+    active: true
+  IfElseBracing:
+    active: true
+  IfElseWrapping:
+    active: true
+  ImportOrdering:
+    active: true
+  Indentation:
+    active: true
+  Kdoc:
+    active: true
+  KdocWrapping:
+    active: true
+  MaximumLineLength:
+    active: true
+    ignoreAnnotated: [ 'Preview', 'Test' ]
+  MixedConditionOperators:
+    active: true
+  ModifierListSpacing:
+    active: true
+  ModifierOrdering:
+    active: true
+  MultiLineIfElse:
+    active: true
+  MultilineExpressionWrapping:
+    active: true
+  MultilineLoop:
+    active: true
+  NoBlankLineBeforeRbrace:
+    active: true
+  NoBlankLineInList:
+    active: true
+  NoBlankLinesInChainedMethodCalls:
+    active: true
+  NoConsecutiveBlankLines:
+    active: true
+  NoConsecutiveComments:
+    active: true
+  NoEmptyClassBody:
+    active: true
+  NoEmptyFile:
+    active: true
+  NoEmptyFirstLineInClassBody:
+    active: true
+  NoEmptyFirstLineInMethodBlock:
+    active: true
+  NoLineBreakAfterElse:
+    active: true
+  NoLineBreakBeforeAssignment:
+    active: true
+  NoMultipleSpaces:
+    active: true
+  NoSemicolons:
+    active: true
+  NoSingleLineBlockComment:
+    active: true
+  NoTrailingSpaces:
+    active: true
+  NoUnitReturn:
+    active: false
+  NoWildcardImports:
+    active: true
+  NullableTypeSpacing:
+    active: true
+  PackageName:
+    active: true
+  ParameterListSpacing:
+    active: true
+  ParameterListWrapping:
+    active: true
+  ParameterWrapping:
+    active: true
+  PropertyName:
+    active: true
+  PropertyWrapping:
+    active: true
+  SpacingAroundAngleBrackets:
+    active: true
+  SpacingAroundColon:
+    active: true
+  SpacingAroundComma:
+    active: true
+  SpacingAroundCurly:
+    active: true
+  SpacingAroundDot:
+    active: true
+  SpacingAroundDoubleColon:
+    active: true
+  SpacingAroundKeyword:
+    active: true
+  SpacingAroundOperators:
+    active: true
+  SpacingAroundParens:
+    active: true
+  SpacingAroundRangeOperator:
+    active: true
+  SpacingAroundSquareBrackets:
+    active: true
+  SpacingAroundUnaryOperator:
+    active: true
+  SpacingBetweenDeclarationsWithAnnotations:
+    active: true
+  SpacingBetweenDeclarationsWithComments:
+    active: true
+  SpacingBetweenFunctionNameAndOpeningParenthesis:
+    active: true
+  StatementWrapping:
+    active: true
+  StringTemplate:
+    active: true
+  StringTemplateIndent:
+    active: true
+  ThenSpacing:
+    active: true
+  TrailingCommaOnCallSite:
+    active: true
+  TrailingCommaOnDeclarationSite:
+    active: true
+  TryCatchFinallySpacing:
+    active: true
+  TypeArgumentComment:
+    active: true
+  TypeArgumentListSpacing:
+    active: true
+  TypeParameterComment:
+    active: true
+  TypeParameterListSpacing:
+    active: true
+  UnnecessaryParenthesesBeforeTrailingLambda:
+    active: true
+  ValueArgumentComment:
+    active: true
+  ValueParameterComment:
+    active: true
+  WhenEntryBracing:
+    active: true
+  Wrapping:
+    active: true
 
 empty-blocks:
   excludes:

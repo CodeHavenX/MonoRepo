@@ -23,18 +23,20 @@ class PropertyManager(
     /**
      * Get the list of properties.
      */
-    suspend fun getPropertyList(): Result<List<PropertyModel>> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getPropertyList")
-        propertyService.getPropertyList().getOrThrow()
-    }
+    suspend fun getPropertyList(): Result<List<PropertyModel>> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getPropertyList")
+            propertyService.getPropertyList().getOrThrow()
+        }
 
     /**
      * Get the list of properties that the current user has admin access to.
      */
-    suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getProperty")
-        propertyService.getProperty(propertyId).getOrThrow()
-    }
+    suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getProperty")
+            propertyService.getProperty(propertyId).getOrThrow()
+        }
 
     /**
      * Add a new property.
@@ -62,15 +64,19 @@ class PropertyManager(
         if (imageUri != null) {
             // Step 1: Create property without image to get propertyId
             logI(TAG, "Creating property without image for custom upload...")
-            val newProperty = propertyService.addProperty(propertyName, address, organizationId, imageUrl = null)
-                .getOrThrow()
+            val newProperty =
+                propertyService
+                    .addProperty(propertyName, address, organizationId, imageUrl = null)
+                    .getOrThrow()
             val propertyId = newProperty.id
             logI(TAG, "Property created with ID: $propertyId")
 
             // Step 2-3: Upload image and get storage reference
             val storageUrl = uploadPropertyImage(imageUri, propertyId)
-            val updatedProperty = propertyService.updateProperty(propertyId, propertyName, address, storageUrl)
-                .getOrThrow()
+            val updatedProperty =
+                propertyService
+                    .updateProperty(propertyId, propertyName, address, storageUrl)
+                    .getOrThrow()
             logI(TAG, "Property updated with custom image successfully")
 
             updatedProperty
@@ -107,8 +113,10 @@ class PropertyManager(
         if (imageUri != null) {
             // Step 1-2: Upload image and get storage reference
             val storageUrl = uploadPropertyImage(imageUri, propertyId)
-            val updatedProperty = propertyService.updateProperty(propertyId, name, address, storageUrl)
-                .getOrThrow()
+            val updatedProperty =
+                propertyService
+                    .updateProperty(propertyId, name, address, storageUrl)
+                    .getOrThrow()
             logI(TAG, "Property updated with custom image successfully")
 
             updatedProperty
@@ -122,11 +130,12 @@ class PropertyManager(
     /**
      * Remove the property with the given [propertyId].
      */
-    suspend fun removeProperty(propertyId: PropertyId): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "removeProperty")
-        propertyService.removeProperty(propertyId).requireSuccess()
-        propertyService.getPropertyList().requireSuccess()
-    }
+    suspend fun removeProperty(propertyId: PropertyId): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "removeProperty")
+            propertyService.removeProperty(propertyId).requireSuccess()
+            propertyService.getPropertyList().requireSuccess()
+        }
 
     /**
      * Uploads a property image and returns the storage URL ready for persistence.

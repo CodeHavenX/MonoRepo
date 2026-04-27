@@ -6,7 +6,6 @@ import com.cramsan.framework.logging.logI
  * Initializer class for the application.
  */
 class Initializer {
-
     /**
      * Start the initialization steps.
      */

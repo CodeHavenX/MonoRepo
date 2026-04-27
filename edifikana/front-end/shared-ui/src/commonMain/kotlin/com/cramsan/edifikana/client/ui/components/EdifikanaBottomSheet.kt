@@ -52,13 +52,14 @@ fun EdifikanaBottomSheet(
                 contentAlignment = Alignment.TopCenter,
             ) {
                 Column(
-                    modifier = if (isMobile) {
+                    modifier =
+                    if (isMobile) {
                         Modifier.fillMaxWidth()
                     } else {
                         Modifier
                             .widthIn(max = Size.COLUMN_MAX_WIDTH)
                             .heightIn(max = 600.dp)
-                    }
+                    },
                 ) {
                     content()
                 }

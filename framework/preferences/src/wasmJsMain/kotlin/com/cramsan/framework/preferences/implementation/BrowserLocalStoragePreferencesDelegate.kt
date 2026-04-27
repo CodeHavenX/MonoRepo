@@ -8,7 +8,6 @@ import org.w3c.dom.set
  * A [PreferencesDelegate] implementation that uses the browser's local storage.
  */
 class BrowserLocalStoragePreferencesDelegate : PreferencesDelegate {
-
     private val storage = kotlinx.browser.localStorage
 
     override fun saveString(key: String, value: String?) {

@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
  * Service for managing authentication.
  */
 interface AuthService {
-
     /**
      * Check if the user is signed in.
      */
@@ -54,7 +53,7 @@ interface AuthService {
         email: String,
         phoneNumber: String,
         firstName: String,
-        lastName: String
+        lastName: String,
     ): Result<UserModel>
 
     /**

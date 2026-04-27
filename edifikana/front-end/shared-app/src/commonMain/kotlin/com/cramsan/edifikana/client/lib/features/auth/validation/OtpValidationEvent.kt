@@ -9,7 +9,6 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  *
  */
 sealed class OtpValidationEvent : ViewModelEvent {
-
     /**
      * No operation.
      */

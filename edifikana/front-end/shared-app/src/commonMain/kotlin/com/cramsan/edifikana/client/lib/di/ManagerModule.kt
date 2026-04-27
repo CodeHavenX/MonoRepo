@@ -12,14 +12,15 @@ import com.cramsan.edifikana.client.lib.managers.TimeCardManager
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-internal val ManagerModule = module {
-    singleOf(::EventLogManager)
-    singleOf(::TimeCardManager)
-    singleOf(::EmployeeManager)
-    singleOf(::AuthManager)
-    singleOf(::PropertyManager)
-    singleOf(::PreferencesManager)
-    singleOf(::OrganizationManager)
-    singleOf(::StorageManager)
-    singleOf(::NotificationManager)
-}
+internal val ManagerModule =
+    module {
+        singleOf(::EventLogManager)
+        singleOf(::TimeCardManager)
+        singleOf(::EmployeeManager)
+        singleOf(::AuthManager)
+        singleOf(::PropertyManager)
+        singleOf(::PreferencesManager)
+        singleOf(::OrganizationManager)
+        singleOf(::StorageManager)
+        singleOf(::NotificationManager)
+    }

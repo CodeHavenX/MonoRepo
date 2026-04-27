@@ -18,26 +18,27 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object FlyerApi : Api("api/v1/flyers") {
-
     /**
      * List publicly visible flyers with optional status filter and pagination.
      */
-    val listFlyers = operation<
-        NoRequestBody,
-        ListFlyersQueryParams,
-        NoPathParam,
-        FlyerListNetworkResponse
-        >(HttpMethod.Get)
+    val listFlyers =
+        operation<
+            NoRequestBody,
+            ListFlyersQueryParams,
+            NoPathParam,
+            FlyerListNetworkResponse,
+            >(HttpMethod.Get)
 
     /**
      * Get a single flyer by ID.
      */
-    val getFlyer = operation<
-        NoRequestBody,
-        NoQueryParam,
-        FlyerId,
-        FlyerNetworkResponse
-        >(HttpMethod.Get)
+    val getFlyer =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            FlyerId,
+            FlyerNetworkResponse,
+            >(HttpMethod.Get)
 
     /**
      * Create a new flyer.
@@ -46,12 +47,13 @@ object FlyerApi : Api("api/v1/flyers") {
      * The request must be sent as multipart/form-data, with the flyer metadata
      * fields and the file binary included as separate parts.
      */
-    val createFlyer = operation<
-        BytesRequestBody,
-        NoQueryParam,
-        NoPathParam,
-        FlyerNetworkResponse
-        >(HttpMethod.Post)
+    val createFlyer =
+        operation<
+            BytesRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            FlyerNetworkResponse,
+            >(HttpMethod.Post)
 
     /**
      * Update an existing flyer.
@@ -60,30 +62,33 @@ object FlyerApi : Api("api/v1/flyers") {
      * The request must be sent as multipart/form-data, with the updated metadata
      * fields and an optional replacement file included as separate parts.
      */
-    val updateFlyer = operation<
-        BytesRequestBody,
-        NoQueryParam,
-        FlyerId,
-        FlyerNetworkResponse
-        >(HttpMethod.Put)
+    val updateFlyer =
+        operation<
+            BytesRequestBody,
+            NoQueryParam,
+            FlyerId,
+            FlyerNetworkResponse,
+            >(HttpMethod.Put)
 
     /**
      * List archived flyers with pagination.
      */
-    val listArchived = operation<
-        NoRequestBody,
-        PaginationParams,
-        NoPathParam,
-        FlyerListNetworkResponse
-        >(HttpMethod.Get, path = "archive")
+    val listArchived =
+        operation<
+            NoRequestBody,
+            PaginationParams,
+            NoPathParam,
+            FlyerListNetworkResponse,
+            >(HttpMethod.Get, path = "archive")
 
     /**
      * List the authenticated user's own flyers with pagination.
      */
-    val listMyFlyers = operation<
-        NoRequestBody,
-        PaginationParams,
-        NoPathParam,
-        FlyerListNetworkResponse
-        >(HttpMethod.Get, path = "mine")
+    val listMyFlyers =
+        operation<
+            NoRequestBody,
+            PaginationParams,
+            NoPathParam,
+            FlyerListNetworkResponse,
+            >(HttpMethod.Get, path = "mine")
 }

@@ -7,11 +7,8 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * triggered by a feature screen, and it will be handled by the window.
  */
 sealed class FlyerBoardWindowViewModelEvent : ViewModelEvent {
-
     /**
      * Wrapper for [FlyerBoardWindowsEvent] to be used in the view model.
      */
-    data class FlyerBoardWindowEventWrapper(
-        val event: FlyerBoardWindowsEvent,
-    ) : FlyerBoardWindowViewModelEvent()
+    data class FlyerBoardWindowEventWrapper(val event: FlyerBoardWindowsEvent) : FlyerBoardWindowViewModelEvent()
 }

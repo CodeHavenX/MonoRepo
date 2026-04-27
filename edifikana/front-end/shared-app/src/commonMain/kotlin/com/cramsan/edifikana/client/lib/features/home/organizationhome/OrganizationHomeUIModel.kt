@@ -16,23 +16,20 @@ data class OrganizationHomeUIModel(
     val selectedOrgId: OrganizationId?,
 ) : ViewModelUIState {
     companion object {
-        val Empty = OrganizationHomeUIModel(
-            label = "",
-            selectedTab = Tabs.Properties,
-            availableOrganizations = listOf(),
-            selectedOrgId = null,
-        )
+        val Empty =
+            OrganizationHomeUIModel(
+                label = "",
+                selectedTab = Tabs.Properties,
+                availableOrganizations = listOf(),
+                selectedOrgId = null,
+            )
     }
 }
 
 /**
  * UI model for an organization in the list of available organizations.
  */
-data class OrganizationUIModel(
-    val id: OrganizationId,
-    val name: String,
-    val selected: Boolean = false,
-)
+data class OrganizationUIModel(val id: OrganizationId, val name: String, val selected: Boolean = false)
 
 /**
  * UI model for the bottom bar.

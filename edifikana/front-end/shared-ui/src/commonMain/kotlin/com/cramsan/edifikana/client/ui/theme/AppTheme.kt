@@ -30,44 +30,47 @@ fun AppTheme(
     dynamicColor: Boolean = true,
     coil3: Coil3Integration? = null,
     debugLayoutInspection: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = getColorScheme(darkTheme, dynamicColor, darkScheme, lightScheme)
 
     WindowDecorations(colorScheme, darkTheme)
 
-    val previewImageProvider = if (LocalInspectionMode.current) {
-        val previewHandler = AsyncImagePreviewHandler {
-            ColorImage(Color.DarkGray.toArgb())
+    val previewImageProvider =
+        if (LocalInspectionMode.current) {
+            val previewHandler =
+                AsyncImagePreviewHandler {
+                    ColorImage(Color.DarkGray.toArgb())
+                }
+            LocalAsyncImagePreviewHandler provides previewHandler
+        } else {
+            null
         }
-        LocalAsyncImagePreviewHandler provides previewHandler
-    } else {
-        null
-    }
 
     coil3?.let {
         setSingletonImageLoaderFactory { platformContext ->
-            ImageLoader.Builder(platformContext)
+            ImageLoader
+                .Builder(platformContext)
                 .components {
                     add(it)
                     add(KtorNetworkFetcherFactory())
-                }
-                .logger(DebugLogger())
+                }.logger(DebugLogger())
                 .build()
         }
     }
 
-    val localProviders = listOfNotNull(
-        LocalDebugLayoutInspection provides debugLayoutInspection,
-        previewImageProvider,
-    ).toTypedArray()
+    val localProviders =
+        listOfNotNull(
+            LocalDebugLayoutInspection provides debugLayoutInspection,
+            previewImageProvider,
+        ).toTypedArray()
 
     CompositionLocalProvider(
         values = localProviders,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
-            content = content
+            content = content,
         )
     }
 }

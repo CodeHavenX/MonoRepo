@@ -4,7 +4,6 @@ package com.cramsan.flyerboard.server.datastore
  * Interface defining file storage operations for flyer assets.
  */
 interface FileDatastore {
-
     /**
      * Uploads [content] to storage under a collision-safe name derived from [fileName].
      * Returns the stored file path (UUID-prefixed) on success.

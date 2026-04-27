@@ -67,7 +67,8 @@ private fun ImageGridItem(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .aspectRatio(1f)
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = onSelected),
@@ -82,7 +83,8 @@ private fun ImageGridItem(
 
         if (isSelected) {
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .align(Alignment.TopEnd)
                     .padding(Padding.XX_SMALL)
                     .size(24.dp)

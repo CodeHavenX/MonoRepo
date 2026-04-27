@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class UserListNetworkResponse(
-    val content: List<UserNetworkResponse>,
-) : ResponseBody
+data class UserListNetworkResponse(val content: List<UserNetworkResponse>) : ResponseBody

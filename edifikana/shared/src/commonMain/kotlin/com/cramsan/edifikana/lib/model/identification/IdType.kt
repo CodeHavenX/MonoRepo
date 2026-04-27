@@ -9,8 +9,8 @@ enum class IdType {
     PASSPORT,
     OTHER,
     ;
-    companion object {
 
+    companion object {
         /**
          * Converts a string to an IdType.
          */

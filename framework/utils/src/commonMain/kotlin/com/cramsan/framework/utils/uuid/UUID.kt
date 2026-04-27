@@ -4,7 +4,6 @@ package com.cramsan.framework.utils.uuid
  * Simple UUID generator.
  */
 expect object UUID {
-
     /**
      * Generates a random UUID based on a platform specific implementation.
      */

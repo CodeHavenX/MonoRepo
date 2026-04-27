@@ -8,12 +8,13 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-internal actual val CacheModule = module {
-    singleOf(::EventLogNoopCache) {
-        bind<EventLogCache>()
-    }
+internal actual val CacheModule =
+    module {
+        singleOf(::EventLogNoopCache) {
+            bind<EventLogCache>()
+        }
 
-    singleOf(::TimeCardNoopCache) {
-        bind<TimeCardCache>()
+        singleOf(::TimeCardNoopCache) {
+            bind<TimeCardCache>()
+        }
     }
-}

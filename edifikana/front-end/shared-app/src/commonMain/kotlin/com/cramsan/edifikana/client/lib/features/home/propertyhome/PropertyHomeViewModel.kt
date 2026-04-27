@@ -25,7 +25,6 @@ class PropertyHomeViewModel(
     PropertyHomeUIModel.Empty,
     TAG,
 ) {
-
     /**
      * Load properties.
      */
@@ -50,22 +49,24 @@ class PropertyHomeViewModel(
 
     private suspend fun updatePropertyList() {
         val properties = propertyManager.getPropertyList().getOrNull().orEmpty()
-        val selectedProperty = uiState.value.propertyId
-            ?: preferencesManager.getLastSelectedPropertyId()
-            ?: properties.firstOrNull()?.id
+        val selectedProperty =
+            uiState.value.propertyId
+                ?: preferencesManager.getLastSelectedPropertyId()
+                ?: properties.firstOrNull()?.id
         var name = ""
         updateUiState {
-            val propertyUiModels = properties.map { property ->
-                val isSelected = property.id == selectedProperty
-                if (isSelected) {
-                    name = property.name
+            val propertyUiModels =
+                properties.map { property ->
+                    val isSelected = property.id == selectedProperty
+                    if (isSelected) {
+                        name = property.name
+                    }
+                    property.toUIModel(selected = isSelected)
                 }
-                property.toUIModel(selected = isSelected)
-            }
             it.copy(
                 label = name,
                 availableProperties = propertyUiModels,
-                propertyId = selectedProperty
+                propertyId = selectedProperty,
             )
         }
         // Check if there is a list of properties. If the list is empty, show the fallback tab.
@@ -88,7 +89,7 @@ class PropertyHomeViewModel(
         viewModelScope.launch {
             logI(TAG, "Navigating back.")
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }
@@ -102,7 +103,7 @@ class PropertyHomeViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AccountNavGraphDestination,
-                )
+                ),
             )
         }
     }
@@ -123,7 +124,7 @@ class PropertyHomeViewModel(
         logI(TAG, "Navigating to notifications page.")
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AccountDestination.NotificationsDestination)
+                EdifikanaWindowsEvent.NavigateToScreen(AccountDestination.NotificationsDestination),
             )
         }
     }
@@ -137,8 +138,7 @@ class PropertyHomeViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.SettingsNavGraphDestination,
-
-                )
+                ),
             )
         }
     }

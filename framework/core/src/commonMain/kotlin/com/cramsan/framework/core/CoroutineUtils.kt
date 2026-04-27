@@ -12,10 +12,11 @@ import kotlinx.coroutines.withContext
 suspend inline fun <T> ManagerDependencies.getOrCatch(
     tag: String,
     crossinline block: suspend () -> T,
-): Result<T> = runSuspendCatching(tag) {
-    withContext(dispatcherProvider.ioDispatcher()) {
-        block()
+): Result<T> =
+    runSuspendCatching(tag) {
+        withContext(dispatcherProvider.ioDispatcher()) {
+            block()
+        }
+    }.onFailure {
+        logE(tag, "Operation failed. ", it)
     }
-}.onFailure {
-    logE(tag, "Operation failed. ", it)
-}

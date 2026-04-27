@@ -31,7 +31,6 @@ class ChangePasswordDialogViewModel(
     private val stringProvider: StringProvider,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<AccountEvent, ChangePasswordDialogUIState>(dependencies, ChangePasswordDialogUIState.Initial, TAG) {
-
     /**
      * Handles changes to the current password input field.
      */
@@ -43,7 +42,10 @@ class ChangePasswordDialogViewModel(
                 updateUiState {
                     it.copy(
                         currentPasswordInError = true,
-                        currentPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_current_password_empty),
+                        currentPasswordMessage =
+                        stringProvider.getString(
+                            Res.string.change_password_dialog_error_current_password_empty,
+                        ),
                     )
                 }
             } else {
@@ -67,9 +69,23 @@ class ChangePasswordDialogViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(newPassword = SecureString(password)) }
             if (password.isEmpty()) {
-                updateUiState { it.copy(newPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_new_password_empty)) }
+                updateUiState {
+                    it.copy(
+                        newPasswordMessage =
+                        stringProvider.getString(
+                            Res.string.change_password_dialog_error_new_password_empty,
+                        ),
+                    )
+                }
             } else if (password.length < MIN_PASSWORD_LENGTH) {
-                updateUiState { it.copy(newPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_new_password_too_short)) }
+                updateUiState {
+                    it.copy(
+                        newPasswordMessage =
+                        stringProvider.getString(
+                            Res.string.change_password_dialog_error_new_password_too_short,
+                        ),
+                    )
+                }
             } else {
                 val passwordErrors = validatePassword(password)
 
@@ -92,9 +108,23 @@ class ChangePasswordDialogViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(confirmPassword = SecureString(password)) }
             if (password.isEmpty()) {
-                updateUiState { it.copy(confirmPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_confirm_password_empty)) }
+                updateUiState {
+                    it.copy(
+                        confirmPasswordMessage =
+                        stringProvider.getString(
+                            Res.string.change_password_dialog_error_confirm_password_empty,
+                        ),
+                    )
+                }
             } else if (password != uiState.value.newPassword.reveal()) {
-                updateUiState { it.copy(confirmPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_passwords_do_not_match)) }
+                updateUiState {
+                    it.copy(
+                        confirmPasswordMessage =
+                        stringProvider.getString(
+                            Res.string.change_password_dialog_error_passwords_do_not_match,
+                        ),
+                    )
+                }
             } else {
                 updateUiState { it.copy(confirmPasswordMessage = null) }
             }
@@ -104,17 +134,25 @@ class ChangePasswordDialogViewModel(
 
     @OptIn(SecureStringAccess::class)
     private suspend fun verifySubmitButtonState() {
-        val currentPasswordValid = if (uiState.value.showCurrentPassword) {
-            uiState.value.currentPassword.reveal().isNotEmpty() &&
-                uiState.value.currentPasswordMessage == null
-        } else {
-            true
-        }
+        val currentPasswordValid =
+            if (uiState.value.showCurrentPassword) {
+                uiState.value.currentPassword
+                    .reveal()
+                    .isNotEmpty() &&
+                    uiState.value.currentPasswordMessage == null
+            } else {
+                true
+            }
 
-        val newPasswordIsValid = uiState.value.newPassword.reveal().isNotEmpty() &&
-            uiState.value.confirmPassword.reveal().isNotEmpty() &&
-            uiState.value.newPasswordMessage == null &&
-            uiState.value.confirmPasswordMessage == null
+        val newPasswordIsValid =
+            uiState.value.newPassword
+                .reveal()
+                .isNotEmpty() &&
+                uiState.value.confirmPassword
+                    .reveal()
+                    .isNotEmpty() &&
+                uiState.value.newPasswordMessage == null &&
+                uiState.value.confirmPasswordMessage == null
 
         updateUiState { it.copy(submitEnabled = currentPasswordValid && newPasswordIsValid) }
     }
@@ -127,25 +165,30 @@ class ChangePasswordDialogViewModel(
     fun onSubmitSelected() {
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
-            authManager.changePassword(
-                currentPassword = uiState.value.currentPassword,
-                newPassword = uiState.value.newPassword,
-            ).onSuccess {
-                updateUiState { it.copy(isLoading = false) }
-                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(stringProvider.getString(Res.string.change_password_dialog_success)))
-                emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
-            }.onFailure { error ->
-                logE(TAG, "Failed to change password", error)
-                updateUiState {
-                    it.copy(
-                        isLoading = false,
-                        currentPasswordInError = true,
-                        currentPasswordMessage = "Failed to change password: ${error.message}",
-                        // TODO: Update StringFormatter to support error messages with parameters and use it here instead of hardcoding the message
-//                        currentPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_failed).format(error.message),
+            authManager
+                .changePassword(
+                    currentPassword = uiState.value.currentPassword,
+                    newPassword = uiState.value.newPassword,
+                ).onSuccess {
+                    updateUiState { it.copy(isLoading = false) }
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.ShowSnackbar(
+                            stringProvider.getString(Res.string.change_password_dialog_success),
+                        ),
                     )
+                    emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+                }.onFailure { error ->
+                    logE(TAG, "Failed to change password", error)
+                    updateUiState {
+                        it.copy(
+                            isLoading = false,
+                            currentPasswordInError = true,
+                            currentPasswordMessage = "Failed to change password: ${error.message}",
+                            // TODO: Update StringFormatter to support error messages with parameters and use it here instead of hardcoding the message
+//                        currentPasswordMessage = stringProvider.getString(Res.string.change_password_dialog_error_failed).format(error.message),
+                        )
+                    }
                 }
-            }
         }
     }
 
@@ -178,8 +221,8 @@ class ChangePasswordDialogViewModel(
                 }
                 emitWindowEvent(
                     EdifikanaWindowsEvent.ShowSnackbar(
-                        stringProvider.getString(Res.string.change_password_dialog_error_verify_password_exists)
-                    )
+                        stringProvider.getString(Res.string.change_password_dialog_error_verify_password_exists),
+                    ),
                 )
                 return@launch
             }

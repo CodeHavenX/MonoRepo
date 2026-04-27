@@ -14,7 +14,6 @@ class ThreadUtilJVM constructor(
     private val eventLogger: EventLoggerInterface,
     private val assertUtil: AssertUtilInterface,
 ) : ThreadUtilDelegate {
-
     override fun isUIThread(): Boolean {
         return false
     }

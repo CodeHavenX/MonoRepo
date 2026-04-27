@@ -15,19 +15,20 @@ import kotlin.time.ExperimentalTime
  * and settings holders that are used across the application.
  */
 @OptIn(ExperimentalTime::class)
-val ArchitectureModule = module(createdAtStart = true) {
+val ArchitectureModule =
+    module(createdAtStart = true) {
 
-    @OptIn(DelicateCoroutinesApi::class)
-    single<CoroutineScope> {
-        GlobalScope
-    }
+        @OptIn(DelicateCoroutinesApi::class)
+        single<CoroutineScope> {
+            GlobalScope
+        }
 
-    single<Clock> {
-        Chronos.initializeClock(clock = Clock.System)
-        Chronos.clock()
-    }
+        single<Clock> {
+            Chronos.initializeClock(clock = Clock.System)
+            Chronos.clock()
+        }
 
-    single {
-        SettingsHolder(get())
+        single {
+            SettingsHolder(get())
+        }
     }
-}

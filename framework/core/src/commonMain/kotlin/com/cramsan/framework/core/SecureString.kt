@@ -8,7 +8,6 @@ import kotlin.jvm.JvmInline
 @SecureStringAccess
 @JvmInline
 value class SecureString(private val content: String) {
-
     constructor() : this("")
 
     /**

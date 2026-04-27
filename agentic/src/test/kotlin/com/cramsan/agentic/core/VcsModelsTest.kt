@@ -6,20 +6,20 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class VcsModelsTest {
-
     private val json = Json { prettyPrint = false }
 
     @Test
     fun `PullRequest round-trips through JSON`() {
-        val original = PullRequest(
-            id = "pr-42",
-            url = "https://github.com/cramsan/MonoRepo/pull/42",
-            title = "Add agentic module",
-            state = PullRequestState.OPEN,
-            sourceBranch = "feature/agentic",
-            targetBranch = "main",
-            labels = listOf("enhancement", "agentic"),
-        )
+        val original =
+            PullRequest(
+                id = "pr-42",
+                url = "https://github.com/cramsan/MonoRepo/pull/42",
+                title = "Add agentic module",
+                state = PullRequestState.OPEN,
+                sourceBranch = "feature/agentic",
+                targetBranch = "main",
+                labels = listOf("enhancement", "agentic"),
+            )
 
         val encoded = json.encodeToString(original)
         val decoded = json.decodeFromString<PullRequest>(encoded)
@@ -29,15 +29,16 @@ class VcsModelsTest {
 
     @Test
     fun `PullRequest with empty labels round-trips through JSON`() {
-        val original = PullRequest(
-            id = "pr-1",
-            url = "https://github.com/owner/repo/pull/1",
-            title = "Initial commit",
-            state = PullRequestState.MERGED,
-            sourceBranch = "dev",
-            targetBranch = "main",
-            labels = emptyList(),
-        )
+        val original =
+            PullRequest(
+                id = "pr-1",
+                url = "https://github.com/owner/repo/pull/1",
+                title = "Initial commit",
+                state = PullRequestState.MERGED,
+                sourceBranch = "dev",
+                targetBranch = "main",
+                labels = emptyList(),
+            )
 
         val encoded = json.encodeToString(original)
         val decoded = json.decodeFromString<PullRequest>(encoded)
@@ -56,11 +57,12 @@ class VcsModelsTest {
 
     @Test
     fun `PullRequestComment round-trips through JSON`() {
-        val original = PullRequestComment(
-            author = "reviewer",
-            body = "LGTM!",
-            createdAtEpochMs = 1700000000000L,
-        )
+        val original =
+            PullRequestComment(
+                author = "reviewer",
+                body = "LGTM!",
+                createdAtEpochMs = 1700000000000L,
+            )
 
         val encoded = json.encodeToString(original)
         val decoded = json.decodeFromString<PullRequestComment>(encoded)
@@ -70,15 +72,16 @@ class VcsModelsTest {
 
     @Test
     fun `PullRequest CLOSED state round-trips through JSON`() {
-        val original = PullRequest(
-            id = "pr-99",
-            url = "https://github.com/owner/repo/pull/99",
-            title = "Closed PR",
-            state = PullRequestState.CLOSED,
-            sourceBranch = "fix/bug",
-            targetBranch = "main",
-            labels = listOf("bug"),
-        )
+        val original =
+            PullRequest(
+                id = "pr-99",
+                url = "https://github.com/owner/repo/pull/99",
+                title = "Closed PR",
+                state = PullRequestState.CLOSED,
+                sourceBranch = "fix/bug",
+                targetBranch = "main",
+                labels = listOf("bug"),
+            )
 
         val encoded = json.encodeToString(original)
         val decoded = json.decodeFromString<PullRequest>(encoded)

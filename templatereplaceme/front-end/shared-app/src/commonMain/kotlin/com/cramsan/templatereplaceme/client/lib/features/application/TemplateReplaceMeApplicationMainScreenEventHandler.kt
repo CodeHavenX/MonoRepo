@@ -6,7 +6,6 @@ import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceM
  * Events that can be triggered application-wide.
  */
 interface TemplateReplaceMeApplicationMainScreenEventHandler {
-
     /**
      * Share content.
      */

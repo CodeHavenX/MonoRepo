@@ -14,7 +14,6 @@ import com.cramsan.framework.core.CoreUri
  * - Filename extraction from URIs
  */
 interface FileService {
-
     /**
      * Read bytes from a file URI.
      *

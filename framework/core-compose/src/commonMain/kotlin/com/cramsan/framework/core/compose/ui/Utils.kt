@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  * This is needed as exceptions in the [block] would otherwise cancel the [LaunchedEffect].
  */
 @Composable
-fun <E : ViewModelEvent, UI : ViewModelUIState>ObserveViewModelEvents(
+fun <E : ViewModelEvent, UI : ViewModelUIState> ObserveViewModelEvents(
     viewModel: BaseViewModel<E, UI>,
     block: suspend CoroutineScope.(E) -> Unit,
 ) {
@@ -38,7 +38,7 @@ fun <E : ViewModelEvent, UI : ViewModelUIState>ObserveViewModelEvents(
  * This is needed as exceptions in the [block] would otherwise cancel the [LaunchedEffect].
  */
 @Composable
-fun <E>ObserveEventEmitterEvents(
+fun <E> ObserveEventEmitterEvents(
     eventEmitter: EventEmitter<E>,
     block: suspend CoroutineScope.(E) -> Unit,
 ) {

@@ -6,7 +6,6 @@ import java.util.UUID
  * Simple UUID generator.
  */
 actual object UUID {
-
     /**
      * Generates a random UUID based on a platform specific implementation.
      */

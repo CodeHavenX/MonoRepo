@@ -1,11 +1,11 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.PropertyApi
-import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.PropertyService
 import com.cramsan.edifikana.server.service.authorization.RBACService
@@ -33,7 +33,6 @@ class PropertyController(
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
 ) : Controller {
-
     val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -42,24 +41,25 @@ class PropertyController(
      * Throws [UnauthorizedException] if the user does not have ADMIN role in the organization.
      */
     suspend fun createProperty(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             CreatePropertyNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PropertyNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.organizationId, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val newProperty = propertyService.createProperty(
-            request.requestBody.name,
-            request.requestBody.address,
-            request.requestBody.organizationId,
-            request.requestBody.imageUrl,
-            request.context,
-        ).toPropertyNetworkResponse()
+        val newProperty =
+            propertyService
+                .createProperty(
+                    request.requestBody.name,
+                    request.requestBody.address,
+                    request.requestBody.organizationId,
+                    request.requestBody.imageUrl,
+                    request.context,
+                ).toPropertyNetworkResponse()
         return newProperty
     }
 
@@ -70,13 +70,12 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getProperty(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             PropertyId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PropertyNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
@@ -90,13 +89,12 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun getAssignedProperties(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PropertyListNetworkResponse {
         val userId = request.context.payload.userId
         val properties = propertyService.getProperties(userId = userId).map { it.toPropertyNetworkResponse() }
@@ -110,21 +108,22 @@ class PropertyController(
      */
     @OptIn(NetworkModel::class)
     suspend fun updateProperty(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             UpdatePropertyNetworkRequest,
             NoQueryParam,
             PropertyId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): PropertyNetworkResponse {
         checkUserHasRole(request.context, request.pathParam, UserRole.ADMIN)
-        val updatedProperty = propertyService.updateProperty(
-            id = request.pathParam,
-            name = request.requestBody.name,
-            address = request.requestBody.address,
-            imageUrl = request.requestBody.imageUrl,
-        ).toPropertyNetworkResponse()
+        val updatedProperty =
+            propertyService
+                .updateProperty(
+                    id = request.pathParam,
+                    name = request.requestBody.name,
+                    address = request.requestBody.address,
+                    imageUrl = request.requestBody.imageUrl,
+                ).toPropertyNetworkResponse()
         return updatedProperty
     }
 
@@ -134,13 +133,12 @@ class PropertyController(
      * Throws [UnauthorizedException] if the user does not have ADMIN role for the property.
      */
     suspend fun deleteProperty(
-        request:
-        OperationRequest<
+        request: OperationRequest<
             NoRequestBody,
             NoQueryParam,
             PropertyId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): NoResponseBody {
         checkUserHasRole(request.context, request.pathParam, UserRole.ADMIN)
         propertyService.deleteProperty(request.pathParam)
@@ -154,7 +152,7 @@ class PropertyController(
     private suspend fun checkUserHasRole(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         propId: PropertyId,
-        role: UserRole
+        role: UserRole,
     ) {
         if (!rbacService.hasRoleOrHigher(context, propId, role)) {
             throw UnauthorizedException(unauthorizedMsg)

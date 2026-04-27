@@ -23,7 +23,6 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 object Chronos {
-
     private var clock: Clock? = null
     private var timeZoneOverride: TimeZone? = null
 

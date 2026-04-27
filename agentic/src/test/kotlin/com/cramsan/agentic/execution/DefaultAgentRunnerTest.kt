@@ -25,7 +25,6 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class DefaultAgentRunnerTest {
-
     @TempDir
     lateinit var agenticDir: Path
 
@@ -37,80 +36,111 @@ class DefaultAgentRunnerTest {
 
     private lateinit var runner: DefaultAgentRunner
 
-    private val task = Task(
-        id = "task-001",
-        title = "My Task",
-        description = "Do something",
-        dependencies = emptyList(),
-        timeoutSeconds = 60L,
-    )
+    private val task =
+        Task(
+            id = "task-001",
+            title = "My Task",
+            description = "Do something",
+            dependencies = emptyList(),
+            timeoutSeconds = 60L,
+        )
 
-    private val worktree = Worktree(
-        taskId = "task-001",
-        path = Path.of("/tmp/wt"),
-        branchName = "agentic/task-001",
-    )
+    private val worktree =
+        Worktree(
+            taskId = "task-001",
+            path = Path.of("/tmp/wt"),
+            branchName = "agentic/task-001",
+        )
 
     @BeforeEach
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        runner = DefaultAgentRunner(
-            agentSession, vcsProvider, listOf(reviewerAgent), reviewerLoader, agenticDir
-        )
+        runner =
+            DefaultAgentRunner(
+                agentSession,
+                vcsProvider,
+                listOf(reviewerAgent),
+                reviewerLoader,
+                agenticDir,
+            )
     }
 
     @Test
-    fun `successful flow runs reviewer agents and posts PR comment`() = runTest {
-        val reviewerDef = ReviewerDefinition("security", "You are a security reviewer")
-        coEvery { agentSession.execute(task, worktree) } returns AgentResult.PrOpened("pr-1", "http://url")
-        coEvery { reviewerLoader.loadAll() } returns listOf(reviewerDef)
-        coEvery { vcsProvider.listOpenPullRequests(any()) } returns listOf(
-            PullRequest("pr-1", "http://url", "My Task", PullRequestState.OPEN, "agentic/task-001", "main", listOf("agentic-code"))
-        )
-        coEvery { reviewerAgent.reviewCode(reviewerDef, task, any()) } returns ReviewerFeedback("security", "Looks good")
+    fun `successful flow runs reviewer agents and posts PR comment`() =
+        runTest {
+            val reviewerDef = ReviewerDefinition("security", "You are a security reviewer")
+            coEvery { agentSession.execute(task, worktree) } returns AgentResult.PrOpened("pr-1", "http://url")
+            coEvery { reviewerLoader.loadAll() } returns listOf(reviewerDef)
+            coEvery { vcsProvider.listOpenPullRequests(any()) } returns
+                listOf(
+                    PullRequest(
+                        "pr-1",
+                        "http://url",
+                        "My Task",
+                        PullRequestState.OPEN,
+                        "agentic/task-001",
+                        "main",
+                        listOf("agentic-code"),
+                    ),
+                )
+            coEvery {
+                reviewerAgent.reviewCode(
+                    reviewerDef,
+                    task,
+                    any(),
+                )
+            } returns ReviewerFeedback("security", "Looks good")
 
-        val result = runner.run(task, worktree)
+            val result = runner.run(task, worktree)
 
-        assertIs<AgentResult.PrOpened>(result)
-        coVerify { vcsProvider.addPullRequestComment("pr-1", match { it.contains("<!-- agentic-reviewer: security -->") }) }
-    }
-
-    @Test
-    fun `AgentResult_Failed writes failed_txt`() = runTest {
-        coEvery { agentSession.execute(task, worktree) } returns AgentResult.Failed("Out of memory")
-        coEvery { reviewerLoader.loadAll() } returns emptyList()
-
-        val result = runner.run(task, worktree)
-
-        assertIs<AgentResult.Failed>(result)
-        val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
-        assertTrue(Files.exists(failedFile))
-        assertTrue(Files.readString(failedFile).contains("Out of memory"))
-    }
-
-    @Test
-    fun `unexpected exception writes failed_txt`() = runTest {
-        coEvery { agentSession.execute(task, worktree) } throws RuntimeException("Kaboom")
-        coEvery { reviewerLoader.loadAll() } returns emptyList()
-
-        val result = runner.run(task, worktree)
-
-        assertIs<AgentResult.Failed>(result)
-        val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
-        assertTrue(Files.exists(failedFile))
-    }
+            assertIs<AgentResult.PrOpened>(result)
+            coVerify {
+                vcsProvider.addPullRequestComment(
+                    "pr-1",
+                    match { it.contains("<!-- agentic-reviewer: security -->") },
+                )
+            }
+        }
 
     @Test
-    fun `timeout writes failed_txt with timeout message`() = runTest {
-        val timeoutEx = runCatching { withTimeout(0L) {} }.exceptionOrNull()!!
-        coEvery { agentSession.execute(task, worktree) } throws timeoutEx
-        coEvery { reviewerLoader.loadAll() } returns emptyList()
+    fun `AgentResult_Failed writes failed_txt`() =
+        runTest {
+            coEvery { agentSession.execute(task, worktree) } returns AgentResult.Failed("Out of memory")
+            coEvery { reviewerLoader.loadAll() } returns emptyList()
 
-        val result = runner.run(task, worktree)
+            val result = runner.run(task, worktree)
 
-        assertIs<AgentResult.Failed>(result)
-        val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
-        assertTrue(Files.exists(failedFile))
-        assertTrue(Files.readString(failedFile).contains("timeout"))
-    }
+            assertIs<AgentResult.Failed>(result)
+            val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
+            assertTrue(Files.exists(failedFile))
+            assertTrue(Files.readString(failedFile).contains("Out of memory"))
+        }
+
+    @Test
+    fun `unexpected exception writes failed_txt`() =
+        runTest {
+            coEvery { agentSession.execute(task, worktree) } throws RuntimeException("Kaboom")
+            coEvery { reviewerLoader.loadAll() } returns emptyList()
+
+            val result = runner.run(task, worktree)
+
+            assertIs<AgentResult.Failed>(result)
+            val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
+            assertTrue(Files.exists(failedFile))
+        }
+
+    @Test
+    fun `timeout writes failed_txt with timeout message`() =
+        runTest {
+            val timeoutEx = runCatching { withTimeout(0L) {} }.exceptionOrNull()!!
+            coEvery { agentSession.execute(task, worktree) } throws timeoutEx
+            coEvery { reviewerLoader.loadAll() } returns emptyList()
+
+            val result = runner.run(task, worktree)
+
+            assertIs<AgentResult.Failed>(result)
+            val failedFile = agenticDir.resolve("tasks/task-001/failed.txt")
+            assertTrue(Files.exists(failedFile))
+            assertTrue(Files.readString(failedFile).contains("timeout"))
+        }
 }

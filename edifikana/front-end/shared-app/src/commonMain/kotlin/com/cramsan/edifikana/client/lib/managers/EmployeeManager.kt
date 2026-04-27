@@ -10,34 +10,33 @@ import com.cramsan.framework.logging.logI
 /**
  * Manager for employee.
  */
-class EmployeeManager(
-    private val employeeService: EmployeeService,
-    private val dependencies: ManagerDependencies,
-) {
-
+class EmployeeManager(private val employeeService: EmployeeService, private val dependencies: ManagerDependencies) {
     /**
      * Get all employees.
      */
-    suspend fun getEmployeeList(): Result<List<EmployeeModel>> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getEmployeeList")
-        employeeService.getEmployeeList().getOrThrow()
-    }
+    suspend fun getEmployeeList(): Result<List<EmployeeModel>> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getEmployeeList")
+            employeeService.getEmployeeList().getOrThrow()
+        }
 
     /**
      * Get a specific employee.
      */
-    suspend fun getEmployee(employeePK: EmployeeId): Result<EmployeeModel> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getEmployee")
-        employeeService.getEmployee(employeePK).getOrThrow()
-    }
+    suspend fun getEmployee(employeePK: EmployeeId): Result<EmployeeModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getEmployee")
+            employeeService.getEmployee(employeePK).getOrThrow()
+        }
 
     /**
      * Add a employee.
      */
-    suspend fun addEmployee(employee: EmployeeModel.CreateEmployeeRequest) = dependencies.getOrCatch(TAG) {
-        logI(TAG, "addEmployee")
-        employeeService.createEmployee(employee).getOrThrow()
-    }
+    suspend fun addEmployee(employee: EmployeeModel.CreateEmployeeRequest) =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "addEmployee")
+            employeeService.createEmployee(employee).getOrThrow()
+        }
 
     /**
      * Update a employee.

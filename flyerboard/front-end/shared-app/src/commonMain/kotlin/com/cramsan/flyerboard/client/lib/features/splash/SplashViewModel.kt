@@ -1,24 +1,22 @@
 package com.cramsan.flyerboard.client.lib.features.splash
 
+import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
+import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
-import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
-import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the Splash screen.
  **/
-class SplashViewModel(
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<SplashEvent, SplashUIState>(
-    dependencies,
-    SplashUIState.Initial,
-    TAG,
-) {
-
+class SplashViewModel(dependencies: ViewModelDependencies) :
+    BaseViewModel<SplashEvent, SplashUIState>(
+        dependencies,
+        SplashUIState.Initial,
+        TAG,
+    ) {
     /**
      * Navigate to the Main Screen after splash.
      * The app allows unauthenticated browsing, so we always go to the main graph.
@@ -32,7 +30,7 @@ class SplashViewModel(
                 FlyerBoardWindowsEvent.NavigateToNavGraph(
                     FlyerBoardWindowNavGraphDestination.MainNavGraphDestination,
                     clearStack = true,
-                )
+                ),
             )
         }
     }

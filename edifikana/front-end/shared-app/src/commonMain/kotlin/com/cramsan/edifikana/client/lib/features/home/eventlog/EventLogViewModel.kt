@@ -12,15 +12,12 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the EventLog screen.
  */
-class EventLogViewModel(
-    dependencies: ViewModelDependencies,
-    private val eventLogManager: EventLogManager,
-) : BaseViewModel<EventLogEvent, EventLogUIState>(
-    dependencies,
-    EventLogUIState.Initial,
-    TAG,
-) {
-
+class EventLogViewModel(dependencies: ViewModelDependencies, private val eventLogManager: EventLogManager) :
+    BaseViewModel<EventLogEvent, EventLogUIState>(
+        dependencies,
+        EventLogUIState.Initial,
+        TAG,
+    ) {
     /**
      * Load events for the given property.
      */
@@ -29,7 +26,8 @@ class EventLogViewModel(
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true) }
 
-            eventLogManager.getRecords(propertyId)
+            eventLogManager
+                .getRecords(propertyId)
                 .onSuccess { records ->
                     val uiModels = records.map { it.toUIModel() }
                     updateUiState {
@@ -38,8 +36,7 @@ class EventLogViewModel(
                             events = uiModels,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     logE(TAG, "Failed to load events", error)
                     updateUiState {
                         it.copy(
@@ -84,8 +81,9 @@ private fun EventLogRecordModel.toUIModel(): EventLogUIModel {
 /**
  * Format a timestamp to a human-readable string.
  * Uses simple epoch seconds formatting for multiplatform compatibility.
+ *
+ * TODO: Replace with proper date formatting. The current approach is a placeholder as it only works in english locale.
  */
-// TODO: Replace with proper date formatting. The current approach is a placeholder as it only works in english locale.
 @Suppress("MagicNumber")
 private fun formatTimestamp(timestamp: Long): String {
     // Convert epoch timestamp to a simple date representation

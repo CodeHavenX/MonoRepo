@@ -14,15 +14,12 @@ import kotlinx.coroutines.launch
  * Loads pending flyers and allows admins to approve or reject them.
  * Non-admin requests are rejected by the backend with an error.
  */
-class ModerationQueueViewModel(
-    dependencies: ViewModelDependencies,
-    private val flyerManager: FlyerManager,
-) : BaseViewModel<ModerationQueueEvent, ModerationQueueUIState>(
-    dependencies,
-    ModerationQueueUIState.Initial,
-    TAG,
-) {
-
+class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val flyerManager: FlyerManager) :
+    BaseViewModel<ModerationQueueEvent, ModerationQueueUIState>(
+        dependencies,
+        ModerationQueueUIState.Initial,
+        TAG,
+    ) {
     /**
      * Load the pending flyers awaiting moderation.
      */
@@ -30,7 +27,8 @@ class ModerationQueueViewModel(
         logI(TAG, "loadPendingFlyers")
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
-            flyerManager.listPendingFlyers()
+            flyerManager
+                .listPendingFlyers()
                 .onSuccess { paginated ->
                     updateUiState {
                         it.copy(
@@ -38,8 +36,7 @@ class ModerationQueueViewModel(
                             pendingFlyers = paginated.flyers,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     updateUiState { it.copy(isLoading = false, errorMessage = error.message) }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(
@@ -64,14 +61,14 @@ class ModerationQueueViewModel(
     fun approveFlyer(flyerId: FlyerId) {
         logI(TAG, "approveFlyer: ${flyerId.flyerId}")
         viewModelScope.launch {
-            flyerManager.moderate(flyerId, ACTION_APPROVE)
+            flyerManager
+                .moderate(flyerId, ACTION_APPROVE)
                 .onSuccess {
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(message = "Flyer approved."),
                     )
                     loadPendingFlyers()
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(
                             message = "Failed to approve flyer: ${error.message}",
@@ -87,14 +84,14 @@ class ModerationQueueViewModel(
     fun rejectFlyer(flyerId: FlyerId) {
         logI(TAG, "rejectFlyer: ${flyerId.flyerId}")
         viewModelScope.launch {
-            flyerManager.moderate(flyerId, ACTION_REJECT)
+            flyerManager
+                .moderate(flyerId, ACTION_REJECT)
                 .onSuccess {
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(message = "Flyer rejected."),
                     )
                     loadPendingFlyers()
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(
                             message = "Failed to reject flyer: ${error.message}",

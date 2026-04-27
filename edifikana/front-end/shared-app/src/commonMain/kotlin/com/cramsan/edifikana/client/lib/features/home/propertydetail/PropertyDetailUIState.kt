@@ -22,16 +22,17 @@ data class PropertyDetailUIState(
     val uploadError: String? = null,
 ) : ViewModelUIState {
     companion object {
-        val Initial = PropertyDetailUIState(
-            isLoading = true,
-            propertyId = null,
-            name = "",
-            address = "",
-            imageUrl = null,
-            isEditMode = false,
-            selectedIcon = null,
-            isUploading = false,
-            uploadError = null,
-        )
+        val Initial =
+            PropertyDetailUIState(
+                isLoading = true,
+                propertyId = null,
+                name = "",
+                address = "",
+                imageUrl = null,
+                isEditMode = false,
+                selectedIcon = null,
+                isUploading = false,
+                uploadError = null,
+            )
     }
 }

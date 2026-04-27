@@ -87,13 +87,14 @@ internal fun SettingsContent(
         },
     ) { innerPadding ->
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             sectionContent = { mod ->
                 Column(
                     modifier = mod,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
                         text = stringResource(Res.string.settings_screen_appearance_title),
@@ -125,7 +126,7 @@ internal fun SettingsContent(
                     )
                 }
             },
-            buttonContent = { /* no actions */ }
+            buttonContent = { /* no actions */ },
         )
     }
 }
@@ -138,7 +139,8 @@ private fun SettingOption(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxWidth()
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,

@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
@@ -18,38 +18,43 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object PropertyApi : Api("property") {
-    val createProperty = operation<
-        CreatePropertyNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        PropertyNetworkResponse
-        >(HttpMethod.Post)
+    val createProperty =
+        operation<
+            CreatePropertyNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            PropertyNetworkResponse,
+            >(HttpMethod.Post)
 
-    val getProperty = operation<
-        NoRequestBody,
-        NoQueryParam,
-        PropertyId,
-        PropertyNetworkResponse
-        >(HttpMethod.Get)
+    val getProperty =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            PropertyId,
+            PropertyNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getAssignedProperties = operation<
-        NoRequestBody,
-        NoQueryParam,
-        NoPathParam,
-        PropertyListNetworkResponse
-        >(HttpMethod.Get)
+    val getAssignedProperties =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            PropertyListNetworkResponse,
+            >(HttpMethod.Get)
 
-    val updateProperty = operation<
-        UpdatePropertyNetworkRequest,
-        NoQueryParam,
-        PropertyId,
-        PropertyNetworkResponse
-        >(HttpMethod.Put)
+    val updateProperty =
+        operation<
+            UpdatePropertyNetworkRequest,
+            NoQueryParam,
+            PropertyId,
+            PropertyNetworkResponse,
+            >(HttpMethod.Put)
 
-    val deleteProperty = operation<
-        NoRequestBody,
-        NoQueryParam,
-        PropertyId,
-        NoResponseBody
-        >(HttpMethod.Delete)
+    val deleteProperty =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            PropertyId,
+            NoResponseBody,
+            >(HttpMethod.Delete)
 }

@@ -42,14 +42,14 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
-import edifikana_lib.app_name
 import edifikana_lib.account_screen_title
+import edifikana_lib.app_name
+import edifikana_lib.edifikana_string_event_log
 import edifikana_lib.home_screen_account_description
 import edifikana_lib.home_screen_notifications_description
 import edifikana_lib.home_screen_property_dropdown_description
 import edifikana_lib.home_screen_property_dropdown_selected_description
 import edifikana_lib.home_screen_settings_description
-import edifikana_lib.edifikana_string_event_log
 import edifikana_lib.two_pager
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -68,9 +68,7 @@ fun PropertyHomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.loadContent()
     }
@@ -95,13 +93,14 @@ fun PropertyHomeScreen(
     )
 }
 
-private val BottomBarDestinationUiModels = listOf<BottomBarDestinationUiModel>(
-    BottomBarDestinationUiModel(
-        Tabs.EventLog,
-        Res.drawable.two_pager,
-        Res.string.edifikana_string_event_log,
-        isStartDestination = true,
-    ),
+private val BottomBarDestinationUiModels =
+    listOf<BottomBarDestinationUiModel>(
+        BottomBarDestinationUiModel(
+            Tabs.EventLog,
+            Res.drawable.two_pager,
+            Res.string.edifikana_string_event_log,
+            isStartDestination = true,
+        ),
     /*
     BottomBarDestinationUiModel(
         Tabs.TimeCard,
@@ -109,7 +108,7 @@ private val BottomBarDestinationUiModels = listOf<BottomBarDestinationUiModel>(
         Res.string.string_assistance,
     ),
      */
-)
+    )
 
 @Composable
 internal fun PropertyHomeScreenContent(
@@ -188,31 +187,31 @@ private fun PropertyDropDown(
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         AnimatedContent(label) {
             Row(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .clip(MaterialTheme.shapes.small)
                     .clickable(
                         interactionSource = interactionSource,
                         indication = ripple(),
                     ) {
                         expanded = !expanded
-                    }
-                    .padding(Padding.X_SMALL)
+                    }.padding(Padding.X_SMALL),
             ) {
                 Text(it)
                 Spacer(Modifier.width(Padding.X_SMALL))
                 Icon(
                     Icons.Default.Apartment,
-                    contentDescription = stringResource(Res.string.home_screen_property_dropdown_description)
+                    contentDescription = stringResource(Res.string.home_screen_property_dropdown_description),
                 )
             }
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             list.forEach { uiModel ->
                 DropdownMenuItem(
@@ -225,12 +224,13 @@ private fun PropertyDropDown(
                         if (uiModel.selected) {
                             Icon(
                                 Icons.Default.Check,
-                                contentDescription = stringResource(
-                                    Res.string.home_screen_property_dropdown_selected_description
-                                )
+                                contentDescription =
+                                stringResource(
+                                    Res.string.home_screen_property_dropdown_selected_description,
+                                ),
                             )
                         }
-                    }
+                    },
                 )
             }
         }
@@ -250,7 +250,7 @@ fun AccountDropDown(
     var expanded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = modifier
+        modifier = modifier,
     ) {
         IconButton(onClick = { expanded = !expanded }) {
             Icon(
@@ -260,7 +260,7 @@ fun AccountDropDown(
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.account_screen_title)) },
@@ -305,7 +305,7 @@ private fun HomeContent(
 
             Tabs.GoToOrganization -> {
                 GoToOrganizationScreen(
-                    modifier
+                    modifier,
                 )
             }
 

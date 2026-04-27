@@ -18,12 +18,13 @@ data class AddPropertyUIState(
     val uploadError: String? = null,
 ) : ViewModelUIState {
     companion object {
-        val Initial = AddPropertyUIState(
-            isLoading = false,
-            orgId = null,
-            selectedIcon = null,
-            isUploading = false,
-            uploadError = null,
-        )
+        val Initial =
+            AddPropertyUIState(
+                isLoading = false,
+                orgId = null,
+                selectedIcon = null,
+                isUploading = false,
+                uploadError = null,
+            )
     }
 }

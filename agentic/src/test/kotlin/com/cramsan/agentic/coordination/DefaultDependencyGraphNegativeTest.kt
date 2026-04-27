@@ -14,15 +14,18 @@ import kotlin.test.assertTrue
  * circular dependencies, duplicate IDs, and dangling dependency references.
  */
 class DefaultDependencyGraphNegativeTest {
-
     @BeforeEach
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
-    private fun makeTask(id: String, vararg deps: String) = Task(
-        id = id, title = id, description = id, dependencies = deps.toList()
-    )
+    private fun makeTask(id: String, vararg deps: String) =
+        Task(
+            id = id,
+            title = id,
+            description = id,
+            dependencies = deps.toList(),
+        )
 
     // ── Empty task list ───────────────────────────────────────────────────────
 
@@ -51,10 +54,11 @@ class DefaultDependencyGraphNegativeTest {
 
     @Test
     fun `downstreamCount returns 0 for id that looks like a task but is not registered`() {
-        val tasks = listOf(
-            makeTask("task-001"),
-            makeTask("task-002", "task-001"),
-        )
+        val tasks =
+            listOf(
+                makeTask("task-001"),
+                makeTask("task-002", "task-001"),
+            )
         val graph = DefaultDependencyGraph(tasks)
 
         assertEquals(0, graph.downstreamCount("task-999"))
@@ -65,10 +69,11 @@ class DefaultDependencyGraphNegativeTest {
     @Test
     fun `circular dependency A depends on B depends on A does not cause infinite loop`() {
         // A → B → A (circular)
-        val tasks = listOf(
-            makeTask("A", "B"),
-            makeTask("B", "A"),
-        )
+        val tasks =
+            listOf(
+                makeTask("A", "B"),
+                makeTask("B", "A"),
+            )
         val graph = DefaultDependencyGraph(tasks)
 
         // The visited-set BFS guard must prevent infinite traversal
@@ -84,11 +89,12 @@ class DefaultDependencyGraphNegativeTest {
     @Test
     fun `three-node cycle does not cause infinite loop`() {
         // A → B → C → A
-        val tasks = listOf(
-            makeTask("A", "B"),
-            makeTask("B", "C"),
-            makeTask("C", "A"),
-        )
+        val tasks =
+            listOf(
+                makeTask("A", "B"),
+                makeTask("B", "C"),
+                makeTask("C", "A"),
+            )
         val graph = DefaultDependencyGraph(tasks)
 
         // Must terminate without StackOverflow or infinite loop
@@ -120,11 +126,12 @@ class DefaultDependencyGraphNegativeTest {
 
     @Test
     fun `duplicate task ids are handled without crash`() {
-        val tasks = listOf(
-            makeTask("A"),
-            makeTask("A"),   // same ID registered twice
-            makeTask("B", "A"),
-        )
+        val tasks =
+            listOf(
+                makeTask("A"),
+                makeTask("A"), // same ID registered twice
+                makeTask("B", "A"),
+            )
         val graph = DefaultDependencyGraph(tasks)
 
         // Must not throw; exact count may vary but must be finite

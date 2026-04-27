@@ -16,11 +16,12 @@ data class NotificationsUIState(
     val notifications: List<NotificationItemUIModel>,
 ) : ViewModelUIState {
     companion object {
-        val Initial = NotificationsUIState(
-            title = null,
-            isLoading = true,
-            notifications = emptyList(),
-        )
+        val Initial =
+            NotificationsUIState(
+                title = null,
+                isLoading = true,
+                notifications = emptyList(),
+            )
     }
 }
 

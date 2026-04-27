@@ -42,8 +42,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @Suppress("LargeClass")
-class UserControllerTest : CoroutineTest(), KoinTest {
-
+class UserControllerTest :
+    CoroutineTest(),
+    KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
@@ -59,238 +60,159 @@ class UserControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test createUser`() = testBackEndApplication {
-        // Arrange
-        val requestBody = readFileContent("requests/create_user_request.json")
-        val expectedResponse = readFileContent("requests/create_user_response.json")
-        val userService = get<UserService>()
-        coEvery {
-            userService.createUser(
-                email = "john.doe@example.com",
-                phoneNumber = "5051352468",
-                password = "password",
-                firstName = "John",
-                lastName = "Doe",
-            )
-        }.answers {
-            Result.success(
-                User(
-                    id = UserId("user123"),
+    fun `test createUser`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/create_user_request.json")
+            val expectedResponse = readFileContent("requests/create_user_response.json")
+            val userService = get<UserService>()
+            coEvery {
+                userService.createUser(
                     email = "john.doe@example.com",
                     phoneNumber = "5051352468",
+                    password = "password",
                     firstName = "John",
                     lastName = "Doe",
-                    authMetadata = null,
-                    role = UserRole.USER,
                 )
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.AuthenticatedClientContext(
-                SupabaseContextPayload(
-                    userInfo = mockk(),
-                    userId = UserId("user123"),
+            }.answers {
+                Result.success(
+                    User(
+                        id = UserId("user123"),
+                        email = "john.doe@example.com",
+                        phoneNumber = "5051352468",
+                        firstName = "John",
+                        lastName = "Doe",
+                        authMetadata = null,
+                        role = UserRole.USER,
+                    ),
                 )
-            )
-        }
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            }
 
-        // Act
-        val response = client.post("user") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
-        }
+            // Act
+            val response =
+                client.post("user") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 
     /**
      * Test to verify that createUser throws an exception when an unknown error occurs.
      * This test simulates an unexpected error during the user creation process.
      */
     @Test
-    fun `test createUser throws exception when unknown error occurs`() = testBackEndApplication {
-        // Arrange
-        val requestBody = readFileContent("requests/create_user_request.json")
-        val userService = get<UserService>()
-        coEvery {
-            userService.createUser(
-                email = "john.doe@example.com",
-                phoneNumber = "5051352468",
-                password = "password",
-                firstName = "John",
-                lastName = "Doe",
-            )
-        }.answers {
-            Result.failure(RuntimeException("There was an unexpected error."))
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.AuthenticatedClientContext(
-                SupabaseContextPayload(
-                    userInfo = mockk(),
-                    userId = UserId("user123"),
+    fun `test createUser throws exception when unknown error occurs`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/create_user_request.json")
+            val userService = get<UserService>()
+            coEvery {
+                userService.createUser(
+                    email = "john.doe@example.com",
+                    phoneNumber = "5051352468",
+                    password = "password",
+                    firstName = "John",
+                    lastName = "Doe",
                 )
-            )
-        }
+            }.answers {
+                Result.failure(RuntimeException("There was an unexpected error."))
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            }
 
-        // Act
-        val response = client.post("user") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
-        }
+            // Act
+            val response =
+                client.post("user") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.InternalServerError, response.status)
-        assertTrue(response.bodyAsText().contains("There was an unexpected error."))
-    }
+            // Assert
+            assertEquals(HttpStatusCode.InternalServerError, response.status)
+            assertTrue(response.bodyAsText().contains("There was an unexpected error."))
+        }
 
     /**
      * Test to verify that createUser throws an exception when the user already exists.
      * This test simulates a conflict error during the user creation process.
      */
     @Test
-    fun `test createUser throws exception when user already exists`() = testBackEndApplication {
-        // Arrange
-        val requestBody = readFileContent("requests/create_user_request.json")
-        val userService = get<UserService>()
-        coEvery {
-            userService.createUser(
-                email = "john.doe@example.com",
-                phoneNumber = "5051352468",
-                password = "password",
-                firstName = "John",
-                lastName = "Doe",
-            )
-        }.answers {
-            Result.failure(ClientRequestExceptions.ConflictException("Error: User with this email already exists."))
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.AuthenticatedClientContext(
-                SupabaseContextPayload(
-                    userInfo = mockk(),
-                    userId = UserId("user123"),
-                )
-            )
-        }
-
-        // Act
-        val response = client.post("user") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
-        }
-
-        // Assert
-        assertEquals(HttpStatusCode.Conflict, response.status)
-        assertTrue(response.bodyAsText().contains("Error: User with this email already exists."))
-    }
-
-    @Test
-    fun `test getUser passes when user is requesting info on self`() = testBackEndApplication {
-        // Arrange
-        val expectedResponse = readFileContent("requests/get_user_response.json")
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val userId = UserId("user123")
-        coEvery {
-            userService.getUser(userId)
-        }.answers {
-            Result.success(
-                User(
-                    id = UserId("user123"),
+    fun `test createUser throws exception when user already exists`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/create_user_request.json")
+            val userService = get<UserService>()
+            coEvery {
+                userService.createUser(
                     email = "john.doe@example.com",
                     phoneNumber = "5051352468",
+                    password = "password",
                     firstName = "John",
                     lastName = "Doe",
-                    authMetadata = null,
-                    role = UserRole.EMPLOYEE,
                 )
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRole(context, userId)
-        }.answers {
-            true
-        }
+            }.answers {
+                Result.failure(ClientRequestExceptions.ConflictException("Error: User with this email already exists."))
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            }
 
-        // Act
-        val response = client.get("user/user123")
+            // Act
+            val response =
+                client.post("user") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Assert
+            assertEquals(HttpStatusCode.Conflict, response.status)
+            assertTrue(response.bodyAsText().contains("Error: User with this email already exists."))
+        }
 
     @Test
-    fun `test getUser fails when user requests user data for another user`() = testBackEndApplication {
-        // Arrange
-        val expectedResponse = "You are not authorized to perform this action."
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val userID = UserId("user654")
-        val targetUserId = UserId("user123")
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userID
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRole(context, targetUserId)
-        }.answers {
-            false
-        }
-
-        // Act
-        val response = client.get("user/user123")
-
-        // Assert
-        coVerify { userService wasNot Called }
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
-
-    @Test
-    fun `test getUsers passes when user has required role`() = testBackEndApplication {
-        // Arrange
-        val expectedResponse = readFileContent("requests/get_users_response.json")
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val orgId = OrganizationId("org123")
-
-        coEvery {
-            userService.getUsers(orgId)
-        }.answers {
-            Result.success(
-                listOf(
+    fun `test getUser passes when user is requesting info on self`() =
+        testBackEndApplication {
+            // Arrange
+            val expectedResponse = readFileContent("requests/get_user_response.json")
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val userId = UserId("user123")
+            coEvery {
+                userService.getUser(userId)
+            }.answers {
+                Result.success(
                     User(
                         id = UserId("user123"),
                         email = "john.doe@example.com",
@@ -300,628 +222,750 @@ class UserControllerTest : CoroutineTest(), KoinTest {
                         authMetadata = null,
                         role = UserRole.EMPLOYEE,
                     ),
-                    User(
-                        id = UserId("user456"),
-                        email = "jane.smith@example.com",
-                        phoneNumber = "5051352469",
-                        firstName = "Jane",
-                        lastName = "Smith",
-                        authMetadata = null,
-                        role = UserRole.EMPLOYEE
-
-                    )
                 )
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
-        }.answers {
-            true
-        }
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRole(context, userId)
+            }.answers {
+                true
+            }
 
-        // Act
-        val response = client.get("user?orgId=org123")
+            // Act
+            val response = client.get("user/user123")
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 
     @Test
-    fun `test getUsers fails when the user does NOT have the required role`() = testBackEndApplication {
-        // Arrange
-        val expectedResponse = "You are not authorized to perform this action."
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val orgId = OrganizationId("org123")
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
-        }.answers {
-            false
-        }
+    fun `test getUser fails when user requests user data for another user`() =
+        testBackEndApplication {
+            // Arrange
+            val expectedResponse = "You are not authorized to perform this action."
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val userID = UserId("user654")
+            val targetUserId = UserId("user123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-        // Act
-        val response = client.get("user?orgId=org123")
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userID,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRole(context, targetUserId)
+            }.answers {
+                false
+            }
 
-        // Assert
-        coVerify { userService wasNot Called }
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Act
+            val response = client.get("user/user123")
+
+            // Assert
+            coVerify { userService wasNot Called }
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 
     @Test
-    fun `test updateUser succeeds when user is updating self`() = testBackEndApplication {
-        // Arrange
-        val requestBody = readFileContent("requests/update_user_request.json")
-        val expectedResponse = readFileContent("requests/update_user_response.json")
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val userId = UserId("user123")
-        coEvery {
-            userService.updateUser(
-                id = userId,
-                email = "updated.email@example.com"
-            )
-        }.answers {
-            Result.success(
-                User(
-                    id = UserId("user123"),
+    fun `test getUsers passes when user has required role`() =
+        testBackEndApplication {
+            // Arrange
+            val expectedResponse = readFileContent("requests/get_users_response.json")
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val orgId = OrganizationId("org123")
+
+            coEvery {
+                userService.getUsers(orgId)
+            }.answers {
+                Result.success(
+                    listOf(
+                        User(
+                            id = UserId("user123"),
+                            email = "john.doe@example.com",
+                            phoneNumber = "5051352468",
+                            firstName = "John",
+                            lastName = "Doe",
+                            authMetadata = null,
+                            role = UserRole.EMPLOYEE,
+                        ),
+                        User(
+                            id = UserId("user456"),
+                            email = "jane.smith@example.com",
+                            phoneNumber = "5051352469",
+                            firstName = "Jane",
+                            lastName = "Smith",
+                            authMetadata = null,
+                            role = UserRole.EMPLOYEE,
+                        ),
+                    ),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
+            }.answers {
+                true
+            }
+
+            // Act
+            val response = client.get("user?orgId=org123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `test getUsers fails when the user does NOT have the required role`() =
+        testBackEndApplication {
+            // Arrange
+            val expectedResponse = "You are not authorized to perform this action."
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val orgId = OrganizationId("org123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
+            }.answers {
+                false
+            }
+
+            // Act
+            val response = client.get("user?orgId=org123")
+
+            // Assert
+            coVerify { userService wasNot Called }
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `test updateUser succeeds when user is updating self`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/update_user_request.json")
+            val expectedResponse = readFileContent("requests/update_user_response.json")
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val userId = UserId("user123")
+            coEvery {
+                userService.updateUser(
+                    id = userId,
                     email = "updated.email@example.com",
-                    phoneNumber = "5051382468",
-                    firstName = "Updated",
-                    lastName = "Email",
-                    authMetadata = null,
-                    role = UserRole.USER
                 )
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRole(context, userId)
-        }.answers {
-            true
-        }
+            }.answers {
+                Result.success(
+                    User(
+                        id = UserId("user123"),
+                        email = "updated.email@example.com",
+                        phoneNumber = "5051382468",
+                        firstName = "Updated",
+                        lastName = "Email",
+                        authMetadata = null,
+                        role = UserRole.USER,
+                    ),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRole(context, userId)
+            }.answers {
+                true
+            }
 
-        // Act
-        val response = client.put("user/user123") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
-        }
+            // Act
+            val response =
+                client.put("user/user123") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
-
-    @Test
-    fun `test updateUser fails when the user is trying to update another user`() = testBackEndApplication {
-        // Arrange
-        val requestBody = readFileContent("requests/update_user_request.json")
-        val expectedResponse = "You are not authorized to perform this action."
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val userId = UserId("user654")
-        val targetUserId = UserId("user123")
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
-        coEvery {
-            rbacService.hasRole(context, targetUserId)
-        }.answers {
-            false
-        }
-
-        // Act
-        val response = client.put("user/user123") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
-        }
-
-        // Assert
-        coVerify { userService wasNot Called }
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
 
     @Test
-    fun `test deleteUser succeeds when user is self`() = testBackEndApplication {
-        // Arrange
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val userId = UserId("user123")
-        coEvery {
-            userService.deleteUser(userId)
-        }.answers {
-            Result.success(true)
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRole(context, userId)
-        }.answers {
-            true
-        }
-        // Act
-        val response = client.delete("user/user123")
+    fun `test updateUser fails when the user is trying to update another user`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/update_user_request.json")
+            val expectedResponse = "You are not authorized to perform this action."
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val userId = UserId("user654")
+            val targetUserId = UserId("user123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRole(context, targetUserId)
+            }.answers {
+                false
+            }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-    }
+            // Act
+            val response =
+                client.put("user/user123") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
+
+            // Assert
+            coVerify { userService wasNot Called }
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 
     @Test
-    fun `test deleteUser fails when user is trying to delete another user`() = testBackEndApplication {
-        // Arrange
-        val expectedResponse = "You are not authorized to perform this action."
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val userId = UserId("user654")
-        val targetUserId = UserId("user123")
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRole(context, targetUserId)
-        }.answers {
-            false
+    fun `test deleteUser succeeds when user is self`() =
+        testBackEndApplication {
+            // Arrange
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val userId = UserId("user123")
+            coEvery {
+                userService.deleteUser(userId)
+            }.answers {
+                Result.success(true)
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRole(context, userId)
+            }.answers {
+                true
+            }
+            // Act
+            val response = client.delete("user/user123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
         }
 
-        // Act
-        val response = client.delete("user/user123")
+    @Test
+    fun `test deleteUser fails when user is trying to delete another user`() =
+        testBackEndApplication {
+            // Arrange
+            val expectedResponse = "You are not authorized to perform this action."
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val userId = UserId("user654")
+            val targetUserId = UserId("user123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRole(context, targetUserId)
+            }.answers {
+                false
+            }
 
-        // Assert
-        coVerify { userService wasNot Called }
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Act
+            val response = client.delete("user/user123")
+
+            // Assert
+            coVerify { userService wasNot Called }
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 
     /**
      * Test that the checkUser endpoint returns isUserRegistered=true when the user exists.
      */
     @Test
-    fun `test checkUserIsRegistered returns true when user exists`() = testBackEndApplication {
-        // Arrange
-        val email = "exists@example.com"
-        val userService = get<UserService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            userService.checkUserIsRegistered(email)
-        }.answers {
-            Result.success(true)
-        }
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.UnauthenticatedClientContext()
-        }
+    fun `test checkUserIsRegistered returns true when user exists`() =
+        testBackEndApplication {
+            // Arrange
+            val email = "exists@example.com"
+            val userService = get<UserService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                userService.checkUserIsRegistered(email)
+            }.answers {
+                Result.success(true)
+            }
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.UnauthenticatedClientContext()
+            }
 
-        // Act
-        val response = client.get("user/checkUser?email=$email")
+            // Act
+            val response = client.get("user/checkUser?email=$email")
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.bodyAsText()
-        assertTrue(body.contains("isUserRegistered"))
-        assertTrue(body.contains("true"))
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.bodyAsText()
+            assertTrue(body.contains("isUserRegistered"))
+            assertTrue(body.contains("true"))
+        }
 
     /**
      * Test that the checkUser endpoint returns isUserRegistered=false when the user does not exist.
      */
     @Test
-    fun `test checkUserIsRegistered returns false when user does not exist`() = testBackEndApplication {
-        // Arrange
-        val email = "notfound@example.com"
-        val userService = get<UserService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            userService.checkUserIsRegistered(email)
-        }.answers {
-            Result.success(false)
-        }
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.UnauthenticatedClientContext()
-        }
-        // Act
-        val response = client.get("user/checkUser?email=$email")
+    fun `test checkUserIsRegistered returns false when user does not exist`() =
+        testBackEndApplication {
+            // Arrange
+            val email = "notfound@example.com"
+            val userService = get<UserService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                userService.checkUserIsRegistered(email)
+            }.answers {
+                Result.success(false)
+            }
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.UnauthenticatedClientContext()
+            }
+            // Act
+            val response = client.get("user/checkUser?email=$email")
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.bodyAsText()
-        assertTrue(body.contains("isUserRegistered"))
-        assertTrue(body.contains("false"))
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.bodyAsText()
+            assertTrue(body.contains("isUserRegistered"))
+            assertTrue(body.contains("false"))
+        }
 
     /**
      * Test that acceptInvite succeeds for authenticated user.
      */
     @Test
-    fun `test acceptInvite succeeds for authenticated user`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val inviteId = InviteId("invite123")
-        val userService = get<UserService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+    fun `test acceptInvite succeeds for authenticated user`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val inviteId = InviteId("invite123")
+            val userService = get<UserService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                userService.acceptInvite(userId, inviteId)
+            }.answers {
+                Result.success(Unit)
+            }
+
+            // Act
+            val response = client.post("user/invite/accept/invite123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            coVerify { userService.acceptInvite(userId, inviteId) }
         }
-        coEvery {
-            userService.acceptInvite(userId, inviteId)
-        }.answers {
-            Result.success(Unit)
-        }
-
-        // Act
-        val response = client.post("user/invite/accept/invite123")
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        coVerify { userService.acceptInvite(userId, inviteId) }
-    }
 
     /**
      * Test that acceptInvite fails when service returns failure.
      */
     @Test
-    fun `test acceptInvite fails when service returns failure`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val inviteId = InviteId("invite123")
-        val userService = get<UserService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+    fun `test acceptInvite fails when service returns failure`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val inviteId = InviteId("invite123")
+            val userService = get<UserService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                userService.acceptInvite(userId, inviteId)
+            }.answers {
+                Result.failure(ClientRequestExceptions.NotFoundException("Invite not found"))
+            }
+
+            // Act
+            val response = client.post("user/invite/accept/invite123")
+
+            // Assert
+            assertEquals(HttpStatusCode.NotFound, response.status)
+            assertTrue(response.bodyAsText().contains("Invite not found"))
         }
-        coEvery {
-            userService.acceptInvite(userId, inviteId)
-        }.answers {
-            Result.failure(ClientRequestExceptions.NotFoundException("Invite not found"))
-        }
-
-        // Act
-        val response = client.post("user/invite/accept/invite123")
-
-        // Assert
-        assertEquals(HttpStatusCode.NotFound, response.status)
-        assertTrue(response.bodyAsText().contains("Invite not found"))
-    }
 
     /**
      * Test that declineInvite succeeds for authenticated user.
      */
     @Test
-    fun `test declineInvite succeeds for authenticated user`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val inviteId = InviteId("invite123")
-        val userService = get<UserService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+    fun `test declineInvite succeeds for authenticated user`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val inviteId = InviteId("invite123")
+            val userService = get<UserService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                userService.declineInvite(userId, inviteId)
+            }.answers {
+                Result.success(Unit)
+            }
+
+            // Act
+            val response = client.post("user/invite/decline/invite123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            coVerify { userService.declineInvite(userId, inviteId) }
         }
-        coEvery {
-            userService.declineInvite(userId, inviteId)
-        }.answers {
-            Result.success(Unit)
-        }
-
-        // Act
-        val response = client.post("user/invite/decline/invite123")
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        coVerify { userService.declineInvite(userId, inviteId) }
-    }
 
     /**
      * Test that declineInvite fails when service returns failure.
      */
     @Test
-    fun `test declineInvite fails when service returns failure`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val inviteId = InviteId("invite123")
-        val userService = get<UserService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+    fun `test declineInvite fails when service returns failure`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val inviteId = InviteId("invite123")
+            val userService = get<UserService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                userService.declineInvite(userId, inviteId)
+            }.answers {
+                Result.failure(ClientRequestExceptions.ForbiddenException("This invite is not for your email address"))
+            }
+
+            // Act
+            val response = client.post("user/invite/decline/invite123")
+
+            // Assert
+            assertEquals(HttpStatusCode.Forbidden, response.status)
+            assertTrue(response.bodyAsText().contains("This invite is not for your email address"))
         }
-        coEvery {
-            userService.declineInvite(userId, inviteId)
-        }.answers {
-            Result.failure(ClientRequestExceptions.ForbiddenException("This invite is not for your email address"))
-        }
-
-        // Act
-        val response = client.post("user/invite/decline/invite123")
-
-        // Assert
-        assertEquals(HttpStatusCode.Forbidden, response.status)
-        assertTrue(response.bodyAsText().contains("This invite is not for your email address"))
-    }
 
     /**
      * Test that cancelInvite succeeds for manager.
      */
     @Test
-    fun `test cancelInvite succeeds when user has manager role`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val orgId = OrganizationId("org123")
-        val inviteId = InviteId("invite123")
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+    fun `test cancelInvite succeeds when user has manager role`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val orgId = OrganizationId("org123")
+            val inviteId = InviteId("invite123")
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            userService.getInviteOrganization(inviteId)
-        }.answers {
-            Result.success(orgId)
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
-        }.answers {
-            true
-        }
-        coEvery {
-            userService.cancelInvite(inviteId)
-        }.answers {
-            Result.success(Unit)
-        }
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                userService.getInviteOrganization(inviteId)
+            }.answers {
+                Result.success(orgId)
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
+            }.answers {
+                true
+            }
+            coEvery {
+                userService.cancelInvite(inviteId)
+            }.answers {
+                Result.success(Unit)
+            }
 
-        // Act
-        val response = client.delete("user/invites/invite123")
+            // Act
+            val response = client.delete("user/invites/invite123")
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        coVerify { userService.cancelInvite(inviteId) }
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            coVerify { userService.cancelInvite(inviteId) }
+        }
 
     /**
      * Test that requestPasswordReset returns HTTP 200 when called with an email.
      * The endpoint is unauthenticated and always returns 200 to prevent enumeration.
      */
     @Test
-    fun `test requestPasswordReset returns 200 when called with email`() = testBackEndApplication {
-        // Arrange
-        val userService = get<UserService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            userService.requestPasswordReset("user@example.com", null)
-        }.answers {
-            Result.success(Unit)
-        }
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.UnauthenticatedClientContext()
-        }
+    fun `test requestPasswordReset returns 200 when called with email`() =
+        testBackEndApplication {
+            // Arrange
+            val userService = get<UserService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                userService.requestPasswordReset("user@example.com", null)
+            }.answers {
+                Result.success(Unit)
+            }
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.UnauthenticatedClientContext()
+            }
 
-        // Act
-        val response = client.post("user/request-password-reset") {
-            setBody("""{"email":"user@example.com","phone_number":null}""")
-            contentType(ContentType.Application.Json)
-        }
+            // Act
+            val response =
+                client.post("user/request-password-reset") {
+                    setBody("""{"email":"user@example.com","phone_number":null}""")
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        coVerify(exactly = 1) { userService.requestPasswordReset("user@example.com", null) }
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            coVerify(exactly = 1) { userService.requestPasswordReset("user@example.com", null) }
+        }
 
     /**
      * Test that requestPasswordReset returns HTTP 200 when called with a phone number.
      * The endpoint is unauthenticated and always returns 200 to prevent enumeration.
      */
     @Test
-    fun `test requestPasswordReset returns 200 when called with phone number`() = testBackEndApplication {
-        // Arrange
-        val userService = get<UserService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            userService.requestPasswordReset(null, "5051352468")
-        }.answers {
-            Result.success(Unit)
-        }
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.UnauthenticatedClientContext()
-        }
+    fun `test requestPasswordReset returns 200 when called with phone number`() =
+        testBackEndApplication {
+            // Arrange
+            val userService = get<UserService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                userService.requestPasswordReset(null, "5051352468")
+            }.answers {
+                Result.success(Unit)
+            }
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.UnauthenticatedClientContext()
+            }
 
-        // Act
-        val response = client.post("user/request-password-reset") {
-            setBody("""{"email":null,"phone_number":"5051352468"}""")
-            contentType(ContentType.Application.Json)
-        }
+            // Act
+            val response =
+                client.post("user/request-password-reset") {
+                    setBody("""{"email":null,"phone_number":"5051352468"}""")
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        coVerify(exactly = 1) { userService.requestPasswordReset(null, "5051352468") }
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            coVerify(exactly = 1) { userService.requestPasswordReset(null, "5051352468") }
+        }
 
     /**
      * Test that requestPasswordReset returns HTTP 200 even when the service fails.
      * This prevents enumeration attacks — the client must never learn whether the identifier exists.
      */
     @Test
-    fun `test requestPasswordReset returns 200 even when service fails`() = testBackEndApplication {
-        // Arrange
-        val userService = get<UserService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            userService.requestPasswordReset("unknown@example.com", null)
-        }.answers {
-            Result.success(Unit)
-        }
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.UnauthenticatedClientContext()
-        }
+    fun `test requestPasswordReset returns 200 even when service fails`() =
+        testBackEndApplication {
+            // Arrange
+            val userService = get<UserService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                userService.requestPasswordReset("unknown@example.com", null)
+            }.answers {
+                Result.success(Unit)
+            }
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.UnauthenticatedClientContext()
+            }
 
-        // Act
-        val response = client.post("user/request-password-reset") {
-            setBody("""{"email":"unknown@example.com","phone_number":null}""")
-            contentType(ContentType.Application.Json)
-        }
+            // Act
+            val response =
+                client.post("user/request-password-reset") {
+                    setBody("""{"email":"unknown@example.com","phone_number":null}""")
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+        }
 
     /**
      * Test that cancelInvite fails when user does not have manager role.
      */
     @Test
-    fun `test cancelInvite fails when user does NOT have manager role`() = testBackEndApplication {
-        // Arrange
-        val expectedResponse = "You are not authorized to perform this action."
-        val userId = UserId("user123")
-        val orgId = OrganizationId("org123")
-        val userService = get<UserService>()
-        val rbacService = get<RBACService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+    fun `test cancelInvite fails when user does NOT have manager role`() =
+        testBackEndApplication {
+            // Arrange
+            val expectedResponse = "You are not authorized to perform this action."
+            val userId = UserId("user123")
+            val orgId = OrganizationId("org123")
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        val inviteId = InviteId("invite123")
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            userService.getInviteOrganization(inviteId)
-        }.answers {
-            Result.success(orgId)
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
-        }.answers {
-            false
-        }
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            val inviteId = InviteId("invite123")
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                userService.getInviteOrganization(inviteId)
+            }.answers {
+                Result.success(orgId)
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, orgId, UserRole.MANAGER)
+            }.answers {
+                false
+            }
 
-        // Act
-        val response = client.delete("user/invites/invite123")
+            // Act
+            val response = client.delete("user/invites/invite123")
 
-        // Assert
-        coVerify(exactly = 0) { userService.cancelInvite(any()) }
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Assert
+            coVerify(exactly = 0) { userService.cancelInvite(any()) }
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 }

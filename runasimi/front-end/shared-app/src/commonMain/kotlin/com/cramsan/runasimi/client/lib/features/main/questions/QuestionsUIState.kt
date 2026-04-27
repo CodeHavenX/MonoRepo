@@ -6,12 +6,11 @@ import com.cramsan.runasimi.client.lib.manager.Content
 /**
  * UI state of the Questions feature.
  */
-data class QuestionsUIState(
-    val content: Content? = null,
-) : ViewModelUIState {
+data class QuestionsUIState(val content: Content? = null) : ViewModelUIState {
     companion object {
-        val Initial = QuestionsUIState(
-            content = null,
-        )
+        val Initial =
+            QuestionsUIState(
+                content = null,
+            )
     }
 }

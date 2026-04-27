@@ -13,9 +13,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun PropertiesOverviewScreenPreview() {
     AppTheme {
         PropertiesOverviewContent(
-            content = PropertiesOverviewUIState(
+            content =
+            PropertiesOverviewUIState(
                 isLoading = true,
-                propertyList = listOf(
+                propertyList =
+                listOf(
                     PropertyItemUIModel(
                         id = PropertyId("property-1"),
                         name = "Sunny Apartment",
@@ -39,7 +41,8 @@ private fun PropertiesOverviewScreenPreview() {
 private fun PropertiesOverviewScreenPreview_Empty_ES() {
     AppTheme {
         PropertiesOverviewContent(
-            content = PropertiesOverviewUIState(
+            content =
+            PropertiesOverviewUIState(
                 isLoading = false,
                 propertyList = emptyList(),
             ),
@@ -52,9 +55,11 @@ private fun PropertiesOverviewScreenPreview_Empty_ES() {
 private fun PropertiesOverviewScreenPreview_ES() {
     AppTheme {
         PropertiesOverviewContent(
-            content = PropertiesOverviewUIState(
+            content =
+            PropertiesOverviewUIState(
                 isLoading = false,
-                propertyList = listOf(
+                propertyList =
+                listOf(
                     PropertyItemUIModel(
                         id = PropertyId("property-1"),
                         name = "Departamento soleado",

@@ -22,7 +22,6 @@ class ImageSelectorBottomsheet(
     private val selectedOption: ImageOptionUIModel?,
     private val onOptionSelected: (ImageOptionUIModel) -> Unit,
 ) : EdifikanaBottomSheetDialog() {
-
     @Composable
     override fun BottomSheetContent() {
         Column(

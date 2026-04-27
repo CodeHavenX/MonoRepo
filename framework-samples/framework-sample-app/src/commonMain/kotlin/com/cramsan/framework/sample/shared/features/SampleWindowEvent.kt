@@ -8,7 +8,6 @@ import com.cramsan.framework.core.compose.navigation.Destination
  * triggered by a feature screen, and it will be handled by the application.
  */
 sealed class SampleWindowEvent : WindowEvent {
-
     /**
      * Navigate to nav graph.
      */
@@ -21,9 +20,7 @@ sealed class SampleWindowEvent : WindowEvent {
     /**
      * Navigate to destination.
      */
-    data class NavigateToScreen(
-        val destination: Destination,
-    ) : SampleWindowEvent()
+    data class NavigateToScreen(val destination: Destination) : SampleWindowEvent()
 
     /**
      * Close the nav graph.
@@ -33,9 +30,7 @@ sealed class SampleWindowEvent : WindowEvent {
     /**
      * Show a snackbar.
      */
-    data class ShowSnackbar(
-        val message: String,
-    ) : SampleWindowEvent()
+    data class ShowSnackbar(val message: String) : SampleWindowEvent()
 
     /**
      * Navigate back.

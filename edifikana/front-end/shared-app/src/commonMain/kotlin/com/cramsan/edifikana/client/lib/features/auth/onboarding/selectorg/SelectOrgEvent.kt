@@ -7,7 +7,6 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * Events for the SelectOrg screen.
  */
 sealed class SelectOrgEvent : ViewModelEvent {
-
     /**
      * Show join organization confirmation dialog for the given invite ID.
      */

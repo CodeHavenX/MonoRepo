@@ -25,29 +25,30 @@ import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-internal val ViewModelModule = module {
-    scope<String> {
-        viewModelOf(::SignInViewModel)
-        viewModelOf(::SignUpViewModel)
-        viewModelOf(::SelectOrgViewModel)
-        viewModelOf(::CreateNewOrgViewModel)
-        viewModelOf(::AccountViewModel)
-        viewModelOf(::DebugViewModel)
-        viewModelOf(::PropertyHomeViewModel)
-        viewModelOf(::OtpValidationViewModel)
-        viewModelOf(::AddPropertyViewModel)
-        viewModelOf(::OrganizationHomeViewModel)
-        viewModelOf(::NotificationsViewModel)
-        viewModelOf(::SplashViewModel)
-        viewModelOf(::DrawerViewModel)
-        viewModelOf(::ScreenSelectorViewModel)
-        viewModelOf(::ChangePasswordDialogViewModel)
-        viewModelOf(::GoToOrganizationViewModel)
-        viewModelOf(::EventLogViewModel)
-        viewModelOf(::SettingsViewModel)
-        viewModelOf(::PropertiesOverviewViewModel)
-        viewModelOf(::PropertyDetailViewModel)
-        viewModelOf(::EmployeeOverviewViewModel)
-        viewModelOf(::InviteStaffMemberViewModel)
+internal val ViewModelModule =
+    module {
+        scope<String> {
+            viewModelOf(::SignInViewModel)
+            viewModelOf(::SignUpViewModel)
+            viewModelOf(::SelectOrgViewModel)
+            viewModelOf(::CreateNewOrgViewModel)
+            viewModelOf(::AccountViewModel)
+            viewModelOf(::DebugViewModel)
+            viewModelOf(::PropertyHomeViewModel)
+            viewModelOf(::OtpValidationViewModel)
+            viewModelOf(::AddPropertyViewModel)
+            viewModelOf(::OrganizationHomeViewModel)
+            viewModelOf(::NotificationsViewModel)
+            viewModelOf(::SplashViewModel)
+            viewModelOf(::DrawerViewModel)
+            viewModelOf(::ScreenSelectorViewModel)
+            viewModelOf(::ChangePasswordDialogViewModel)
+            viewModelOf(::GoToOrganizationViewModel)
+            viewModelOf(::EventLogViewModel)
+            viewModelOf(::SettingsViewModel)
+            viewModelOf(::PropertiesOverviewViewModel)
+            viewModelOf(::PropertyDetailViewModel)
+            viewModelOf(::EmployeeOverviewViewModel)
+            viewModelOf(::InviteStaffMemberViewModel)
+        }
     }
-}

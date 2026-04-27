@@ -38,7 +38,6 @@ import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
 import flyerboard_lib.app_bar_action_sign_out
-import flyerboard_lib.archive_screen_navigate_back
 import flyerboard_lib.flyer_status_approved
 import flyerboard_lib.flyer_status_archived
 import flyerboard_lib.flyer_status_pending
@@ -133,13 +132,17 @@ internal fun MyFlyersContent(
             contentAlignment = Alignment.Center,
         ) {
             when {
-                uiState.isLoading -> CircularProgressIndicator()
+                uiState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+
                 uiState.flyers.isEmpty() -> {
                     Text(
                         text = stringResource(Res.string.my_flyers_screen_empty_message),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
+
                 else -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -223,12 +226,13 @@ private fun StatusBadge(
     status: FlyerStatus,
     modifier: Modifier = Modifier,
 ) {
-    val (label, color) = when (status) {
-        FlyerStatus.PENDING -> stringResource(Res.string.flyer_status_pending) to Color(COLOR_STATUS_PENDING)
-        FlyerStatus.APPROVED -> stringResource(Res.string.flyer_status_approved) to Color(COLOR_STATUS_APPROVED)
-        FlyerStatus.REJECTED -> stringResource(Res.string.flyer_status_rejected) to Color(COLOR_STATUS_REJECTED)
-        FlyerStatus.ARCHIVED -> stringResource(Res.string.flyer_status_archived) to Color(COLOR_STATUS_ARCHIVED)
-    }
+    val (label, color) =
+        when (status) {
+            FlyerStatus.PENDING -> stringResource(Res.string.flyer_status_pending) to Color(COLOR_STATUS_PENDING)
+            FlyerStatus.APPROVED -> stringResource(Res.string.flyer_status_approved) to Color(COLOR_STATUS_APPROVED)
+            FlyerStatus.REJECTED -> stringResource(Res.string.flyer_status_rejected) to Color(COLOR_STATUS_REJECTED)
+            FlyerStatus.ARCHIVED -> stringResource(Res.string.flyer_status_archived) to Color(COLOR_STATUS_ARCHIVED)
+        }
     Text(
         text = label,
         style = MaterialTheme.typography.labelSmall,

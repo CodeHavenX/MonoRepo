@@ -8,7 +8,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class UserDatastoreImplTest : CoroutineTest() {
-
     lateinit var userDatastore: UserDatastoreImpl
 
     @BeforeTest
@@ -17,21 +16,23 @@ class UserDatastoreImplTest : CoroutineTest() {
     }
 
     @Test
-    fun `test createUser`() = runCoroutineTest {
-        // Arrange
+    fun `test createUser`() =
+        runCoroutineTest {
+            // Arrange
 
-        // Act
-        val user = userDatastore.createUser(
-            firstName = "John",
-            lastName = "Doe"
-        )
+            // Act
+            val user =
+                userDatastore.createUser(
+                    firstName = "John",
+                    lastName = "Doe",
+                )
 
-        // Assert
-        assertTrue(user.isSuccess)
-        val createdUser = user.getOrNull()
-        assertNotNull(createdUser)
-        assertEquals("John", createdUser.firstName)
-        assertEquals("Doe", createdUser.lastName)
-        assertNotNull(createdUser.id)
-    }
+            // Assert
+            assertTrue(user.isSuccess)
+            val createdUser = user.getOrNull()
+            assertNotNull(createdUser)
+            assertEquals("John", createdUser.firstName)
+            assertEquals("Doe", createdUser.lastName)
+            assertNotNull(createdUser.id)
+        }
 }

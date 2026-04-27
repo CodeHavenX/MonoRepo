@@ -11,7 +11,6 @@ import kotlin.io.path.exists
  * Download strategy for JVM.
  */
 class JvmDownloadStrategy : DownloadStrategy {
-
     override fun isFileCached(targetRef: String): Boolean {
         return getFileImp(targetRef) != null
     }

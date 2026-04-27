@@ -50,15 +50,16 @@ fun Application.startBackEndApplication(
 /**
  * Starts the server.
  */
-fun Application.startKtor() = runBlocking {
-    configureKtorEngine()
+fun Application.startKtor() =
+    runBlocking {
+        configureKtorEngine()
 
-    val controllerList: List<Controller> by inject()
+        val controllerList: List<Controller> by inject()
 
-    configureHealthEndpoint()
-    configureEntryPoints(controllerList)
-    startApplication()
-}
+        configureHealthEndpoint()
+        configureEntryPoints(controllerList)
+        startApplication()
+    }
 
 /**
  * Configures the Ktor engine.

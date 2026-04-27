@@ -7,7 +7,6 @@ package com.cramsan.framework.logging
  * platform.
  */
 interface EventLoggerInterface {
-
     /**
      * Log a [message] and [tag]. If the [severity] is less than [targetSeverity], the message is not logged.
      * There is an optional [throwable] that can be logged.
@@ -43,22 +42,24 @@ interface EventLoggerInterface {
     /**
      * Log a message with [Severity.WARNING] message
      */
-    fun w(tag: String, message: String, throwable: Throwable? = null, ignoreErrorCallback: Boolean = false) = log(
-        Severity.WARNING,
-        tag,
-        message,
-        throwable,
-        ignoreErrorCallback,
-    )
+    fun w(tag: String, message: String, throwable: Throwable? = null, ignoreErrorCallback: Boolean = false) =
+        log(
+            Severity.WARNING,
+            tag,
+            message,
+            throwable,
+            ignoreErrorCallback,
+        )
 
     /**
      * Log a message with [Severity.ERROR] message
      */
-    fun e(tag: String, message: String, throwable: Throwable? = null, ignoreErrorCallback: Boolean = false) = log(
-        Severity.ERROR,
-        tag,
-        message,
-        throwable,
-        ignoreErrorCallback,
-    )
+    fun e(tag: String, message: String, throwable: Throwable? = null, ignoreErrorCallback: Boolean = false) =
+        log(
+            Severity.ERROR,
+            tag,
+            message,
+            throwable,
+            ignoreErrorCallback,
+        )
 }

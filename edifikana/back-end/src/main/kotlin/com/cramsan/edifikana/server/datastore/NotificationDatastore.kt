@@ -10,7 +10,6 @@ import com.cramsan.edifikana.server.service.models.Notification
  * Interface for interacting with the notification database.
  */
 interface NotificationDatastore {
-
     /**
      * Creates a new notification.
      * If [recipientUserId] is null, [recipientEmail] should be provided for later association.

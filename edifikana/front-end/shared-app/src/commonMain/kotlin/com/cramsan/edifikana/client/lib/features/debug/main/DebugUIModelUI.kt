@@ -12,9 +12,7 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  * This class models the top level state of the page.
  * For modeling more specific details of the page, see the respective UI model class.
  */
-data class DebugUIModelUI(
-    val fields: List<Field>,
-) : ViewModelUIState {
+data class DebugUIModelUI(val fields: List<Field>) : ViewModelUIState {
     companion object {
         val Initial = DebugUIModelUI(emptyList())
     }
@@ -24,7 +22,6 @@ data class DebugUIModelUI(
  * This is a field that represents a UI component that the user can interact with.
  */
 sealed class Field {
-
     /**
      * This is a divider that separates different sections of the UI.
      */
@@ -33,10 +30,7 @@ sealed class Field {
     /**
      * This field is a label used to provide some context or a title to a section.
      */
-    data class Label(
-        val label: String,
-        val subtitle: String? = null,
-    ) : Field()
+    data class Label(val label: String, val subtitle: String? = null) : Field()
 
     /**
      * This is a string field that represents a text input.

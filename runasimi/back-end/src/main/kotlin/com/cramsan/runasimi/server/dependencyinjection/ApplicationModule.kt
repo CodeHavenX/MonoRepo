@@ -9,8 +9,9 @@ import org.koin.dsl.module
 /**
  * Application-level DI module for the runasimi backend.
  */
-internal val ApplicationModule = module {
-    singleOf(::ContextRetrieverImpl) {
-        bind<ContextRetriever<Unit>>()
+internal val ApplicationModule =
+    module {
+        singleOf(::ContextRetrieverImpl) {
+            bind<ContextRetriever<Unit>>()
+        }
     }
-}

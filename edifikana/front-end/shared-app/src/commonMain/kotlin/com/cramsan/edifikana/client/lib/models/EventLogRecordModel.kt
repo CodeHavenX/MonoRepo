@@ -25,7 +25,6 @@ data class EventLogRecordModel(
     val attachments: List<AttachmentHolder>,
 ) {
     companion object {
-
         /**
          * Create a temporary [EventLogRecordModel] that is intended to represent a record that has not been uploaded
          * yet.
@@ -63,7 +62,4 @@ data class EventLogRecordModel(
 /**
  * Holder for an attachment.
  */
-data class AttachmentHolder(
-    val publicUrl: String,
-    val storageRef: String?,
-)
+data class AttachmentHolder(val publicUrl: String, val storageRef: String?)

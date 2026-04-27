@@ -19,17 +19,16 @@ class TemplateReplaceMeWindowViewModel(
 ) : BaseViewModel<TemplateReplaceMeWindowViewModelEvent, TemplateReplaceMeWindowUIState>(
     dependencies,
     TemplateReplaceMeWindowUIState,
-    TAG
+    TAG,
 ) {
-
     init {
         viewModelScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")
                 emitEvent(
                     TemplateReplaceMeWindowViewModelEvent.TemplateReplaceMeWindowEventWrapper(
-                        event as TemplateReplaceMeWindowsEvent
-                    )
+                        event as TemplateReplaceMeWindowsEvent,
+                    ),
                 )
             }
         }

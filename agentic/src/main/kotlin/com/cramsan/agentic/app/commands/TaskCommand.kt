@@ -39,14 +39,22 @@ private class TaskListSubcommand : CliktCommand(name = "list", help = "List all 
 
     override fun run() {
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
-        val koin = startKoin { modules(com.cramsan.agentic.app.agenticModule(agenticDir, Path.of("."))) }.koin
+        val koin =
+            startKoin {
+                modules(
+                    com.cramsan.agentic.app
+                        .agenticModule(agenticDir, Path.of(".")),
+                )
+            }.koin
         try {
             val orchestrator = koin.get<com.cramsan.agentic.coordination.Orchestrator>()
             val statuses = runBlocking { orchestrator.status() }
             statuses.entries.sortedBy { it.key.id }.forEach { (task, status) ->
                 echo("[${status.name}] ${task.id}: ${task.title}")
             }
-        } finally { stopKoin() }
+        } finally {
+            stopKoin()
+        }
     }
 }
 
@@ -56,13 +64,23 @@ private class TaskShowSubcommand : CliktCommand(name = "show", help = "Show task
 
     override fun run() {
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
-        val koin = startKoin { modules(com.cramsan.agentic.app.agenticModule(agenticDir, Path.of("."))) }.koin
+        val koin =
+            startKoin {
+                modules(
+                    com.cramsan.agentic.app
+                        .agenticModule(agenticDir, Path.of(".")),
+                )
+            }.koin
         try {
             val taskListProvider = koin.get<com.cramsan.agentic.coordination.TaskListProvider>()
             val orchestrator = koin.get<com.cramsan.agentic.coordination.Orchestrator>()
             val tasks = runBlocking { taskListProvider.provide() }
-            val task = tasks.firstOrNull { it.id == taskId }
-                ?: run { echo("Task '$taskId' not found."); return }
+            val task =
+                tasks.firstOrNull { it.id == taskId }
+                    ?: run {
+                        echo("Task '$taskId' not found.")
+                        return
+                    }
             val statuses = runBlocking { orchestrator.status() }
             val status = statuses.entries.firstOrNull { it.key.id == taskId }?.value
 
@@ -77,7 +95,9 @@ private class TaskShowSubcommand : CliktCommand(name = "show", help = "Show task
             if (Files.exists(failedFile)) {
                 echo("\nFailure reason: ${Files.readString(failedFile)}")
             }
-        } finally { stopKoin() }
+        } finally {
+            stopKoin()
+        }
     }
 }
 
@@ -97,7 +117,11 @@ private class TaskRetrySubcommand : CliktCommand(name = "retry", help = "Retry a
     }
 }
 
-private class TaskUnblockSubcommand : CliktCommand(name = "force-unblock", help = "Force unblock a task for one poll cycle") {
+private class TaskUnblockSubcommand :
+    CliktCommand(
+        name = "force-unblock",
+        help = "Force unblock a task for one poll cycle",
+    ) {
     private val configPath by option("--config").default(".agentic/config.json")
     private val taskId by argument()
 

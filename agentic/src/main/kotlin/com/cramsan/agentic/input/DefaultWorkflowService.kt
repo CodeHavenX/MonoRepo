@@ -56,7 +56,6 @@ class DefaultWorkflowService(
     private val json: Json,
     private val workflowConfig: WorkflowConfig,
 ) : WorkflowService {
-
     private val stages: List<WorkflowStageConfig> = workflowConfig.stages
     private val stageById: Map<String, WorkflowStageConfig> = stages.associateBy { it.id }
 
@@ -118,16 +117,18 @@ class DefaultWorkflowService(
     override fun getAllStages(): List<WorkflowStageConfig> = stages
 
     override suspend fun startStage(stageId: String): StageDocument {
-        val stage = stageById[stageId]
-            ?: throw IllegalArgumentException("Unknown stage: $stageId")
+        val stage =
+            stageById[stageId]
+                ?: throw IllegalArgumentException("Unknown stage: $stageId")
 
         logI(TAG, "Starting stage: ${stage.name} ($stageId)")
 
         // Verify dependencies are met
         for (depId in stage.inputDependencies) {
-            val depStage = checkNotNull(stageById[depId]) {
-                "Stage '$stageId' depends on unknown stage '$depId'"
-            }
+            val depStage =
+                checkNotNull(stageById[depId]) {
+                    "Stage '$stageId' depends on unknown stage '$depId'"
+                }
             val approvalFile = docsDir.resolve(depStage.approvalRecordFile)
             require(Files.exists(approvalFile)) {
                 "Dependency '${depStage.name}' ($depId) must be approved before starting '$stageId'"
@@ -163,14 +164,17 @@ class DefaultWorkflowService(
             is WorkflowStatus.StageInProgress -> {
                 startStage(status.stageId)
             }
+
             is WorkflowStatus.StagePendingApproval -> {
                 logI(TAG, "startNextStage: stage ${status.stageId} is pending approval, cannot start next")
                 null
             }
+
             WorkflowStatus.Complete -> {
                 logI(TAG, "startNextStage: workflow complete, nothing to start")
                 null
             }
+
             WorkflowStatus.NotStarted -> {
                 stages.firstOrNull()?.let { startStage(it.id) }
             }
@@ -178,8 +182,9 @@ class DefaultWorkflowService(
     }
 
     override suspend fun reviseStage(stageId: String): StageDocument {
-        val stage = stageById[stageId]
-            ?: throw IllegalArgumentException("Unknown stage: $stageId")
+        val stage =
+            stageById[stageId]
+                ?: throw IllegalArgumentException("Unknown stage: $stageId")
 
         logI(TAG, "Revising stage: ${stage.name} ($stageId)")
 
@@ -199,35 +204,40 @@ class DefaultWorkflowService(
     }
 
     override fun approveStage(stageId: String) {
-        val stage = stageById[stageId]
-            ?: throw IllegalArgumentException("Unknown stage: $stageId")
+        val stage =
+            stageById[stageId]
+                ?: throw IllegalArgumentException("Unknown stage: $stageId")
 
-        val record = StageApprovalRecord(
-            stageId = stageId,
-            approvedAtEpochMs = System.currentTimeMillis(),
-            inputHashes = computeInputHashes(stage),
-        )
+        val record =
+            StageApprovalRecord(
+                stageId = stageId,
+                approvedAtEpochMs = System.currentTimeMillis(),
+                inputHashes = computeInputHashes(stage),
+            )
         val recordFile = docsDir.resolve(stage.approvalRecordFile)
         Files.createDirectories(recordFile.parent)
         Files.writeString(recordFile, json.encodeToString(record))
         logI(TAG, "Approval record written: $recordFile")
     }
 
-    private fun checkApprovalDrift(stage: WorkflowStageConfig, approvalFile: Path): StageApprovalWarning? {
-        return try {
+    private fun checkApprovalDrift(stage: WorkflowStageConfig, approvalFile: Path): StageApprovalWarning? =
+        try {
             val record = json.decodeFromString<StageApprovalRecord>(Files.readString(approvalFile))
             val currentHashes = computeInputHashes(stage)
-            val changedInputs = record.inputHashes.entries
-                .filter { (file, hash) -> currentHashes[file] != hash }
-                .map { it.key } +
-                currentHashes.keys.filter { it !in record.inputHashes }
-            if (changedInputs.isEmpty()) null
-            else StageApprovalWarning(stage.id, stage.name, changedInputs)
+            val changedInputs =
+                record.inputHashes.entries
+                    .filter { (file, hash) -> currentHashes[file] != hash }
+                    .map { it.key } +
+                    currentHashes.keys.filter { it !in record.inputHashes }
+            if (changedInputs.isEmpty()) {
+                null
+            } else {
+                StageApprovalWarning(stage.id, stage.name, changedInputs)
+            }
         } catch (e: Exception) {
             logW(TAG, "Failed to check approval drift for stage ${stage.id}", e)
             null
         }
-    }
 
     private fun computeInputHashes(stage: WorkflowStageConfig): Map<String, String> {
         val hashes = mutableMapOf<String, String>()
@@ -265,7 +275,7 @@ class DefaultWorkflowService(
                     type = WorkflowConfigErrorType.DUPLICATE_STAGE_ID,
                     message = "Duplicate stage ID: $id",
                     stageId = id,
-                )
+                ),
             )
         }
 
@@ -278,7 +288,7 @@ class DefaultWorkflowService(
                             type = WorkflowConfigErrorType.MISSING_DEPENDENCY,
                             message = "Stage '${stage.id}' depends on unknown stage '$depId'",
                             stageId = stage.id,
-                        )
+                        ),
                     )
                 }
             }
@@ -304,7 +314,7 @@ class DefaultWorkflowService(
                         type = WorkflowConfigErrorType.CIRCULAR_DEPENDENCY,
                         message = "Circular dependency detected: ${cycle.joinToString(" -> ")}",
                         stageId = stageId,
-                    )
+                    ),
                 )
                 return true
             }
@@ -335,8 +345,8 @@ class DefaultWorkflowService(
         return errors
     }
 
-    private fun buildInputContent(stage: WorkflowStageConfig): String {
-        return buildString {
+    private fun buildInputContent(stage: WorkflowStageConfig): String =
+        buildString {
             // Add input documents
             append(readInputDocs())
 
@@ -354,17 +364,18 @@ class DefaultWorkflowService(
                 }
             }
         }
-    }
 
-    private fun resolvePrompt(promptConfig: WorkflowPromptConfig): String {
-        return when (promptConfig) {
-            is WorkflowPromptConfig.Inline -> promptConfig.systemPrompt
+    private fun resolvePrompt(promptConfig: WorkflowPromptConfig): String =
+        when (promptConfig) {
+            is WorkflowPromptConfig.Inline -> {
+                promptConfig.systemPrompt
+            }
+
             is WorkflowPromptConfig.File -> {
                 val promptPath = docsDir.resolve(promptConfig.path)
                 Files.readString(promptPath)
             }
         }
-    }
 
     private fun readInputDocs(): String {
         val docs = documentStore.getAll()
@@ -383,13 +394,18 @@ class DefaultWorkflowService(
     }
 
     private suspend fun callAi(systemPrompt: String, userContent: String): String {
-        val response = aiProvider.chat(
-            systemPrompt = systemPrompt,
-            messages = listOf(AiMessage("user", userContent)),
-            tools = emptyList(),
-        )
-        val text = response.content.filterIsInstance<AiContentBlock.Text>().firstOrNull()?.text
-            ?: error("AI returned no text content")
+        val response =
+            aiProvider.chat(
+                systemPrompt = systemPrompt,
+                messages = listOf(AiMessage("user", userContent)),
+                tools = emptyList(),
+            )
+        val text =
+            response.content
+                .filterIsInstance<AiContentBlock.Text>()
+                .firstOrNull()
+                ?.text
+                ?: error("AI returned no text content")
         return text.trim()
     }
 }

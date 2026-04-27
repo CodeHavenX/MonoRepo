@@ -40,8 +40,9 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class TimeCardControllerTest : CoroutineTest(), KoinTest {
-
+class TimeCardControllerTest :
+    CoroutineTest(),
+    KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
@@ -57,117 +58,75 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test createTimeCardEvent`() = testBackEndApplication {
-        // Configure
-        val requestBody = readFileContent("requests/create_timecard_event_request.json")
-        val expectedResponse = readFileContent("requests/create_timecard_event_response.json")
-        val timeCardService = get<TimeCardService>()
-        val rbacService = get<RBACService>()
+    fun `test createTimeCardEvent`() =
+        testBackEndApplication {
+            // Configure
+            val requestBody = readFileContent("requests/create_timecard_event_request.json")
+            val expectedResponse = readFileContent("requests/create_timecard_event_response.json")
+            val timeCardService = get<TimeCardService>()
+            val rbacService = get<RBACService>()
 
-        coEvery {
-            timeCardService.createTimeCardEvent(
-                employeeId = EmployeeId("emp123"),
-                fallbackEmployeeName = "John Doe",
-                propertyId = PropertyId("property123"),
-                type = TimeCardEventType.CLOCK_OUT,
-                imageUrl = "http://example.com/image.jpg",
-                timestamp = any(),
-            )
-        }.answers {
-            TimeCardEvent(
-                id = TimeCardEventId("timecard123"),
-                employeeId = EmployeeId("emp123"),
-                fallbackEmployeeName = "John Doe",
-                propertyId = PropertyId("property123"),
-                type = TimeCardEventType.CLOCK_OUT,
-                imageUrl = "http://example.com/image.jpg",
-                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.EMPLOYEE)
-        }.answers {
-            true
-        }
+            coEvery {
+                timeCardService.createTimeCardEvent(
+                    employeeId = EmployeeId("emp123"),
+                    fallbackEmployeeName = "John Doe",
+                    propertyId = PropertyId("property123"),
+                    type = TimeCardEventType.CLOCK_OUT,
+                    imageUrl = "http://example.com/image.jpg",
+                    timestamp = any(),
+                )
+            }.answers {
+                TimeCardEvent(
+                    id = TimeCardEventId("timecard123"),
+                    employeeId = EmployeeId("emp123"),
+                    fallbackEmployeeName = "John Doe",
+                    propertyId = PropertyId("property123"),
+                    type = TimeCardEventType.CLOCK_OUT,
+                    imageUrl = "http://example.com/image.jpg",
+                    timestamp = Instant.parse("2024-01-01T00:00:00Z"),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.EMPLOYEE)
+            }.answers {
+                true
+            }
 
-        // Act
-        val response = client.post("time_card") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
-        }
+            // Act
+            val response =
+                client.post("time_card") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 
     @Test
-    fun `test getTimeCardEvent`() = testBackEndApplication {
-        // Configure
-        val expectedResponse = readFileContent("requests/get_timecard_event_response.json")
-        val timeCardService = get<TimeCardService>()
-        val rbacService = get<RBACService>()
-        coEvery {
-            timeCardService.getTimeCardEvent(TimeCardEventId("timecard123"))
-        }.answers {
-            TimeCardEvent(
-                id = TimeCardEventId("timecard123"),
-                employeeId = EmployeeId("emp123"),
-                fallbackEmployeeName = "John Doe",
-                propertyId = PropertyId("property123"),
-                type = TimeCardEventType.CLOCK_IN,
-                imageUrl = "http://example.com/image.jpg",
-                timestamp = Instant.parse("2024-01-01T00:00:00Z"),
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("user123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, TimeCardEventId("timecard123"), UserRole.EMPLOYEE)
-        }.answers {
-            true
-        }
-
-        // Act
-        val response = client.get("time_card/timecard123")
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
-
-    @Test
-    fun `test getTimeCardEvents`() = testBackEndApplication {
-        // Configure
-        val expectedResponse = readFileContent("requests/get_timecard_events_response.json")
-        val timeCardService = get<TimeCardService>()
-        val rbacService = get<RBACService>()
-        coEvery {
-            timeCardService.getTimeCardEvents(EmployeeId("emp123"))
-        }.answers {
-            listOf(
+    fun `test getTimeCardEvent`() =
+        testBackEndApplication {
+            // Configure
+            val expectedResponse = readFileContent("requests/get_timecard_event_response.json")
+            val timeCardService = get<TimeCardService>()
+            val rbacService = get<RBACService>()
+            coEvery {
+                timeCardService.getTimeCardEvent(TimeCardEventId("timecard123"))
+            }.answers {
                 TimeCardEvent(
                     id = TimeCardEventId("timecard123"),
                     employeeId = EmployeeId("emp123"),
@@ -176,46 +135,95 @@ class TimeCardControllerTest : CoroutineTest(), KoinTest {
                     type = TimeCardEventType.CLOCK_IN,
                     imageUrl = "http://example.com/image.jpg",
                     timestamp = Instant.parse("2024-01-01T00:00:00Z"),
-                ),
-                TimeCardEvent(
-                    id = TimeCardEventId("timecard456"),
-                    employeeId = EmployeeId("emp456"),
-                    fallbackEmployeeName = "Jane Smith",
-                    propertyId = PropertyId("property123"),
-                    type = TimeCardEventType.CLOCK_IN,
-                    imageUrl = "http://example.com/image2.jpg",
-                    timestamp = Instant.parse("2024-01-01T00:00:00Z"),
                 )
-            )
-        }
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = UserId("emp123"),
-            )
-        )
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            context
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, EmployeeId("emp123"), UserRole.EMPLOYEE)
-        }.answers {
-            true
-        }
-        coEvery {
-            rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.EMPLOYEE)
-        }.answers {
-            true
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, TimeCardEventId("timecard123"), UserRole.EMPLOYEE)
+            }.answers {
+                true
+            }
+
+            // Act
+            val response = client.get("time_card/timecard123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
 
-        // Act
-        val response = client.get("time_card?propertyId=property123&employeeId=emp123")
+    @Test
+    fun `test getTimeCardEvents`() =
+        testBackEndApplication {
+            // Configure
+            val expectedResponse = readFileContent("requests/get_timecard_events_response.json")
+            val timeCardService = get<TimeCardService>()
+            val rbacService = get<RBACService>()
+            coEvery {
+                timeCardService.getTimeCardEvents(EmployeeId("emp123"))
+            }.answers {
+                listOf(
+                    TimeCardEvent(
+                        id = TimeCardEventId("timecard123"),
+                        employeeId = EmployeeId("emp123"),
+                        fallbackEmployeeName = "John Doe",
+                        propertyId = PropertyId("property123"),
+                        type = TimeCardEventType.CLOCK_IN,
+                        imageUrl = "http://example.com/image.jpg",
+                        timestamp = Instant.parse("2024-01-01T00:00:00Z"),
+                    ),
+                    TimeCardEvent(
+                        id = TimeCardEventId("timecard456"),
+                        employeeId = EmployeeId("emp456"),
+                        fallbackEmployeeName = "Jane Smith",
+                        propertyId = PropertyId("property123"),
+                        type = TimeCardEventType.CLOCK_IN,
+                        imageUrl = "http://example.com/image2.jpg",
+                        timestamp = Instant.parse("2024-01-01T00:00:00Z"),
+                    ),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("emp123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, EmployeeId("emp123"), UserRole.EMPLOYEE)
+            }.answers {
+                true
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, PropertyId("property123"), UserRole.EMPLOYEE)
+            }.answers {
+                true
+            }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Act
+            val response = client.get("time_card?propertyId=property123&employeeId=emp123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 }

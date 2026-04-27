@@ -13,11 +13,12 @@ import java.nio.file.Paths
 internal actual fun getFileSizeBytesImpl(uri: CoreUri, dependencies: IODependencies): Result<Long> {
     return runCatching {
         val uriString = uri.getUri()
-        val file = if (uriString.startsWith("file:")) {
-            File(URI(uriString))
-        } else {
-            File(uriString)
-        }
+        val file =
+            if (uriString.startsWith("file:")) {
+                File(URI(uriString))
+            } else {
+                File(uriString)
+            }
 
         require(file.exists()) { "File does not exist: $uriString" }
         file.length()
@@ -31,11 +32,12 @@ internal actual fun getFileSizeBytesImpl(uri: CoreUri, dependencies: IODependenc
 internal actual fun getMimeTypeImpl(uri: CoreUri, dependencies: IODependencies): Result<String> {
     return runCatching {
         val uriString = uri.getUri()
-        val path = if (uriString.startsWith("file:")) {
-            Paths.get(URI(uriString))
-        } else {
-            Paths.get(uriString)
-        }
+        val path =
+            if (uriString.startsWith("file:")) {
+                Paths.get(URI(uriString))
+            } else {
+                Paths.get(uriString)
+            }
 
         val mimeType = Files.probeContentType(path)
         mimeType ?: "application/octet-stream" // Default if MIME type cannot be determined

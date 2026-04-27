@@ -55,9 +55,7 @@ fun PropertiesOverviewScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize()
     }
@@ -105,7 +103,7 @@ internal fun PropertiesOverviewContent(
                     contentDescription = stringResource(Res.string.properties_overview_add_property_description),
                 )
             }
-        }
+        },
     ) { innerPadding ->
         ScreenLayout(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
@@ -113,9 +111,10 @@ internal fun PropertiesOverviewContent(
             sectionContent = { sectionModifier ->
                 if (content.propertyList.isEmpty()) {
                     Box(
-                        modifier = sectionModifier
+                        modifier =
+                        sectionModifier
                             .fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = stringResource(Res.string.properties_overview_no_properties_message),
@@ -135,7 +134,7 @@ internal fun PropertiesOverviewContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading)
-            }
+            },
         )
     }
 }
@@ -153,22 +152,26 @@ private fun PropertyItem(
                 width = 1.dp,
                 color = Color.LightGray,
                 shape = MaterialTheme.shapes.medium,
-            )
-            .clickable { onPropertySelected(property) },
+            ).clickable { onPropertySelected(property) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
-        val imageSource = PropertyIconOptions.fromImageUrl(property.imageUrl)?.imageSource
-            ?: ImageSource.None
+        val imageSource =
+            PropertyIconOptions.fromImageUrl(property.imageUrl)?.imageSource
+                ?: ImageSource.None
         EdifikanaImage(
             imageSource = imageSource,
-            contentDescription = stringResource(Res.string.properties_overview_property_image_description, property.name),
+            contentDescription =
+            stringResource(
+                Res.string.properties_overview_property_image_description,
+                property.name,
+            ),
             cornerRadius = 8.dp,
             modifier = Modifier.size(Size.xx_large),
         )
         Spacer(Modifier.size(Padding.MEDIUM))
         Column(
-            modifier = Modifier.padding(Padding.SMALL)
+            modifier = Modifier.padding(Padding.SMALL),
         ) {
             Text(
                 property.name,

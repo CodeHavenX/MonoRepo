@@ -25,7 +25,6 @@ class SelectOrgViewModel(
     SelectOrgUIState.Default,
     TAG,
 ) {
-
     /**
      * Initialize the ViewModel by fetching notifications.
      */
@@ -41,9 +40,10 @@ class SelectOrgViewModel(
                 return@launch
             }
 
-            val notifications = notificationResult.getOrDefault(emptyList()).mapNotNull {
-                it.toNotificationItemUIModel()
-            }
+            val notifications =
+                notificationResult.getOrDefault(emptyList()).mapNotNull {
+                    it.toNotificationItemUIModel()
+                }
 
             updateUiState {
                 it.copy(
@@ -73,7 +73,7 @@ class SelectOrgViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AuthDestination.CreateNewOrgDestination,
-                )
+                ),
             )
         }
     }
@@ -99,7 +99,7 @@ class SelectOrgViewModel(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AuthNavGraphDestination,
                     clearStack = true,
-                )
+                ),
             )
         }
     }
@@ -132,7 +132,7 @@ class SelectOrgViewModel(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.HomeNavGraphDestination,
                     clearStack = true,
-                )
+                ),
             )
         }
     }

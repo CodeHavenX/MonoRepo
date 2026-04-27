@@ -43,8 +43,4 @@ interface Orchestrator {
  * for available slots. A shorter interval increases responsiveness at the cost of more frequent
  * VCS API calls.
  */
-data class OrchestratorConfig(
-    val agentPoolSize: Int,
-    val pollIntervalSeconds: Long = 30L,
-    val baseBranch: String,
-)
+data class OrchestratorConfig(val agentPoolSize: Int, val pollIntervalSeconds: Long = 30L, val baseBranch: String)

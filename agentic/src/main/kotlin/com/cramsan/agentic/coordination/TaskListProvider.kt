@@ -10,7 +10,6 @@ import com.cramsan.agentic.core.Task
  * implementations may read from the persisted files instead.
  */
 interface TaskListProvider {
-
     /**
      * Returns the full list of tasks.
      *

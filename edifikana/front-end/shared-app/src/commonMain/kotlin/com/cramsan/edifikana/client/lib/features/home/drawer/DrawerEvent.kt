@@ -9,7 +9,6 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  *
  */
 sealed class DrawerEvent : ViewModelEvent {
-
     /**
      * Trigger closing or opening the navigation drawer.
      */

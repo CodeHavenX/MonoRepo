@@ -36,7 +36,7 @@ fun NavGraphBuilder.authNavGraphNavigation(
             typeMap = typeMap,
         ) {
             SignUpScreen(
-                destination = it.toRoute()
+                destination = it.toRoute(),
             )
         }
         composable(
@@ -44,7 +44,7 @@ fun NavGraphBuilder.authNavGraphNavigation(
             typeMap = typeMap,
         ) { backStackEntry ->
             OtpValidationScreen(
-                destination = backStackEntry.toRoute()
+                destination = backStackEntry.toRoute(),
             )
         }
         composable(

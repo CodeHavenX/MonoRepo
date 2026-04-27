@@ -15,10 +15,11 @@ data class EdifikanaApplicationUIState(
         /**
          * Initial UI state.
          */
-        val Initial = EdifikanaApplicationUIState(
-            applicationLoaded = false,
-            showDebugWindow = false,
-            theme = SelectedTheme.SYSTEM_DEFAULT,
-        )
+        val Initial =
+            EdifikanaApplicationUIState(
+                applicationLoaded = false,
+                showDebugWindow = false,
+                theme = SelectedTheme.SYSTEM_DEFAULT,
+            )
     }
 }

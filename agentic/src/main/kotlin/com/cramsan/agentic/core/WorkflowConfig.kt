@@ -9,9 +9,7 @@ import kotlinx.serialization.Serializable
  * stages (document review → high-level plan → low-level plan → task list).
  */
 @Serializable
-data class WorkflowConfig(
-    val stages: List<WorkflowStageConfig> = defaultWorkflowStages(),
-)
+data class WorkflowConfig(val stages: List<WorkflowStageConfig> = defaultWorkflowStages())
 
 /**
  * Configuration for a single planning workflow stage. Stages are executed in list order;
@@ -43,56 +41,57 @@ data class WorkflowStageConfig(
  * a reference to a classpath resource file.
  */
 @Serializable
-sealed class WorkflowPromptConfig {
+sealed interface WorkflowPromptConfig {
     /** System prompt embedded directly in the configuration. */
     @Serializable
     @SerialName("inline")
-    data class Inline(val systemPrompt: String) : WorkflowPromptConfig()
+    data class Inline(val systemPrompt: String) : WorkflowPromptConfig
 
     /** System prompt loaded from a classpath resource at the given [path]. */
     @Serializable
     @SerialName("file")
-    data class File(val path: String) : WorkflowPromptConfig()
+    data class File(val path: String) : WorkflowPromptConfig
 }
 
 /**
  * Returns the default workflow stages configuration.
  * Stage prompts are stored in resources/templates/workflow/ and referenced by path.
  */
-fun defaultWorkflowStages(): List<WorkflowStageConfig> = listOf(
-    WorkflowStageConfig(
-        id = "stage0",
-        name = "Document Review",
-        outputFile = "document-review-report.md",
-        requiresApproval = true,
-        inputDependencies = emptyList(),
-        prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage0-document-review.md"),
-    ),
-    WorkflowStageConfig(
-        id = "stage1",
-        name = "High-Level Plan",
-        outputFile = "high-level-plan.md",
-        requiresApproval = true,
-        inputDependencies = listOf("stage0"),
-        prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage1-high-level-plan.md"),
-    ),
-    WorkflowStageConfig(
-        id = "stage2",
-        name = "Low-Level Plan",
-        outputFile = "low-level-plan.md",
-        requiresApproval = true,
-        inputDependencies = listOf("stage1"),
-        prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage2-low-level-plan.md"),
-    ),
-    WorkflowStageConfig(
-        id = "stage3",
-        name = "Task List",
-        outputFile = "task-list.md",
-        requiresApproval = true,
-        inputDependencies = listOf("stage2"),
-        prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage3-task-list.md"),
-    ),
-)
+fun defaultWorkflowStages(): List<WorkflowStageConfig> =
+    listOf(
+        WorkflowStageConfig(
+            id = "stage0",
+            name = "Document Review",
+            outputFile = "document-review-report.md",
+            requiresApproval = true,
+            inputDependencies = emptyList(),
+            prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage0-document-review.md"),
+        ),
+        WorkflowStageConfig(
+            id = "stage1",
+            name = "High-Level Plan",
+            outputFile = "high-level-plan.md",
+            requiresApproval = true,
+            inputDependencies = listOf("stage0"),
+            prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage1-high-level-plan.md"),
+        ),
+        WorkflowStageConfig(
+            id = "stage2",
+            name = "Low-Level Plan",
+            outputFile = "low-level-plan.md",
+            requiresApproval = true,
+            inputDependencies = listOf("stage1"),
+            prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage2-low-level-plan.md"),
+        ),
+        WorkflowStageConfig(
+            id = "stage3",
+            name = "Task List",
+            outputFile = "task-list.md",
+            requiresApproval = true,
+            inputDependencies = listOf("stage2"),
+            prompt = WorkflowPromptConfig.File(path = "templates/workflow/stage3-task-list.md"),
+        ),
+    )
 
 /**
  * System prompt used when revising a stage document based on human feedback.

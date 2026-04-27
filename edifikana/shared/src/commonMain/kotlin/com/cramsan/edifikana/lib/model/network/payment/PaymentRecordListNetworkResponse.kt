@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class PaymentRecordListNetworkResponse(
-    val paymentRecords: List<PaymentRecordNetworkResponse>,
-) : ResponseBody
+data class PaymentRecordListNetworkResponse(val paymentRecords: List<PaymentRecordNetworkResponse>) : ResponseBody

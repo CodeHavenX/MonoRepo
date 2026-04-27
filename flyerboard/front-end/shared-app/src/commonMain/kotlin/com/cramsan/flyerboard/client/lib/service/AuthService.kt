@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
  * Service to manage authentication.
  */
 interface AuthService {
-
     /**
      * Registers a new user with the given [email] and [password].
      */

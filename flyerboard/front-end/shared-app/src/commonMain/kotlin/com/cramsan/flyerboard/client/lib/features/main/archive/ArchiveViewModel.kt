@@ -12,11 +12,8 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Archive screen.
  */
-class ArchiveViewModel(
-    dependencies: ViewModelDependencies,
-    private val flyerManager: FlyerManager,
-) : BaseViewModel<ArchiveEvent, ArchiveUIState>(dependencies, ArchiveUIState.Initial, TAG) {
-
+class ArchiveViewModel(dependencies: ViewModelDependencies, private val flyerManager: FlyerManager) :
+    BaseViewModel<ArchiveEvent, ArchiveUIState>(dependencies, ArchiveUIState.Initial, TAG) {
     /**
      * Load the archived flyers.
      */
@@ -24,7 +21,8 @@ class ArchiveViewModel(
         logI(TAG, "loadFlyers")
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
-            flyerManager.listArchived()
+            flyerManager
+                .listArchived()
                 .onSuccess { paginated ->
                     updateUiState {
                         it.copy(
@@ -32,8 +30,7 @@ class ArchiveViewModel(
                             flyers = paginated.flyers,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     updateUiState { it.copy(isLoading = false, errorMessage = error.message) }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(

@@ -19,12 +19,13 @@ fun ContentSection(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.(Modifier) -> Unit,
 ) {
-    val contentSectionModifier = Modifier
-        .fillMaxWidth()
-        .padding(
-            horizontal = Padding.MEDIUM,
-            vertical = Padding.X_SMALL,
-        )
+    val contentSectionModifier =
+        Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = Padding.MEDIUM,
+                vertical = Padding.X_SMALL,
+            )
     Column(
         modifier = modifier,
         content = {

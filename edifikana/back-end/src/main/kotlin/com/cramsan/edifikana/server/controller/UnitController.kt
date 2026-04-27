@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.UnitApi
-import com.cramsan.edifikana.lib.model.network.unit.GetUnitsQueryParams
 import com.cramsan.edifikana.lib.model.network.unit.CreateUnitNetworkRequest
+import com.cramsan.edifikana.lib.model.network.unit.GetUnitsQueryParams
 import com.cramsan.edifikana.lib.model.network.unit.UnitListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.unit.UnitNetworkResponse
 import com.cramsan.edifikana.lib.model.network.unit.UpdateUnitNetworkRequest
@@ -35,7 +35,6 @@ class UnitController(
     private val rbacService: RBACService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -46,21 +45,22 @@ class UnitController(
             CreateUnitNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): UnitNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return unitService.createUnit(
-            propertyId = request.requestBody.propertyId,
-            unitNumber = request.requestBody.unitNumber,
-            bedrooms = request.requestBody.bedrooms,
-            bathrooms = request.requestBody.bathrooms,
-            sqFt = request.requestBody.sqFt,
-            floor = request.requestBody.floor,
-            notes = request.requestBody.notes,
-        ).toUnitNetworkResponse()
+        return unitService
+            .createUnit(
+                propertyId = request.requestBody.propertyId,
+                unitNumber = request.requestBody.unitNumber,
+                bedrooms = request.requestBody.bedrooms,
+                bathrooms = request.requestBody.bathrooms,
+                sqFt = request.requestBody.sqFt,
+                floor = request.requestBody.floor,
+                notes = request.requestBody.notes,
+            ).toUnitNetworkResponse()
     }
 
     /**
@@ -71,8 +71,8 @@ class UnitController(
             NoRequestBody,
             NoQueryParam,
             UnitId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): UnitNetworkResponse {
         val unitId = request.pathParam
         if (!rbacService.hasRoleOrHigher(request.context, unitId, UserRole.EMPLOYEE)) {
@@ -90,16 +90,18 @@ class UnitController(
             NoRequestBody,
             GetUnitsQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): UnitListNetworkResponse {
         val propertyId = request.queryParam.propertyId
         if (!rbacService.hasRoleOrHigher(request.context, propertyId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val units = unitService.getUnits(
-            propertyId = propertyId,
-        ).map { it.toUnitNetworkResponse() }
+        val units =
+            unitService
+                .getUnits(
+                    propertyId = propertyId,
+                ).map { it.toUnitNetworkResponse() }
         return UnitListNetworkResponse(units)
     }
 
@@ -111,21 +113,22 @@ class UnitController(
             UpdateUnitNetworkRequest,
             NoQueryParam,
             UnitId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): UnitNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return unitService.updateUnit(
-            unitId = request.pathParam,
-            unitNumber = request.requestBody.unitNumber,
-            bedrooms = request.requestBody.bedrooms,
-            bathrooms = request.requestBody.bathrooms,
-            sqFt = request.requestBody.sqFt,
-            floor = request.requestBody.floor,
-            notes = request.requestBody.notes,
-        ).toUnitNetworkResponse()
+        return unitService
+            .updateUnit(
+                unitId = request.pathParam,
+                unitNumber = request.requestBody.unitNumber,
+                bedrooms = request.requestBody.bedrooms,
+                bathrooms = request.requestBody.bathrooms,
+                sqFt = request.requestBody.sqFt,
+                floor = request.requestBody.floor,
+                notes = request.requestBody.notes,
+            ).toUnitNetworkResponse()
     }
 
     /**
@@ -136,8 +139,8 @@ class UnitController(
             NoRequestBody,
             NoQueryParam,
             UnitId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): NoResponseBody {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)

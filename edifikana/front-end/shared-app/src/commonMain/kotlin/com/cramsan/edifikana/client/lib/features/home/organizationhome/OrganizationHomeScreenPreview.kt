@@ -7,26 +7,29 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-private fun OrganizationHomeScreenPreview() = AppTheme {
-    OrganizationHomeScreenContent(
-        uiState = OrganizationHomeUIModel(
-            label = "Admin Hub",
-            selectedTab = Tabs.None,
-            availableOrganizations = listOf(
-                OrganizationUIModel(
-                    id = OrganizationId("org-1"),
-                    name = "Organization 1",
-                    selected = true,
+private fun OrganizationHomeScreenPreview() =
+    AppTheme {
+        OrganizationHomeScreenContent(
+            uiState =
+            OrganizationHomeUIModel(
+                label = "Admin Hub",
+                selectedTab = Tabs.None,
+                availableOrganizations =
+                listOf(
+                    OrganizationUIModel(
+                        id = OrganizationId("org-1"),
+                        name = "Organization 1",
+                        selected = true,
+                    ),
+                    OrganizationUIModel(
+                        id = OrganizationId("org-2"),
+                        name = "Organization 2",
+                        selected = false,
+                    ),
                 ),
-                OrganizationUIModel(
-                    id = OrganizationId("org-2"),
-                    name = "Organization 2",
-                    selected = false,
-                ),
+                selectedOrgId = OrganizationId("org-1"),
             ),
-            selectedOrgId = OrganizationId("org-1"),
-        ),
-        onTabSelected = {},
-        onNavigationIconSelected = {},
-    )
-}
+            onTabSelected = {},
+            onNavigationIconSelected = {},
+        )
+    }

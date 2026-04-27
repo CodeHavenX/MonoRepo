@@ -7,7 +7,6 @@ import org.koin.core.component.KoinComponent
  * Initializer class for the application.
  */
 class Initializer : KoinComponent {
-
     /**
      * Start the initialization steps.
      */

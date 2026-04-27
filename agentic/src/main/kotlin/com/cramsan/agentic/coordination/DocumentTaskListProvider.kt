@@ -32,14 +32,10 @@ private const val GROUP_TIMEOUT = 5
  *   - `Dependencies: ...` and `**Dependencies:** ...`
  *   - `Timeout: ...` and `**Timeout:** ...` (optional)
  */
-class DocumentTaskListProvider(
-    private val documentPath: Path,
-    private val tasksDir: Path,
-    private val json: Json,
-) : TaskListProvider {
-
-    override suspend fun provide(): List<Task> {
-        return if (isInitialized()) {
+class DocumentTaskListProvider(private val documentPath: Path, private val tasksDir: Path, private val json: Json) :
+    TaskListProvider {
+    override suspend fun provide(): List<Task> =
+        if (isInitialized()) {
             logI(TAG, "Task files already exist in $tasksDir — loading from persisted files")
             loadFromTaskFiles()
         } else {
@@ -49,7 +45,6 @@ class DocumentTaskListProvider(
             logI(TAG, "Provisioned ${tasks.size} task files under $tasksDir")
             tasks
         }
-    }
 
     override fun isInitialized(): Boolean {
         if (!Files.exists(tasksDir)) return false
@@ -69,15 +64,16 @@ class DocumentTaskListProvider(
 
         // Matches both plain and bold-markdown field prefixes:
         //   Title: ...  or  **Title:** ...
-        val taskPattern = Regex(
-            """## Task:\s*(\S+)\s*\n""" +
-            """\*{0,2}Title:\*{0,2}\s*(.+)\n""" +
-            """\*{0,2}Description:\*{0,2}\s*(.+)\n""" +
-            """\*{0,2}Dependencies:\*{0,2}\s*(.+?)""" +
-            """(?:\n\*{0,2}Timeout:\*{0,2}\s*(\d+))?""" +
-            """(?:\n|\z)""",
-            setOf(RegexOption.MULTILINE),
-        )
+        val taskPattern =
+            Regex(
+                """## Task:\s*(\S+)\s*\n""" +
+                    """\*{0,2}Title:\*{0,2}\s*(.+)\n""" +
+                    """\*{0,2}Description:\*{0,2}\s*(.+)\n""" +
+                    """\*{0,2}Dependencies:\*{0,2}\s*(.+?)""" +
+                    """(?:\n\*{0,2}Timeout:\*{0,2}\s*(\d+))?""" +
+                    """(?:\n|\z)""",
+                setOf(RegexOption.MULTILINE),
+            )
 
         for (match in taskPattern.findAll(content)) {
             val id = match.groupValues[GROUP_ID].trim()
@@ -86,11 +82,12 @@ class DocumentTaskListProvider(
             val depsRaw = match.groupValues[GROUP_DEPENDENCIES].trim()
             val timeout = match.groupValues[GROUP_TIMEOUT].trim().toLongOrNull() ?: DEFAULT_TASK_TIMEOUT_SECONDS
 
-            val dependencies = if (depsRaw.equals("none", ignoreCase = true) || depsRaw.isBlank()) {
-                emptyList()
-            } else {
-                depsRaw.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-            }
+            val dependencies =
+                if (depsRaw.equals("none", ignoreCase = true) || depsRaw.isBlank()) {
+                    emptyList()
+                } else {
+                    depsRaw.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+                }
 
             parsedTasks.add(
                 Task(
@@ -99,7 +96,7 @@ class DocumentTaskListProvider(
                     description = description,
                     dependencies = dependencies,
                     timeoutSeconds = timeout,
-                )
+                ),
             )
         }
 
@@ -119,8 +116,8 @@ class DocumentTaskListProvider(
         }
     }
 
-    private fun loadFromTaskFiles(): List<Task> {
-        return Files.list(tasksDir).use { stream ->
+    private fun loadFromTaskFiles(): List<Task> =
+        Files.list(tasksDir).use { stream ->
             stream
                 .filter { Files.isDirectory(it) }
                 .map { dir -> dir.resolve(TASK_FILE_NAME) }
@@ -132,9 +129,7 @@ class DocumentTaskListProvider(
                         logW(TAG, "Failed to read task file $taskFile: ${e.message}")
                         null
                     }
-                }
-                .toList()
+                }.toList()
                 .filterNotNull()
         }
-    }
 }

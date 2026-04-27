@@ -43,7 +43,8 @@ private fun EdifikanaTextFieldPreview() {
         var address by remember { mutableStateOf("") }
 
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -90,7 +91,8 @@ private fun EdifikanaPasswordTextFieldPreview() {
         var password2 by remember { mutableStateOf("SecurePassword123") }
 
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -127,7 +129,8 @@ private fun EdifikanaPasswordTextFieldPreview() {
 private fun EdifikanaButtonsPreview() {
     AppTheme {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -158,7 +161,8 @@ private fun EdifikanaButtonsPreview() {
 private fun EdifikanaListItemPreview() {
     AppTheme {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
@@ -223,7 +227,8 @@ private fun EdifikanaTopAndBottomNavigationPreview() {
         var selectedRoute by remember { mutableStateOf("home") }
 
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
         ) {
@@ -245,7 +250,8 @@ private fun EdifikanaTopAndBottomNavigationPreview() {
                 Box(modifier = Modifier.weight(1f))
 
                 EdifikanaBottomNavigation(
-                    items = listOf(
+                    items =
+                    listOf(
                         EdifikanaNavigationItem(Icons.Default.Home, "Home", "home"),
                         EdifikanaNavigationItem(Icons.Default.Person, "Visitors", "visitors"),
                         EdifikanaNavigationItem(Icons.Default.Search, "Log", "log"),
@@ -264,7 +270,8 @@ private fun EdifikanaTopAndBottomNavigationPreview() {
 private fun EdifikanaFloatingActionButtonPreview() {
     AppTheme {
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -284,7 +291,8 @@ private fun EdifikanaFloatingActionButtonPreview() {
 private fun EdifikanaTextButtonPreview() {
     AppTheme {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -310,7 +318,8 @@ private fun EdifikanaTextButtonPreview() {
 private fun EdifikanaAvatarPreview() {
     AppTheme {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -339,7 +348,8 @@ private fun EdifikanaAvatarPreview() {
 private fun EdifikanaProfileHeaderPreview() {
     AppTheme {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
@@ -379,7 +389,8 @@ private fun EdifikanaProfileHeaderPreview() {
 private fun EdifikanaSectionHeaderPreview() {
     AppTheme {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -401,7 +412,8 @@ private fun EdifikanaSectionHeaderPreview() {
 private fun EdifikanaAccountInfoItemPreview() {
     AppTheme {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -438,36 +450,38 @@ private fun EdifikanaImageSelectorPreview() {
     AppTheme {
         var selectedOption by remember { mutableStateOf<ImageOptionUIModel?>(null) }
 
-        val options = listOf(
-            ImageOptionUIModel(
-                id = "CASA",
-                displayName = "Casa",
-                imageSource = ImageSource.Drawable(PropertyIcons.CASA),
-            ),
-            ImageOptionUIModel(
-                id = "QUINTA",
-                displayName = "Quinta",
-                imageSource = ImageSource.Drawable(PropertyIcons.QUINTA),
-            ),
-            ImageOptionUIModel(
-                id = "L_DEPA",
-                displayName = "Large Department",
-                imageSource = ImageSource.Drawable(PropertyIcons.L_DEPA),
-            ),
-            ImageOptionUIModel(
-                id = "M_DEPA",
-                displayName = "Medium Department",
-                imageSource = ImageSource.Drawable(PropertyIcons.M_DEPA),
-            ),
-            ImageOptionUIModel(
-                id = "S_DEPA",
-                displayName = "Small Department",
-                imageSource = ImageSource.Drawable(PropertyIcons.S_DEPA),
-            ),
-        )
+        val options =
+            listOf(
+                ImageOptionUIModel(
+                    id = "CASA",
+                    displayName = "Casa",
+                    imageSource = ImageSource.Drawable(PropertyIcons.CASA),
+                ),
+                ImageOptionUIModel(
+                    id = "QUINTA",
+                    displayName = "Quinta",
+                    imageSource = ImageSource.Drawable(PropertyIcons.QUINTA),
+                ),
+                ImageOptionUIModel(
+                    id = "L_DEPA",
+                    displayName = "Large Department",
+                    imageSource = ImageSource.Drawable(PropertyIcons.L_DEPA),
+                ),
+                ImageOptionUIModel(
+                    id = "M_DEPA",
+                    displayName = "Medium Department",
+                    imageSource = ImageSource.Drawable(PropertyIcons.M_DEPA),
+                ),
+                ImageOptionUIModel(
+                    id = "S_DEPA",
+                    displayName = "Small Department",
+                    imageSource = ImageSource.Drawable(PropertyIcons.S_DEPA),
+                ),
+            )
 
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -486,7 +500,8 @@ private fun EdifikanaImageSelectorPreview() {
 
             Text("Grid (simulates open sheet)", style = MaterialTheme.typography.labelMedium)
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .height(300.dp),
             ) {
@@ -506,41 +521,43 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
     AppTheme {
         var selectedOption by remember { mutableStateOf<ImageOptionUIModel?>(null) }
 
-        val optionsWithUpload = listOf(
-            ImageOptionUIModel(
-                id = "CASA",
-                displayName = "Casa",
-                imageSource = ImageSource.Drawable(PropertyIcons.CASA),
-            ),
-            ImageOptionUIModel(
-                id = "QUINTA",
-                displayName = "Quinta",
-                imageSource = ImageSource.Drawable(PropertyIcons.QUINTA),
-            ),
-            ImageOptionUIModel(
-                id = "L_DEPA",
-                displayName = "Large Department",
-                imageSource = ImageSource.Drawable(PropertyIcons.L_DEPA),
-            ),
-            ImageOptionUIModel(
-                id = "M_DEPA",
-                displayName = "Medium Department",
-                imageSource = ImageSource.Drawable(PropertyIcons.M_DEPA),
-            ),
-            ImageOptionUIModel(
-                id = "S_DEPA",
-                displayName = "Small Department",
-                imageSource = ImageSource.Drawable(PropertyIcons.S_DEPA),
-            ),
-            ImageOptionUIModel(
-                id = "custom_upload",
-                displayName = "Upload Custom Image",
-                imageSource = ImageSource.UploadPlaceholder,
-            ),
-        )
+        val optionsWithUpload =
+            listOf(
+                ImageOptionUIModel(
+                    id = "CASA",
+                    displayName = "Casa",
+                    imageSource = ImageSource.Drawable(PropertyIcons.CASA),
+                ),
+                ImageOptionUIModel(
+                    id = "QUINTA",
+                    displayName = "Quinta",
+                    imageSource = ImageSource.Drawable(PropertyIcons.QUINTA),
+                ),
+                ImageOptionUIModel(
+                    id = "L_DEPA",
+                    displayName = "Large Department",
+                    imageSource = ImageSource.Drawable(PropertyIcons.L_DEPA),
+                ),
+                ImageOptionUIModel(
+                    id = "M_DEPA",
+                    displayName = "Medium Department",
+                    imageSource = ImageSource.Drawable(PropertyIcons.M_DEPA),
+                ),
+                ImageOptionUIModel(
+                    id = "S_DEPA",
+                    displayName = "Small Department",
+                    imageSource = ImageSource.Drawable(PropertyIcons.S_DEPA),
+                ),
+                ImageOptionUIModel(
+                    id = "custom_upload",
+                    displayName = "Upload Custom Image",
+                    imageSource = ImageSource.UploadPlaceholder,
+                ),
+            )
 
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -559,7 +576,8 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
 
             Text("Grid (simulates open sheet)", style = MaterialTheme.typography.labelMedium)
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .height(300.dp),
             ) {
@@ -577,34 +595,37 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
 @Composable
 private fun EdifikanaImageSelectorWithCustomImagePreview() {
     AppTheme {
-        val customImageOption = ImageOptionUIModel(
-            id = "custom_uploaded",
-            displayName = "Custom Image",
-            imageSource = ImageSource.Url("https://picsum.photos/200"),
-        )
+        val customImageOption =
+            ImageOptionUIModel(
+                id = "custom_uploaded",
+                displayName = "Custom Image",
+                imageSource = ImageSource.Url("https://picsum.photos/200"),
+            )
 
         var selectedOption by remember { mutableStateOf<ImageOptionUIModel?>(customImageOption) }
 
-        val optionsWithUpload = listOf(
-            ImageOptionUIModel(
-                id = "CASA",
-                displayName = "Casa",
-                imageSource = ImageSource.Drawable(PropertyIcons.CASA),
-            ),
-            ImageOptionUIModel(
-                id = "QUINTA",
-                displayName = "Quinta",
-                imageSource = ImageSource.Drawable(PropertyIcons.QUINTA),
-            ),
-            ImageOptionUIModel(
-                id = "custom_upload",
-                displayName = "Upload Custom Image",
-                imageSource = ImageSource.UploadPlaceholder,
-            ),
-        )
+        val optionsWithUpload =
+            listOf(
+                ImageOptionUIModel(
+                    id = "CASA",
+                    displayName = "Casa",
+                    imageSource = ImageSource.Drawable(PropertyIcons.CASA),
+                ),
+                ImageOptionUIModel(
+                    id = "QUINTA",
+                    displayName = "Quinta",
+                    imageSource = ImageSource.Drawable(PropertyIcons.QUINTA),
+                ),
+                ImageOptionUIModel(
+                    id = "custom_upload",
+                    displayName = "Upload Custom Image",
+                    imageSource = ImageSource.UploadPlaceholder,
+                ),
+            )
 
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -623,7 +644,8 @@ private fun EdifikanaImageSelectorWithCustomImagePreview() {
 
             Text("Grid (simulates open sheet)", style = MaterialTheme.typography.labelMedium)
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .height(300.dp),
             ) {
@@ -643,16 +665,18 @@ private fun EdifikanaImageSelectorGridOverflowPreview() {
     AppTheme {
         var selectedOption by remember { mutableStateOf<ImageOptionUIModel?>(null) }
 
-        val options = (1..12).map { i ->
-            ImageOptionUIModel(
-                id = "OPTION_$i",
-                displayName = "Option $i",
-                imageSource = ImageSource.Drawable(PropertyIcons.CASA),
-            )
-        }
+        val options =
+            (1..12).map { i ->
+                ImageOptionUIModel(
+                    id = "OPTION_$i",
+                    displayName = "Option $i",
+                    imageSource = ImageSource.Drawable(PropertyIcons.CASA),
+                )
+            }
 
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -671,7 +695,8 @@ private fun EdifikanaImageSelectorGridOverflowPreview() {
 
             Text("Grid (simulates open sheet — scrolls at runtime)", style = MaterialTheme.typography.labelMedium)
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .height(300.dp),
             ) {
@@ -690,7 +715,8 @@ private fun EdifikanaImageSelectorGridOverflowPreview() {
 private fun EdifikanaImageSelectorGridEmptyPreview() {
     AppTheme {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
@@ -709,7 +735,8 @@ private fun EdifikanaImageSelectorGridEmptyPreview() {
 
             Text("Grid (simulates open sheet — empty state)", style = MaterialTheme.typography.labelMedium)
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .height(300.dp),
             ) {
@@ -728,7 +755,8 @@ private fun EdifikanaImageSelectorGridEmptyPreview() {
 private fun EdifikanaComponentsFullPreview() {
     AppTheme {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)

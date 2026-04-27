@@ -17,11 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
  * @param label Label text for the navigation item
  * @param route Route identifier for navigation
  */
-data class EdifikanaNavigationItem(
-    val icon: ImageVector,
-    val label: String,
-    val route: String,
-)
+data class EdifikanaNavigationItem(val icon: ImageVector, val label: String, val route: String)
 
 /**
  * Edifikana bottom navigation bar component.
@@ -58,7 +54,8 @@ fun EdifikanaBottomNavigation(
                 },
                 selected = selectedRoute == item.route,
                 onClick = { onItemClick(item.route) },
-                colors = NavigationBarItemDefaults.colors(
+                colors =
+                NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.onSurface,
                     selectedTextColor = MaterialTheme.colorScheme.onSurface,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,

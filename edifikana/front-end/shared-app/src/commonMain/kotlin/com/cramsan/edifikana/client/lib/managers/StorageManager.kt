@@ -30,10 +30,11 @@ class StorageManager(
      * @param targetRef The target storage path/reference
      * @return Result containing the storage reference on success, or error on failure
      */
-    suspend fun uploadFile(data: ByteArray, targetRef: String): Result<String> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "uploadFile: targetRef=$targetRef, size=${data.size} bytes")
-        storageService.uploadFile(data, targetRef).getOrThrow()
-    }
+    suspend fun uploadFile(data: ByteArray, targetRef: String): Result<String> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "uploadFile: targetRef=$targetRef, size=${data.size} bytes")
+            storageService.uploadFile(data, targetRef).getOrThrow()
+        }
 
     /**
      * Download a file from storage.
@@ -41,10 +42,11 @@ class StorageManager(
      * @param targetRef The storage path/reference to download
      * @return Result containing the local file URI on success, or error on failure
      */
-    suspend fun downloadFile(targetRef: String): Result<CoreUri> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "downloadFile: targetRef=$targetRef")
-        storageService.downloadFile(targetRef).getOrThrow()
-    }
+    suspend fun downloadFile(targetRef: String): Result<CoreUri> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "downloadFile: targetRef=$targetRef")
+            storageService.downloadFile(targetRef).getOrThrow()
+        }
 
     /**
      * Validate an image file and prepare it for preview.
@@ -71,11 +73,12 @@ class StorageManager(
             logI(TAG, "Filename: $filename")
 
             // Create preview UI model
-            val previewIcon = ImageOptionUIModel(
-                id = "custom_local",
-                displayName = "Custom Image",
-                imageSource = ImageSource.LocalFile(uri, filename),
-            )
+            val previewIcon =
+                ImageOptionUIModel(
+                    id = "custom_local",
+                    displayName = "Custom Image",
+                    imageSource = ImageSource.LocalFile(uri, filename),
+                )
 
             logI(TAG, "Image preview prepared successfully")
             previewIcon
@@ -89,23 +92,24 @@ class StorageManager(
      * @param targetRef The target storage path/reference (e.g., "private/properties/id_filename.jpg")
      * @return Result containing the storage reference on success, or error on failure
      */
-    suspend fun uploadImage(uri: CoreUri, targetRef: String): Result<String> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "uploadImage: uri=$uri, targetRef=$targetRef")
+    suspend fun uploadImage(uri: CoreUri, targetRef: String): Result<String> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "uploadImage: uri=$uri, targetRef=$targetRef")
 
-        // Read bytes from URI
-        val bytes = fileService.readFileBytes(uri).getOrThrow()
-        logI(TAG, "Read ${bytes.size} bytes from file")
+            // Read bytes from URI
+            val bytes = fileService.readFileBytes(uri).getOrThrow()
+            logI(TAG, "Read ${bytes.size} bytes from file")
 
-        // Process image (EXIF rotation + compression on Android, raw on JVM)
-        val processedBytes = fileService.processImage(bytes).getOrThrow()
-        logI(TAG, "Processed image, final size: ${processedBytes.size} bytes")
+            // Process image (EXIF rotation + compression on Android, raw on JVM)
+            val processedBytes = fileService.processImage(bytes).getOrThrow()
+            logI(TAG, "Processed image, final size: ${processedBytes.size} bytes")
 
-        // Upload to storage
-        val storageRef = storageService.uploadFile(processedBytes, targetRef).getOrThrow()
-        logI(TAG, "Upload successful: $storageRef")
+            // Upload to storage
+            val storageRef = storageService.uploadFile(processedBytes, targetRef).getOrThrow()
+            logI(TAG, "Upload successful: $storageRef")
 
-        storageRef
-    }
+            storageRef
+        }
 
     companion object {
         private const val TAG = "StorageManager"

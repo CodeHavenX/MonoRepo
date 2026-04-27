@@ -4,7 +4,6 @@ package com.cramsan.framework.utils.uuid
  * Simple UUID generator.
  */
 actual object UUID {
-
     /**
      * Function not implemented.
      */

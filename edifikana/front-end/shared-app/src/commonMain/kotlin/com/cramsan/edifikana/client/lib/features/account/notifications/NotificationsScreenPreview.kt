@@ -11,105 +11,115 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Preview
 @Composable
-private fun NotificationsScreenPreview() = AppTheme {
-    NotificationsContent(
-        content = NotificationsUIState(
-            title = "Notifications",
-            isLoading = false,
-            notifications = listOf(
-                InviteNotificationUIModel(
-                    id = NotificationId("1"),
-                    isRead = false,
-                    createdAt = "2024-01-22",
-                    description = "You have been invited to join Acme Corp",
-                    inviteId = InviteId("invite1"),
-                ),
-                SystemNotificationUIModel(
-                    id = NotificationId("2"),
-                    isRead = false,
-                    createdAt = "2024-01-21",
-                    description = "System maintenance scheduled",
-                    message = "System maintenance scheduled",
-                ),
-                SystemNotificationUIModel(
-                    id = NotificationId("2"),
-                    isRead = true,
-                    createdAt = "2024-01-21",
-                    description = "System maintenance completed",
-                    message = "System maintenance completed",
+private fun NotificationsScreenPreview() =
+    AppTheme {
+        NotificationsContent(
+            content =
+            NotificationsUIState(
+                title = "Notifications",
+                isLoading = false,
+                notifications =
+                listOf(
+                    InviteNotificationUIModel(
+                        id = NotificationId("1"),
+                        isRead = false,
+                        createdAt = "2024-01-22",
+                        description = "You have been invited to join Acme Corp",
+                        inviteId = InviteId("invite1"),
+                    ),
+                    SystemNotificationUIModel(
+                        id = NotificationId("2"),
+                        isRead = false,
+                        createdAt = "2024-01-21",
+                        description = "System maintenance scheduled",
+                        message = "System maintenance scheduled",
+                    ),
+                    SystemNotificationUIModel(
+                        id = NotificationId("2"),
+                        isRead = true,
+                        createdAt = "2024-01-21",
+                        description = "System maintenance completed",
+                        message = "System maintenance completed",
+                    ),
                 ),
             ),
-        ),
-        onBackSelected = {},
-        onAcceptInvite = {},
-        onDeclineInvite = {},
-        onMarkAsRead = {},
-        onDeleteNotification = {},
-    )
-}
+            onBackSelected = {},
+            onAcceptInvite = {},
+            onDeclineInvite = {},
+            onMarkAsRead = {},
+            onDeleteNotification = {},
+        )
+    }
 
 @Preview
 @Composable
-private fun NotificationsScreenEmptyPreview() = AppTheme {
-    NotificationsContent(
-        content = NotificationsUIState(
-            title = "Notifications",
-            isLoading = false,
-            notifications = emptyList(),
-        ),
-        onBackSelected = {},
-        onAcceptInvite = {},
-        onDeclineInvite = {},
-        onMarkAsRead = {},
-        onDeleteNotification = {},
-    )
-}
+private fun NotificationsScreenEmptyPreview() =
+    AppTheme {
+        NotificationsContent(
+            content =
+            NotificationsUIState(
+                title = "Notifications",
+                isLoading = false,
+                notifications = emptyList(),
+            ),
+            onBackSelected = {},
+            onAcceptInvite = {},
+            onDeclineInvite = {},
+            onMarkAsRead = {},
+            onDeleteNotification = {},
+        )
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun NotificationsScreenPreview_ES() = AppTheme {
-    NotificationsContent(
-        content = NotificationsUIState(
-            title = "Notificaciones",
-            isLoading = false,
-            notifications = listOf(
-                InviteNotificationUIModel(
-                    id = NotificationId("1"),
-                    isRead = false,
-                    createdAt = "2024-01-22",
-                    description = "Has sido invitado a unirte a Acme Corp",
-                    inviteId = InviteId("invite1"),
-                ),
-                SystemNotificationUIModel(
-                    id = NotificationId("2"),
-                    isRead = false,
-                    createdAt = "2024-01-21",
-                    description = "Mantenimiento del sistema programado",
-                    message = "Mantenimiento del sistema programado",
+private fun NotificationsScreenPreview_ES() =
+    AppTheme {
+        NotificationsContent(
+            content =
+            NotificationsUIState(
+                title = "Notificaciones",
+                isLoading = false,
+                notifications =
+                listOf(
+                    InviteNotificationUIModel(
+                        id = NotificationId("1"),
+                        isRead = false,
+                        createdAt = "2024-01-22",
+                        description = "Has sido invitado a unirte a Acme Corp",
+                        inviteId = InviteId("invite1"),
+                    ),
+                    SystemNotificationUIModel(
+                        id = NotificationId("2"),
+                        isRead = false,
+                        createdAt = "2024-01-21",
+                        description = "Mantenimiento del sistema programado",
+                        message = "Mantenimiento del sistema programado",
+                    ),
                 ),
             ),
-        ),
-        onBackSelected = {},
-        onAcceptInvite = {},
-        onDeclineInvite = {},
-        onMarkAsRead = {},
-        onDeleteNotification = {},
-    )
-}
+            onBackSelected = {},
+            onAcceptInvite = {},
+            onDeclineInvite = {},
+            onMarkAsRead = {},
+            onDeleteNotification = {},
+        )
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun NotificationsScreenEmptyPreview_ES() = AppTheme {
-    NotificationsContent(
-        content = NotificationsUIState(
-            title = "Notificaciones",
-            isLoading = false,
-            notifications = emptyList(),
-        ),
-        onBackSelected = {},
-        onAcceptInvite = {},
-        onDeclineInvite = {},
-        onMarkAsRead = {},
-        onDeleteNotification = {},
-    )
-}
+private fun NotificationsScreenEmptyPreview_ES() =
+    AppTheme {
+        NotificationsContent(
+            content =
+            NotificationsUIState(
+                title = "Notificaciones",
+                isLoading = false,
+                notifications = emptyList(),
+            ),
+            onBackSelected = {},
+            onAcceptInvite = {},
+            onDeclineInvite = {},
+            onMarkAsRead = {},
+            onDeleteNotification = {},
+        )
+    }

@@ -38,13 +38,15 @@ class ClaudeCliAiProvider(
     private val fullAccess: Boolean = false,
     private val json: Json? = null,
 ) : AiProvider {
-
     override suspend fun chat(
         systemPrompt: String,
         messages: List<AiMessage>,
         tools: List<AiTool>,
     ): AiResponse {
-        logD(TAG, "chat() called: model=$model, fullAccess=$fullAccess, messageCount=${messages.size}, toolCount=${tools.size}")
+        logD(
+            TAG,
+            "chat() called: model=$model, fullAccess=$fullAccess, messageCount=${messages.size}, toolCount=${tools.size}",
+        )
         return if (fullAccess) {
             chatFullAccess(systemPrompt, messages, tools)
         } else {
@@ -99,14 +101,17 @@ class ClaudeCliAiProvider(
         logD(TAG, "Collapsed prompt length=${collapsedPrompt.length} chars")
         logI(TAG, "Invoking claude CLI in full-access mode: cliPath=$cliPath, model=$model")
 
-        val result = shell.run(
-            cliPath,
-            "--print",
-            "--output-format", "json",
-            "--dangerously-skip-permissions",
-            "--model", model,
-            collapsedPrompt,
-        )
+        val result =
+            shell.run(
+                cliPath,
+                "--print",
+                "--output-format",
+                "json",
+                "--dangerously-skip-permissions",
+                "--model",
+                model,
+                collapsedPrompt,
+            )
 
         logD(TAG, "CLI exited with code=${result.exitCode}")
         if (result.exitCode != 0) {
@@ -133,11 +138,12 @@ class ClaudeCliAiProvider(
             append(systemPrompt)
             for (message in messages) {
                 append("\n\n")
-                val role = when (message.role) {
-                    "user" -> "[User]"
-                    "assistant" -> "[Assistant]"
-                    else -> "[${message.role.replaceFirstChar { it.uppercaseChar() }}]"
-                }
+                val role =
+                    when (message.role) {
+                        "user" -> "[User]"
+                        "assistant" -> "[Assistant]"
+                        else -> "[${message.role.replaceFirstChar { it.uppercaseChar() }}]"
+                    }
                 append("$role\n")
                 append(message.content)
             }
@@ -147,31 +153,34 @@ class ClaudeCliAiProvider(
         systemPrompt: String,
         messages: List<AiMessage>,
         tools: List<AiTool>,
-    ): String = buildString {
-        append("[System]\n")
-        append(systemPrompt)
-        if (tools.isNotEmpty()) {
-            append("\n\n[Available Tools]\n")
-            for (tool in tools) {
-                append("- ${tool.name}: ${tool.description}\n")
+    ): String =
+        buildString {
+            append("[System]\n")
+            append(systemPrompt)
+            if (tools.isNotEmpty()) {
+                append("\n\n[Available Tools]\n")
+                for (tool in tools) {
+                    append("- ${tool.name}: ${tool.description}\n")
+                }
+            }
+            for (message in messages) {
+                append("\n\n")
+                val label =
+                    when (message.role) {
+                        "user" -> "[User]"
+                        "assistant" -> "[Assistant]"
+                        else -> "[${message.role.replaceFirstChar { it.uppercaseChar() }}]"
+                    }
+                append("$label\n")
+                append(message.content)
             }
         }
-        for (message in messages) {
-            append("\n\n")
-            val label = when (message.role) {
-                "user" -> "[User]"
-                "assistant" -> "[Assistant]"
-                else -> "[${message.role.replaceFirstChar { it.uppercaseChar() }}]"
-            }
-            append("$label\n")
-            append(message.content)
-        }
-    }
 
     internal fun parseJsonOutput(stdout: String): String {
-        val jsonInstance = requireNotNull(json) {
-            "json parameter is required when fullAccess=true"
-        }
+        val jsonInstance =
+            requireNotNull(json) {
+                "json parameter is required when fullAccess=true"
+            }
         return try {
             val jsonObj = jsonInstance.parseToJsonElement(stdout).jsonObject
             val isError = jsonObj["is_error"]?.jsonPrimitive?.boolean ?: false

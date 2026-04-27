@@ -6,7 +6,6 @@ import io.ktor.server.application.ApplicationCall
  * A [ContextRetriever] is responsible for retrieving the client context.
  */
 interface ContextRetriever<P> {
-
     /**
      * Retrieve the client context from the given [applicationCall].
      */

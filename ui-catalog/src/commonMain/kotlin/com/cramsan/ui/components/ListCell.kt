@@ -21,13 +21,15 @@ fun ListCell(
     content: @Composable BoxScope.() -> Unit,
 ) {
     Row(
-        modifier = Modifier.then(
-            if (onSelection != null) {
-                Modifier.clickable { onSelection() }
-            } else {
-                Modifier
-            }
-        ).then(modifier),
+        modifier =
+        Modifier
+            .then(
+                if (onSelection != null) {
+                    Modifier.clickable { onSelection() }
+                } else {
+                    Modifier
+                },
+            ).then(modifier),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
     ) {

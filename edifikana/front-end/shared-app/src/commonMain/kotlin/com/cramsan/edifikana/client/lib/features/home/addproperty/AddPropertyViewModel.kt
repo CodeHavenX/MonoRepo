@@ -31,19 +31,21 @@ class AddPropertyViewModel(
     AddPropertyUIState.Initial,
     TAG,
 ) {
-
     /**
      * Initialize the ViewModel with the organization ID.
      */
     fun initialize(orgId: OrganizationId) {
         viewModelScope.launch {
-            val defaultIcon = PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
-                ?: PropertyIconOptions.getDefaultOptions().first()
+            val defaultIcon =
+                PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
+                    ?: PropertyIconOptions.getDefaultOptions().first()
 
-            updateUiState { it.copy(
-                orgId = orgId,
-                selectedIcon = defaultIcon
-            ) }
+            updateUiState {
+                it.copy(
+                    orgId = orgId,
+                    selectedIcon = defaultIcon,
+                )
+            }
         }
     }
 
@@ -67,48 +69,51 @@ class AddPropertyViewModel(
     fun addProperty(
         propertyName: String,
         address: String,
-        selectedIcon: ImageOptionUIModel?
+        selectedIcon: ImageOptionUIModel?,
     ) {
         viewModelScope.launch {
             val organizationId = requireNotNull(uiState.value.orgId)
 
             // Extract URI if user selected a custom local file
-            val imageUri = if (selectedIcon?.id == "custom_local" &&
-                selectedIcon.imageSource is ImageSource.LocalFile
-            ) {
-                (selectedIcon.imageSource as ImageSource.LocalFile).uri
-            } else {
-                null
-            }
+            val imageUri =
+                if (selectedIcon?.id == "custom_local" &&
+                    selectedIcon.imageSource is ImageSource.LocalFile
+                ) {
+                    (selectedIcon.imageSource as ImageSource.LocalFile).uri
+                } else {
+                    null
+                }
 
             // For non-custom images, use the converted imageUrl
-            val imageUrl = if (imageUri == null) {
-                PropertyIconOptions.toImageUrl(selectedIcon)
-            } else {
-                null
-            }
+            val imageUrl =
+                if (imageUri == null) {
+                    PropertyIconOptions.toImageUrl(selectedIcon)
+                } else {
+                    null
+                }
 
             // Set loading states - isUploading only if we have a custom image
             updateUiState {
                 it.copy(
                     isLoading = true,
-                    isUploading = imageUri != null
+                    isUploading = imageUri != null,
                 )
             }
 
             // Call PropertyManager with either imageUrl or imageUri
-            propertyManager.addProperty(propertyName, address, organizationId, imageUrl, imageUri)
+            propertyManager
+                .addProperty(propertyName, address, organizationId, imageUrl, imageUri)
                 .onSuccess { newProperty ->
                     updateUiState { it.copy(isLoading = false, isUploading = false) }
-                    val message = if (imageUri != null) {
-                        "Property ${newProperty.name} added with custom image"
-                    } else {
-                        "Property ${newProperty.name} added successfully"
-                    }
+                    val message =
+                        if (imageUri != null) {
+                            "Property ${newProperty.name} added with custom image"
+                        } else {
+                            "Property ${newProperty.name} added successfully"
+                        }
                     emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(message))
                     emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     logE(TAG, "Failed to add property", error)
                     val message = getUploadErrorMessage(error)
                     updateUiState { it.copy(isLoading = false, isUploading = false, uploadError = message) }
@@ -146,17 +151,17 @@ class AddPropertyViewModel(
      */
     private fun validateAndPreviewImage(uri: CoreUri) {
         viewModelScope.launch {
-            storageManager.validateAndPrepareImagePreview(uri)
+            storageManager
+                .validateAndPrepareImagePreview(uri)
                 .onSuccess { previewIcon ->
                     logI(TAG, "Validation successful, showing local preview")
                     updateUiState {
                         it.copy(
                             selectedIcon = previewIcon,
-                            uploadError = null
+                            uploadError = null,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     logE(TAG, "Validation failed: ${error.message}", error)
                     val message = error.message ?: "Failed to validate image"
                     updateUiState { it.copy(uploadError = message, selectedIcon = null) }
@@ -170,19 +175,25 @@ class AddPropertyViewModel(
      */
     private suspend fun getUploadErrorMessage(exception: Throwable): String {
         return when (exception) {
-            is ClientRequestExceptions.UnauthorizedException ->
+            is ClientRequestExceptions.UnauthorizedException -> {
                 "Authentication failed. Please sign in again."
+            }
 
-            is ClientRequestExceptions.ForbiddenException ->
+            is ClientRequestExceptions.ForbiddenException -> {
                 "You don't have permission to upload files."
+            }
 
-            is ClientRequestExceptions.InvalidRequestException ->
+            is ClientRequestExceptions.InvalidRequestException -> {
                 "Invalid file. ${exception.message}"
+            }
 
-            is ClientRequestExceptions.ConflictException ->
+            is ClientRequestExceptions.ConflictException -> {
                 "A file with this name already exists."
+            }
 
-            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
+            else -> {
+                stringProvider.getString(Res.string.error_message_unexpected_error)
+            }
         }
     }
 
@@ -208,7 +219,7 @@ class AddPropertyViewModel(
                 updateUiState {
                     it.copy(
                         selectedIcon = option,
-                        uploadError = null
+                        uploadError = null,
                     )
                 }
             }

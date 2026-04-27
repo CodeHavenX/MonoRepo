@@ -9,40 +9,44 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun ValidationScreenPreview() = AppTheme {
-    OtpValidationContent(
-        uiState = OtpValidationUIState(
-            isLoading = true,
-            errorMessage = "",
-            email = "garcia.alicia1990@gmail.com",
-            otpCode = "123456",
-            accountCreationFlow = true,
-            enabledContinueButton = true,
-            otpLength = 6,
-        ),
-        modifier = Modifier,
-        onBackClicked = {},
-        onLoginClicked = {},
-        onValueChanged = {},
-    )
-}
+private fun ValidationScreenPreview() =
+    AppTheme {
+        OtpValidationContent(
+            uiState =
+            OtpValidationUIState(
+                isLoading = true,
+                errorMessage = "",
+                email = "garcia.alicia1990@gmail.com",
+                otpCode = "123456",
+                accountCreationFlow = true,
+                enabledContinueButton = true,
+                otpLength = 6,
+            ),
+            modifier = Modifier,
+            onBackClicked = {},
+            onLoginClicked = {},
+            onValueChanged = {},
+        )
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun ValidationScreenPreview_ES() = AppTheme {
-    OtpValidationContent(
-        uiState = OtpValidationUIState(
-            isLoading = true,
-            errorMessage = "",
-            email = "garcia.alicia1990@gmail.com",
-            otpCode = "123456",
-            accountCreationFlow = true,
-            enabledContinueButton = true,
-            otpLength = 6,
-        ),
-        modifier = Modifier,
-        onBackClicked = {},
-        onLoginClicked = {},
-        onValueChanged = {},
-    )
-}
+private fun ValidationScreenPreview_ES() =
+    AppTheme {
+        OtpValidationContent(
+            uiState =
+            OtpValidationUIState(
+                isLoading = true,
+                errorMessage = "",
+                email = "garcia.alicia1990@gmail.com",
+                otpCode = "123456",
+                accountCreationFlow = true,
+                enabledContinueButton = true,
+                otpLength = 6,
+            ),
+            modifier = Modifier,
+            onBackClicked = {},
+            onLoginClicked = {},
+            onValueChanged = {},
+        )
+    }

@@ -3,8 +3,6 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.lib.model.network.asset.AssetNetworkResponse
-import com.cramsan.edifikana.lib.model.network.payment.PaymentRecordNetworkResponse
-import com.cramsan.edifikana.lib.model.network.rent.RentConfigNetworkResponse
 import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaNetworkResponse
 import com.cramsan.edifikana.lib.model.network.document.DocumentNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
@@ -14,15 +12,15 @@ import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkR
 import com.cramsan.edifikana.lib.model.network.occupant.OccupantNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.MemberNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.payment.PaymentRecordNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
+import com.cramsan.edifikana.lib.model.network.rent.RentConfigNetworkResponse
 import com.cramsan.edifikana.lib.model.network.task.TaskNetworkResponse
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.unit.UnitNetworkResponse
 import com.cramsan.edifikana.lib.model.network.user.AuthMetadataNetworkResponse
 import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Asset
-import com.cramsan.edifikana.server.service.models.PaymentRecord
-import com.cramsan.edifikana.server.service.models.RentConfig
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
 import com.cramsan.edifikana.server.service.models.Employee
@@ -32,7 +30,9 @@ import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.Occupant
 import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.PaymentRecord
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.RentConfig
 import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.Unit
@@ -51,7 +51,8 @@ fun User.toUserNetworkResponse(): UserNetworkResponse {
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
-        authMetadata = authMetadata?.let {
+        authMetadata =
+        authMetadata?.let {
             AuthMetadataNetworkResponse(
                 isPasswordSet = it.isPasswordSet,
             )

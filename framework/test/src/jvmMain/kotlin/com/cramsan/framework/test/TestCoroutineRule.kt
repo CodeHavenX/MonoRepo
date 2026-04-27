@@ -18,8 +18,9 @@ import org.junit.jupiter.api.extension.ExtensionContext
  * JVM/Android source sets so we can keep a single file. For now please do not modify this file and
  * instead update the Android one and then copy-paste that file here.
  */
-class TestCoroutineRule : AfterEachCallback, BeforeEachCallback {
-
+class TestCoroutineRule :
+    AfterEachCallback,
+    BeforeEachCallback {
     val testCoroutineDispatcher = UnconfinedTestDispatcher()
     val testCoroutineScope = TestScope(testCoroutineDispatcher)
 

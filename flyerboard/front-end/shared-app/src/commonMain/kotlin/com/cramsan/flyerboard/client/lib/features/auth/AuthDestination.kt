@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
  * Destinations in the auth nav graph.
  */
 sealed class AuthDestination : Destination {
-
     /**
      * Sign-in screen destination.
      */

@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class EventLogEntryListNetworkResponse(
-    val content: List<EventLogEntryNetworkResponse>,
-) : ResponseBody
+data class EventLogEntryListNetworkResponse(val content: List<EventLogEntryNetworkResponse>) : ResponseBody

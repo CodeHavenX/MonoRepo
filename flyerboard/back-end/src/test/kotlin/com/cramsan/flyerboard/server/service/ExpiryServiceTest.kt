@@ -28,7 +28,6 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class ExpiryServiceTest {
-
     private lateinit var flyerDatastore: FlyerDatastore
     private lateinit var expiryService: ExpiryService
 
@@ -64,72 +63,94 @@ class ExpiryServiceTest {
     // ── start / archiveExpiredFlyers ──────────────────────────────────────────
 
     @Test
-    fun `expired flyers are transitioned to ARCHIVED after one tick`() = runTest {
-        val expiredFlyer = makeFlyer(id = "flyer-expired", status = FlyerStatus.APPROVED)
-        val archivedFlyer = expiredFlyer.copy(status = FlyerStatus.ARCHIVED)
+    fun `expired flyers are transitioned to ARCHIVED after one tick`() =
+        runTest {
+            val expiredFlyer = makeFlyer(id = "flyer-expired", status = FlyerStatus.APPROVED)
+            val archivedFlyer = expiredFlyer.copy(status = FlyerStatus.ARCHIVED)
 
-        coEvery { flyerDatastore.listExpiredFlyers(any()) } returns Result.success(listOf(expiredFlyer))
-        coEvery { flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any()) } returns Result.success(archivedFlyer)
+            coEvery { flyerDatastore.listExpiredFlyers(any()) } returns Result.success(listOf(expiredFlyer))
+            coEvery {
+                flyerDatastore.updateFlyer(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns Result.success(archivedFlyer)
 
-        expiryService.start(backgroundScope)
+            expiryService.start(backgroundScope)
 
-        // Advance past the initial 1-hour delay to trigger the first archival run
-        advanceTimeBy(1.hours + 1.milliseconds)
+            // Advance past the initial 1-hour delay to trigger the first archival run
+            advanceTimeBy(1.hours + 1.milliseconds)
 
-        coVerify {
-            flyerDatastore.updateFlyer(
-                id = expiredFlyer.id,
-                title = null,
-                description = null,
-                filePath = null,
-                status = FlyerStatus.ARCHIVED,
-                expiresAt = null,
-            )
+            coVerify {
+                flyerDatastore.updateFlyer(
+                    id = expiredFlyer.id,
+                    title = null,
+                    description = null,
+                    filePath = null,
+                    status = FlyerStatus.ARCHIVED,
+                    expiresAt = null,
+                )
+            }
         }
-    }
 
     @Test
-    fun `no updates are made when there are no expired flyers`() = runTest {
-        coEvery { flyerDatastore.listExpiredFlyers(any()) } returns Result.success(emptyList())
+    fun `no updates are made when there are no expired flyers`() =
+        runTest {
+            coEvery { flyerDatastore.listExpiredFlyers(any()) } returns Result.success(emptyList())
 
-        expiryService.start(backgroundScope)
+            expiryService.start(backgroundScope)
 
-        advanceTimeBy(1.hours + 1.milliseconds)
+            advanceTimeBy(1.hours + 1.milliseconds)
 
-        coVerify(exactly = 0) {
-            flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
+            coVerify(exactly = 0) {
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
+            }
         }
-    }
 
     @Test
-    fun `service runs again on the second tick`() = runTest {
-        val expiredFlyer = makeFlyer(id = "flyer-expired", status = FlyerStatus.APPROVED)
-        val archivedFlyer = expiredFlyer.copy(status = FlyerStatus.ARCHIVED)
+    fun `service runs again on the second tick`() =
+        runTest {
+            val expiredFlyer = makeFlyer(id = "flyer-expired", status = FlyerStatus.APPROVED)
+            val archivedFlyer = expiredFlyer.copy(status = FlyerStatus.ARCHIVED)
 
-        coEvery { flyerDatastore.listExpiredFlyers(any()) } returns Result.success(listOf(expiredFlyer))
-        coEvery { flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any()) } returns Result.success(archivedFlyer)
+            coEvery { flyerDatastore.listExpiredFlyers(any()) } returns Result.success(listOf(expiredFlyer))
+            coEvery {
+                flyerDatastore.updateFlyer(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns Result.success(archivedFlyer)
 
-        expiryService.start(backgroundScope)
+            expiryService.start(backgroundScope)
 
-        // Advance past two ticks
-        advanceTimeBy(2.hours + 1.milliseconds)
+            // Advance past two ticks
+            advanceTimeBy(2.hours + 1.milliseconds)
 
-        coVerify(exactly = 2) {
-            flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
+            coVerify(exactly = 2) {
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
+            }
         }
-    }
 
     @Test
-    fun `service does not run before the first hour has elapsed`() = runTest {
-        coEvery { flyerDatastore.listExpiredFlyers(any()) } returns Result.success(emptyList())
+    fun `service does not run before the first hour has elapsed`() =
+        runTest {
+            coEvery { flyerDatastore.listExpiredFlyers(any()) } returns Result.success(emptyList())
 
-        expiryService.start(backgroundScope)
+            expiryService.start(backgroundScope)
 
-        // Advance less than 1 hour — the tick should not have fired yet
-        advanceTimeBy(30.minutes - 1.milliseconds)
+            // Advance less than 1 hour — the tick should not have fired yet
+            advanceTimeBy(30.minutes - 1.milliseconds)
 
-        coVerify(exactly = 0) {
-            flyerDatastore.listExpiredFlyers(any())
+            coVerify(exactly = 0) {
+                flyerDatastore.listExpiredFlyers(any())
+            }
         }
-    }
 }

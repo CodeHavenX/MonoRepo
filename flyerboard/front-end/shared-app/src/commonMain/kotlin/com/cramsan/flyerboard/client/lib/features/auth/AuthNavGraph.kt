@@ -3,10 +3,10 @@ package com.cramsan.flyerboard.client.lib.features.auth
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import com.cramsan.framework.core.compose.navigation.navigationGraph
 import com.cramsan.flyerboard.client.lib.features.auth.sign_in.SignInScreen
 import com.cramsan.flyerboard.client.lib.features.auth.sign_up.SignUpScreen
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
+import com.cramsan.framework.core.compose.navigation.navigationGraph
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KType
 

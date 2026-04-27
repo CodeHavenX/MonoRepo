@@ -14,15 +14,16 @@ import org.koin.dsl.module
 /**
  * Class to initialize all the application level components.
  */
-internal val ApplicationModule = module {
+internal val ApplicationModule =
+    module {
 
-    single<String>(named(NamedDependency.DOMAIN_KEY)) { "FLYERBOARD" }
+        single<String>(named(NamedDependency.DOMAIN_KEY)) { "FLYERBOARD" }
 
-    single<Json> {
-        createJson()
+        single<Json> {
+            createJson()
+        }
+
+        singleOf(::FlyerBoardContextRetriever) {
+            bind<ContextRetriever<FlyerBoardContextPayload>>()
+        }
     }
-
-    singleOf(::FlyerBoardContextRetriever) {
-        bind<ContextRetriever<FlyerBoardContextPayload>>()
-    }
-}

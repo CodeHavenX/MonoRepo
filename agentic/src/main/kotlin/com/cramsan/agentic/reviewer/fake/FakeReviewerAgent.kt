@@ -19,7 +19,6 @@ class FakeReviewerAgent(
     private val documentFeedback: String = "No issues found.",
     private val codeFeedback: String = "LGTM.",
 ) : ReviewerAgent {
-
     override suspend fun reviewDocuments(
         reviewer: ReviewerDefinition,
         documents: List<AgenticDocument>,

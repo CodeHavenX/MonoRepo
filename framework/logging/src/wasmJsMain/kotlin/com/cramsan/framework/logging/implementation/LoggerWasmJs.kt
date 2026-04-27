@@ -16,11 +16,12 @@ class LoggerWasmJs : EventLoggerDelegate {
     ) {
         val argumentList = args.toList()
 
-        val formattedString = if (argumentList.isEmpty()) {
-            "[${severity.name}][$tag]$message"
-        } else {
-            "[${severity.name}][$tag]$message-$argumentList"
-        }
+        val formattedString =
+            if (argumentList.isEmpty()) {
+                "[${severity.name}][$tag]$message"
+            } else {
+                "[${severity.name}][$tag]$message-$argumentList"
+            }
 
         when (severity) {
             Severity.VERBOSE, Severity.DEBUG -> println(formattedString)

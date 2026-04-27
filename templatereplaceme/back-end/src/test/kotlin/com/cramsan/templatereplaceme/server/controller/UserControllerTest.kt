@@ -28,8 +28,9 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class UserControllerTest : CoroutineTest(), KoinTest {
-
+class UserControllerTest :
+    CoroutineTest(),
+    KoinTest {
     @BeforeTest
     fun setupTest() {
         startTestKoin(
@@ -45,40 +46,42 @@ class UserControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test createUser`() = testBackEndApplication {
-        // Arrange
-        val requestBody = readFileContent("requests/create_user_request.json")
-        val expectedResponse = readFileContent("requests/create_user_response.json")
-        val userService = get<UserService>()
-        coEvery {
-            userService.createUser(
-                firstName = "John",
-                lastName = "Doe",
-            )
-        }.answers {
-            Result.success(
-                User(
-                    id = UserId("user123"),
+    fun `test createUser`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/create_user_request.json")
+            val expectedResponse = readFileContent("requests/create_user_response.json")
+            val userService = get<UserService>()
+            coEvery {
+                userService.createUser(
                     firstName = "John",
                     lastName = "Doe",
                 )
-            )
-        }
-        val contextRetriever = get<ContextRetriever<Unit>>()
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.UnauthenticatedClientContext()
-        }
+            }.answers {
+                Result.success(
+                    User(
+                        id = UserId("user123"),
+                        firstName = "John",
+                        lastName = "Doe",
+                    ),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<Unit>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.UnauthenticatedClientContext()
+            }
 
-        // Act
-        val response = client.post("user") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
-        }
+            // Act
+            val response =
+                client.post("user") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
 }

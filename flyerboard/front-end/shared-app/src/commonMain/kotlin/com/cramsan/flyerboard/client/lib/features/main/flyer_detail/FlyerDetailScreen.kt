@@ -99,14 +99,20 @@ internal fun FlyerDetailContent(
             contentAlignment = Alignment.Center,
         ) {
             when {
-                uiState.isLoading -> CircularProgressIndicator()
+                uiState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+
                 uiState.flyer == null -> {
                     Text(
                         text = stringResource(Res.string.flyer_detail_screen_not_found),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
-                else -> FlyerDetailBody(flyer = uiState.flyer)
+
+                else -> {
+                    FlyerDetailBody(flyer = uiState.flyer)
+                }
             }
         }
     }
@@ -118,7 +124,8 @@ private fun FlyerDetailBody(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(Padding.MEDIUM),
@@ -129,7 +136,8 @@ private fun FlyerDetailBody(
                 model = url,
                 contentDescription = flyer.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .aspectRatio(FLYER_ASPECT_RATIO),
             )

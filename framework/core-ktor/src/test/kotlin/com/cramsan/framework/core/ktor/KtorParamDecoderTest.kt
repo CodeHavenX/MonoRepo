@@ -40,11 +40,12 @@ class KtorParamDecoderTest {
 
     @Test
     fun `decodes multiple primitive fields`() {
-        val params = Parameters.build {
-            append("orgId", "123")
-            append("userId", "42")
-            append("active", "true")
-        }
+        val params =
+            Parameters.build {
+                append("orgId", "123")
+                append("userId", "42")
+                append("active", "true")
+            }
         val obj = decodeFromQueryParams<MultiField>(params)
         assertEquals(MultiField("123", 42, true), obj)
     }
@@ -74,73 +75,80 @@ class KtorParamDecoderTest {
 
     @Test
     fun `decoding special characters throws`() {
-        val params = Parameters.build {
-            append("key", "a b&c")
-            append("value", "1=2&3%")
-        }
+        val params =
+            Parameters.build {
+                append("key", "a b&c")
+                append("value", "1=2&3%")
+            }
         val obj = decodeFromQueryParams<SpecialChars>(params)
         assertEquals(SpecialChars("a b&c", "1=2&3%"), obj)
     }
 
     @Test
     fun `decodes booleans and numbers`() {
-        val params = Parameters.build {
-            append("b", "false")
-            append("i", "0")
-            append("f", "-1.5")
-            append("d", "2.5")
-        }
+        val params =
+            Parameters.build {
+                append("b", "false")
+                append("i", "0")
+                append("f", "-1.5")
+                append("d", "2.5")
+            }
         val obj = decodeFromQueryParams<BoolAndNumbers>(params)
         assertEquals(BoolAndNumbers(false, 0, -1.5f, 2.5), obj)
     }
 
     @Test
     fun `decodes list field`() {
-        val params = Parameters.build {
-            appendAll("items", listOf("1", "2", "3"))
-        }
+        val params =
+            Parameters.build {
+                appendAll("items", listOf("1", "2", "3"))
+            }
         val obj = decodeFromQueryParams<ListField>(params)
         assertEquals(ListField(listOf(1, 2, 3)), obj)
     }
 
     @Test
     fun `decodes null and empty string values`() {
-        val params = Parameters.build {
-            append("orgId", "")
-            append("userId", "")
-        }
+        val params =
+            Parameters.build {
+                append("orgId", "")
+                append("userId", "")
+            }
         val obj = decodeFromQueryParams<NullField>(params)
         assertEquals(NullField("", ""), obj)
     }
 
     @Test
     fun `ignores extra parameters`() {
-        val params = Parameters.build {
-            append("orgId", "abc")
-            append("userId", "123")
-            append("extra", "zzz")
-        }
+        val params =
+            Parameters.build {
+                append("orgId", "abc")
+                append("userId", "123")
+                append("extra", "zzz")
+            }
         val obj = decodeFromQueryParams<SingleField>(params)
         assertEquals(SingleField("abc"), obj)
     }
 
     @Test
     fun `order independence`() {
-        val params = Parameters.build {
-            append("userId", "42")
-            append("active", "true")
-            append("orgId", "123")
-        }
+        val params =
+            Parameters.build {
+                append("userId", "42")
+                append("active", "true")
+                append("orgId", "123")
+            }
         val obj = decodeFromQueryParams<MultiField>(params)
         assertEquals(MultiField("123", 42, true), obj)
     }
 
     @Test
     fun `malformed query string throws`() {
-        val params = Parameters.build {
-            append("orgId123", "")
-            append("userId", "42")
-        }
+        val params =
+            Parameters.build {
+                append("orgId123", "")
+                append("userId", "42")
+            }
         assertFailsWith<MissingFieldException> {
             decodeFromQueryParams<MultiField>(params)
         }

@@ -31,7 +31,6 @@ class DefaultWorktreeManager(
     private val baseBranch: String,
     private val shell: ShellRunner,
 ) : WorktreeManager {
-
     private val worktreesDir: Path = agenticDir.resolve("worktrees")
 
     private fun worktreePath(taskId: String): Path = worktreesDir.resolve(taskId)
@@ -43,13 +42,17 @@ class DefaultWorktreeManager(
             return Worktree(taskId = taskId, path = path, branchName = "agentic/$taskId")
         }
         logI(TAG, "Creating new worktree for task $taskId at $path")
-        val result = shell.run(
-            "git", "worktree", "add",
-            "-b", "agentic/$taskId",
-            path.toString(),
-            baseBranch,
-            workingDir = repoRoot.toString(),
-        )
+        val result =
+            shell.run(
+                "git",
+                "worktree",
+                "add",
+                "-b",
+                "agentic/$taskId",
+                path.toString(),
+                baseBranch,
+                workingDir = repoRoot.toString(),
+            )
         check(result.exitCode == 0) { "Failed to create worktree for $taskId: ${result.stderr}" }
         return Worktree(taskId = taskId, path = path, branchName = "agentic/$taskId")
     }
@@ -71,27 +74,33 @@ class DefaultWorktreeManager(
                 .map { dir ->
                     val taskId = dir.fileName.toString()
                     Worktree(taskId = taskId, path = dir, branchName = "agentic/$taskId")
-                }
-                .toList()
+                }.toList()
         }
     }
 
     override suspend fun delete(taskId: String) {
         val path = worktreePath(taskId)
         logI(TAG, "Deleting worktree for task $taskId at $path")
-        val removeResult = shell.run(
-            "git", "worktree", "remove",
-            "--force",
-            path.toString(),
-            workingDir = repoRoot.toString(),
-        )
+        val removeResult =
+            shell.run(
+                "git",
+                "worktree",
+                "remove",
+                "--force",
+                path.toString(),
+                workingDir = repoRoot.toString(),
+            )
         if (removeResult.exitCode != 0) {
             logW(TAG, "git worktree remove failed for $taskId: ${removeResult.stderr}")
         }
-        val branchResult = shell.run(
-            "git", "branch", "-D", "agentic/$taskId",
-            workingDir = repoRoot.toString(),
-        )
+        val branchResult =
+            shell.run(
+                "git",
+                "branch",
+                "-D",
+                "agentic/$taskId",
+                workingDir = repoRoot.toString(),
+            )
         if (branchResult.exitCode != 0) {
             logW(TAG, "git branch -D failed for $taskId: ${branchResult.stderr}")
         }

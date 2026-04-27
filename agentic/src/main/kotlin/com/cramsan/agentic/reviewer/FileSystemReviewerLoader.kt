@@ -21,7 +21,6 @@ private const val TAG = "FileSystemReviewerLoader"
  * are invoked in that order. There is no guaranteed ordering across platforms.
  */
 class FileSystemReviewerLoader(private val reviewersDir: Path) : ReviewerLoader {
-
     override fun loadAll(): List<ReviewerDefinition> {
         logD(TAG, "loadAll called: reviewersDir=$reviewersDir")
 

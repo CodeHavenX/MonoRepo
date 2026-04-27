@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class TaskListNetworkResponse(
-    val tasks: List<TaskNetworkResponse>,
-) : ResponseBody
+data class TaskListNetworkResponse(val tasks: List<TaskNetworkResponse>) : ResponseBody

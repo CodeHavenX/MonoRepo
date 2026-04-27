@@ -10,10 +10,7 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for managing common areas. Delegates persistence to [CommonAreaDatastore].
  */
-class CommonAreaService(
-    private val commonAreaDatastore: CommonAreaDatastore,
-) {
-
+class CommonAreaService(private val commonAreaDatastore: CommonAreaDatastore) {
     /**
      * Creates a new common area record.
      */
@@ -24,12 +21,13 @@ class CommonAreaService(
         description: String?,
     ): CommonArea {
         logD(TAG, "createCommonArea")
-        return commonAreaDatastore.createCommonArea(
-            propertyId = propertyId,
-            name = name,
-            type = type,
-            description = description,
-        ).getOrThrow()
+        return commonAreaDatastore
+            .createCommonArea(
+                propertyId = propertyId,
+                name = name,
+                type = type,
+                description = description,
+            ).getOrThrow()
     }
 
     /**
@@ -58,12 +56,13 @@ class CommonAreaService(
         description: String?,
     ): CommonArea {
         logD(TAG, "updateCommonArea")
-        return commonAreaDatastore.updateCommonArea(
-            commonAreaId = commonAreaId,
-            name = name,
-            type = type,
-            description = description,
-        ).getOrThrow()
+        return commonAreaDatastore
+            .updateCommonArea(
+                commonAreaId = commonAreaId,
+                name = name,
+                type = type,
+                description = description,
+            ).getOrThrow()
     }
 
     /**

@@ -17,39 +17,40 @@ import com.cramsan.framework.thread.ThreadUtilInterface
 import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import org.koin.dsl.module
 
-internal val FrameworkModule = module {
+internal val FrameworkModule =
+    module {
 
-    single<AssertUtilInterface> {
-        AssertUtilImpl(
-            false,
-            get(),
-            get(),
-        ).also {
-            AssertUtil.setInstance(it)
+        single<AssertUtilInterface> {
+            AssertUtilImpl(
+                false,
+                get(),
+                get(),
+            ).also {
+                AssertUtil.setInstance(it)
+            }
+        }
+
+        single<EventLoggerErrorCallback> {
+            EventLoggerErrorCallbackImpl(get(), get())
+        }
+
+        single<EventLoggerInterface> {
+            EventLoggerImpl(
+                targetSeverity = Severity.VERBOSE,
+                get(),
+                get(),
+            ).also {
+                EventLogger.setInstance(it)
+            }
+        }
+
+        single<HaltUtil> { HaltUtilImpl(get()) }
+
+        single<ThreadUtilInterface> {
+            ThreadUtilImpl(get())
+        }
+
+        single<Preferences> {
+            PreferencesImpl(get())
         }
     }
-
-    single<EventLoggerErrorCallback> {
-        EventLoggerErrorCallbackImpl(get(), get())
-    }
-
-    single<EventLoggerInterface> {
-        EventLoggerImpl(
-            targetSeverity = Severity.VERBOSE,
-            get(),
-            get(),
-        ).also {
-            EventLogger.setInstance(it)
-        }
-    }
-
-    single<HaltUtil> { HaltUtilImpl(get()) }
-
-    single<ThreadUtilInterface> {
-        ThreadUtilImpl(get())
-    }
-
-    single<Preferences> {
-        PreferencesImpl(get())
-    }
-}

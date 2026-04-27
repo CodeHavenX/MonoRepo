@@ -74,7 +74,7 @@ fun EdifikanaPasswordTextField(
                 Text(
                     text = placeholder,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 )
             },
             trailingIcon = {
@@ -84,18 +84,21 @@ fun EdifikanaPasswordTextField(
                     } else {
                         Icons.Filled.VisibilityOff
                     },
-                    contentDescription = if (showPassword) {
+                    contentDescription =
+                    if (showPassword) {
                         stringResource(Res.string.password_outlined_textfield_toggle_visibility_description_visible)
                     } else {
                         stringResource(Res.string.password_outlined_textfield_toggle_visibility_description_hidden)
                     },
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .clip(CircleShape)
                         .clickable { showPassword = !showPassword }
-                        .padding(Padding.XX_SMALL)
+                        .padding(Padding.XX_SMALL),
                 )
             },
-            visualTransformation = if (showPassword) {
+            visualTransformation =
+            if (showPassword) {
                 VisualTransformation.None
             } else {
                 PasswordVisualTransformation()
@@ -107,7 +110,8 @@ fun EdifikanaPasswordTextField(
             maxLines = 1,
             minLines = 1,
             shape = RoundedCornerShape(25.dp),
-            colors = OutlinedTextFieldDefaults.colors(
+            colors =
+            OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,

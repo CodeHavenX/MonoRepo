@@ -6,9 +6,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-private fun RunasimiTopBarPreview() = AppTheme {
-    RunasimiTopBar(
-        title = "Title",
-        onNavigationIconSelected = {},
-    )
-}
+private fun RunasimiTopBarPreview() =
+    AppTheme {
+        RunasimiTopBar(
+            title = "Title",
+            onNavigationIconSelected = {},
+        )
+    }

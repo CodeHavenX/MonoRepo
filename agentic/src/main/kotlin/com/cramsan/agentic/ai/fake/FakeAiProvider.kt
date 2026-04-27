@@ -35,7 +35,6 @@ class FakeAiProvider(
     private val autoCompleteAfterTurns: Int = 5,
     private val defaultTextResponse: String = "I understand. Let me continue working on this task.",
 ) : AiProvider {
-
     private val responseQueue: ConcurrentLinkedQueue<AiResponse> = ConcurrentLinkedQueue()
     private val capturedRequests: MutableList<CapturedRequest> = mutableListOf()
     private val nextId = AtomicInteger(1)
@@ -44,11 +43,7 @@ class FakeAiProvider(
     /**
      * A captured request for test inspection.
      */
-    data class CapturedRequest(
-        val systemPrompt: String,
-        val messages: List<AiMessage>,
-        val tools: List<AiTool>,
-    )
+    data class CapturedRequest(val systemPrompt: String, val messages: List<AiMessage>, val tools: List<AiTool>)
 
     override suspend fun chat(
         systemPrompt: String,
@@ -79,7 +74,9 @@ class FakeAiProvider(
         // In TEST mode, fail if no response queued
         if (mode == FakeMode.TEST) {
             logD(TAG, "TEST mode: no queued response, throwing exception")
-            error("FakeAiProvider in TEST mode: no response queued. Use enqueueResponse() to set up expected responses.")
+            error(
+                "FakeAiProvider in TEST mode: no response queued. Use enqueueResponse() to set up expected responses.",
+            )
         }
 
         // DEMO mode: generate response based on context
@@ -109,11 +106,12 @@ class FakeAiProvider(
      * @return the created response for assertions
      */
     fun enqueueTextResponse(text: String, stopReason: String = "end_turn"): AiResponse {
-        val response = AiResponse(
-            id = "fake-${nextId.getAndIncrement()}",
-            content = listOf(AiContentBlock.Text(text)),
-            stopReason = stopReason,
-        )
+        val response =
+            AiResponse(
+                id = "fake-${nextId.getAndIncrement()}",
+                content = listOf(AiContentBlock.Text(text)),
+                stopReason = stopReason,
+            )
         enqueueResponse(response)
         return response
     }
@@ -127,11 +125,12 @@ class FakeAiProvider(
         toolInput: JsonObject,
         toolId: String = "tool-${nextId.getAndIncrement()}",
     ): AiResponse {
-        val response = AiResponse(
-            id = "fake-${nextId.getAndIncrement()}",
-            content = listOf(AiContentBlock.ToolCall(toolId, toolName, toolInput)),
-            stopReason = "tool_use",
-        )
+        val response =
+            AiResponse(
+                id = "fake-${nextId.getAndIncrement()}",
+                content = listOf(AiContentBlock.ToolCall(toolId, toolName, toolInput)),
+                stopReason = "tool_use",
+            )
         enqueueResponse(response)
         return response
     }
@@ -230,12 +229,13 @@ class FakeAiProvider(
         logD(TAG, "Pattern matched: selecting tool '$toolName'")
         return AiResponse(
             id = "fake-${nextId.getAndIncrement()}",
-            content = listOf(
+            content =
+            listOf(
                 AiContentBlock.ToolCall(
                     id = "tool-${nextId.getAndIncrement()}",
                     name = toolName,
                     input = toolInput,
-                )
+                ),
             ),
             stopReason = "tool_use",
         )
@@ -248,28 +248,41 @@ class FakeAiProvider(
         if (messageLower.contains("read") && "read_file" in toolNames) {
             return "read_file" to buildJsonObject { put("path", "README.md") }
         }
-        val isWriteIntent = messageLower.contains("write") || messageLower.contains("fix") || messageLower.contains("create")
+        val isWriteIntent =
+            messageLower.contains(
+                "write",
+            ) ||
+                messageLower.contains("fix") ||
+                messageLower.contains("create")
         if (isWriteIntent && "write_file" in toolNames) {
-            return "write_file" to buildJsonObject {
-                put("path", "output.txt")
-                put("content", "Generated content")
-            }
+            return "write_file" to
+                buildJsonObject {
+                    put("path", "output.txt")
+                    put("content", "Generated content")
+                }
         }
-        val isRunIntent = messageLower.contains("run") || messageLower.contains("execute") || messageLower.contains("command")
+        val isRunIntent =
+            messageLower.contains(
+                "run",
+            ) ||
+                messageLower.contains("execute") ||
+                messageLower.contains("command")
         if (isRunIntent && "run_command" in toolNames) {
             return "run_command" to buildJsonObject { put("command", "echo 'Done'") }
         }
         return null
     }
 
-    private fun createTaskCompleteResponse(): AiResponse {
-        return AiResponse(
+    private fun createTaskCompleteResponse(): AiResponse =
+        AiResponse(
             id = "fake-${nextId.getAndIncrement()}",
-            content = listOf(
+            content =
+            listOf(
                 AiContentBlock.ToolCall(
                     id = "tool-${nextId.getAndIncrement()}",
                     name = "task_complete",
-                    input = buildJsonObject {
+                    input =
+                    buildJsonObject {
                         put("prTitle", "Demo Task Complete")
                         put("prBody", "This task was completed in demo mode.")
                     },
@@ -277,5 +290,4 @@ class FakeAiProvider(
             ),
             stopReason = "tool_use",
         )
-    }
 }

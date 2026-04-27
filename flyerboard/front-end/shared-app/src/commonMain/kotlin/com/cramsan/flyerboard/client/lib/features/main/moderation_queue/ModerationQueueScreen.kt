@@ -129,13 +129,17 @@ internal fun ModerationQueueContent(
             contentAlignment = Alignment.Center,
         ) {
             when {
-                uiState.isLoading -> CircularProgressIndicator()
+                uiState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+
                 uiState.pendingFlyers.isEmpty() -> {
                     Text(
                         text = stringResource(Res.string.moderation_queue_screen_empty_message),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
+
                 else -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -193,7 +197,8 @@ private fun PendingFlyerCard(
             ) {
                 OutlinedButton(
                     onClick = onReject,
-                    colors = ButtonDefaults.outlinedButtonColors(
+                    colors =
+                    ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.error,
                     ),
                 ) {

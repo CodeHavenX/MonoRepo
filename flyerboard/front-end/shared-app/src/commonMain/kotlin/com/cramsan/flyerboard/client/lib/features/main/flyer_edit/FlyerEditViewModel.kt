@@ -11,11 +11,8 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Flyer Edit screen.
  */
-class FlyerEditViewModel(
-    dependencies: ViewModelDependencies,
-    private val flyerManager: FlyerManager,
-) : BaseViewModel<FlyerEditEvent, FlyerEditUIState>(dependencies, FlyerEditUIState.Initial, TAG) {
-
+class FlyerEditViewModel(dependencies: ViewModelDependencies, private val flyerManager: FlyerManager) :
+    BaseViewModel<FlyerEditEvent, FlyerEditUIState>(dependencies, FlyerEditUIState.Initial, TAG) {
     /**
      * Load the flyer identified by [flyerIdValue] and populate the form fields.
      */
@@ -23,7 +20,8 @@ class FlyerEditViewModel(
         logI(TAG, "loadFlyer: $flyerIdValue")
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
-            flyerManager.getFlyer(FlyerId(flyerIdValue))
+            flyerManager
+                .getFlyer(FlyerId(flyerIdValue))
                 .onSuccess { flyer ->
                     if (flyer == null) {
                         updateUiState { it.copy(isLoading = false) }
@@ -38,8 +36,7 @@ class FlyerEditViewModel(
                             )
                         }
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     updateUiState { it.copy(isLoading = false, errorMessage = error.message) }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(message = "Failed to load flyer: ${error.message}"),
@@ -77,17 +74,16 @@ class FlyerEditViewModel(
         viewModelScope.launch {
             val state = uiState.value
             updateUiState { it.copy(isSaving = true, errorMessage = null) }
-            flyerManager.updateFlyer(
-                flyerId = FlyerId(flyerIdValue),
-                title = state.title,
-                description = state.description,
-                expiresAt = state.expiresAt,
-            )
-                .onSuccess {
+            flyerManager
+                .updateFlyer(
+                    flyerId = FlyerId(flyerIdValue),
+                    title = state.title,
+                    description = state.description,
+                    expiresAt = state.expiresAt,
+                ).onSuccess {
                     updateUiState { it.copy(isSaving = false) }
                     emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     updateUiState { it.copy(isSaving = false, errorMessage = error.message) }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(message = "Failed to save flyer: ${error.message}"),

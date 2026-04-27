@@ -9,10 +9,7 @@ import kotlinx.serialization.Serializable
  * reset, so PR IDs remain unique across restarts even if old PRs are deleted from [prs].
  */
 @Serializable
-data class LocalPrState(
-    val prs: MutableList<LocalPr> = mutableListOf(),
-    var nextPrId: Int = 1,
-)
+data class LocalPrState(val prs: MutableList<LocalPr> = mutableListOf(), var nextPrId: Int = 1)
 
 /**
  * In-process representation of a pull request managed by [com.cramsan.agentic.vcs.local.LocalVcsProvider].
@@ -33,8 +30,4 @@ data class LocalPr(
 
 /** A comment stored within a [LocalPr]. Mirrors [com.cramsan.agentic.core.PullRequestComment]. */
 @Serializable
-data class LocalComment(
-    val author: String,
-    val body: String,
-    val createdAtEpochMs: Long,
-)
+data class LocalComment(val author: String, val body: String, val createdAtEpochMs: Long)

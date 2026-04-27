@@ -12,7 +12,12 @@ import com.github.ajalt.clikt.core.subcommands
  * - `status` — print a one-shot status table
  * - `task` — inspect and manage individual tasks
  */
-class RunCommand : CliktCommand(name = "run", help = "Orchestrator execution commands", invokeWithoutSubcommand = false) {
+class RunCommand :
+    CliktCommand(
+        name = "run",
+        help = "Orchestrator execution commands",
+        invokeWithoutSubcommand = false,
+    ) {
     override fun run() = Unit
 
     init {

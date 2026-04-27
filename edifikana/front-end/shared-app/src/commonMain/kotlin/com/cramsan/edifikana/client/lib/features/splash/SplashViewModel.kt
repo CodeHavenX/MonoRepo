@@ -23,7 +23,6 @@ class SplashViewModel(
     SplashUIState.Initial,
     TAG,
 ) {
-
     /**
      * Trigger the back event.
      */
@@ -36,30 +35,31 @@ class SplashViewModel(
     /**
      * Enforce the authentication state and route the user to the right screen.
      */
-    fun enforceAuth() = viewModelScope.launch {
-        val result = authManager.isSignedIn()
-        if (result.isFailure) {
-            logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())
-            navigateToSignInScreen()
-        } else {
-            logI(TAG, "EnforceAuth result: ${result.getOrThrow()}")
-            if (!result.getOrThrow()) {
+    fun enforceAuth() =
+        viewModelScope.launch {
+            val result = authManager.isSignedIn()
+            if (result.isFailure) {
+                logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())
                 navigateToSignInScreen()
             } else {
-                val orgResult = organizationManager.getOrganizations()
-                val orgs = orgResult.getOrNull()
-                if (orgs.isNullOrEmpty()) {
-                    navigateToOnboardingScreen()
+                logI(TAG, "EnforceAuth result: ${result.getOrThrow()}")
+                if (!result.getOrThrow()) {
+                    navigateToSignInScreen()
                 } else {
-                    navigateToMainScreen()
+                    val orgResult = organizationManager.getOrganizations()
+                    val orgs = orgResult.getOrNull()
+                    if (orgs.isNullOrEmpty()) {
+                        navigateToOnboardingScreen()
+                    } else {
+                        navigateToMainScreen()
+                    }
                 }
             }
         }
-    }
 
     private suspend fun navigateToMainScreen() {
         emitWindowEvent(
-            EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.HomeNavGraphDestination)
+            EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.HomeNavGraphDestination),
         )
     }
 
@@ -68,7 +68,7 @@ class SplashViewModel(
             EdifikanaWindowsEvent.NavigateToNavGraph(
                 EdifikanaNavGraphDestination.AuthNavGraphDestination,
                 clearStack = true,
-            )
+            ),
         )
     }
 
@@ -77,7 +77,7 @@ class SplashViewModel(
             EdifikanaWindowsEvent.NavigateToScreen(
                 AuthDestination.SelectOrgDestination,
                 clearStack = true,
-            )
+            ),
         )
     }
 

@@ -7,7 +7,6 @@ import kotlin.test.assertEquals
  * Unit tests for [InputSanitizer].
  */
 class InputSanitizerTest {
-
     @Test
     fun `sanitizeText strips HTML tags but keeps text content`() {
         // The regex removes angle-bracket tags; text between tags is preserved

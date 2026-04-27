@@ -8,8 +8,8 @@ enum class Theme {
     DARK,
     SYSTEM_DEFAULT,
     ;
-    companion object {
 
+    companion object {
         /**
          * Get the [Theme] from a string value.
          */

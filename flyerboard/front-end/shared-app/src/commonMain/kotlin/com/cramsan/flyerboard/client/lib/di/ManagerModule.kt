@@ -10,9 +10,10 @@ import org.koin.dsl.module
 /**
  * Koin module that registers all manager components.
  */
-internal val ManagerModule = module {
-    singleOf(::AuthManager)
-    singleOf(::UserManager)
-    singleOf(::FlyerManager)
-    singleOf(::PreferencesManager)
-}
+internal val ManagerModule =
+    module {
+        singleOf(::AuthManager)
+        singleOf(::UserManager)
+        singleOf(::FlyerManager)
+        singleOf(::PreferencesManager)
+    }

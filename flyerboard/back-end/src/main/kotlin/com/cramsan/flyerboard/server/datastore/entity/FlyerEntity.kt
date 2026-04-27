@@ -61,14 +61,15 @@ data class FlyerEntity(
  * Maps a [FlyerEntity] to the [Flyer] domain model.
  */
 @OptIn(SupabaseModel::class)
-fun FlyerEntity.toFlyer(): Flyer = Flyer(
-    id = FlyerId(id),
-    title = title,
-    description = description,
-    filePath = filePath,
-    status = FlyerStatus.valueOf(status.uppercase()),
-    expiresAt = expiresAt,
-    uploaderId = UserId(uploaderId),
-    createdAt = createdAt,
-    updatedAt = updatedAt,
-)
+fun FlyerEntity.toFlyer(): Flyer =
+    Flyer(
+        id = FlyerId(id),
+        title = title,
+        description = description,
+        filePath = filePath,
+        status = FlyerStatus.valueOf(status.uppercase()),
+        expiresAt = expiresAt,
+        uploaderId = UserId(uploaderId),
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )

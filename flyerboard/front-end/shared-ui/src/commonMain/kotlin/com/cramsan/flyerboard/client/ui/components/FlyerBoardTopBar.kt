@@ -11,9 +11,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import org.jetbrains.compose.resources.stringResource
 import flyerboard_ui.Res
 import flyerboard_ui.string_back_navigation
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * FlyerBoard top bar.
@@ -38,11 +38,11 @@ fun FlyerBoardTopBar(
                 ) {
                     Icon(
                         imageVector = navigationIcon,
-                        contentDescription = stringResource(Res.string.string_back_navigation)
+                        contentDescription = stringResource(Res.string.string_back_navigation),
                     )
                 }
             }
         },
-        actions = { content?.invoke(this) }
+        actions = { content?.invoke(this) },
     )
 }

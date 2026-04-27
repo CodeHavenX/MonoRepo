@@ -10,7 +10,6 @@ import androidx.room.Query
  */
 @Dao
 interface TimeCardRecordDao {
-
     /**
      * Get all time card records.
      */

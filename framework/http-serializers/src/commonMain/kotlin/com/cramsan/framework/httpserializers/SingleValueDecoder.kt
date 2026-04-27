@@ -24,14 +24,23 @@ class SingleValueDecoder(private val value: String) : AbstractDecoder() {
     }
 
     override fun decodeString(): String = value ?: error("No value provided")
+
     override fun decodeInt(): Int = decodeString().toInt()
+
     override fun decodeLong(): Long = decodeString().toLong()
+
     override fun decodeBoolean(): Boolean = decodeString().toBoolean()
+
     override fun decodeFloat(): Float = decodeString().toFloat()
+
     override fun decodeDouble(): Double = decodeString().toDouble()
+
     override fun decodeChar(): Char = decodeString().single()
+
     override fun decodeShort(): Short = decodeString().toShort()
+
     override fun decodeByte(): Byte = decodeString().toByte()
+
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
         return enumDescriptor.getElementIndex(decodeString())
     }
@@ -40,16 +49,20 @@ class SingleValueDecoder(private val value: String) : AbstractDecoder() {
         when (deserializer.descriptor.kind) {
             PrimitiveKind.BOOLEAN, PrimitiveKind.BYTE, PrimitiveKind.CHAR, PrimitiveKind.DOUBLE,
             PrimitiveKind.FLOAT, PrimitiveKind.INT, PrimitiveKind.LONG, PrimitiveKind.SHORT,
-            PrimitiveKind.STRING, SerialKind.ENUM, -> {
+            PrimitiveKind.STRING, SerialKind.ENUM,
+            -> {
                 // Supported primitive types
             }
+
             StructureKind.CLASS -> {
                 if (!deserializer.descriptor.isInline || deserializer.descriptor.elementsCount != 1) {
                     error("SingleValueDecoder only supports inline value classes with a single property")
                 }
             }
+
             SerialKind.CONTEXTUAL, StructureKind.LIST, StructureKind.MAP, StructureKind.OBJECT,
-            PolymorphicKind.OPEN, PolymorphicKind.SEALED -> {
+            PolymorphicKind.OPEN, PolymorphicKind.SEALED,
+            -> {
                 error("SingleValueDecoder does not support ${deserializer.descriptor.kind}")
             }
         }

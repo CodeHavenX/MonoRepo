@@ -1,9 +1,9 @@
 package com.cramsan.agentic.app.commands
 
+import com.cramsan.agentic.app.agenticModule
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
-import com.cramsan.agentic.app.agenticModule
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -19,16 +19,16 @@ import java.util.Locale
  * moment the command runs, not a cached snapshot.
  */
 class StatusCommand : CliktCommand(name = "status", help = "Show current task status") {
-
     private val configPath by option("--config", help = "Path to config.json").default(".agentic/config.json")
 
     override fun run() {
         val agenticDir = Path.of(configPath).parent ?: Path.of(".")
         val repoRoot = Path.of(".")
 
-        val koin = startKoin {
-            modules(agenticModule(agenticDir, repoRoot))
-        }.koin
+        val koin =
+            startKoin {
+                modules(agenticModule(agenticDir, repoRoot))
+            }.koin
 
         try {
             val orchestrator = koin.get<com.cramsan.agentic.coordination.Orchestrator>()
@@ -48,4 +48,3 @@ class StatusCommand : CliktCommand(name = "status", help = "Show current task st
 }
 
 private const val WIDTH = 60
-

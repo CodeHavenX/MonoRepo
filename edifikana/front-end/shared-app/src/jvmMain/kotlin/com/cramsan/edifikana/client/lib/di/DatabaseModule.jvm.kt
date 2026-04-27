@@ -8,20 +8,22 @@ import org.koin.dsl.module
 import java.io.File
 
 @Suppress("InjectDispatcher")
-internal actual val DatabaseModule = module {
+internal actual val DatabaseModule =
+    module {
 
-    @Suppress("InjectDispatcher")
-    single {
-        val dbFile = File(System.getProperty("java.io.tmpdir"), "my_room.db")
-        val builder = Room.databaseBuilder<AppDatabase>(
-            name = dbFile.absolutePath,
-        )
+        @Suppress("InjectDispatcher")
+        single {
+            val dbFile = File(System.getProperty("java.io.tmpdir"), "my_room.db")
+            val builder =
+                Room.databaseBuilder<AppDatabase>(
+                    name = dbFile.absolutePath,
+                )
 
-        builder
-            .addMigrations()
-            .fallbackToDestructiveMigration(dropAllTables = true)
-            .setDriver(BundledSQLiteDriver())
-            .setQueryCoroutineContext(Dispatchers.IO)
-            .build()
+            builder
+                .addMigrations()
+                .fallbackToDestructiveMigration(dropAllTables = true)
+                .setDriver(BundledSQLiteDriver())
+                .setQueryCoroutineContext(Dispatchers.IO)
+                .build()
+        }
     }
-}

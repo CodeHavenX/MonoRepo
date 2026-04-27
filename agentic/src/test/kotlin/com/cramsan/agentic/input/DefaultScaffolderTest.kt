@@ -14,7 +14,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class DefaultScaffolderTest {
-
     @TempDir
     lateinit var tempDir: Path
 
@@ -33,13 +32,19 @@ class DefaultScaffolderTest {
         assertTrue(Files.exists(tempDir.resolve("architecture-design.md")), "architecture-design.md should exist")
         assertTrue(Files.exists(tempDir.resolve("standards.md")), "standards.md should exist")
         assertTrue(Files.exists(tempDir.resolve("reviewers/security.md")), "reviewers/security.md should exist")
-        assertTrue(Files.exists(tempDir.resolve("reviewers/design-patterns.md")), "reviewers/design-patterns.md should exist")
+        assertTrue(
+            Files.exists(tempDir.resolve("reviewers/design-patterns.md")),
+            "reviewers/design-patterns.md should exist",
+        )
     }
 
     @Test
     fun `scaffold does not create task-list md`() {
         scaffolder.scaffold(tempDir)
-        assertTrue(!Files.exists(tempDir.resolve("task-list.md")), "task-list.md should not be scaffolded (it is AI-generated)")
+        assertTrue(
+            !Files.exists(tempDir.resolve("task-list.md")),
+            "task-list.md should not be scaffolded (it is AI-generated)",
+        )
     }
 
     @Test
@@ -52,7 +57,10 @@ class DefaultScaffolderTest {
 
         val architectureContent = Files.readString(tempDir.resolve("architecture-design.md"))
         assertTrue(architectureContent.isNotEmpty(), "architecture-design.md should be non-empty")
-        assertTrue(architectureContent.contains("## Architecture & Design"), "architecture-design.md should contain '## Architecture & Design'")
+        assertTrue(
+            architectureContent.contains("## Architecture & Design"),
+            "architecture-design.md should contain '## Architecture & Design'",
+        )
 
         val standardsContent = Files.readString(tempDir.resolve("standards.md"))
         assertTrue(standardsContent.isNotEmpty(), "standards.md should be non-empty")

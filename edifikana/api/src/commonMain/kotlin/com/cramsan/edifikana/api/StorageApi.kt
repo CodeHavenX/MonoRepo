@@ -13,11 +13,11 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object StorageApi : Api("storage") {
-
-    val createAsset = operation<
-        BytesRequestBody,
-        CreateAssetQueryParams,
-        NoPathParam,
-        AssetNetworkResponse
-        >(HttpMethod.Post)
+    val createAsset =
+        operation<
+            BytesRequestBody,
+            CreateAssetQueryParams,
+            NoPathParam,
+            AssetNetworkResponse,
+            >(HttpMethod.Post)
 }

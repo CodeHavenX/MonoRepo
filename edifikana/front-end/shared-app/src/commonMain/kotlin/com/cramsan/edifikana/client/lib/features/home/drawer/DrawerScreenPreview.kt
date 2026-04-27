@@ -9,9 +9,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun DrawerScreenPreview() {
     DrawerContent(
-        content = DrawerUIState(
+        content =
+        DrawerUIState(
             title = "Management",
-            drawerItems = listOf(
+            drawerItems =
+            listOf(
                 DrawerItem.Title("Management"),
                 DrawerItem.Selectable(SelectableDrawerItem.Property),
                 DrawerItem.Selectable(SelectableDrawerItem.Organization),
@@ -21,7 +23,8 @@ fun DrawerScreenPreview() {
             ),
             selectedItem = null,
         ),
-        drawerState = DrawerState(
+        drawerState =
+        DrawerState(
             initialValue = DrawerValue.Open,
         ),
         onDrawerItemSelected = {},

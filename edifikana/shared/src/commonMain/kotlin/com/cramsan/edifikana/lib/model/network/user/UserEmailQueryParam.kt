@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class UserEmailQueryParam(
-    val email: String,
-) : QueryParam
+data class UserEmailQueryParam(val email: String) : QueryParam

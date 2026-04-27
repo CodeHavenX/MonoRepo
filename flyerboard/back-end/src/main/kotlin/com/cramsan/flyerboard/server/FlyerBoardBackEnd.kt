@@ -13,7 +13,9 @@ import org.koin.ktor.ext.inject
 /**
  * Main entry point of the application, used only during testing/local development.
  */
-fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>) =
+    io.ktor.server.netty.EngineMain
+        .main(args)
 
 /**
  * Entry point of the application.

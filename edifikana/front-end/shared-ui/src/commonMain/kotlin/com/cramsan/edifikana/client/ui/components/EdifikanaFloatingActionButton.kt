@@ -36,7 +36,8 @@ fun EdifikanaFloatingActionButton(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         shape = RoundedCornerShape(16.dp),
-        elevation = FloatingActionButtonDefaults.elevation(
+        elevation =
+        FloatingActionButtonDefaults.elevation(
             defaultElevation = 4.dp,
             pressedElevation = 8.dp,
         ),

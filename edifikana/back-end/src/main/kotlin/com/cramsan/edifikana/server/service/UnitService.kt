@@ -9,10 +9,7 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for managing property units. Delegates persistence to [UnitDatastore].
  */
-class UnitService(
-    private val unitDatastore: UnitDatastore,
-) {
-
+class UnitService(private val unitDatastore: UnitDatastore) {
     /**
      * Creates a new unit record.
      */
@@ -26,15 +23,16 @@ class UnitService(
         notes: String?,
     ): Unit {
         logD(TAG, "createUnit")
-        return unitDatastore.createUnit(
-            propertyId = propertyId,
-            unitNumber = unitNumber,
-            bedrooms = bedrooms,
-            bathrooms = bathrooms,
-            sqFt = sqFt,
-            floor = floor,
-            notes = notes,
-        ).getOrThrow()
+        return unitDatastore
+            .createUnit(
+                propertyId = propertyId,
+                unitNumber = unitNumber,
+                bedrooms = bedrooms,
+                bathrooms = bathrooms,
+                sqFt = sqFt,
+                floor = floor,
+                notes = notes,
+            ).getOrThrow()
     }
 
     /**
@@ -52,9 +50,10 @@ class UnitService(
         propertyId: PropertyId,
     ): List<Unit> {
         logD(TAG, "getUnits by propertyId")
-        return unitDatastore.getUnits(
-            propertyId = propertyId,
-        ).getOrThrow()
+        return unitDatastore
+            .getUnits(
+                propertyId = propertyId,
+            ).getOrThrow()
     }
 
     /**
@@ -70,15 +69,16 @@ class UnitService(
         notes: String?,
     ): Unit {
         logD(TAG, "updateUnit")
-        return unitDatastore.updateUnit(
-            unitId = unitId,
-            unitNumber = unitNumber,
-            bedrooms = bedrooms,
-            bathrooms = bathrooms,
-            sqFt = sqFt,
-            floor = floor,
-            notes = notes,
-        ).getOrThrow()
+        return unitDatastore
+            .updateUnit(
+                unitId = unitId,
+                unitNumber = unitNumber,
+                bedrooms = bedrooms,
+                bathrooms = bathrooms,
+                sqFt = sqFt,
+                floor = floor,
+                notes = notes,
+            ).getOrThrow()
     }
 
     /**

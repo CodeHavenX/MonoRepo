@@ -44,25 +44,25 @@ fun ScreenLayout(
         modifier = modifier,
         contentAlignment = contentAlignment,
     ) {
-        val screenLayoutModifier = Modifier
-            .ifTrue(maxWith != Dp.Unspecified) {
-                sizeIn(maxWidth = maxWith)
-            }
-            .padding(
-                top = topPadding,
-                bottom = bottomPadding,
-            )
-            .ifNotTrue(fixedFooter) {
-                verticalScroll(rememberScrollState())
-            }
+        val screenLayoutModifier =
+            Modifier
+                .ifTrue(maxWith != Dp.Unspecified) {
+                    sizeIn(maxWidth = maxWith)
+                }.padding(
+                    top = topPadding,
+                    bottom = bottomPadding,
+                ).ifNotTrue(fixedFooter) {
+                    verticalScroll(rememberScrollState())
+                }
         Column(
             modifier = debugModifier(screenLayoutModifier),
             verticalArrangement = verticalArrangement,
         ) {
-            val sectionModifier = Modifier.ifTrue(fixedFooter) {
-                weight(1f)
-                    .verticalScroll(rememberScrollState())
-            }
+            val sectionModifier =
+                Modifier.ifTrue(fixedFooter) {
+                    weight(1f)
+                        .verticalScroll(rememberScrollState())
+                }
             ContentSection(
                 modifier = debugModifier(sectionModifier),
                 content = sectionContent,

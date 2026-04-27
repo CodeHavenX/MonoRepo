@@ -116,7 +116,8 @@ internal fun AccountContent(
         },
     ) { innerPadding ->
         ScreenLayout(
-            modifier = Modifier.padding(innerPadding).fillMaxSize(), sectionContent = { modifier ->
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            sectionContent = { modifier ->
                 val focusRequester = remember { FocusRequester() }
 
                 LaunchedEffect(content.isEditable) {
@@ -191,9 +192,14 @@ internal fun AccountContent(
 
                 // Password field
                 EdifikanaAccountInfoItem(
-                    value = if (content.isPasswordSet == true) "********"
-                    else if (content.isPasswordSet == null) ""
-                    else stringResource(Res.string.account_screen_password_not_set),
+                    value =
+                    if (content.isPasswordSet == true) {
+                        "********"
+                    } else if (content.isPasswordSet == null) {
+                        ""
+                    } else {
+                        stringResource(Res.string.account_screen_password_not_set)
+                    },
                     label = stringResource(Res.string.edifikana_string_password),
                     modifier = modifier,
                 )
@@ -205,7 +211,9 @@ internal fun AccountContent(
                     enabled = !content.isLoading,
                     onClick = onEditPasswordClicked,
                 )
-            }, buttonContent = if (content.isEditable) {
+            },
+            buttonContent =
+            if (content.isEditable) {
                 { modifier ->
                     Button(
                         modifier = modifier,
@@ -232,9 +240,11 @@ internal fun AccountContent(
                         Text(text = stringResource(Res.string.edifikana_string_sign_out))
                     }
                 }
-            }, overlay = {
+            },
+            overlay = {
                 LoadingAnimationOverlay(isLoading = content.isLoading)
-            })
+            },
+        )
     }
 }
 
@@ -246,14 +256,17 @@ private fun EditPasswordLine(
 ) {
     Text(
         text = stringResource(Res.string.change_password_dialog_title),
-        modifier = modifier.clickable {
-            if (enabled) {
-                onClick()
-            }
-        }.padding(vertical = Padding.SMALL),
+        modifier =
+        modifier
+            .clickable {
+                if (enabled) {
+                    onClick()
+                }
+            }.padding(vertical = Padding.SMALL),
         style = MaterialTheme.typography.bodyLarge,
         fontWeight = FontWeight.Bold,
-        color = if (enabled) {
+        color =
+        if (enabled) {
             MaterialTheme.colorScheme.primary
         } else {
             MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)

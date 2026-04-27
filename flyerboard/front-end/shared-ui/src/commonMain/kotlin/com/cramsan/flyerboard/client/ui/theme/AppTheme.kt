@@ -16,7 +16,7 @@ fun AppTheme(
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     debugLayoutInspection: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = getColorScheme(darkTheme, dynamicColor, darkScheme, lightScheme)
 
@@ -25,7 +25,7 @@ fun AppTheme(
     CompositionLocalProvider(LocalDebugLayoutInspection provides debugLayoutInspection) {
         MaterialTheme(
             colorScheme = colorScheme,
-            content = content
+            content = content,
         )
     }
 }

@@ -10,7 +10,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 private fun SplashScreenPreview() {
     SplashContent(
-        content = SplashUIState(
+        content =
+        SplashUIState(
             isLoading = true,
         ),
     )

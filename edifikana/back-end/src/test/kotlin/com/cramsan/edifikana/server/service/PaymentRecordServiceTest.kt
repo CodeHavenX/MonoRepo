@@ -31,7 +31,6 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 class PaymentRecordServiceTest {
-
     private lateinit var paymentRecordDatastore: PaymentRecordDatastore
     private lateinit var paymentRecordService: PaymentRecordService
 
@@ -55,48 +54,50 @@ class PaymentRecordServiceTest {
      * Tests that createPaymentRecord delegates to the datastore and returns the created record.
      */
     @Test
-    fun `createPaymentRecord should delegate to datastore and return created record`() = runTest {
-        // Arrange
-        val unitId = UnitId("unit123")
-        val periodMonth = LocalDate(2026, 3, 1)
-        val record = paymentRecord(PaymentRecordId("pr123"), unitId)
-        coEvery {
-            paymentRecordDatastore.createPaymentRecord(
-                unitId = unitId,
-                paymentType = PaymentType.RENT,
-                periodMonth = periodMonth,
-                amountDue = 120000.0,
-                dueDate = null,
-                recordedBy = null,
-                notes = null,
-            )
-        } returns Result.success(record)
+    fun `createPaymentRecord should delegate to datastore and return created record`() =
+        runTest {
+            // Arrange
+            val unitId = UnitId("unit123")
+            val periodMonth = LocalDate(2026, 3, 1)
+            val record = paymentRecord(PaymentRecordId("pr123"), unitId)
+            coEvery {
+                paymentRecordDatastore.createPaymentRecord(
+                    unitId = unitId,
+                    paymentType = PaymentType.RENT,
+                    periodMonth = periodMonth,
+                    amountDue = 120000.0,
+                    dueDate = null,
+                    recordedBy = null,
+                    notes = null,
+                )
+            } returns Result.success(record)
 
-        // Act
-        val result = paymentRecordService.createPaymentRecord(
-            unitId = unitId,
-            paymentType = PaymentType.RENT,
-            periodMonth = periodMonth,
-            amountDue = 120000.0,
-            dueDate = null,
-            recordedBy = null,
-            notes = null,
-        )
+            // Act
+            val result =
+                paymentRecordService.createPaymentRecord(
+                    unitId = unitId,
+                    paymentType = PaymentType.RENT,
+                    periodMonth = periodMonth,
+                    amountDue = 120000.0,
+                    dueDate = null,
+                    recordedBy = null,
+                    notes = null,
+                )
 
-        // Assert
-        assertEquals(record, result)
-        coVerify {
-            paymentRecordDatastore.createPaymentRecord(
-                unitId = unitId,
-                paymentType = PaymentType.RENT,
-                periodMonth = periodMonth,
-                amountDue = 120000.0,
-                dueDate = null,
-                recordedBy = null,
-                notes = null,
-            )
+            // Assert
+            assertEquals(record, result)
+            coVerify {
+                paymentRecordDatastore.createPaymentRecord(
+                    unitId = unitId,
+                    paymentType = PaymentType.RENT,
+                    periodMonth = periodMonth,
+                    amountDue = 120000.0,
+                    dueDate = null,
+                    recordedBy = null,
+                    notes = null,
+                )
+            }
         }
-    }
 
     // -------------------------------------------------------------------------
     // getPaymentRecord
@@ -106,34 +107,36 @@ class PaymentRecordServiceTest {
      * Tests that getPaymentRecord returns the record when found.
      */
     @Test
-    fun `getPaymentRecord should return record when found`() = runTest {
-        // Arrange
-        val id = PaymentRecordId("pr123")
-        val record = paymentRecord(id, UnitId("unit123"))
-        coEvery { paymentRecordDatastore.getPaymentRecord(id) } returns Result.success(record)
+    fun `getPaymentRecord should return record when found`() =
+        runTest {
+            // Arrange
+            val id = PaymentRecordId("pr123")
+            val record = paymentRecord(id, UnitId("unit123"))
+            coEvery { paymentRecordDatastore.getPaymentRecord(id) } returns Result.success(record)
 
-        // Act
-        val result = paymentRecordService.getPaymentRecord(id)
+            // Act
+            val result = paymentRecordService.getPaymentRecord(id)
 
-        // Assert
-        assertEquals(record, result)
-    }
+            // Assert
+            assertEquals(record, result)
+        }
 
     /**
      * Tests that getPaymentRecord returns null when the record is not found.
      */
     @Test
-    fun `getPaymentRecord should return null when not found`() = runTest {
-        // Arrange
-        val id = PaymentRecordId("pr123")
-        coEvery { paymentRecordDatastore.getPaymentRecord(id) } returns Result.success(null)
+    fun `getPaymentRecord should return null when not found`() =
+        runTest {
+            // Arrange
+            val id = PaymentRecordId("pr123")
+            coEvery { paymentRecordDatastore.getPaymentRecord(id) } returns Result.success(null)
 
-        // Act
-        val result = paymentRecordService.getPaymentRecord(id)
+            // Act
+            val result = paymentRecordService.getPaymentRecord(id)
 
-        // Assert
-        assertNull(result)
-    }
+            // Assert
+            assertNull(result)
+        }
 
     // -------------------------------------------------------------------------
     // listPaymentRecords
@@ -143,44 +146,47 @@ class PaymentRecordServiceTest {
      * Tests that listPaymentRecords returns all records for a unit when no period filter is applied.
      */
     @Test
-    fun `listPaymentRecords should return list from datastore without filter`() = runTest {
-        // Arrange
-        val unitId = UnitId("unit123")
-        val records = listOf(
-            paymentRecord(PaymentRecordId("pr123"), unitId),
-            paymentRecord(PaymentRecordId("pr456"), unitId),
-        )
-        coEvery {
-            paymentRecordDatastore.listPaymentRecords(unitId, null)
-        } returns Result.success(records)
+    fun `listPaymentRecords should return list from datastore without filter`() =
+        runTest {
+            // Arrange
+            val unitId = UnitId("unit123")
+            val records =
+                listOf(
+                    paymentRecord(PaymentRecordId("pr123"), unitId),
+                    paymentRecord(PaymentRecordId("pr456"), unitId),
+                )
+            coEvery {
+                paymentRecordDatastore.listPaymentRecords(unitId, null)
+            } returns Result.success(records)
 
-        // Act
-        val result = paymentRecordService.listPaymentRecords(unitId, null)
+            // Act
+            val result = paymentRecordService.listPaymentRecords(unitId, null)
 
-        // Assert
-        assertEquals(records, result)
-    }
+            // Assert
+            assertEquals(records, result)
+        }
 
     /**
      * Tests that listPaymentRecords passes the periodMonth filter to the datastore.
      */
     @Test
-    fun `listPaymentRecords should pass periodMonth filter to datastore`() = runTest {
-        // Arrange
-        val unitId = UnitId("unit123")
-        val periodMonth = "2026-03"
-        val records = listOf(paymentRecord(PaymentRecordId("pr123"), unitId))
-        coEvery {
-            paymentRecordDatastore.listPaymentRecords(unitId, periodMonth)
-        } returns Result.success(records)
+    fun `listPaymentRecords should pass periodMonth filter to datastore`() =
+        runTest {
+            // Arrange
+            val unitId = UnitId("unit123")
+            val periodMonth = "2026-03"
+            val records = listOf(paymentRecord(PaymentRecordId("pr123"), unitId))
+            coEvery {
+                paymentRecordDatastore.listPaymentRecords(unitId, periodMonth)
+            } returns Result.success(records)
 
-        // Act
-        val result = paymentRecordService.listPaymentRecords(unitId, periodMonth)
+            // Act
+            val result = paymentRecordService.listPaymentRecords(unitId, periodMonth)
 
-        // Assert
-        assertEquals(records, result)
-        coVerify { paymentRecordDatastore.listPaymentRecords(unitId, periodMonth) }
-    }
+            // Assert
+            assertEquals(records, result)
+            coVerify { paymentRecordDatastore.listPaymentRecords(unitId, periodMonth) }
+        }
 
     // -------------------------------------------------------------------------
     // updatePaymentRecord
@@ -190,24 +196,26 @@ class PaymentRecordServiceTest {
      * Tests that updatePaymentRecord delegates to the datastore and returns the updated record.
      */
     @Test
-    fun `updatePaymentRecord should delegate to datastore and return updated record`() = runTest {
-        // Arrange
-        val id = PaymentRecordId("pr123")
-        val amountPaid = 120000.0
-        val paidDate = LocalDate(2026, 3, 15)
-        val status = PaymentStatus.PAID
-        val updatedRecord = paymentRecord(id, UnitId("unit123"), status = PaymentStatus.PAID, amountPaid = amountPaid)
-        coEvery {
-            paymentRecordDatastore.updatePaymentRecord(id, amountPaid, paidDate, status, null)
-        } returns Result.success(updatedRecord)
+    fun `updatePaymentRecord should delegate to datastore and return updated record`() =
+        runTest {
+            // Arrange
+            val id = PaymentRecordId("pr123")
+            val amountPaid = 120000.0
+            val paidDate = LocalDate(2026, 3, 15)
+            val status = PaymentStatus.PAID
+            val updatedRecord =
+                paymentRecord(id, UnitId("unit123"), status = PaymentStatus.PAID, amountPaid = amountPaid)
+            coEvery {
+                paymentRecordDatastore.updatePaymentRecord(id, amountPaid, paidDate, status, null)
+            } returns Result.success(updatedRecord)
 
-        // Act
-        val result = paymentRecordService.updatePaymentRecord(id, amountPaid, paidDate, status, null)
+            // Act
+            val result = paymentRecordService.updatePaymentRecord(id, amountPaid, paidDate, status, null)
 
-        // Assert
-        assertEquals(updatedRecord, result)
-        coVerify { paymentRecordDatastore.updatePaymentRecord(id, amountPaid, paidDate, status, null) }
-    }
+            // Assert
+            assertEquals(updatedRecord, result)
+            coVerify { paymentRecordDatastore.updatePaymentRecord(id, amountPaid, paidDate, status, null) }
+        }
 
     // -------------------------------------------------------------------------
     // Private helpers

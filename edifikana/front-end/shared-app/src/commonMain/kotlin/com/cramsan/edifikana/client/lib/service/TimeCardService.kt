@@ -9,7 +9,6 @@ import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
  * Service for managing time card records.
  */
 interface TimeCardService {
-
     /**
      * Get all time card records for a specific employee and [propertyId].
      */

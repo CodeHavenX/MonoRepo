@@ -10,9 +10,7 @@ import com.cramsan.framework.logging.logD
  * Service for managing notifications.
  * Handles creation, retrieval, and management of notifications.
  */
-class NotificationService(
-    private val notificationDatastore: NotificationDatastore,
-) {
+class NotificationService(private val notificationDatastore: NotificationDatastore) {
     /**
      * Retrieves notifications for a user.
      *

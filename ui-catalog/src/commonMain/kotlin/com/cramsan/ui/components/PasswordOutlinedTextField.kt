@@ -70,14 +70,15 @@ fun PasswordOutlinedTextField(
     suffix: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(
-        autoCorrectEnabled = false,
-        keyboardType = KeyboardType.Password
-    ),
+    keyboardOptions: KeyboardOptions =
+        KeyboardOptions(
+            autoCorrectEnabled = false,
+            keyboardType = KeyboardType.Password,
+        ),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     interactionSource: MutableInteractionSource? = null,
     shape: Shape = OutlinedTextFieldDefaults.shape,
-    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors(),
 ) {
     var showPassword by remember { mutableStateOf(false) }
     OutlinedTextField(
@@ -97,22 +98,25 @@ fun PasswordOutlinedTextField(
                 } else {
                     Icons.Filled.VisibilityOff
                 },
-                contentDescription = if (showPassword) {
+                contentDescription =
+                if (showPassword) {
                     stringResource(Res.string.password_outlined_textfield_toggle_visibility_description_visible)
                 } else {
                     stringResource(Res.string.password_outlined_textfield_toggle_visibility_description_hidden)
                 },
-                modifier = Modifier
+                modifier =
+                Modifier
                     .clip(CircleShape)
                     .clickable { showPassword = !showPassword }
-                    .padding(Padding.XX_SMALL)
+                    .padding(Padding.XX_SMALL),
             )
         },
         prefix = prefix,
         suffix = suffix,
         supportingText = supportingText,
         isError = isError,
-        visualTransformation = if (showPassword) {
+        visualTransformation =
+        if (showPassword) {
             VisualTransformation.None
         } else {
             PasswordVisualTransformation()

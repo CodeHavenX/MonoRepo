@@ -17,23 +17,27 @@ import org.koin.ktor.ext.inject
 /**
  * Main entry point of the application, used only during testing/local development.
  */
-fun main(args: Array<String>) = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>) =
+    io.ktor.server.netty.EngineMain
+        .main(args)
 
 /**
  * Production entry point of the application.
  */
-fun Application.module() = runBlocking {
-    initializeDependencies()
-    startServer()
-}
+fun Application.module() =
+    runBlocking {
+        initializeDependencies()
+        startServer()
+    }
 
 /**
  * Starts the server.
  */
-fun Application.startServer() = runBlocking {
-    configureKtorEngine()
-    configureEntryPoints()
-}
+fun Application.startServer() =
+    runBlocking {
+        configureKtorEngine()
+        configureEntryPoints()
+    }
 
 /**
  * Configures the Ktor engine.

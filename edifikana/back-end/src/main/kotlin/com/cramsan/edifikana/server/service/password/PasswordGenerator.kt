@@ -8,7 +8,6 @@ package com.cramsan.edifikana.server.service.password
  * mocked/stubbed.
  */
 interface PasswordGenerator {
-
     /**
      * Generates a password.
      */

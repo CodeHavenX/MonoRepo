@@ -8,7 +8,6 @@ package com.cramsan.framework.crashehandler
  * @see [CrashHandlerDelegate]
  */
 interface CrashHandler {
-
     /**
      * Initialize the [platformDelegate] to start tracking crashes.
      *

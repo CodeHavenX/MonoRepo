@@ -39,81 +39,83 @@ import org.koin.dsl.module
 /**
  * Class to initialize all the framework level components.
  */
-val FrameworkModule = module(createdAtStart = true) {
-    single<PreferencesDelegate> { JVMPreferencesDelegate(get(named(NamedDependency.DOMAIN_KEY))) }
+val FrameworkModule =
+    module(createdAtStart = true) {
+        single<PreferencesDelegate> { JVMPreferencesDelegate(get(named(NamedDependency.DOMAIN_KEY))) }
 
-    single<Preferences> { PreferencesImpl(get()) }
+        single<Preferences> { PreferencesImpl(get()) }
 
-    single {
-        val settingsHolder: SettingsHolder = get()
-        val settingRawString = settingsHolder.getString(BackEndApplicationSettingKey.LoggingLevel)
-        Severity.fromStringOrDefault(settingRawString, Severity.DEBUG)
-    }
+        single {
+            val settingsHolder: SettingsHolder = get()
+            val settingRawString = settingsHolder.getString(BackEndApplicationSettingKey.LoggingLevel)
+            Severity.fromStringOrDefault(settingRawString, Severity.DEBUG)
+        }
 
-    single<Logger> {
-        val settingsHolder: SettingsHolder = get()
-        val enableFileLogging = settingsHolder.getBoolean(BackEndApplicationSettingKey.LoggingEnableFileLogging)
+        single<Logger> {
+            val settingsHolder: SettingsHolder = get()
+            val enableFileLogging = settingsHolder.getBoolean(BackEndApplicationSettingKey.LoggingEnableFileLogging)
 
-        Log4J2Helpers.getRootLogger(enableFileLogging ?: false, get())
-    }
+            Log4J2Helpers.getRootLogger(enableFileLogging ?: false, get())
+        }
 
-    single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
+        single<EventLoggerDelegate> { LoggerJVM(get(), get()) }
 
-    single<EventLoggerErrorCallback> {
-        EventLoggerErrorCallbackImpl(
-            get(),
-            NoopEventLoggerErrorCallbackDelegate(),
-        )
-    }
-
-    single<EventLoggerInterface> {
-        val severity: Severity = get()
-        val instance = EventLoggerImpl(severity, get(), get())
-        EventLogger.setInstance(instance)
-        EventLogger.singleton
-    }
-
-    single<HaltUtilDelegate> { HaltUtilJVM(get()) }
-
-    single<HaltUtil> { HaltUtilImpl(get()) }
-
-    single<AssertUtilInterface> {
-        val settingsHolder: SettingsHolder = get()
-        val haltOnFailure = settingsHolder.getBoolean(BackEndApplicationSettingKey.HaltOnFailure)
-
-        val impl = AssertUtilImpl(
-            haltOnFailure ?: false,
-            get(),
-            get(),
-        )
-        AssertUtil.setInstance(impl)
-        AssertUtil.singleton
-    }
-
-    single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
-
-    single<ThreadUtilInterface> {
-        ThreadUtilImpl(get())
-    }
-
-    single<DispatcherProvider> { BEDispatcherProvider() }
-
-    single<SimpleConfiguration> {
-        SimpleConfiguration("config.properties")
-    }
-
-    single<EnvironmentConfiguration> { EnvironmentConfiguration(get(named(NamedDependency.DOMAIN_KEY))) }
-
-    single {
-        val configurationMultiplexer = ConfigurationMultiplexer()
-        val simpleConfiguration: SimpleConfiguration = get()
-        val environmentConfiguration: EnvironmentConfiguration = get()
-        configurationMultiplexer.setConfigurations(
-            listOf(
-                environmentConfiguration, // Look for overrides in environment variables first
-                simpleConfiguration, // Then in the config file
+        single<EventLoggerErrorCallback> {
+            EventLoggerErrorCallbackImpl(
+                get(),
+                NoopEventLoggerErrorCallbackDelegate(),
             )
-        )
-        configurationMultiplexer
+        }
+
+        single<EventLoggerInterface> {
+            val severity: Severity = get()
+            val instance = EventLoggerImpl(severity, get(), get())
+            EventLogger.setInstance(instance)
+            EventLogger.singleton
+        }
+
+        single<HaltUtilDelegate> { HaltUtilJVM(get()) }
+
+        single<HaltUtil> { HaltUtilImpl(get()) }
+
+        single<AssertUtilInterface> {
+            val settingsHolder: SettingsHolder = get()
+            val haltOnFailure = settingsHolder.getBoolean(BackEndApplicationSettingKey.HaltOnFailure)
+
+            val impl =
+                AssertUtilImpl(
+                    haltOnFailure ?: false,
+                    get(),
+                    get(),
+                )
+            AssertUtil.setInstance(impl)
+            AssertUtil.singleton
+        }
+
+        single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
+
+        single<ThreadUtilInterface> {
+            ThreadUtilImpl(get())
+        }
+
+        single<DispatcherProvider> { BEDispatcherProvider() }
+
+        single<SimpleConfiguration> {
+            SimpleConfiguration("config.properties")
+        }
+
+        single<EnvironmentConfiguration> { EnvironmentConfiguration(get(named(NamedDependency.DOMAIN_KEY))) }
+
+        single {
+            val configurationMultiplexer = ConfigurationMultiplexer()
+            val simpleConfiguration: SimpleConfiguration = get()
+            val environmentConfiguration: EnvironmentConfiguration = get()
+            configurationMultiplexer.setConfigurations(
+                listOf(
+                    environmentConfiguration, // Look for overrides in environment variables first
+                    simpleConfiguration, // Then in the config file
+                ),
+            )
+            configurationMultiplexer
+        }
     }
-}

@@ -19,15 +19,15 @@ import com.cramsan.framework.core.compose.Dialog
  * closed before removing it from the dialog stack.
  */
 abstract class EdifikanaBottomSheetDialog : Dialog() {
-
     private val shouldHide = mutableStateOf(false)
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val sheetState = rememberModalBottomSheetState(
-            skipPartiallyExpanded = true,
-        )
+        val sheetState =
+            rememberModalBottomSheetState(
+                skipPartiallyExpanded = true,
+            )
 
         LaunchedEffect(shouldHide.value) {
             if (shouldHide.value) {
@@ -62,5 +62,4 @@ abstract class EdifikanaBottomSheetDialog : Dialog() {
      */
     @Composable
     abstract fun BottomSheetContent()
-
 }

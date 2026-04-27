@@ -30,10 +30,7 @@ private const val TAG = "ClaudeReviewerAgent"
  *
  * This class is safe to call from multiple coroutines simultaneously — it holds no mutable state.
  */
-class ClaudeReviewerAgent(
-    private val aiProvider: AiProvider,
-) : ReviewerAgent {
-
+class ClaudeReviewerAgent(private val aiProvider: AiProvider) : ReviewerAgent {
     override suspend fun reviewDocuments(
         reviewer: ReviewerDefinition,
         documents: List<AgenticDocument>,
@@ -43,21 +40,24 @@ class ClaudeReviewerAgent(
             logD(TAG, "Document to review: id=${doc.id}, path=${doc.relativePath}, status=${doc.status}")
         }
 
-        val docsContent = documents.joinToString("\n\n---\n\n") { doc ->
-            "## Document: ${doc.relativePath}\n\n(Content not loaded — review based on metadata)"
-        }
-        val userMessage = AiMessage(
-            role = "user",
-            content = "Please review the following project documents:\n\n$docsContent",
-        )
+        val docsContent =
+            documents.joinToString("\n\n---\n\n") { doc ->
+                "## Document: ${doc.relativePath}\n\n(Content not loaded — review based on metadata)"
+            }
+        val userMessage =
+            AiMessage(
+                role = "user",
+                content = "Please review the following project documents:\n\n$docsContent",
+            )
 
         logI(TAG, "Reviewer '${reviewer.name}' reviewing ${documents.size} documents")
 
-        val response = aiProvider.chat(
-            systemPrompt = reviewer.systemPrompt,
-            messages = listOf(userMessage),
-            tools = emptyList(),
-        )
+        val response =
+            aiProvider.chat(
+                systemPrompt = reviewer.systemPrompt,
+                messages = listOf(userMessage),
+                tools = emptyList(),
+            )
 
         val textBlock = response.content.filterIsInstance<AiContentBlock.Text>().firstOrNull()
         if (textBlock == null) {
@@ -76,22 +76,27 @@ class ClaudeReviewerAgent(
     ): ReviewerFeedback {
         logD(TAG, "reviewCode called: reviewer='${reviewer.name}', taskId=${task.id}, diffLength=${diff.length}")
 
-        val userMessage = AiMessage(
-            role = "user",
-            content = "Task: ${task.title}\n\nDiff:\n```\n$diff\n```",
-        )
+        val userMessage =
+            AiMessage(
+                role = "user",
+                content = "Task: ${task.title}\n\nDiff:\n```\n$diff\n```",
+            )
 
         logI(TAG, "Reviewer '${reviewer.name}' reviewing code for task ${task.id}")
 
-        val response = aiProvider.chat(
-            systemPrompt = reviewer.systemPrompt,
-            messages = listOf(userMessage),
-            tools = emptyList(),
-        )
+        val response =
+            aiProvider.chat(
+                systemPrompt = reviewer.systemPrompt,
+                messages = listOf(userMessage),
+                tools = emptyList(),
+            )
 
         val textBlock = response.content.filterIsInstance<AiContentBlock.Text>().firstOrNull()
         if (textBlock == null) {
-            logW(TAG, "Reviewer '${reviewer.name}' returned an empty response for code review on task ${task.id}; using fallback text")
+            logW(
+                TAG,
+                "Reviewer '${reviewer.name}' returned an empty response for code review on task ${task.id}; using fallback text",
+            )
         }
         val text = textBlock?.text ?: "(no feedback)"
         logI(TAG, "Reviewer '${reviewer.name}' code feedback length: ${text.length} chars")

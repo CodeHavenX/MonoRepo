@@ -7,11 +7,7 @@ import java.nio.file.Path
  * `.agentic/worktrees/{taskId}/` where the agent reads and writes files without affecting the
  * main working tree or other agents. [branchName] always follows the pattern `agentic/{taskId}`.
  */
-data class Worktree(
-    val taskId: String,
-    val path: Path,
-    val branchName: String,
-)
+data class Worktree(val taskId: String, val path: Path, val branchName: String)
 
 /**
  * Manages the lifecycle of git worktrees used to isolate concurrent agent executions.

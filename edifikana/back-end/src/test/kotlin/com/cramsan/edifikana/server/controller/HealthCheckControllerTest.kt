@@ -25,8 +25,9 @@ import kotlin.test.assertEquals
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class HealthCheckControllerTest : CoroutineTest(), KoinTest {
-
+class HealthCheckControllerTest :
+    CoroutineTest(),
+    KoinTest {
     /**
      * Setup the test.
      */
@@ -48,41 +49,43 @@ class HealthCheckControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test health check for an unauthenticated user`() = testBackEndApplication {
-        // Configure
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.UnauthenticatedClientContext()
+    fun `test health check for an unauthenticated user`() =
+        testBackEndApplication {
+            // Configure
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.UnauthenticatedClientContext()
+            }
+
+            // Act
+            val response = client.get("health")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
         }
-
-        // Act
-        val response = client.get("health")
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-    }
 
     @Test
-    fun `test health check for an authenticated user`() = testBackEndApplication {
-        // Configure
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        coEvery {
-            contextRetriever.getContext(any())
-        }.answers {
-            ClientContext.AuthenticatedClientContext(
-                SupabaseContextPayload(
-                    userId = UserId("test-user-id"),
-                    userInfo = mockk()
+    fun `test health check for an authenticated user`() =
+        testBackEndApplication {
+            // Configure
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userId = UserId("test-user-id"),
+                        userInfo = mockk(),
+                    ),
                 )
-            )
+            }
+
+            // Act
+            val response = client.get("health")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
         }
-
-        // Act
-        val response = client.get("health")
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-    }
 }

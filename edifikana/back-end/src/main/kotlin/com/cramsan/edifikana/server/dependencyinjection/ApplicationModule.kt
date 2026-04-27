@@ -18,19 +18,20 @@ import kotlin.time.ExperimentalTime
  * Class to initialize all the application level components.
  */
 @OptIn(ExperimentalTime::class)
-internal val ApplicationModule = module {
+internal val ApplicationModule =
+    module {
 
-    single<String>(named(NamedDependency.DOMAIN_KEY)) { "EDIFIKANA" }
+        single<String>(named(NamedDependency.DOMAIN_KEY)) { "EDIFIKANA" }
 
-    single<Json> {
-        createJson()
+        single<Json> {
+            createJson()
+        }
+
+        singleOf(::SimplePasswordGenerator) {
+            bind<PasswordGenerator>()
+        }
+
+        singleOf(::SupabaseContextRetriever) {
+            bind<ContextRetriever<SupabaseContextPayload>>()
+        }
     }
-
-    singleOf(::SimplePasswordGenerator) {
-        bind<PasswordGenerator>()
-    }
-
-    singleOf(::SupabaseContextRetriever) {
-        bind<ContextRetriever<SupabaseContextPayload>>()
-    }
-}

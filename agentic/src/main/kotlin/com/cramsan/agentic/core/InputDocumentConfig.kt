@@ -23,43 +23,44 @@ data class InputDocumentConfig(
  * Template configuration for scaffolding input documents.
  */
 @Serializable
-sealed class DocumentTemplateConfig {
+sealed interface DocumentTemplateConfig {
     /**
      * Inline template content.
      */
     @Serializable
     @SerialName("inline")
-    data class Inline(val content: String) : DocumentTemplateConfig()
+    data class Inline(val content: String) : DocumentTemplateConfig
 
     /**
      * File-based template. Path can be relative to docsDir or absolute.
      */
     @Serializable
     @SerialName("file")
-    data class File(val path: String) : DocumentTemplateConfig()
+    data class File(val path: String) : DocumentTemplateConfig
 }
 
 /**
  * Returns the default input documents configuration matching the original hardcoded values.
  * Templates are stored in resources/templates/documents/ and referenced by path.
  */
-fun defaultInputDocuments(): List<InputDocumentConfig> = listOf(
-    InputDocumentConfig(
-        id = "goals-scope",
-        filename = "goals-scope.md",
-        displayName = "Goals & Scope",
-        template = DocumentTemplateConfig.File(path = "templates/documents/goals-scope.md"),
-    ),
-    InputDocumentConfig(
-        id = "architecture-design",
-        filename = "architecture-design.md",
-        displayName = "Architecture & Design",
-        template = DocumentTemplateConfig.File(path = "templates/documents/architecture-design.md"),
-    ),
-    InputDocumentConfig(
-        id = "standards",
-        filename = "standards.md",
-        displayName = "Standards",
-        template = DocumentTemplateConfig.File(path = "templates/documents/standards.md"),
-    ),
-)
+fun defaultInputDocuments(): List<InputDocumentConfig> =
+    listOf(
+        InputDocumentConfig(
+            id = "goals-scope",
+            filename = "goals-scope.md",
+            displayName = "Goals & Scope",
+            template = DocumentTemplateConfig.File(path = "templates/documents/goals-scope.md"),
+        ),
+        InputDocumentConfig(
+            id = "architecture-design",
+            filename = "architecture-design.md",
+            displayName = "Architecture & Design",
+            template = DocumentTemplateConfig.File(path = "templates/documents/architecture-design.md"),
+        ),
+        InputDocumentConfig(
+            id = "standards",
+            filename = "standards.md",
+            displayName = "Standards",
+            template = DocumentTemplateConfig.File(path = "templates/documents/standards.md"),
+        ),
+    )

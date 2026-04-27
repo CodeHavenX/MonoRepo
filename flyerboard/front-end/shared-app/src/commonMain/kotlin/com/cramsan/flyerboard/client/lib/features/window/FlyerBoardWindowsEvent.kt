@@ -9,14 +9,10 @@ import com.cramsan.framework.core.compose.navigation.Destination
  * triggered by a feature screen, and it will be handled by the window.
  */
 sealed class FlyerBoardWindowsEvent : WindowEvent {
-
     /**
      * Share content.
      */
-    data class ShareContent(
-        val text: String,
-        val imageUri: CoreUri? = null,
-    ) : FlyerBoardWindowsEvent()
+    data class ShareContent(val text: String, val imageUri: CoreUri? = null) : FlyerBoardWindowsEvent()
 
     /**
      * Navigate to nav graph.
@@ -25,7 +21,8 @@ sealed class FlyerBoardWindowsEvent : WindowEvent {
         val destination: FlyerBoardWindowNavGraphDestination,
         override val clearTop: Boolean = false,
         override val clearStack: Boolean = false,
-    ) : FlyerBoardWindowsEvent(), NavigationEvent
+    ) : FlyerBoardWindowsEvent(),
+        NavigationEvent
 
     /**
      * Navigate to destination.
@@ -34,7 +31,8 @@ sealed class FlyerBoardWindowsEvent : WindowEvent {
         val destination: Destination,
         override val clearTop: Boolean = false,
         override val clearStack: Boolean = false,
-    ) : FlyerBoardWindowsEvent(), NavigationEvent
+    ) : FlyerBoardWindowsEvent(),
+        NavigationEvent
 
     /**
      * Close the nav graph.
@@ -44,9 +42,7 @@ sealed class FlyerBoardWindowsEvent : WindowEvent {
     /**
      * Show a snackbar.
      */
-    data class ShowSnackbar(
-        val message: String,
-    ) : FlyerBoardWindowsEvent()
+    data class ShowSnackbar(val message: String) : FlyerBoardWindowsEvent()
 
     /**
      * Navigate back.

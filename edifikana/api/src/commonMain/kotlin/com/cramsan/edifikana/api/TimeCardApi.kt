@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.network.timeCard.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.lib.model.network.timeCard.GetTimeCardEventsQueryParams
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
+import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
@@ -17,24 +17,27 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object TimeCardApi : Api("time_card") {
-    val createTimeCardEvent = operation<
-        CreateTimeCardEventNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        TimeCardEventNetworkResponse
-        >(HttpMethod.Post)
+    val createTimeCardEvent =
+        operation<
+            CreateTimeCardEventNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            TimeCardEventNetworkResponse,
+            >(HttpMethod.Post)
 
-    val getTimeCardEvent = operation<
-        NoRequestBody,
-        NoQueryParam,
-        TimeCardEventId,
-        TimeCardEventNetworkResponse
-        >(HttpMethod.Get)
+    val getTimeCardEvent =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            TimeCardEventId,
+            TimeCardEventNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getTimeCardEvents = operation<
-        NoRequestBody,
-        GetTimeCardEventsQueryParams,
-        NoPathParam,
-        TimeCardEventListNetworkResponse
-        >(HttpMethod.Get)
+    val getTimeCardEvents =
+        operation<
+            NoRequestBody,
+            GetTimeCardEventsQueryParams,
+            NoPathParam,
+            TimeCardEventListNetworkResponse,
+            >(HttpMethod.Get)
 }

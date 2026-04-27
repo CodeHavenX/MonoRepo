@@ -24,7 +24,7 @@ fun generateRandomPassword(
     includeUppercase: Boolean = true,
     includeLowercase: Boolean = true,
     includeDigits: Boolean = true,
-    includeSymbols: Boolean = true
+    includeSymbols: Boolean = true,
 ): String {
     require(length >= MIN_PASSWORD_LENGTH) { "Password length should be at least 6" }
 

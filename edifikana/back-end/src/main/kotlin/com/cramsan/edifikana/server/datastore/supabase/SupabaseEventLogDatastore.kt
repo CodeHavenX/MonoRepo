@@ -18,11 +18,7 @@ import kotlin.time.Instant
 /**
  * Datastore for managing event log entries.
  */
-class SupabaseEventLogDatastore(
-    private val postgrest: Postgrest,
-    private val clock: Clock,
-) : EventLogDatastore {
-
+class SupabaseEventLogDatastore(private val postgrest: Postgrest, private val clock: Clock) : EventLogDatastore {
     /**
      * Creates a new event log entry for tracking property events.
      */
@@ -37,26 +33,31 @@ class SupabaseEventLogDatastore(
         title: String,
         description: String?,
         unit: UnitId?,
-    ): Result<EventLogEntry> = runSuspendCatching(TAG) {
-        logD(TAG, "Creating event log entry: %s", title)
-        val requestEntity: EventLogEntryEntity.CreateEventLogEntryEntity = CreateEventLogEntryEntity(
-            employeeId = employeeId,
-            fallbackEmployeeName = fallbackEmployeeName,
-            propertyId = propertyId,
-            type = type,
-            fallbackEventType = fallbackEventType,
-            timestamp = timestamp,
-            title = title,
-            description = description,
-            unit = unit
-        )
+    ): Result<EventLogEntry> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Creating event log entry: %s", title)
+            val requestEntity: EventLogEntryEntity.CreateEventLogEntryEntity =
+                CreateEventLogEntryEntity(
+                    employeeId = employeeId,
+                    fallbackEmployeeName = fallbackEmployeeName,
+                    propertyId = propertyId,
+                    type = type,
+                    fallbackEventType = fallbackEventType,
+                    timestamp = timestamp,
+                    title = title,
+                    description = description,
+                    unit = unit,
+                )
 
-        val createdEventLogEntry = postgrest.from(EventLogEntryEntity.COLLECTION).insert(requestEntity) {
-            select()
-        }.decodeSingle<EventLogEntryEntity>()
-        logD(TAG, "Event log entry created eventId: %s", createdEventLogEntry.id)
-        createdEventLogEntry.toEventLogEntry()
-    }
+            val createdEventLogEntry =
+                postgrest
+                    .from(EventLogEntryEntity.COLLECTION)
+                    .insert(requestEntity) {
+                        select()
+                    }.decodeSingle<EventLogEntryEntity>()
+            logD(TAG, "Event log entry created eventId: %s", createdEventLogEntry.id)
+            createdEventLogEntry.toEventLogEntry()
+        }
 
     /**
      * Retrieves an event log entry by [id]. Returns the [EventLogEntry] if found, null otherwise.
@@ -64,18 +65,22 @@ class SupabaseEventLogDatastore(
     @OptIn(SupabaseModel::class)
     override suspend fun getEventLogEntry(
         id: EventLogEntryId,
-    ): Result<EventLogEntry?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting event log entry: %s", id)
+    ): Result<EventLogEntry?> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting event log entry: %s", id)
 
-        val eventLogEntryEntity = postgrest.from(EventLogEntryEntity.COLLECTION).select {
-            filter {
-                EventLogEntryEntity::id eq id.eventLogEntryId
-                EventLogEntryEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<EventLogEntryEntity>()
+            val eventLogEntryEntity =
+                postgrest
+                    .from(EventLogEntryEntity.COLLECTION)
+                    .select {
+                        filter {
+                            EventLogEntryEntity::id eq id.eventLogEntryId
+                            EventLogEntryEntity::deletedAt isExact null
+                        }
+                    }.decodeSingleOrNull<EventLogEntryEntity>()
 
-        eventLogEntryEntity?.toEventLogEntry()
-    }
+            eventLogEntryEntity?.toEventLogEntry()
+        }
 
     /**
      * Gets all event log entries for a [propertyId].
@@ -83,16 +88,20 @@ class SupabaseEventLogDatastore(
     @OptIn(SupabaseModel::class)
     override suspend fun getEventLogEntries(
         propertyId: PropertyId,
-    ): Result<List<EventLogEntry>> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting all event log entries")
+    ): Result<List<EventLogEntry>> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting all event log entries")
 
-        postgrest.from(EventLogEntryEntity.COLLECTION).select {
-            filter {
-                EventLogEntryEntity::propertyId eq propertyId.propertyId
-                EventLogEntryEntity::deletedAt isExact null
-            }
-        }.decodeList<EventLogEntryEntity>().map { it.toEventLogEntry() }
-    }
+            postgrest
+                .from(EventLogEntryEntity.COLLECTION)
+                .select {
+                    filter {
+                        EventLogEntryEntity::propertyId eq propertyId.propertyId
+                        EventLogEntryEntity::deletedAt isExact null
+                    }
+                }.decodeList<EventLogEntryEntity>()
+                .map { it.toEventLogEntry() }
+        }
 
     /**
      * Updates an event log entry's attributes. Only non-null parameters are updated.
@@ -105,24 +114,28 @@ class SupabaseEventLogDatastore(
         title: String?,
         description: String?,
         unit: UnitId?,
-    ): Result<EventLogEntry> = runSuspendCatching(TAG) {
-        logD(TAG, "Updating event log entry: %s", id)
+    ): Result<EventLogEntry> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Updating event log entry: %s", id)
 
-        postgrest.from(EventLogEntryEntity.COLLECTION).update(
-            {
-                type?.let { value -> EventLogEntryEntity::type setTo value }
-                fallbackEventType?.let { value -> EventLogEntryEntity::fallbackEventType setTo value }
-                title?.let { value -> EventLogEntryEntity::title setTo value }
-                description?.let { value -> EventLogEntryEntity::description setTo value }
-                unit?.let { value -> EventLogEntryEntity::unit setTo value }
-            }
-        ) {
-            select()
-            filter {
-                EventLogEntryEntity::id eq id.eventLogEntryId
-            }
-        }.decodeSingle<EventLogEntryEntity>().toEventLogEntry()
-    }
+            postgrest
+                .from(EventLogEntryEntity.COLLECTION)
+                .update(
+                    {
+                        type?.let { value -> EventLogEntryEntity::type setTo value }
+                        fallbackEventType?.let { value -> EventLogEntryEntity::fallbackEventType setTo value }
+                        title?.let { value -> EventLogEntryEntity::title setTo value }
+                        description?.let { value -> EventLogEntryEntity::description setTo value }
+                        unit?.let { value -> EventLogEntryEntity::unit setTo value }
+                    },
+                ) {
+                    select()
+                    filter {
+                        EventLogEntryEntity::id eq id.eventLogEntryId
+                    }
+                }.decodeSingle<EventLogEntryEntity>()
+                .toEventLogEntry()
+        }
 
     /**
      * Soft deletes an event log entry by [id]. Returns true if successful.
@@ -130,19 +143,22 @@ class SupabaseEventLogDatastore(
     @OptIn(SupabaseModel::class)
     override suspend fun deleteEventLogEntry(
         id: EventLogEntryId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Soft deleting event log entry: %s", id)
+    ): Result<Boolean> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Soft deleting event log entry: %s", id)
 
-        postgrest.from(EventLogEntryEntity.COLLECTION).update({
-            EventLogEntryEntity::deletedAt setTo clock.now()
-        }) {
-            select()
-            filter {
-                EventLogEntryEntity::id eq id.eventLogEntryId
-                EventLogEntryEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<EventLogEntryEntity>() != null
-    }
+            postgrest
+                .from(EventLogEntryEntity.COLLECTION)
+                .update({
+                    EventLogEntryEntity::deletedAt setTo clock.now()
+                }) {
+                    select()
+                    filter {
+                        EventLogEntryEntity::id eq id.eventLogEntryId
+                        EventLogEntryEntity::deletedAt isExact null
+                    }
+                }.decodeSingleOrNull<EventLogEntryEntity>() != null
+        }
 
     /**
      * Permanently deletes a soft-deleted event log entry by [id]. Returns true if successful.
@@ -151,29 +167,33 @@ class SupabaseEventLogDatastore(
     @OptIn(SupabaseModel::class)
     override suspend fun purgeEventLogEntry(
         id: EventLogEntryId,
-    ): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Purging soft-deleted event log entry: %s", id)
+    ): Result<Boolean> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Purging soft-deleted event log entry: %s", id)
 
-        // First verify the record exists and is soft-deleted
-        val entity = postgrest.from(EventLogEntryEntity.COLLECTION).select {
-            filter {
-                EventLogEntryEntity::id eq id.eventLogEntryId
+            // First verify the record exists and is soft-deleted
+            val entity =
+                postgrest
+                    .from(EventLogEntryEntity.COLLECTION)
+                    .select {
+                        filter {
+                            EventLogEntryEntity::id eq id.eventLogEntryId
+                        }
+                    }.decodeSingleOrNull<EventLogEntryEntity>()
+
+            // Only purge if it exists and is soft-deleted
+            if (entity?.deletedAt == null) {
+                return@runSuspendCatching false
             }
-        }.decodeSingleOrNull<EventLogEntryEntity>()
 
-        // Only purge if it exists and is soft-deleted
-        if (entity?.deletedAt == null) {
-            return@runSuspendCatching false
-        }
-
-        // Delete the record
-        postgrest.from(EventLogEntryEntity.COLLECTION).delete {
-            filter {
-                EventLogEntryEntity::id eq id.eventLogEntryId
+            // Delete the record
+            postgrest.from(EventLogEntryEntity.COLLECTION).delete {
+                filter {
+                    EventLogEntryEntity::id eq id.eventLogEntryId
+                }
             }
+            true
         }
-        true
-    }
 
     companion object {
         const val TAG = "SupabaseEventLogDatastore"

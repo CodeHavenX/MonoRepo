@@ -1,6 +1,5 @@
 package com.cramsan.agentic.claude
 
-import com.cramsan.agentic.ai.AiMessage
 import com.cramsan.agentic.core.PullRequestComment
 import com.cramsan.agentic.core.Task
 
@@ -10,9 +9,10 @@ import com.cramsan.agentic.core.Task
  * goal, and available tool usage instructions for the duration of the session.
  */
 fun buildTaskStartPrompt(task: Task, documents: List<Pair<String, String>>): String {
-    val docsSection = documents.joinToString("\n\n") { (name, content) ->
-        "## Document: $name\n\n$content"
-    }
+    val docsSection =
+        documents.joinToString("\n\n") { (name, content) ->
+            "## Document: $name\n\n$content"
+        }
     return """
 You are an autonomous software engineering agent. Your goal is to complete the following task by writing code in your assigned worktree.
 
@@ -37,15 +37,15 @@ $docsSection
 7. If the task is larger than expected, use `split_task` to deliver partial value and queue remaining work.
 
 Work autonomously. Do not ask for clarification — make reasonable decisions and document them in the PR description.
-""".trimIndent()
+        """.trimIndent()
 }
 
 /**
  * Builds the system prompt when the agent resumes a session where a PR is already open
  * but has no reviewer feedback yet. The agent is informed of the PR state and told to stand by.
  */
-fun buildPrOpenedPrompt(task: Task, gitDiff: String, prDescription: String): String {
-    return """
+fun buildPrOpenedPrompt(task: Task, gitDiff: String, prDescription: String): String =
+    """
 You previously completed task **${task.id}: ${task.title}** and opened a Pull Request.
 
 ## Pull Request Summary
@@ -59,8 +59,7 @@ $gitDiff
 ```
 
 The PR is awaiting review. Stand by for feedback.
-""".trimIndent()
-}
+    """.trimIndent()
 
 /**
  * Builds the system prompt when a human reviewer has requested changes on the task's PR.
@@ -68,9 +67,10 @@ The PR is awaiting review. Stand by for feedback.
  * in context.
  */
 fun buildChangesRequestedPrompt(task: Task, gitDiff: String, reviewComments: List<PullRequestComment>): String {
-    val commentsSection = reviewComments.joinToString("\n\n") { comment ->
-        "**${comment.author}** (${comment.createdAtEpochMs}):\n${comment.body}"
-    }
+    val commentsSection =
+        reviewComments.joinToString("\n\n") { comment ->
+            "**${comment.author}** (${comment.createdAtEpochMs}):\n${comment.body}"
+        }
     return """
 The reviewer has requested changes on task **${task.id}: ${task.title}**.
 
@@ -91,7 +91,7 @@ $commentsSection
 3. When ready, stage and commit your changes (`git add -A && git commit -m "..."`), push the branch (`git push`), then use `task_complete` to update the Pull Request.
 
 Work autonomously. Address each comment thoughtfully.
-""".trimIndent()
+        """.trimIndent()
 }
 
 /**
@@ -99,8 +99,8 @@ Work autonomously. Address each comment thoughtfully.
  * uncommitted or committed-but-not-PR'd changes. The diff provides context on prior progress
  * so the agent can continue without starting from scratch.
  */
-fun buildResumeFromWorktreePrompt(task: Task, gitDiff: String): String {
-    return """
+fun buildResumeFromWorktreePrompt(task: Task, gitDiff: String): String =
+    """
 You are resuming work on task **${task.id}: ${task.title}**.
 
 Your previous session was interrupted. Here is the current state of your work:
@@ -119,5 +119,4 @@ $gitDiff
 4. Use `task_complete` to open a Pull Request when ready.
 
 Work autonomously. Pick up where you left off.
-""".trimIndent()
-}
+    """.trimIndent()

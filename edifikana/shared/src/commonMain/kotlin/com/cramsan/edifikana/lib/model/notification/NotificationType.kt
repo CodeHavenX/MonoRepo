@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 enum class NotificationType {
     // Notification for an organization invite.
     INVITE,
+
     // System notification.
     SYSTEM,
-    ;
 }

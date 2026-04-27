@@ -1,22 +1,19 @@
 package com.cramsan.flyerboard.client.lib.features.main.flyer_list
 
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
+import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import com.cramsan.flyerboard.client.lib.managers.FlyerManager
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
-import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the Flyer List screen.
  */
-class FlyerListViewModel(
-    dependencies: ViewModelDependencies,
-    private val flyerManager: FlyerManager,
-) : BaseViewModel<FlyerListEvent, FlyerListUIState>(dependencies, FlyerListUIState.Initial, TAG) {
-
+class FlyerListViewModel(dependencies: ViewModelDependencies, private val flyerManager: FlyerManager) :
+    BaseViewModel<FlyerListEvent, FlyerListUIState>(dependencies, FlyerListUIState.Initial, TAG) {
     /**
      * Load the initial page of public flyers.
      */
@@ -24,7 +21,8 @@ class FlyerListViewModel(
         logI(TAG, "loadFlyers")
         viewModelScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
-            flyerManager.listFlyers()
+            flyerManager
+                .listFlyers()
                 .onSuccess { paginated ->
                     updateUiState {
                         it.copy(
@@ -32,8 +30,7 @@ class FlyerListViewModel(
                             flyers = paginated.flyers,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     updateUiState { it.copy(isLoading = false, errorMessage = error.message) }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(

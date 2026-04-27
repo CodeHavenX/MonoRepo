@@ -9,17 +9,15 @@ import kotlinx.coroutines.launch
 /**
  * Main Menu ViewModel.
  */
-class MainMenuViewModel(
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<MainMenuEvent, MainMenuIState>(dependencies, MainMenuIState, TAG) {
-
+class MainMenuViewModel(dependencies: ViewModelDependencies) :
+    BaseViewModel<MainMenuEvent, MainMenuIState>(dependencies, MainMenuIState, TAG) {
     /**
      * Navigate to the HaltUtil screen.
      */
     fun navigateToHaltUtil() {
         viewModelScope.launch {
             emitWindowEvent(
-                SampleWindowEvent.NavigateToScreen(MainDestination.HaltUtilDestination)
+                SampleWindowEvent.NavigateToScreen(MainDestination.HaltUtilDestination),
             )
         }
     }
@@ -30,7 +28,7 @@ class MainMenuViewModel(
     fun navigateToLogging() {
         viewModelScope.launch {
             emitWindowEvent(
-                SampleWindowEvent.NavigateToScreen(MainDestination.LoggingDestination)
+                SampleWindowEvent.NavigateToScreen(MainDestination.LoggingDestination),
             )
         }
     }

@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.network.organization.CreateOrganizationNetworkRequest
 import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.UpdateOrganizationNetworkRequest
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
@@ -17,31 +17,35 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object OrganizationApi : Api("organization") {
-    val getOrganizationList = operation<
-        NoRequestBody,
-        NoQueryParam,
-        NoPathParam,
-        OrganizationNetworkListNetworkResponse
-        >(HttpMethod.Get)
+    val getOrganizationList =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            OrganizationNetworkListNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getOrganization = operation<
-        NoRequestBody,
-        NoQueryParam,
-        OrganizationId,
-        OrganizationNetworkResponse
-        >(HttpMethod.Get)
+    val getOrganization =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            OrganizationId,
+            OrganizationNetworkResponse,
+            >(HttpMethod.Get)
 
-    val createOrganization = operation<
-        CreateOrganizationNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        OrganizationNetworkResponse
-        >(HttpMethod.Post)
+    val createOrganization =
+        operation<
+            CreateOrganizationNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            OrganizationNetworkResponse,
+            >(HttpMethod.Post)
 
-    val updateOrganization = operation<
-        UpdateOrganizationNetworkRequest,
-        NoQueryParam,
-        OrganizationId,
-        OrganizationNetworkResponse
-        >(HttpMethod.Put)
+    val updateOrganization =
+        operation<
+            UpdateOrganizationNetworkRequest,
+            NoQueryParam,
+            OrganizationId,
+            OrganizationNetworkResponse,
+            >(HttpMethod.Put)
 }

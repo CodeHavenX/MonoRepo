@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
  * Destinations in the Settings graph.
  */
 sealed class SettingsDestination : Destination {
-
     /**
      * General settings screen.
      */

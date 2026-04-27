@@ -117,13 +117,17 @@ internal fun FlyerListContent(
             contentAlignment = Alignment.Center,
         ) {
             when {
-                uiState.isLoading -> CircularProgressIndicator()
+                uiState.isLoading -> {
+                    CircularProgressIndicator()
+                }
+
                 uiState.flyers.isEmpty() -> {
                     Text(
                         text = stringResource(Res.string.flyer_list_screen_empty_message),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
+
                 else -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),

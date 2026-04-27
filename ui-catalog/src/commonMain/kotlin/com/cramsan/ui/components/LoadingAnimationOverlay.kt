@@ -33,23 +33,23 @@ fun LoadingAnimationOverlay(
     ) {
         val interactionSource = remember { MutableInteractionSource() }
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
                     onClick = {},
-                )
-                .fillMaxSize(),
+                ).fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .background(color, shape = MaterialTheme.shapes.large)
                     .sizeIn(
                         maxHeight = Size.xxx_large,
                         maxWidth = Size.xxx_large,
-                    )
-                    .fillMaxSize(),
+                    ).fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()

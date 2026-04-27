@@ -59,9 +59,7 @@ fun EmployeeOverviewScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize()
     }
@@ -111,7 +109,7 @@ internal fun EmployeeOverviewContent(
                     contentDescription = stringResource(Res.string.employee_overview_add_employee_description),
                 )
             }
-        }
+        },
     ) { innerPadding ->
         ScreenLayout(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
@@ -125,6 +123,7 @@ internal fun EmployeeOverviewContent(
                                 modifier = sectionModifier,
                             )
                         }
+
                         is UserItemUIModel -> {
                             UserItem(
                                 employee = it,
@@ -137,7 +136,7 @@ internal fun EmployeeOverviewContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading)
-            }
+            },
         )
     }
 }
@@ -155,17 +154,21 @@ private fun UserItem(
                 width = 1.dp,
                 color = Color.LightGray,
                 shape = MaterialTheme.shapes.medium,
-            )
-            .clickable { onEmployeeSelected(employee) },
+            ).clickable { onEmployeeSelected(employee) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
-        val imageModifier = Modifier
-            .size(Size.xx_large)
+        val imageModifier =
+            Modifier
+                .size(Size.xx_large)
         if (employee.imageUrl != null) {
             EdifikanaImage(
                 imageSource = ImageSource.Url(employee.imageUrl),
-                contentDescription = stringResource(Res.string.employee_overview_employee_image_description, employee.name),
+                contentDescription =
+                stringResource(
+                    Res.string.employee_overview_employee_image_description,
+                    employee.name,
+                ),
                 modifier = imageModifier,
             )
         } else {
@@ -173,14 +176,15 @@ private fun UserItem(
                 imageVector = Icons.Default.Person,
                 contentDescription = stringResource(Res.string.employee_overview_no_image_description, employee.name),
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = imageModifier.padding(
-                    Padding.SMALL
+                modifier =
+                imageModifier.padding(
+                    Padding.SMALL,
                 ),
             )
         }
         Spacer(Modifier.size(Padding.MEDIUM))
         Column(
-            modifier = Modifier.padding(Padding.SMALL)
+            modifier = Modifier.padding(Padding.SMALL),
         ) {
             Text(
                 employee.name,
@@ -210,19 +214,21 @@ private fun InviteItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
-        val imageModifier = Modifier
-            .size(Size.xx_large)
+        val imageModifier =
+            Modifier
+                .size(Size.xx_large)
         Icon(
             imageVector = Icons.Default.Person,
             contentDescription = stringResource(Res.string.employee_overview_pending_invite_description, invite.email),
             tint = MaterialTheme.colorScheme.outline,
-            modifier = imageModifier.padding(
-                Padding.SMALL
+            modifier =
+            imageModifier.padding(
+                Padding.SMALL,
             ),
         )
         Spacer(Modifier.size(Padding.MEDIUM))
         Column(
-            modifier = Modifier.padding(Padding.SMALL)
+            modifier = Modifier.padding(Padding.SMALL),
         ) {
             Text(
                 invite.email,

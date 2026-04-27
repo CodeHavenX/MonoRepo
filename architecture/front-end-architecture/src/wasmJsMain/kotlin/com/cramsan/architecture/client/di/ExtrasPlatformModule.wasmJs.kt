@@ -6,5 +6,6 @@ import org.koin.dsl.module
  * WasmJS-specific implementation of the ExtrasPlatformModule.
  * Currently provides no additional dependencies beyond the common implementation.
  */
-internal actual val ExtrasPlatformModule = module {
-}
+internal actual val ExtrasPlatformModule =
+    module {
+    }

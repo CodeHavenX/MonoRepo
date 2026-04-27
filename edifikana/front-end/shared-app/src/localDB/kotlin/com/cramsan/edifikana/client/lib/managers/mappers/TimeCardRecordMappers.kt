@@ -32,7 +32,7 @@ fun TimeCardRecordEntity.toDomainModel(): TimeCardRecordModel {
         EmployeeId(employeeDocumentId ?: TODO("Employee document ID cannot be null")),
         PropertyId(propertyId ?: TODO("Property ID cannot be null")),
         TimeCardEventType.fromString(eventType),
-        eventTime?.let { Instant.fromEpochMilliseconds(it) } ?: TODO("Time recorded cannot be null") ,
+        eventTime?.let { Instant.fromEpochMilliseconds(it) } ?: TODO("Time recorded cannot be null"),
         cachedImageUrl,
         null,
     )

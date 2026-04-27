@@ -38,7 +38,6 @@ class DefaultStateDeriver(
     private val worktreeManager: WorktreeManager,
     private val agenticDir: Path,
 ) : StateDeriver {
-
     override suspend fun fetchPrContext(): PrContext {
         logD(TAG, "fetchPrContext: fetching merged and open PRs with label 'agentic-code'")
         val mergedPrs = vcsProvider.listMergedPullRequests(labels = listOf("agentic-code"))
@@ -95,9 +94,10 @@ class DefaultStateDeriver(
         }
 
         logD(TAG, "Task ${task.id} dependencies: ${task.dependencies}, resolved: $resolvedDependencies")
-        val allDepsDone = task.dependencies.all { depId ->
-            resolvedDependencies[depId] == TaskStatus.DONE
-        }
+        val allDepsDone =
+            task.dependencies.all { depId ->
+                resolvedDependencies[depId] == TaskStatus.DONE
+            }
         if (allDepsDone) {
             logI(TAG, "Task ${task.id} all ${task.dependencies.size} dependencies are DONE — status: PENDING")
             return TaskStatus.PENDING

@@ -12,7 +12,6 @@ import com.cramsan.edifikana.server.service.models.Document
  * Interface for the document datastore.
  */
 interface DocumentDatastore {
-
     /**
      * Creates a new document record. Returns the [Result] of the operation with the created [Document].
      */

@@ -2,11 +2,11 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.CommonAreaApi
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
-import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaNetworkResponse
 import com.cramsan.edifikana.lib.model.network.commonArea.CreateCommonAreaNetworkRequest
 import com.cramsan.edifikana.lib.model.network.commonArea.UpdateCommonAreaNetworkRequest
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.CommonAreaService
 import com.cramsan.edifikana.server.service.authorization.RBACService
@@ -36,7 +36,6 @@ class CommonAreaController(
     private val rbacService: RBACService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -47,18 +46,19 @@ class CommonAreaController(
             CreateCommonAreaNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): CommonAreaNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return commonAreaService.createCommonArea(
-            propertyId = request.requestBody.propertyId,
-            name = request.requestBody.name,
-            type = request.requestBody.type,
-            description = request.requestBody.description,
-        ).toCommonAreaNetworkResponse()
+        return commonAreaService
+            .createCommonArea(
+                propertyId = request.requestBody.propertyId,
+                name = request.requestBody.name,
+                type = request.requestBody.type,
+                description = request.requestBody.description,
+            ).toCommonAreaNetworkResponse()
     }
 
     /**
@@ -70,8 +70,8 @@ class CommonAreaController(
             NoRequestBody,
             NoQueryParam,
             CommonAreaId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): CommonAreaNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw NotFoundException("Common area not found.")
@@ -88,14 +88,16 @@ class CommonAreaController(
             NoRequestBody,
             NoQueryParam,
             PropertyId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): CommonAreaListNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val commonAreas = commonAreaService.getCommonAreasForProperty(request.pathParam)
-            .map { it.toCommonAreaNetworkResponse() }
+        val commonAreas =
+            commonAreaService
+                .getCommonAreasForProperty(request.pathParam)
+                .map { it.toCommonAreaNetworkResponse() }
         return CommonAreaListNetworkResponse(commonAreas)
     }
 
@@ -107,18 +109,19 @@ class CommonAreaController(
             UpdateCommonAreaNetworkRequest,
             NoQueryParam,
             CommonAreaId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): CommonAreaNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return commonAreaService.updateCommonArea(
-            commonAreaId = request.pathParam,
-            name = request.requestBody.name,
-            type = request.requestBody.type,
-            description = request.requestBody.description,
-        ).toCommonAreaNetworkResponse()
+        return commonAreaService
+            .updateCommonArea(
+                commonAreaId = request.pathParam,
+                name = request.requestBody.name,
+                type = request.requestBody.type,
+                description = request.requestBody.description,
+            ).toCommonAreaNetworkResponse()
     }
 
     /**
@@ -129,8 +132,8 @@ class CommonAreaController(
             NoRequestBody,
             NoQueryParam,
             CommonAreaId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): NoResponseBody {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)

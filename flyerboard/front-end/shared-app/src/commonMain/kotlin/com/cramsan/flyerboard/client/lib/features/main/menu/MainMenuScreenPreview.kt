@@ -9,17 +9,19 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Preview
 @Composable
-private fun MainMenuScreenPreview() = AppTheme {
-    MainMenuContent(
-        uiState = MainMenuUIState(
-            firstName = "John",
-            lastName = "Doe",
-            isLoading = false,
-        ),
-        isMultiWindowEnabled = true,
-        onFirstnameValueChange = {},
-        onLastNameValueChange = {},
-        onMultiWindowToggled = {},
-        onClicked = {},
-    )
-}
+private fun MainMenuScreenPreview() =
+    AppTheme {
+        MainMenuContent(
+            uiState =
+            MainMenuUIState(
+                firstName = "John",
+                lastName = "Doe",
+                isLoading = false,
+            ),
+            isMultiWindowEnabled = true,
+            onFirstnameValueChange = {},
+            onLastNameValueChange = {},
+            onMultiWindowToggled = {},
+            onClicked = {},
+        )
+    }

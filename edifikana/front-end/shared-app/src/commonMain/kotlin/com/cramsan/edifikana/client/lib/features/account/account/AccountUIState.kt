@@ -15,14 +15,15 @@ data class AccountUIState(
     val isEditable: Boolean,
 ) : ViewModelUIState {
     companion object {
-        val Empty = AccountUIState(
-            firstName = "",
-            lastName = "",
-            email = "",
-            phoneNumber = "",
-            isPasswordSet = null,
-            isLoading = true,
-            isEditable = false,
-        )
+        val Empty =
+            AccountUIState(
+                firstName = "",
+                lastName = "",
+                email = "",
+                phoneNumber = "",
+                isPasswordSet = null,
+                isLoading = true,
+                isEditable = false,
+            )
     }
 }

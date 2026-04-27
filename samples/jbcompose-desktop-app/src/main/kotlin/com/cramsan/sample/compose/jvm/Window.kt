@@ -9,14 +9,15 @@ import com.cramsan.sample.mpplib.compose.common.MainView
 /**
  *
  */
-fun main() = application {
-    Window(
-        title = "Sample Compose Desktop App",
-        onCloseRequest = ::exitApplication,
-    ) {
-        MainView()
+fun main() =
+    application {
+        Window(
+            title = "Sample Compose Desktop App",
+            onCloseRequest = ::exitApplication,
+        ) {
+            MainView()
+        }
     }
-}
 
 @Preview
 @Composable

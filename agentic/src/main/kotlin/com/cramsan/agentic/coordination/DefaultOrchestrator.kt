@@ -9,13 +9,12 @@ import com.cramsan.agentic.notification.AgenticEvent
 import com.cramsan.agentic.notification.Notifier
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.CoroutineDispatcher
 
 private const val TAG = "DefaultOrchestrator"
 
@@ -51,7 +50,6 @@ class DefaultOrchestrator(
     private val notifier: Notifier,
     private val dispatcher: CoroutineDispatcher,
 ) : Orchestrator {
-
     private val cleanedUpTaskIds: MutableSet<String> = mutableSetOf()
 
     override suspend fun run(config: OrchestratorConfig) {
@@ -79,8 +77,7 @@ class DefaultOrchestrator(
             .filter { (task, status) ->
                 (status == TaskStatus.DONE || status == TaskStatus.FAILED) &&
                     task.id !in cleanedUpTaskIds
-            }
-            .forEach { (task, _) ->
+            }.forEach { (task, _) ->
                 try {
                     worktreeManager.delete(task.id)
                     cleanedUpTaskIds += task.id
@@ -105,9 +102,11 @@ class DefaultOrchestrator(
         tasks: List<Task>,
         activeTaskIds: Set<String>,
     ): Boolean {
-        val hasMakingProgress = statuses.values.any {
-            it == TaskStatus.IN_PROGRESS || it == TaskStatus.PENDING
-        } || activeTaskIds.isNotEmpty()
+        val hasMakingProgress =
+            statuses.values.any {
+                it == TaskStatus.IN_PROGRESS || it == TaskStatus.PENDING
+            } ||
+                activeTaskIds.isNotEmpty()
         if (hasMakingProgress) return false
 
         val blocked = tasks.filter { statuses[it] == TaskStatus.BLOCKED }
@@ -132,8 +131,7 @@ class DefaultOrchestrator(
             .filter { (task, status) ->
                 (status == TaskStatus.PENDING || status == TaskStatus.IN_PROGRESS) &&
                     task.id !in activeTaskIds
-            }
-            .sortedByDescending { (task, _) -> dependencyGraph.downstreamCount(task.id) }
+            }.sortedByDescending { (task, _) -> dependencyGraph.downstreamCount(task.id) }
             .take(freeSlots)
             .forEach { (task, _) ->
                 activeTaskIds += task.id
@@ -156,9 +154,7 @@ class DefaultOrchestrator(
             }
     }
 
-    override suspend fun status(): Map<Task, TaskStatus> {
-        return deriveMemoized(taskListProvider.provide())
-    }
+    override suspend fun status(): Map<Task, TaskStatus> = deriveMemoized(taskListProvider.provide())
 
     private suspend fun deriveMemoized(tasks: List<Task>): Map<Task, TaskStatus> {
         val prContext = stateDeriver.fetchPrContext()
@@ -173,15 +169,17 @@ class DefaultOrchestrator(
 
         while (queue.isNotEmpty()) {
             val task = queue.removeFirst()
-            val depStatuses = task.dependencies.associateWith { depId ->
-                checkNotNull(resolved[depId]) { "Kahn's invariant violated: $depId not resolved before ${task.id}" }
-            }
-            val status = try {
-                stateDeriver.statusOf(task, depStatuses, prContext)
-            } catch (e: Exception) {
-                logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as PENDING.")
-                TaskStatus.PENDING
-            }
+            val depStatuses =
+                task.dependencies.associateWith { depId ->
+                    checkNotNull(resolved[depId]) { "Kahn's invariant violated: $depId not resolved before ${task.id}" }
+                }
+            val status =
+                try {
+                    stateDeriver.statusOf(task, depStatuses, prContext)
+                } catch (e: Exception) {
+                    logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as PENDING.")
+                    TaskStatus.PENDING
+                }
             resolved[task.id] = status
             result[task] = status
 
@@ -197,14 +195,20 @@ class DefaultOrchestrator(
         // Any tasks not reached have a dependency cycle — evaluate without resolved deps.
         if (result.size < tasks.size) {
             val cyclic = tasks.filter { it.id !in resolved }
-            logW(TAG, "Dependency cycle detected among tasks: ${cyclic.map { it.id }}. Evaluating without dependency context.")
+            logW(
+                TAG,
+                "Dependency cycle detected among tasks: ${cyclic.map {
+                    it.id
+                }}. Evaluating without dependency context.",
+            )
             for (task in cyclic) {
-                val status = try {
-                    stateDeriver.statusOf(task, prContext = prContext)
-                } catch (e: Exception) {
-                    logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as PENDING.")
-                    TaskStatus.PENDING
-                }
+                val status =
+                    try {
+                        stateDeriver.statusOf(task, prContext = prContext)
+                    } catch (e: Exception) {
+                        logW(TAG, "Failed to derive status for task ${task.id}: ${e.message}. Treating as PENDING.")
+                        TaskStatus.PENDING
+                    }
                 result[task] = status
             }
         }

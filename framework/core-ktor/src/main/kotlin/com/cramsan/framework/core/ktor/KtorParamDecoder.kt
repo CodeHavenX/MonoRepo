@@ -22,9 +22,7 @@ import kotlinx.serialization.serializer
  * Note: This decoder does not support nested objects or complex types.
  */
 @ExperimentalSerializationApi
-class KtorParamDecoder(
-    queryParams: Parameters,
-) : KeyValueMapDecoder(queryParams.toMap())
+class KtorParamDecoder(queryParams: Parameters) : KeyValueMapDecoder(queryParams.toMap())
 
 /**
  * Decodes a query parameter string into an object of type [T] using the provided [deserializer].

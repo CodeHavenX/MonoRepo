@@ -5,17 +5,17 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.UserModel
-import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.model.network.employee.CreateEmployeeNetworkRequest
-import com.cramsan.edifikana.lib.model.network.eventLog.CreateEventLogEntryNetworkRequest
-import com.cramsan.edifikana.lib.model.network.timeCard.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
-import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryNetworkResponse
-import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
-import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.UpdateEmployeeNetworkRequest
+import com.cramsan.edifikana.lib.model.network.eventLog.CreateEventLogEntryNetworkRequest
+import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.eventLog.UpdateEventLogEntryNetworkRequest
+import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.timeCard.CreateTimeCardEventNetworkRequest
+import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.NetworkModel
 
 /**
@@ -156,7 +156,8 @@ fun UserNetworkResponse.toUserModel(): UserModel {
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
-        authMetadata = authMetadata?.let {
+        authMetadata =
+        authMetadata?.let {
             UserModel.AuthMetadataModel(
                 isPasswordSet = it.isPasswordSet,
             )

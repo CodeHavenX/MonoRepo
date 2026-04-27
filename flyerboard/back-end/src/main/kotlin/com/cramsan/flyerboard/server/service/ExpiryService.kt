@@ -20,10 +20,7 @@ import kotlin.time.ExperimentalTime
  * cancelled automatically when the server shuts down.
  */
 @OptIn(ExperimentalTime::class)
-class ExpiryService(
-    private val flyerDatastore: FlyerDatastore,
-) {
-
+class ExpiryService(private val flyerDatastore: FlyerDatastore) {
     /**
      * Starts the hourly expiry loop inside [scope].
      *
@@ -43,11 +40,13 @@ class ExpiryService(
     private suspend fun archiveExpiredFlyers() {
         logD(TAG, "Checking for expired flyers")
         val now = Clock.System.now()
-        val expired = flyerDatastore.listExpiredFlyers(now)
-            .getOrElse { e ->
-                logE(TAG, "Failed to list expired flyers", e)
-                return
-            }
+        val expired =
+            flyerDatastore
+                .listExpiredFlyers(now)
+                .getOrElse { e ->
+                    logE(TAG, "Failed to list expired flyers", e)
+                    return
+                }
 
         if (expired.isEmpty()) {
             logD(TAG, "No expired flyers found")
@@ -56,18 +55,19 @@ class ExpiryService(
 
         logI(TAG, "Archiving ${expired.size} expired flyer(s)")
         for (flyer in expired) {
-            flyerDatastore.updateFlyer(
-                id = flyer.id,
-                title = null,
-                description = null,
-                filePath = null,
-                status = FlyerStatus.ARCHIVED,
-                expiresAt = null,
-            ).onFailure { e ->
-                logE(TAG, "Failed to archive flyer ${flyer.id}", e)
-            }.onSuccess {
-                logD(TAG, "Archived flyer: %s", flyer.id)
-            }
+            flyerDatastore
+                .updateFlyer(
+                    id = flyer.id,
+                    title = null,
+                    description = null,
+                    filePath = null,
+                    status = FlyerStatus.ARCHIVED,
+                    expiresAt = null,
+                ).onFailure { e ->
+                    logE(TAG, "Failed to archive flyer ${flyer.id}", e)
+                }.onSuccess {
+                    logD(TAG, "Archived flyer: %s", flyer.id)
+                }
         }
     }
 

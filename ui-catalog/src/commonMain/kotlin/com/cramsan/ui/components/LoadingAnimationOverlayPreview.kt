@@ -11,7 +11,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun LoadingAnimationOverlayPreview_Loading() {
     Box(
-        modifier = Modifier.size(100.dp)
+        modifier = Modifier.size(100.dp),
     ) {
         LoadingAnimationOverlay(isLoading = true)
     }
@@ -21,7 +21,7 @@ fun LoadingAnimationOverlayPreview_Loading() {
 @Composable
 fun LoadingAnimationOverlayPreview_NotLoading() {
     Box(
-        modifier = Modifier.size(100.dp)
+        modifier = Modifier.size(100.dp),
     ) {
         LoadingAnimationOverlay(isLoading = false)
     }

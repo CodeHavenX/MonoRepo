@@ -4,7 +4,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.cramsan.framework.core.compose.navigation.navigationGraph
 import com.cramsan.flyerboard.client.lib.features.main.archive.ArchiveScreen
 import com.cramsan.flyerboard.client.lib.features.main.flyer_detail.FlyerDetailScreen
 import com.cramsan.flyerboard.client.lib.features.main.flyer_edit.FlyerEditScreen
@@ -13,6 +12,7 @@ import com.cramsan.flyerboard.client.lib.features.main.menu.MainMenuScreen
 import com.cramsan.flyerboard.client.lib.features.main.moderation_queue.ModerationQueueScreen
 import com.cramsan.flyerboard.client.lib.features.main.my_flyers.MyFlyersScreen
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
+import com.cramsan.framework.core.compose.navigation.navigationGraph
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KType
 

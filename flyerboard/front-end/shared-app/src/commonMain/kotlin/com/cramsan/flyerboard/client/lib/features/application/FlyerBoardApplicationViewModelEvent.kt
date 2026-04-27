@@ -6,7 +6,6 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * Events for the FlyerBoardApplicationViewModel.
  */
 sealed class FlyerBoardApplicationViewModelEvent : ViewModelEvent {
-
     /**
      * Noop event.
      */

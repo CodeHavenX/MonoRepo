@@ -7,7 +7,6 @@ package com.cramsan.framework.configuration
  * based on the provided [propertyValueTypePredicate].
  */
 class ConfigurationMultiplexer {
-
     private val configurations = mutableListOf<Configuration>()
 
     private var propertyValueTypePredicate: ((PropertyValue?) -> Boolean) = DefaultPropertyValueTypePredicate
@@ -42,24 +41,28 @@ class ConfigurationMultiplexer {
     fun readProperty(key: String, valueType: PropertyValueType): PropertyValue? {
         for (configuration in configurations) {
             val normalizedKey = configuration.transformKey(key)
-            val value = when (valueType) {
-                is PropertyValueType.StringType -> {
-                    val stringValue = configuration.readString(normalizedKey)
-                    stringValue?.let { PropertyValue.StringValue(it) }
+            val value =
+                when (valueType) {
+                    is PropertyValueType.StringType -> {
+                        val stringValue = configuration.readString(normalizedKey)
+                        stringValue?.let { PropertyValue.StringValue(it) }
+                    }
+
+                    is PropertyValueType.IntType -> {
+                        val intValue = configuration.readInt(normalizedKey)
+                        intValue?.let { PropertyValue.IntValue(it) }
+                    }
+
+                    is PropertyValueType.LongType -> {
+                        val longValue = configuration.readLong(normalizedKey)
+                        longValue?.let { PropertyValue.LongValue(it) }
+                    }
+
+                    is PropertyValueType.BooleanType -> {
+                        val booleanValue = configuration.readBoolean(normalizedKey)
+                        booleanValue?.let { PropertyValue.BooleanValue(it) }
+                    }
                 }
-                is PropertyValueType.IntType -> {
-                    val intValue = configuration.readInt(normalizedKey)
-                    intValue?.let { PropertyValue.IntValue(it) }
-                }
-                is PropertyValueType.LongType -> {
-                    val longValue = configuration.readLong(normalizedKey)
-                    longValue?.let { PropertyValue.LongValue(it) }
-                }
-                is PropertyValueType.BooleanType -> {
-                    val booleanValue = configuration.readBoolean(normalizedKey)
-                    booleanValue?.let { PropertyValue.BooleanValue(it) }
-                }
-            }
             if (propertyValueTypePredicate(value)) {
                 return value
             }

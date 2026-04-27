@@ -78,7 +78,8 @@ internal fun QuestionsContent(
         },
     ) { innerPadding ->
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             sectionContent = { sectionModifier ->
@@ -90,15 +91,16 @@ internal fun QuestionsContent(
                 ) {
                     Switch(
                         startInFront,
-                        { startInFront = it }
+                        { startInFront = it },
                     )
                 }
 
                 // Wrap the Card in a non-clipping layer so animated children can overflow
                 Box(
-                    modifier = sectionModifier
+                    modifier =
+                    sectionModifier
                         .graphicsLayer { clip = false }
-                        .zIndex(1f)
+                        .zIndex(1f),
                 ) {
                     Card(
                         content.content?.original,
@@ -110,7 +112,7 @@ internal fun QuestionsContent(
             buttonContent = { buttonModifier ->
                 Row(
                     buttonModifier,
-                    horizontalArrangement = Arrangement.spacedBy(Size.x_small)
+                    horizontalArrangement = Arrangement.spacedBy(Size.x_small),
                 ) {
                     Button(
                         onNewQuestionRequested,
@@ -119,7 +121,7 @@ internal fun QuestionsContent(
                         Text("Next")
                     }
                 }
-            }
+            },
         )
     }
 }

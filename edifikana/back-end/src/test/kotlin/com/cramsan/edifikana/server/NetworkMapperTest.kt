@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server
 
 import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.network.user.AuthMetadataNetworkResponse
+import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.notification.NotificationType
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.network.user.AuthMetadataNetworkResponse
-import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
-import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.server.controller.toNotificationNetworkResponse
 import com.cramsan.edifikana.server.controller.toUserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Notification
@@ -20,28 +20,29 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TestTimeSource
 
 class NetworkMapperTest {
-
     @OptIn(NetworkModel::class)
     @Test
     fun `map user to network response`() {
         // Arrange
-        val user = User(
-            id = UserId("123"),
-            email = "test@gmail.com",
-            phoneNumber = "1234567890",
-            firstName = "Test",
-            lastName = "User",
-            authMetadata = User.AuthMetadata(isPasswordSet = true),
-            role = UserRole.SUPERUSER
-        )
-        val expectedResponse = UserNetworkResponse(
-            id = "123",
-            email = "test@gmail.com",
-            phoneNumber = "1234567890",
-            firstName = "Test",
-            lastName = "User",
-            authMetadata = AuthMetadataNetworkResponse(isPasswordSet = true)
-        )
+        val user =
+            User(
+                id = UserId("123"),
+                email = "test@gmail.com",
+                phoneNumber = "1234567890",
+                firstName = "Test",
+                lastName = "User",
+                authMetadata = User.AuthMetadata(isPasswordSet = true),
+                role = UserRole.SUPERUSER,
+            )
+        val expectedResponse =
+            UserNetworkResponse(
+                id = "123",
+                email = "test@gmail.com",
+                phoneNumber = "1234567890",
+                firstName = "Test",
+                lastName = "User",
+                authMetadata = AuthMetadataNetworkResponse(isPasswordSet = true),
+            )
 
         // Act
         val response = user.toUserNetworkResponse()
@@ -57,26 +58,28 @@ class NetworkMapperTest {
         val clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
         val createdAt = clock.now()
 
-        val notification = Notification(
-            id = NotificationId("notif123"),
-            recipientUserId = UserId("user123"),
-            recipientEmail = null,
-            notificationType = NotificationType.INVITE,
-            description = "You have been invited to join Test Org",
-            isRead = false,
-            createdAt = createdAt,
-            readAt = null,
-            inviteId = InviteId("invite123"),
-        )
-        val expectedResponse = NotificationNetworkResponse(
-            id = NotificationId("notif123"),
-            notificationType = NotificationType.INVITE,
-            description = "You have been invited to join Test Org",
-            isRead = false,
-            createdAt = createdAt,
-            readAt = null,
-            inviteId = InviteId("invite123"),
-        )
+        val notification =
+            Notification(
+                id = NotificationId("notif123"),
+                recipientUserId = UserId("user123"),
+                recipientEmail = null,
+                notificationType = NotificationType.INVITE,
+                description = "You have been invited to join Test Org",
+                isRead = false,
+                createdAt = createdAt,
+                readAt = null,
+                inviteId = InviteId("invite123"),
+            )
+        val expectedResponse =
+            NotificationNetworkResponse(
+                id = NotificationId("notif123"),
+                notificationType = NotificationType.INVITE,
+                description = "You have been invited to join Test Org",
+                isRead = false,
+                createdAt = createdAt,
+                readAt = null,
+                inviteId = InviteId("invite123"),
+            )
 
         // Act
         val response = notification.toNotificationNetworkResponse()
@@ -94,26 +97,28 @@ class NetworkMapperTest {
         val createdAt = clock.now()
         val readAt = clock.now()
 
-        val notification = Notification(
-            id = NotificationId("notif123"),
-            recipientUserId = UserId("user123"),
-            recipientEmail = null,
-            notificationType = NotificationType.SYSTEM,
-            description = "System maintenance scheduled",
-            isRead = true,
-            createdAt = createdAt,
-            readAt = readAt,
-            inviteId = null,
-        )
-        val expectedResponse = NotificationNetworkResponse(
-            id = NotificationId("notif123"),
-            notificationType = NotificationType.SYSTEM,
-            description = "System maintenance scheduled",
-            isRead = true,
-            createdAt = createdAt,
-            readAt = readAt,
-            inviteId = null,
-        )
+        val notification =
+            Notification(
+                id = NotificationId("notif123"),
+                recipientUserId = UserId("user123"),
+                recipientEmail = null,
+                notificationType = NotificationType.SYSTEM,
+                description = "System maintenance scheduled",
+                isRead = true,
+                createdAt = createdAt,
+                readAt = readAt,
+                inviteId = null,
+            )
+        val expectedResponse =
+            NotificationNetworkResponse(
+                id = NotificationId("notif123"),
+                notificationType = NotificationType.SYSTEM,
+                description = "System maintenance scheduled",
+                isRead = true,
+                createdAt = createdAt,
+                readAt = readAt,
+                inviteId = null,
+            )
 
         // Act
         val response = notification.toNotificationNetworkResponse()

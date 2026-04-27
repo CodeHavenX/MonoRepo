@@ -15,11 +15,7 @@ data class ClaudeMessage(val role: String, val content: String)
 
 /** Serialized representation of a tool definition sent in the Anthropic API request body. */
 @Serializable
-data class ClaudeTool(
-    val name: String,
-    val description: String,
-    val inputSchema: JsonObject,
-)
+data class ClaudeTool(val name: String, val description: String, val inputSchema: JsonObject)
 
 /** Top-level response from the Anthropic Messages API (`POST /v1/messages`). */
 @Serializable
@@ -35,18 +31,14 @@ data class ClaudeResponse(
  * and tool-use blocks in a single response turn.
  */
 @Serializable
-sealed class ClaudeContentBlock {
+sealed interface ClaudeContentBlock {
     /** Plain text produced by the model. */
     @Serializable
     @SerialName("text")
-    data class Text(val text: String) : ClaudeContentBlock()
+    data class Text(val text: String) : ClaudeContentBlock
 
     /** A request from the model to invoke a tool defined in the request's `tools` array. */
     @Serializable
     @SerialName("tool_use")
-    data class ToolUse(
-        val id: String,
-        val name: String,
-        val input: JsonObject,
-    ) : ClaudeContentBlock()
+    data class ToolUse(val id: String, val name: String, val input: JsonObject) : ClaudeContentBlock
 }

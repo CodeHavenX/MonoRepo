@@ -18,7 +18,6 @@ class RunasimiController(
     private val runasimiService: RunasimiService,
     private val contextRetriever: ContextRetriever<Unit>,
 ) : Controller {
-
     private fun ping(): NoResponseBody {
         runasimiService.ping()
         return NoResponseBody

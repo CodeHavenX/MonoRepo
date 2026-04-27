@@ -107,7 +107,7 @@ internal fun SignUpContent(
                     transitionSpec = {
                         fadeIn()
                             .togetherWith(
-                                fadeOut()
+                                fadeOut(),
                             )
                     },
                 ) {
@@ -158,15 +158,15 @@ internal fun SignUpContent(
                 val interactionSource = remember { MutableInteractionSource() }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier
+                    modifier =
+                    modifier
                         .clip(MaterialTheme.shapes.small)
                         .clickable(
                             interactionSource = interactionSource,
                             indication = ripple(),
                         ) {
                             onPolicyChecked(!uiState.policyChecked)
-                        }
-                        .padding(Padding.XX_SMALL)
+                        }.padding(Padding.XX_SMALL),
                 ) {
                     Checkbox(
                         checked = uiState.policyChecked,

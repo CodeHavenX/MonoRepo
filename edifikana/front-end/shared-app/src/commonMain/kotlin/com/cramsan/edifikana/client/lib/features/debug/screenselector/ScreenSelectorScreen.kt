@@ -32,9 +32,7 @@ fun ScreenSelectorScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         // Call this feature's viewModel
     }
@@ -79,7 +77,8 @@ internal fun ScreenSelectorContent(
         },
     ) { innerPadding ->
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             sectionContent = { sectionModifier ->
@@ -90,7 +89,7 @@ internal fun ScreenSelectorContent(
                             AuthDestination.ValidationDestination(
                                 "test@gmail.com",
                                 accountCreationFlow = true,
-                            )
+                            ),
                         )
                     },
                     content = {

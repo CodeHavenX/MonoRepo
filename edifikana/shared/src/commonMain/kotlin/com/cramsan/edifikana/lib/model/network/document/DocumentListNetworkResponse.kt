@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class DocumentListNetworkResponse(
-    val documents: List<DocumentNetworkResponse>,
-) : ResponseBody
+data class DocumentListNetworkResponse(val documents: List<DocumentNetworkResponse>) : ResponseBody

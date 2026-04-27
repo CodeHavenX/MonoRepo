@@ -1,7 +1,7 @@
 package com.cramsan.flyerboard.server.datastore.entity
 
-import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.flyerboard.server.service.models.UserProfile
 import com.cramsan.framework.annotations.SupabaseModel
 import kotlinx.serialization.SerialName
@@ -44,9 +44,10 @@ data class UserProfileEntity(
  * Maps a [UserProfileEntity] to the [UserProfile] domain model.
  */
 @OptIn(SupabaseModel::class)
-fun UserProfileEntity.toUserProfile(): UserProfile = UserProfile(
-    id = UserId(id),
-    role = UserRole.valueOf(role.uppercase()),
-    createdAt = createdAt,
-    updatedAt = updatedAt,
-)
+fun UserProfileEntity.toUserProfile(): UserProfile =
+    UserProfile(
+        id = UserId(id),
+        role = UserRole.valueOf(role.uppercase()),
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+    )

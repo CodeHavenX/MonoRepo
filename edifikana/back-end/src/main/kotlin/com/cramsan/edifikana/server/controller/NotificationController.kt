@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.NotificationApi
-import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.network.notification.NotificationListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
+import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.NotificationService
 import com.cramsan.framework.annotations.NetworkModel
@@ -24,7 +24,6 @@ class NotificationController(
     private val notificationService: NotificationService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     /**
      * Get all notifications for the authenticated user.
      * Returns a list of notifications ordered by creation date (newest first).
@@ -35,9 +34,12 @@ class NotificationController(
     ): NotificationListNetworkResponse {
         val userId = context.payload.userId
 
-        val notifications = notificationService.getNotificationsForUser(
-            userId = userId,
-        ).getOrThrow().map { it.toNotificationNetworkResponse() }
+        val notifications =
+            notificationService
+                .getNotificationsForUser(
+                    userId = userId,
+                ).getOrThrow()
+                .map { it.toNotificationNetworkResponse() }
 
         return NotificationListNetworkResponse(notifications)
     }
@@ -55,8 +57,9 @@ class NotificationController(
     ): NotificationNetworkResponse {
         val userId = context.payload.userId
 
-        val notification = notificationService.getNotification(notificationId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Notification not found: $notificationId")
+        val notification =
+            notificationService.getNotification(notificationId).getOrThrow()
+                ?: throw ClientRequestExceptions.NotFoundException("Notification not found: $notificationId")
 
         // Verify the notification belongs to this user
         if (notification.recipientUserId != userId) {
@@ -80,8 +83,9 @@ class NotificationController(
         val userId = context.payload.userId
 
         // First verify the notification belongs to this user
-        val notification = notificationService.getNotification(notificationId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Notification not found: $notificationId")
+        val notification =
+            notificationService.getNotification(notificationId).getOrThrow()
+                ?: throw ClientRequestExceptions.NotFoundException("Notification not found: $notificationId")
 
         if (notification.recipientUserId != userId) {
             throw ClientRequestExceptions.ForbiddenException("Access denied to notification: $notificationId")
@@ -105,8 +109,9 @@ class NotificationController(
         val userId = context.payload.userId
 
         // First verify the notification belongs to this user
-        val notification = notificationService.getNotification(notificationId).getOrThrow()
-            ?: throw ClientRequestExceptions.NotFoundException("Notification not found: $notificationId")
+        val notification =
+            notificationService.getNotification(notificationId).getOrThrow()
+                ?: throw ClientRequestExceptions.NotFoundException("Notification not found: $notificationId")
 
         if (notification.recipientUserId != userId) {
             throw ClientRequestExceptions.ForbiddenException("Access denied to notification: $notificationId")

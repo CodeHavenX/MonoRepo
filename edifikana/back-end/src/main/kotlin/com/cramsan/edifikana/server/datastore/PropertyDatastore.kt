@@ -9,7 +9,6 @@ import com.cramsan.edifikana.server.service.models.Property
  * Interface for interacting with the property database.
  */
 interface PropertyDatastore {
-
     /**
      * Creates a new property. Returns the [Result] of the operation with the created [Property].
      */

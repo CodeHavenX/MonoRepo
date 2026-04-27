@@ -13,7 +13,6 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object RunasimiApi : Api("example") {
-
     /**
      * A simple ping operation to check if the service is alive.
      */

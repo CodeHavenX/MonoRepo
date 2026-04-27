@@ -12,7 +12,6 @@ package com.cramsan.framework.remoteconfig
  * - Call [getConfigPayloadOrDefault] at any point in the app to get the config payload.
  */
 interface RemoteConfig<T> {
-
     /**
      * Return [true] if the remote config payload has been downloaded.
      */

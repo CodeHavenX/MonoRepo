@@ -7,7 +7,6 @@ package com.cramsan.sample.mpplib
  * @created 1/17/2021
  */
 actual class MPPLib {
-
     /**
      * Simple MPP function. WASM implementation.
      */

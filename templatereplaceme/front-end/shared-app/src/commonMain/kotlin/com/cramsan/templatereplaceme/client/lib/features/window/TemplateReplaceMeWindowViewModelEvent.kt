@@ -7,11 +7,9 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * triggered by a feature screen, and it will be handled by the window.
  */
 sealed class TemplateReplaceMeWindowViewModelEvent : ViewModelEvent {
-
     /**
      * Wrapper for [TemplateReplaceMeWindowsEvent] to be used in the view model.
      */
-    data class TemplateReplaceMeWindowEventWrapper(
-        val event: TemplateReplaceMeWindowsEvent,
-    ) : TemplateReplaceMeWindowViewModelEvent()
+    data class TemplateReplaceMeWindowEventWrapper(val event: TemplateReplaceMeWindowsEvent) :
+        TemplateReplaceMeWindowViewModelEvent()
 }

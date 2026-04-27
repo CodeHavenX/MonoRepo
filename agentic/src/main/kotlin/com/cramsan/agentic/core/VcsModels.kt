@@ -34,8 +34,4 @@ enum class PullRequestState { OPEN, CLOSED, MERGED }
  * // TODO: parse `createdAt` ISO-8601 from the GitHub response and populate this field correctly.
  */
 @Serializable
-data class PullRequestComment(
-    val author: String,
-    val body: String,
-    val createdAtEpochMs: Long,
-)
+data class PullRequestComment(val author: String, val body: String, val createdAtEpochMs: Long)

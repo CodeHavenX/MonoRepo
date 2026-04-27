@@ -10,23 +10,26 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-internal fun testApplicationModule(json: Json) = module {
-    single<Json> { json }
+internal fun testApplicationModule(json: Json) =
+    module {
+        single<Json> { json }
 
-    single<ContextRetriever<*>> { mockk() }
+        single<ContextRetriever<*>> { mockk() }
 
-    // Add additional test bindings if necessary
-}
+        // Add additional test bindings if necessary
+    }
 
 /**
  * Produce a Ktor module for testing.
  */
-internal val TestControllerModule = module {
-    singleOf(::UserController) {
-        bind<Controller>()
+internal val TestControllerModule =
+    module {
+        singleOf(::UserController) {
+            bind<Controller>()
+        }
     }
-}
 
-internal val TestServiceModule = module {
-    single<UserService> { mockk() }
-}
+internal val TestServiceModule =
+    module {
+        single<UserService> { mockk() }
+    }

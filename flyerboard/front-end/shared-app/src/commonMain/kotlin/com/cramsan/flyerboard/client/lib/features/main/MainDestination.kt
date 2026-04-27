@@ -9,7 +9,6 @@ import kotlinx.serialization.Serializable
  * Destinations in the main nav graph.
  */
 sealed class MainDestination : Destination {
-
     /**
      * Flyer list (public feed) screen destination.
      */

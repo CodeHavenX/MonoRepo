@@ -22,9 +22,7 @@ data class TranslationEntry(
  * The root object for the translation JSON file.
  */
 @Serializable
-data class TranslationFile(
-    val translations: List<TranslationEntry>,
-)
+data class TranslationFile(val translations: List<TranslationEntry>)
 
 /**
  * A key for looking up translations, composed of verb conjugation attributes.
@@ -42,7 +40,6 @@ data class TranslationKey(
  * Translations are loaded from JSON resource files at initialization time.
  */
 class VerbTranslationRepository {
-
     private var englishTranslations: Map<TranslationKey, String> = emptyMap()
     private var spanishTranslations: Map<TranslationKey, String> = emptyMap()
     private var isInitialized = false
@@ -98,10 +95,11 @@ class VerbTranslationRepository {
 /**
  * Convert a [Conjugation] to a [TranslationKey] for lookup in translation tables.
  */
-fun Conjugation.toTranslationKey() = TranslationKey(
-    verbRoot = verb.root,
-    tense = tense,
-    person = person,
-    plurality = plurality,
-    inclusive = inclusive,
-)
+fun Conjugation.toTranslationKey() =
+    TranslationKey(
+        verbRoot = verb.root,
+        tense = tense,
+        person = person,
+        plurality = plurality,
+        inclusive = inclusive,
+    )

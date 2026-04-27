@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.api
 
-import com.cramsan.edifikana.lib.model.network.unit.GetUnitsQueryParams
 import com.cramsan.edifikana.lib.model.network.unit.CreateUnitNetworkRequest
+import com.cramsan.edifikana.lib.model.network.unit.GetUnitsQueryParams
 import com.cramsan.edifikana.lib.model.network.unit.UnitListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.unit.UnitNetworkResponse
 import com.cramsan.edifikana.lib.model.network.unit.UpdateUnitNetworkRequest
@@ -19,39 +19,43 @@ import io.ktor.http.HttpMethod
  */
 @OptIn(NetworkModel::class)
 object UnitApi : Api("unit") {
+    val createUnit =
+        operation<
+            CreateUnitNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            UnitNetworkResponse,
+            >(HttpMethod.Post)
 
-    val createUnit = operation<
-        CreateUnitNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        UnitNetworkResponse
-        >(HttpMethod.Post)
+    val getUnit =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            UnitId,
+            UnitNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getUnit = operation<
-        NoRequestBody,
-        NoQueryParam,
-        UnitId,
-        UnitNetworkResponse
-        >(HttpMethod.Get)
+    val getUnits =
+        operation<
+            NoRequestBody,
+            GetUnitsQueryParams,
+            NoPathParam,
+            UnitListNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getUnits = operation<
-        NoRequestBody,
-        GetUnitsQueryParams,
-        NoPathParam,
-        UnitListNetworkResponse,
-        >(HttpMethod.Get)
+    val updateUnit =
+        operation<
+            UpdateUnitNetworkRequest,
+            NoQueryParam,
+            UnitId,
+            UnitNetworkResponse,
+            >(HttpMethod.Put)
 
-    val updateUnit = operation<
-        UpdateUnitNetworkRequest,
-        NoQueryParam,
-        UnitId,
-        UnitNetworkResponse
-        >(HttpMethod.Put)
-
-    val deleteUnit = operation<
-        NoRequestBody,
-        NoQueryParam,
-        UnitId,
-        NoResponseBody
-        >(HttpMethod.Delete)
+    val deleteUnit =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            UnitId,
+            NoResponseBody,
+            >(HttpMethod.Delete)
 }

@@ -9,10 +9,7 @@ import com.cramsan.framework.logging.logD
 /**
  * Service for managing rent configurations. Delegates persistence to [RentConfigDatastore].
  */
-class RentConfigService(
-    private val rentConfigDatastore: RentConfigDatastore,
-) {
-
+class RentConfigService(private val rentConfigDatastore: RentConfigDatastore) {
     /**
      * Retrieves the active rent configuration for [unitId]. Returns null if none exists.
      */
@@ -32,13 +29,14 @@ class RentConfigService(
         updatedBy: UserId?,
     ): RentConfig {
         logD(TAG, "setRentConfig")
-        return rentConfigDatastore.setRentConfig(
-            unitId = unitId,
-            monthlyAmount = monthlyAmount,
-            dueDay = dueDay,
-            currency = currency,
-            updatedBy = updatedBy,
-        ).getOrThrow()
+        return rentConfigDatastore
+            .setRentConfig(
+                unitId = unitId,
+                monthlyAmount = monthlyAmount,
+                dueDay = dueDay,
+                currency = currency,
+                updatedBy = updatedBy,
+            ).getOrThrow()
     }
 
     companion object {

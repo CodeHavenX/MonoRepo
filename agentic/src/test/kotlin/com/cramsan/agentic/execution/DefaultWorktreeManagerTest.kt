@@ -19,7 +19,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class DefaultWorktreeManagerTest {
-
     @TempDir
     lateinit var repoRoot: Path
 
@@ -36,34 +35,39 @@ class DefaultWorktreeManagerTest {
     }
 
     @Test
-    fun `getOrCreate calls git worktree add when directory does not exist`() = runTest {
-        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
+    fun `getOrCreate calls git worktree add when directory does not exist`() =
+        runTest {
+            coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
-        val worktree = manager.getOrCreate("task-001")
+            val worktree = manager.getOrCreate("task-001")
 
-        assertEquals("task-001", worktree.taskId)
-        assertEquals("agentic/task-001", worktree.branchName)
-        coVerify {
-            shell.run(
-                "git", "worktree", "add",
-                "-b", "agentic/task-001",
-                any(), // path
-                "main",
-                workingDir = any(),
-            )
+            assertEquals("task-001", worktree.taskId)
+            assertEquals("agentic/task-001", worktree.branchName)
+            coVerify {
+                shell.run(
+                    "git",
+                    "worktree",
+                    "add",
+                    "-b",
+                    "agentic/task-001",
+                    any(), // path
+                    "main",
+                    workingDir = any(),
+                )
+            }
         }
-    }
 
     @Test
-    fun `getOrCreate does not call git worktree add when directory already exists`() = runTest {
-        val worktreePath = agenticDir.resolve("worktrees/task-001")
-        Files.createDirectories(worktreePath)
+    fun `getOrCreate does not call git worktree add when directory already exists`() =
+        runTest {
+            val worktreePath = agenticDir.resolve("worktrees/task-001")
+            Files.createDirectories(worktreePath)
 
-        val worktree = manager.getOrCreate("task-001")
+            val worktree = manager.getOrCreate("task-001")
 
-        assertEquals("task-001", worktree.taskId)
-        coVerify(exactly = 0) { shell.run(*anyVararg()) }
-    }
+            assertEquals("task-001", worktree.taskId)
+            coVerify(exactly = 0) { shell.run(*anyVararg()) }
+        }
 
     @Test
     fun `get returns null when directory does not exist`() {
@@ -90,15 +94,16 @@ class DefaultWorktreeManagerTest {
     }
 
     @Test
-    fun `delete calls git worktree remove`() = runTest {
-        val worktreePath = agenticDir.resolve("worktrees/task-001")
-        Files.createDirectories(worktreePath)
-        coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
+    fun `delete calls git worktree remove`() =
+        runTest {
+            val worktreePath = agenticDir.resolve("worktrees/task-001")
+            Files.createDirectories(worktreePath)
+            coEvery { shell.run(*anyVararg(), workingDir = any()) } returns ShellResult("", 0, "")
 
-        manager.delete("task-001")
+            manager.delete("task-001")
 
-        coVerify {
-            shell.run("git", "worktree", "remove", "--force", any(), workingDir = any())
+            coVerify {
+                shell.run("git", "worktree", "remove", "--force", any(), workingDir = any())
+            }
         }
-    }
 }

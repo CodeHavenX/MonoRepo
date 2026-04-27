@@ -10,20 +10,21 @@ import org.junit.jupiter.api.Test
 
 @OptIn(SupabaseModel::class, kotlin.time.ExperimentalTime::class)
 class SupabaseMappersTest {
-
     @Test
     fun `UserEntity toUser maps all fields correctly`() {
-        val entity = UserEntity(
-            id = "user-123",
-            email = "test@example.com",
-            phoneNumber = "1234567890",
-            firstName = "John",
-            lastName = "Doe",
-            authMetadata = AuthMetadataEntity(
-                pendingAssociation = false,
-                canPasswordAuth = true
+        val entity =
+            UserEntity(
+                id = "user-123",
+                email = "test@example.com",
+                phoneNumber = "1234567890",
+                firstName = "John",
+                lastName = "Doe",
+                authMetadata =
+                AuthMetadataEntity(
+                    pendingAssociation = false,
+                    canPasswordAuth = true,
+                ),
             )
-        )
 
         val user = entity.toUser()
 

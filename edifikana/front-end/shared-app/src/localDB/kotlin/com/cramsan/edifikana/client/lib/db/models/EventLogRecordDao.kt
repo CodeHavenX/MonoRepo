@@ -10,7 +10,6 @@ import androidx.room.Query
  */
 @Dao
 interface EventLogRecordDao {
-
     /**
      * Get all event log records.
      */

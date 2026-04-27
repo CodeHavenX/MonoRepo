@@ -1,22 +1,19 @@
 package com.cramsan.flyerboard.client.lib.features.auth.sign_up
 
+import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
+import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
+import com.cramsan.flyerboard.client.lib.managers.AuthManager
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
-import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
-import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
-import com.cramsan.flyerboard.client.lib.managers.AuthManager
 import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the Sign Up screen.
  */
-class SignUpViewModel(
-    dependencies: ViewModelDependencies,
-    private val authManager: AuthManager,
-) : BaseViewModel<SignUpEvent, SignUpUIState>(dependencies, SignUpUIState.Initial, TAG) {
-
+class SignUpViewModel(dependencies: ViewModelDependencies, private val authManager: AuthManager) :
+    BaseViewModel<SignUpEvent, SignUpUIState>(dependencies, SignUpUIState.Initial, TAG) {
     /**
      * Update the email field value.
      */
@@ -48,7 +45,8 @@ class SignUpViewModel(
             updateUiState { it.copy(isLoading = true) }
             val email = uiState.value.email
             val password = uiState.value.password
-            authManager.signUp(email, password)
+            authManager
+                .signUp(email, password)
                 .onFailure {
                     updateUiState { state -> state.copy(isLoading = false) }
                     emitWindowEvent(
@@ -56,8 +54,7 @@ class SignUpViewModel(
                             message = "Sign up failed: ${it.message}",
                         ),
                     )
-                }
-                .onSuccess {
+                }.onSuccess {
                     updateUiState { state -> state.copy(isLoading = false) }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.NavigateToNavGraph(

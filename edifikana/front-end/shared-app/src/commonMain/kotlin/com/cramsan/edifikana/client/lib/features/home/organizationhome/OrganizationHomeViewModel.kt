@@ -28,11 +28,12 @@ class OrganizationHomeViewModel(
 ) {
     private suspend fun updateSelectedOrganization(orgId: OrganizationId?) {
         updateUiState { currentState ->
-            val updatedOrganizations = currentState.availableOrganizations.map { organizationUIModel ->
-                organizationUIModel.copy(
-                    selected = organizationUIModel.id == orgId
-                )
-            }
+            val updatedOrganizations =
+                currentState.availableOrganizations.map { organizationUIModel ->
+                    organizationUIModel.copy(
+                        selected = organizationUIModel.id == orgId,
+                    )
+                }
             currentState.copy(
                 availableOrganizations = updatedOrganizations,
                 selectedOrgId = orgId,
@@ -76,7 +77,7 @@ class OrganizationHomeViewModel(
         logI(TAG, "Navigating to account page.")
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.AccountNavGraphDestination)
+                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.AccountNavGraphDestination),
             )
         }
     }
@@ -99,7 +100,7 @@ class OrganizationHomeViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AccountDestination.NotificationsDestination,
-                )
+                ),
             )
         }
     }

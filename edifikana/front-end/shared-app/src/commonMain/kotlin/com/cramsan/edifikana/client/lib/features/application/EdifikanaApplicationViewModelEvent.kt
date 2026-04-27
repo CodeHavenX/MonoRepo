@@ -7,7 +7,6 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * triggered by a feature screen, and it will be handled by the application.
  */
 sealed class EdifikanaApplicationViewModelEvent : ViewModelEvent {
-
     /**
      * Noop event.
      */

@@ -2,60 +2,60 @@
 
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
 import com.cramsan.edifikana.lib.model.document.DocumentId
 import com.cramsan.edifikana.lib.model.document.DocumentType
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.employee.EmployeeRole
-import com.cramsan.edifikana.lib.model.invite.InviteRole
-import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
 import com.cramsan.edifikana.lib.model.identification.IdType
 import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.notification.NotificationType
+import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.payment.PaymentStatus
+import com.cramsan.edifikana.lib.model.payment.PaymentType
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.task.TaskId
+import com.cramsan.edifikana.lib.model.task.TaskPriority
+import com.cramsan.edifikana.lib.model.task.TaskStatus
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.supabase.models.AuthMetadataEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.DocumentEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.EmployeeEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.NotificationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntity
-import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
-import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
-import com.cramsan.edifikana.lib.model.payment.PaymentStatus
-import com.cramsan.edifikana.lib.model.payment.PaymentType
-import com.cramsan.edifikana.lib.model.task.TaskId
-import com.cramsan.edifikana.lib.model.task.TaskPriority
-import com.cramsan.edifikana.lib.model.task.TaskStatus
-import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PaymentRecordEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.RentConfigEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TaskEntity
-import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OccupantEntity
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
-import com.cramsan.edifikana.server.service.models.PaymentRecord
-import com.cramsan.edifikana.server.service.models.RentConfig
-import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.edifikana.server.service.models.PaymentRecord
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.edifikana.server.service.models.RentConfig
+import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.edifikana.server.service.models.User
@@ -73,13 +73,14 @@ import kotlin.time.Instant
  * to [InviteRole] in a follow-up PR. Only the four roles that have a valid
  * [OrgRole] equivalent are mapped; all others throw [IllegalArgumentException].
  */
-fun UserRole.toOrgRole(): OrgRole = when (this) {
-    UserRole.OWNER -> OrgRole.OWNER
-    UserRole.ADMIN -> OrgRole.ADMIN
-    UserRole.MANAGER -> OrgRole.MANAGER
-    UserRole.EMPLOYEE -> OrgRole.EMPLOYEE
-    else -> throw IllegalArgumentException("UserRole $this has no OrgRole equivalent")
-}
+fun UserRole.toOrgRole(): OrgRole =
+    when (this) {
+        UserRole.OWNER -> OrgRole.OWNER
+        UserRole.ADMIN -> OrgRole.ADMIN
+        UserRole.MANAGER -> OrgRole.MANAGER
+        UserRole.EMPLOYEE -> OrgRole.EMPLOYEE
+        else -> throw IllegalArgumentException("UserRole $this has no OrgRole equivalent")
+    }
 
 /**
  * Maps an [OrgRole] to the back-end [UserRole] privilege ladder.
@@ -89,12 +90,13 @@ fun UserRole.toOrgRole(): OrgRole = when (this) {
  * This bridge allows the RBAC service to continue using [UserRole.level] checks
  * without being aware of the DB-level role model.
  */
-fun OrgRole.toUserRole(): UserRole = when (this) {
-    OrgRole.OWNER -> UserRole.OWNER
-    OrgRole.ADMIN -> UserRole.ADMIN
-    OrgRole.MANAGER -> UserRole.MANAGER
-    OrgRole.EMPLOYEE -> UserRole.EMPLOYEE
-}
+fun OrgRole.toUserRole(): UserRole =
+    when (this) {
+        OrgRole.OWNER -> UserRole.OWNER
+        OrgRole.ADMIN -> UserRole.ADMIN
+        OrgRole.MANAGER -> UserRole.MANAGER
+        OrgRole.EMPLOYEE -> UserRole.EMPLOYEE
+    }
 
 /**
  * Maps an [InviteRole] to the corresponding [OrgRole] for org membership insertion.
@@ -102,24 +104,26 @@ fun OrgRole.toUserRole(): UserRole = when (this) {
  * [InviteRole.RESIDENT] does not produce an org membership row and therefore has no
  * [OrgRole] equivalent. Callers must handle [RESIDENT] before calling this function.
  */
-fun InviteRole.toOrgRole(): OrgRole = when (this) {
-    InviteRole.ADMIN -> OrgRole.ADMIN
-    InviteRole.MANAGER -> OrgRole.MANAGER
-    InviteRole.EMPLOYEE -> OrgRole.EMPLOYEE
-    InviteRole.RESIDENT -> throw IllegalArgumentException("RESIDENT has no OrgRole equivalent")
-}
+fun InviteRole.toOrgRole(): OrgRole =
+    when (this) {
+        InviteRole.ADMIN -> OrgRole.ADMIN
+        InviteRole.MANAGER -> OrgRole.MANAGER
+        InviteRole.EMPLOYEE -> OrgRole.EMPLOYEE
+        InviteRole.RESIDENT -> throw IllegalArgumentException("RESIDENT has no OrgRole equivalent")
+    }
 
 /**
  * Maps an [InviteRole] to the [UserRole] privilege ladder for permission-level comparisons.
  *
  * [InviteRole.RESIDENT] maps to [UserRole.USER] (lowest non-UNAUTHORIZED privilege).
  */
-fun InviteRole.toUserRole(): UserRole = when (this) {
-    InviteRole.ADMIN -> UserRole.ADMIN
-    InviteRole.MANAGER -> UserRole.MANAGER
-    InviteRole.EMPLOYEE -> UserRole.EMPLOYEE
-    InviteRole.RESIDENT -> UserRole.USER
-}
+fun InviteRole.toUserRole(): UserRole =
+    when (this) {
+        InviteRole.ADMIN -> UserRole.ADMIN
+        InviteRole.MANAGER -> UserRole.MANAGER
+        InviteRole.EMPLOYEE -> UserRole.EMPLOYEE
+        InviteRole.RESIDENT -> UserRole.USER
+    }
 
 /**
  * Maps a [UserEntity] to the [User] model.
@@ -132,11 +136,11 @@ fun UserEntity.toUser(): User {
         phoneNumber = this.phoneNumber,
         firstName = this.firstName,
         lastName = this.lastName,
-        authMetadata = User.AuthMetadata(
+        authMetadata =
+        User.AuthMetadata(
             isPasswordSet = this.authMetadata.canPasswordAuth,
         ),
         role = UserRole.USER,
-
     )
 }
 
@@ -161,7 +165,8 @@ fun CreateUserEntity(
         phoneNumber = phoneNumber,
         firstName = firstName,
         lastName = lastName,
-        authMetadata = AuthMetadataEntity(
+        authMetadata =
+        AuthMetadataEntity(
             pendingAssociation = pendingAssociation,
             canPasswordAuth = canPasswordAuth,
             hashedPassword = hashedPassword?.reveal(),
@@ -186,9 +191,10 @@ fun CreateUserEntity(
         phoneNumber = userEntity.phoneNumber,
         firstName = userEntity.firstName,
         lastName = userEntity.lastName,
-        authMetadata = userEntity.authMetadata.copy(
+        authMetadata =
+        userEntity.authMetadata.copy(
             pendingAssociation = false,
-        )
+        ),
     )
 }
 
@@ -349,11 +355,12 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
  * Maps an [OrganizationEntity] to the [Organization] model.
  */
 @OptIn(SupabaseModel::class)
-fun OrganizationEntity.toOrganization() = Organization(
-    id = this.id,
-    name = this.name,
-    description = this.description,
-)
+fun OrganizationEntity.toOrganization() =
+    Organization(
+        id = this.id,
+        name = this.name,
+        description = this.description,
+    )
 
 /**
  * Maps a [NotificationEntity] to the [Notification] model.
@@ -369,7 +376,7 @@ fun NotificationEntity.toNotification(): Notification {
         isRead = this.isRead,
         createdAt = this.createdAt,
         readAt = this.readAt,
-        inviteId = this.inviteId?.let { InviteId(it) }
+        inviteId = this.inviteId?.let { InviteId(it) },
     )
 }
 

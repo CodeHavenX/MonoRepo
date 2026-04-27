@@ -3,11 +3,11 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.api.PropertyApi
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
@@ -16,30 +16,32 @@ import io.ktor.client.HttpClient
 /**
  * Default implementation for the [PropertyService].
  */
-class PropertyServiceImpl(
-    private val http: HttpClient,
-) : PropertyService {
-
+class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
     @OptIn(NetworkModel::class)
-    override suspend fun getPropertyList(): Result<List<PropertyModel>> = runSuspendCatching(TAG) {
-        val response = PropertyApi
-            .getAssignedProperties
-            .buildRequest()
-            .execute(http)
-        val propertyList = response.properties.map {
-            it.toPropertyModel()
+    override suspend fun getPropertyList(): Result<List<PropertyModel>> =
+        runSuspendCatching(TAG) {
+            val response =
+                PropertyApi
+                    .getAssignedProperties
+                    .buildRequest()
+                    .execute(http)
+            val propertyList =
+                response.properties.map {
+                    it.toPropertyModel()
+                }
+            propertyList
         }
-        propertyList
-    }
 
     @OptIn(NetworkModel::class)
-    override suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> = runSuspendCatching(TAG) {
-        val response = PropertyApi
-            .getProperty
-            .buildRequest(propertyId)
-            .execute(http)
-        response.toPropertyModel()
-    }
+    override suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> =
+        runSuspendCatching(TAG) {
+            val response =
+                PropertyApi
+                    .getProperty
+                    .buildRequest(propertyId)
+                    .execute(http)
+            response.toPropertyModel()
+        }
 
     @OptIn(NetworkModel::class)
     override suspend fun addProperty(
@@ -47,21 +49,22 @@ class PropertyServiceImpl(
         address: String,
         organizationId: OrganizationId,
         imageUrl: String?,
-    ): Result<PropertyModel> = runSuspendCatching(TAG) {
-        val response = PropertyApi
-            .createProperty
-            .buildRequest(
-                CreatePropertyNetworkRequest(
-                    name = propertyName,
-                    address = address,
-                    organizationId = organizationId,
-                    imageUrl = imageUrl,
-                )
-            )
-            .execute(http)
+    ): Result<PropertyModel> =
+        runSuspendCatching(TAG) {
+            val response =
+                PropertyApi
+                    .createProperty
+                    .buildRequest(
+                        CreatePropertyNetworkRequest(
+                            name = propertyName,
+                            address = address,
+                            organizationId = organizationId,
+                            imageUrl = imageUrl,
+                        ),
+                    ).execute(http)
 
-        response.toPropertyModel()
-    }
+            response.toPropertyModel()
+        }
 
     @OptIn(NetworkModel::class)
     override suspend fun updateProperty(
@@ -69,25 +72,30 @@ class PropertyServiceImpl(
         name: String,
         address: String,
         imageUrl: String?,
-    ): Result<PropertyModel> = runSuspendCatching(TAG) {
-        val response = PropertyApi
-            .updateProperty.buildRequest(
-                propertyId,
-                UpdatePropertyNetworkRequest(
-                    name = name,
-                    address = address,
-                    imageUrl = imageUrl,
-                )
-            ).execute(http)
+    ): Result<PropertyModel> =
+        runSuspendCatching(TAG) {
+            val response =
+                PropertyApi
+                    .updateProperty
+                    .buildRequest(
+                        propertyId,
+                        UpdatePropertyNetworkRequest(
+                            name = name,
+                            address = address,
+                            imageUrl = imageUrl,
+                        ),
+                    ).execute(http)
 
-        response.toPropertyModel()
-    }
+            response.toPropertyModel()
+        }
 
-    override suspend fun removeProperty(propertyId: PropertyId): Result<Unit> = runSuspendCatching(TAG) {
-        PropertyApi.deleteProperty.buildRequest(
-            propertyId,
-        ).execute(http)
-    }
+    override suspend fun removeProperty(propertyId: PropertyId): Result<Unit> =
+        runSuspendCatching(TAG) {
+            PropertyApi.deleteProperty
+                .buildRequest(
+                    propertyId,
+                ).execute(http)
+        }
 
     companion object {
         private const val TAG = "PropertyServiceImpl"

@@ -13,7 +13,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class FileSystemDocumentStoreTest {
-
     @TempDir
     lateinit var tempDir: Path
 
@@ -54,7 +53,11 @@ class FileSystemDocumentStoreTest {
         store.onDocumentChanged()
 
         for (doc in store.getAll()) {
-            assertEquals(DocumentStatus.UNREVIEWED, doc.status, "All documents should be UNREVIEWED after onDocumentChanged()")
+            assertEquals(
+                DocumentStatus.UNREVIEWED,
+                doc.status,
+                "All documents should be UNREVIEWED after onDocumentChanged()",
+            )
         }
     }
 

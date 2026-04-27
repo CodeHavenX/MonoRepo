@@ -27,24 +27,24 @@ import kotlin.time.Instant
  * race that existed with the previous UPDATE-then-INSERT pattern.
  */
 @OptIn(ExperimentalTime::class)
-class SupabaseRentConfigDatastore(
-    private val postgrest: Postgrest,
-    private val clock: Clock,
-) : RentConfigDatastore {
-
+class SupabaseRentConfigDatastore(private val postgrest: Postgrest, private val clock: Clock) : RentConfigDatastore {
     /**
      * Retrieves the active rent configuration for [unitId]. Returns null if none exists.
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun getRentConfig(unitId: UnitId): Result<RentConfig?> = runSuspendCatching(TAG) {
-        logD(TAG, "Getting rent config for unit: %s", unitId)
-        postgrest.from(RentConfigEntity.COLLECTION).select {
-            filter {
-                RentConfigEntity::unitId eq unitId.unitId
-                RentConfigEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<RentConfigEntity>()?.toRentConfig()
-    }
+    override suspend fun getRentConfig(unitId: UnitId): Result<RentConfig?> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting rent config for unit: %s", unitId)
+            postgrest
+                .from(RentConfigEntity.COLLECTION)
+                .select {
+                    filter {
+                        RentConfigEntity::unitId eq unitId.unitId
+                        RentConfigEntity::deletedAt isExact null
+                    }
+                }.decodeSingleOrNull<RentConfigEntity>()
+                ?.toRentConfig()
+        }
 
     /**
      * Retrieves the active rent configuration by [rentConfigId]. Returns null if not found or soft-deleted.
@@ -53,12 +53,15 @@ class SupabaseRentConfigDatastore(
     override suspend fun getRentConfigById(rentConfigId: RentConfigId): Result<RentConfig?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting rent config by id: %s", rentConfigId)
-            postgrest.from(RentConfigEntity.COLLECTION).select {
-                filter {
-                    RentConfigEntity::rentConfigId eq rentConfigId.rentConfigId
-                    RentConfigEntity::deletedAt isExact null
-                }
-            }.decodeSingleOrNull<RentConfigEntity>()?.toRentConfig()
+            postgrest
+                .from(RentConfigEntity.COLLECTION)
+                .select {
+                    filter {
+                        RentConfigEntity::rentConfigId eq rentConfigId.rentConfigId
+                        RentConfigEntity::deletedAt isExact null
+                    }
+                }.decodeSingleOrNull<RentConfigEntity>()
+                ?.toRentConfig()
         }
 
     /**
@@ -74,50 +77,58 @@ class SupabaseRentConfigDatastore(
         dueDay: Int,
         currency: String,
         updatedBy: UserId?,
-    ): Result<RentConfig> = runSuspendCatching(TAG) {
-        logD(TAG, "Setting rent config for unit: %s", unitId)
-        val params = UpsertRentConfigRpcParams(
-            pUnitId = unitId.unitId,
-            pMonthlyAmount = monthlyAmount,
-            pDueDay = dueDay,
-            pCurrency = currency,
-            pUpdatedAt = clock.now(),
-            pUpdatedBy = updatedBy?.userId,
-        )
-        val jsonParams = Json.encodeToJsonElement(UpsertRentConfigRpcParams.serializer(), params).jsonObject
-        postgrest.rpc("upsert_rent_config", jsonParams).decodeAs<RentConfigEntity>().toRentConfig()
-    }
+    ): Result<RentConfig> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Setting rent config for unit: %s", unitId)
+            val params =
+                UpsertRentConfigRpcParams(
+                    pUnitId = unitId.unitId,
+                    pMonthlyAmount = monthlyAmount,
+                    pDueDay = dueDay,
+                    pCurrency = currency,
+                    pUpdatedAt = clock.now(),
+                    pUpdatedBy = updatedBy?.userId,
+                )
+            val jsonParams = Json.encodeToJsonElement(UpsertRentConfigRpcParams.serializer(), params).jsonObject
+            postgrest.rpc("upsert_rent_config", jsonParams).decodeAs<RentConfigEntity>().toRentConfig()
+        }
 
     /**
      * Soft-deletes the rent configuration for [unitId]. Returns true if a record was deleted.
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun deleteRentConfigByUnitId(unitId: UnitId): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Soft deleting rent config for unit: %s", unitId)
-        postgrest.from(RentConfigEntity.COLLECTION).update({
-            RentConfigEntity::deletedAt setTo clock.now()
-        }) {
-            select()
-            filter {
-                RentConfigEntity::unitId eq unitId.unitId
-                RentConfigEntity::deletedAt isExact null
-            }
-        }.decodeSingleOrNull<RentConfigEntity>() != null
-    }
+    override suspend fun deleteRentConfigByUnitId(unitId: UnitId): Result<Boolean> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Soft deleting rent config for unit: %s", unitId)
+            postgrest
+                .from(RentConfigEntity.COLLECTION)
+                .update({
+                    RentConfigEntity::deletedAt setTo clock.now()
+                }) {
+                    select()
+                    filter {
+                        RentConfigEntity::unitId eq unitId.unitId
+                        RentConfigEntity::deletedAt isExact null
+                    }
+                }.decodeSingleOrNull<RentConfigEntity>() != null
+        }
 
     /**
      * Hard-deletes the rent configuration with [rentConfigId]. For integration test cleanup only.
      */
     @OptIn(SupabaseModel::class)
-    override suspend fun purgeRentConfig(rentConfigId: RentConfigId): Result<Boolean> = runSuspendCatching(TAG) {
-        logD(TAG, "Purging rent config: %s", rentConfigId)
-        postgrest.from(RentConfigEntity.COLLECTION).delete {
-            select()
-            filter {
-                RentConfigEntity::rentConfigId eq rentConfigId.rentConfigId
-            }
-        }.decodeSingleOrNull<RentConfigEntity>() != null
-    }
+    override suspend fun purgeRentConfig(rentConfigId: RentConfigId): Result<Boolean> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Purging rent config: %s", rentConfigId)
+            postgrest
+                .from(RentConfigEntity.COLLECTION)
+                .delete {
+                    select()
+                    filter {
+                        RentConfigEntity::rentConfigId eq rentConfigId.rentConfigId
+                    }
+                }.decodeSingleOrNull<RentConfigEntity>() != null
+        }
 
     @Serializable
     private data class UpsertRentConfigRpcParams(

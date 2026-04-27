@@ -8,7 +8,6 @@ import com.cramsan.framework.core.compose.WindowEvent
  * the event.
  */
 sealed class SampleWindowDelegatedEvent : WindowEvent {
-
     /**
      * Noop event. Placeholder until we add more events.
      */

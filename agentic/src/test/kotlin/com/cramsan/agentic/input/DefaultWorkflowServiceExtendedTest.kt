@@ -37,7 +37,6 @@ import kotlin.test.assertTrue
  * and additional negative cases.
  */
 class DefaultWorkflowServiceExtendedTest {
-
     @TempDir
     lateinit var docsDir: Path
 
@@ -47,62 +46,67 @@ class DefaultWorkflowServiceExtendedTest {
 
     private lateinit var service: DefaultWorkflowService
 
-    private val sampleDoc = AgenticDocument(
-        id = "goals-scope",
-        typeId = "goals-scope",
-        type = DocumentType.GOALS_SCOPE,
-        relativePath = "goals-scope.md",
-        status = DocumentStatus.VALIDATED,
-        lastModifiedEpochMs = 1_000_000L,
-    )
+    private val sampleDoc =
+        AgenticDocument(
+            id = "goals-scope",
+            typeId = "goals-scope",
+            type = DocumentType.GOALS_SCOPE,
+            relativePath = "goals-scope.md",
+            status = DocumentStatus.VALIDATED,
+            lastModifiedEpochMs = 1_000_000L,
+        )
 
-    private fun testWorkflowStages(): List<WorkflowStageConfig> = listOf(
-        WorkflowStageConfig(
-            id = "stage1",
-            name = "High-Level Plan",
-            outputFile = "high-level-plan.md",
-            requiresApproval = true,
-            inputDependencies = emptyList(),
-            prompt = WorkflowPromptConfig.Inline(systemPrompt = "Produce a high-level plan."),
-        ),
-        WorkflowStageConfig(
-            id = "stage2",
-            name = "Low-Level Plan",
-            outputFile = "low-level-plan.md",
-            requiresApproval = true,
-            inputDependencies = listOf("stage1"),
-            prompt = WorkflowPromptConfig.Inline(systemPrompt = "Produce a low-level plan."),
-        ),
-    )
+    private fun testWorkflowStages(): List<WorkflowStageConfig> =
+        listOf(
+            WorkflowStageConfig(
+                id = "stage1",
+                name = "High-Level Plan",
+                outputFile = "high-level-plan.md",
+                requiresApproval = true,
+                inputDependencies = emptyList(),
+                prompt = WorkflowPromptConfig.Inline(systemPrompt = "Produce a high-level plan."),
+            ),
+            WorkflowStageConfig(
+                id = "stage2",
+                name = "Low-Level Plan",
+                outputFile = "low-level-plan.md",
+                requiresApproval = true,
+                inputDependencies = listOf("stage1"),
+                prompt = WorkflowPromptConfig.Inline(systemPrompt = "Produce a low-level plan."),
+            ),
+        )
 
     @BeforeEach
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         every { documentStore.allValidated() } returns true
         every { documentStore.getAll() } returns emptyList()
-        service = DefaultWorkflowService(
-            documentStore,
-            aiProvider,
-            docsDir,
-            json,
-            WorkflowConfig(testWorkflowStages()),
-        )
+        service =
+            DefaultWorkflowService(
+                documentStore,
+                aiProvider,
+                docsDir,
+                json,
+                WorkflowConfig(testWorkflowStages()),
+            )
     }
 
-    private fun successResponse(text: String = "# Output") = AiResponse(
-        id = "r1",
-        content = listOf(AiContentBlock.Text(text)),
-        stopReason = "end_turn",
-    )
+    private fun successResponse(text: String = "# Output") =
+        AiResponse(
+            id = "r1",
+            content = listOf(AiContentBlock.Text(text)),
+            stopReason = "end_turn",
+        )
 
     private fun writeApprovalRecord(stageId: String, inputHashes: Map<String, String> = emptyMap()) {
         val metaDir = docsDir.resolve(".agentic-meta")
         Files.createDirectories(metaDir)
-        val record = StageApprovalRecord(
-            stageId = stageId,
-            approvedAtEpochMs = 0L,
-            inputHashes = inputHashes,
-        )
+        val record =
+            StageApprovalRecord(
+                stageId = stageId,
+                approvedAtEpochMs = 0L,
+                inputHashes = inputHashes,
+            )
         Files.writeString(metaDir.resolve("stage.$stageId.json"), json.encodeToString(record))
     }
 
@@ -206,104 +210,111 @@ class DefaultWorkflowServiceExtendedTest {
     // ── startNextStage() state transitions ────────────────────────────────────
 
     @Test
-    fun `startNextStage starts first stage when workflow is NotStarted`() = runTest {
-        every { documentStore.getAll() } returns emptyList()
-        coEvery { aiProvider.chat(any(), any(), any()) } returns successResponse("# High-Level Plan")
+    fun `startNextStage starts first stage when workflow is NotStarted`() =
+        runTest {
+            every { documentStore.getAll() } returns emptyList()
+            coEvery { aiProvider.chat(any(), any(), any()) } returns successResponse("# High-Level Plan")
 
-        val result = service.startNextStage()
+            val result = service.startNextStage()
 
-        assertNotNull(result)
-        assertEquals("stage1", result.stageId)
-        assertTrue(Files.exists(docsDir.resolve("high-level-plan.md")))
-    }
-
-    @Test
-    fun `startNextStage returns null when stage is pending approval`() = runTest {
-        every { documentStore.getAll() } returns listOf(sampleDoc)
-        Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
-        // No approval record → stage1 is StagePendingApproval
-
-        val result = service.startNextStage()
-
-        assertNull(result)
-    }
+            assertNotNull(result)
+            assertEquals("stage1", result.stageId)
+            assertTrue(Files.exists(docsDir.resolve("high-level-plan.md")))
+        }
 
     @Test
-    fun `startNextStage starts the in-progress stage`() = runTest {
-        every { documentStore.getAll() } returns listOf(sampleDoc)
-        Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
-        writeApprovalRecord("stage1")
-        // State is now StageInProgress("stage2")
-        coEvery { aiProvider.chat(any(), any(), any()) } returns successResponse("# Low-Level Plan")
+    fun `startNextStage returns null when stage is pending approval`() =
+        runTest {
+            every { documentStore.getAll() } returns listOf(sampleDoc)
+            Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
+            // No approval record → stage1 is StagePendingApproval
 
-        val result = service.startNextStage()
+            val result = service.startNextStage()
 
-        assertNotNull(result)
-        assertEquals("stage2", result.stageId)
-        assertTrue(Files.exists(docsDir.resolve("low-level-plan.md")))
-    }
+            assertNull(result)
+        }
+
+    @Test
+    fun `startNextStage starts the in-progress stage`() =
+        runTest {
+            every { documentStore.getAll() } returns listOf(sampleDoc)
+            Files.writeString(docsDir.resolve("high-level-plan.md"), "# High-Level Plan")
+            writeApprovalRecord("stage1")
+            // State is now StageInProgress("stage2")
+            coEvery { aiProvider.chat(any(), any(), any()) } returns successResponse("# Low-Level Plan")
+
+            val result = service.startNextStage()
+
+            assertNotNull(result)
+            assertEquals("stage2", result.stageId)
+            assertTrue(Files.exists(docsDir.resolve("low-level-plan.md")))
+        }
 
     // ── WorkflowPromptConfig.File prompt resolution ───────────────────────────
 
     @Test
-    fun `startStage reads system prompt from file when using File-based prompt config`() = runTest {
-        val promptFile = docsDir.resolve("custom-prompt.md")
-        Files.writeString(promptFile, "This is the custom system prompt from a file.")
+    fun `startStage reads system prompt from file when using File-based prompt config`() =
+        runTest {
+            val promptFile = docsDir.resolve("custom-prompt.md")
+            Files.writeString(promptFile, "This is the custom system prompt from a file.")
 
-        val serviceWithFilePrompt = DefaultWorkflowService(
-            documentStore,
-            aiProvider,
-            docsDir,
-            json,
-            WorkflowConfig(
-                listOf(
-                    WorkflowStageConfig(
-                        id = "stage1",
-                        name = "Custom Stage",
-                        outputFile = "output.md",
-                        requiresApproval = true,
-                        inputDependencies = emptyList(),
-                        prompt = WorkflowPromptConfig.File(path = "custom-prompt.md"),
+            val serviceWithFilePrompt =
+                DefaultWorkflowService(
+                    documentStore,
+                    aiProvider,
+                    docsDir,
+                    json,
+                    WorkflowConfig(
+                        listOf(
+                            WorkflowStageConfig(
+                                id = "stage1",
+                                name = "Custom Stage",
+                                outputFile = "output.md",
+                                requiresApproval = true,
+                                inputDependencies = emptyList(),
+                                prompt = WorkflowPromptConfig.File(path = "custom-prompt.md"),
+                            ),
+                        ),
                     ),
-                ),
-            ),
-        )
+                )
 
-        every { documentStore.getAll() } returns emptyList()
-        val capturedSystemPrompt = slot<String>()
-        coEvery {
-            aiProvider.chat(capture(capturedSystemPrompt), any(), any())
-        } returns successResponse("# Output")
+            every { documentStore.getAll() } returns emptyList()
+            val capturedSystemPrompt = slot<String>()
+            coEvery {
+                aiProvider.chat(capture(capturedSystemPrompt), any(), any())
+            } returns successResponse("# Output")
 
-        serviceWithFilePrompt.startStage("stage1")
+            serviceWithFilePrompt.startStage("stage1")
 
-        assertEquals("This is the custom system prompt from a file.", capturedSystemPrompt.captured)
-    }
+            assertEquals("This is the custom system prompt from a file.", capturedSystemPrompt.captured)
+        }
 
     // ── reviseStage() negative cases ──────────────────────────────────────────
 
     @Test
-    fun `reviseStage throws for unknown stage ID`() = runTest {
-        assertFailsWith<IllegalArgumentException> {
-            service.reviseStage("nonexistent-stage")
+    fun `reviseStage throws for unknown stage ID`() =
+        runTest {
+            assertFailsWith<IllegalArgumentException> {
+                service.reviseStage("nonexistent-stage")
+            }
         }
-    }
 
     // ── startStage() gracefully skips missing input doc files ─────────────────
 
     @Test
-    fun `startStage succeeds when input document file does not exist on disk`() = runTest {
-        // documentStore returns a doc, but the file is not present on disk
-        every { documentStore.getAll() } returns listOf(sampleDoc)
-        val capturedMessages = slot<List<com.cramsan.agentic.ai.AiMessage>>()
-        coEvery {
-            aiProvider.chat(any(), capture(capturedMessages), any())
-        } returns successResponse("# High-Level Plan")
+    fun `startStage succeeds when input document file does not exist on disk`() =
+        runTest {
+            // documentStore returns a doc, but the file is not present on disk
+            every { documentStore.getAll() } returns listOf(sampleDoc)
+            val capturedMessages = slot<List<com.cramsan.agentic.ai.AiMessage>>()
+            coEvery {
+                aiProvider.chat(any(), capture(capturedMessages), any())
+            } returns successResponse("# High-Level Plan")
 
-        val result = service.startStage("stage1")
+            val result = service.startStage("stage1")
 
-        assertEquals("stage1", result.stageId)
-        // The missing file is skipped — prompt should not contain file content
-        assertTrue(capturedMessages.captured.none { it.content.contains("goals-scope") })
-    }
+            assertEquals("stage1", result.stageId)
+            // The missing file is skipped — prompt should not contain file content
+            assertTrue(capturedMessages.captured.none { it.content.contains("goals-scope") })
+        }
 }

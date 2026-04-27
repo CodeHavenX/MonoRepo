@@ -23,29 +23,38 @@ fun ThemeToggle(
 ) {
     IconButton(
         onClick = {
-            val nextTheme = when (selectedTheme) {
-                SelectedTheme.LIGHT -> SelectedTheme.DARK
-                SelectedTheme.DARK -> SelectedTheme.SYSTEM_DEFAULT
-                SelectedTheme.SYSTEM_DEFAULT -> SelectedTheme.LIGHT
-            }
+            val nextTheme =
+                when (selectedTheme) {
+                    SelectedTheme.LIGHT -> SelectedTheme.DARK
+                    SelectedTheme.DARK -> SelectedTheme.SYSTEM_DEFAULT
+                    SelectedTheme.SYSTEM_DEFAULT -> SelectedTheme.LIGHT
+                }
             onThemeSelected(nextTheme)
         },
         modifier = modifier,
     ) {
         AnimatedContent(targetState = selectedTheme) { theme ->
             when (theme) {
-                SelectedTheme.LIGHT -> Icon(
-                    imageVector = Icons.Sharp.LightMode,
-                    contentDescription = "Light Theme"
-                )
-                SelectedTheme.DARK -> Icon(
-                    imageVector = Icons.Sharp.DarkMode,
-                    contentDescription = "Dark Theme"
-                )
-                SelectedTheme.SYSTEM_DEFAULT -> Icon(
-                    imageVector = Icons.Sharp.Settings,
-                    contentDescription = "System Default Theme"
-                )
+                SelectedTheme.LIGHT -> {
+                    Icon(
+                        imageVector = Icons.Sharp.LightMode,
+                        contentDescription = "Light Theme",
+                    )
+                }
+
+                SelectedTheme.DARK -> {
+                    Icon(
+                        imageVector = Icons.Sharp.DarkMode,
+                        contentDescription = "Dark Theme",
+                    )
+                }
+
+                SelectedTheme.SYSTEM_DEFAULT -> {
+                    Icon(
+                        imageVector = Icons.Sharp.Settings,
+                        contentDescription = "System Default Theme",
+                    )
+                }
             }
         }
     }
@@ -57,5 +66,5 @@ fun ThemeToggle(
 enum class SelectedTheme {
     LIGHT,
     DARK,
-    SYSTEM_DEFAULT
+    SYSTEM_DEFAULT,
 }

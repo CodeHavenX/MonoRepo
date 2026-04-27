@@ -34,7 +34,6 @@ class EventLogController(
     private val rbacService: RBACService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     /**
      * Handles the creation of a new event log entry. Validates the request and user permissions,
      * then creates the event log entry using the [eventLogService].
@@ -46,28 +45,30 @@ class EventLogController(
             CreateEventLogEntryNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): EventLogEntryNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(
                 "User does not have permission to create log events " +
-                    "for property ${request.requestBody.propertyId}"
+                    "for property ${request.requestBody.propertyId}",
             )
         }
 
         val createEventLogRequest = request.requestBody
-        val newEventLog = eventLogService.createEventLogEntry(
-            employeeId = createEventLogRequest.employeeId,
-            fallbackEmployeeName = createEventLogRequest.fallbackEmployeeName,
-            propertyId = createEventLogRequest.propertyId,
-            type = createEventLogRequest.type,
-            fallbackEventType = createEventLogRequest.fallbackEventType,
-            timestamp = createEventLogRequest.timestamp,
-            title = createEventLogRequest.title,
-            description = createEventLogRequest.description,
-            unit = createEventLogRequest.unit,
-        ).toEventLogEntryNetworkResponse()
+        val newEventLog =
+            eventLogService
+                .createEventLogEntry(
+                    employeeId = createEventLogRequest.employeeId,
+                    fallbackEmployeeName = createEventLogRequest.fallbackEmployeeName,
+                    propertyId = createEventLogRequest.propertyId,
+                    type = createEventLogRequest.type,
+                    fallbackEventType = createEventLogRequest.fallbackEventType,
+                    timestamp = createEventLogRequest.timestamp,
+                    title = createEventLogRequest.title,
+                    description = createEventLogRequest.description,
+                    unit = createEventLogRequest.unit,
+                ).toEventLogEntryNetworkResponse()
 
         return newEventLog
     }
@@ -83,7 +84,7 @@ class EventLogController(
             NoRequestBody,
             NoQueryParam,
             EventLogEntryId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): EventLogEntryNetworkResponse? {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
@@ -91,9 +92,11 @@ class EventLogController(
         }
 
         val eventLogId = request.pathParam
-        val eventLog = eventLogService.getEventLogEntry(
-            eventLogId,
-        )?.toEventLogEntryNetworkResponse()
+        val eventLog =
+            eventLogService
+                .getEventLogEntry(
+                    eventLogId,
+                )?.toEventLogEntryNetworkResponse()
 
         return eventLog
     }
@@ -108,21 +111,22 @@ class EventLogController(
             NoRequestBody,
             GetEventLogEntriesQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): EventLogEntryListNetworkResponse {
         val propertyId = request.queryParam.propertyId
         if (!rbacService.hasRoleOrHigher(request.context, propertyId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(
-                "User does not have permission to view event log entries for property $propertyId"
+                "User does not have permission to view event log entries for property $propertyId",
             )
         }
 
-        val entries = eventLogService.getEventLogEntries(propertyId).map {
-            it.toEventLogEntryNetworkResponse()
-        }
+        val entries =
+            eventLogService.getEventLogEntries(propertyId).map {
+                it.toEventLogEntryNetworkResponse()
+            }
         return EventLogEntryListNetworkResponse(
-            content = entries
+            content = entries,
         )
     }
 
@@ -137,7 +141,7 @@ class EventLogController(
             UpdateEventLogEntryNetworkRequest,
             NoQueryParam,
             EventLogEntryId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): EventLogEntryNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
@@ -145,14 +149,15 @@ class EventLogController(
         }
         val updateEventLogRequest = request.requestBody
         val eventLogId = request.pathParam
-        return eventLogService.updateEventLogEntry(
-            id = eventLogId,
-            type = updateEventLogRequest.type,
-            fallbackEventType = updateEventLogRequest.fallbackEventType,
-            title = updateEventLogRequest.title,
-            description = updateEventLogRequest.description,
-            unit = updateEventLogRequest.unit,
-        ).toEventLogEntryNetworkResponse()
+        return eventLogService
+            .updateEventLogEntry(
+                id = eventLogId,
+                type = updateEventLogRequest.type,
+                fallbackEventType = updateEventLogRequest.fallbackEventType,
+                title = updateEventLogRequest.title,
+                description = updateEventLogRequest.description,
+                unit = updateEventLogRequest.unit,
+            ).toEventLogEntryNetworkResponse()
     }
 
     /**
@@ -165,7 +170,7 @@ class EventLogController(
             NoRequestBody,
             NoQueryParam,
             EventLogEntryId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): NoResponseBody {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {

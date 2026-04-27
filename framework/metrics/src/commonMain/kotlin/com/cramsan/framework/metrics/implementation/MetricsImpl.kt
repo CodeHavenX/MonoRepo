@@ -15,7 +15,6 @@ class MetricsImpl(
     private val platformDelegate: MetricsDelegate,
     private val eventLoggerInterface: EventLoggerInterface,
 ) : MetricsInterface {
-
     override fun initialize() {
         platformDelegate.initialize()
     }

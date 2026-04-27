@@ -26,7 +26,6 @@ class MetricsErrorCallback(
     private val ioDispatcherProvider: DispatcherProvider,
     private val scope: CoroutineScope,
 ) : EventLoggerErrorCallbackDelegate {
-
     private var warningCount = 0.0
     private var errorCount = 0.0
 
@@ -42,8 +41,14 @@ class MetricsErrorCallback(
                     )
                     dispatchBatch()
                 }
-                Severity.WARNING -> batchWarningEvent()
-                Severity.ERROR -> batchErrorEvent()
+
+                Severity.WARNING -> {
+                    batchWarningEvent()
+                }
+
+                Severity.ERROR -> {
+                    batchErrorEvent()
+                }
             }
         }
     }

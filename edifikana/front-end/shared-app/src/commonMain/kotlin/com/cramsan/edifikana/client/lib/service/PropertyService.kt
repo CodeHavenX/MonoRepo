@@ -8,7 +8,6 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
  * Property service interface.
  */
 interface PropertyService {
-
     /**
      * Get a list of properties associated with current user.
      */

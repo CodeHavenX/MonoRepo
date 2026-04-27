@@ -15,8 +15,4 @@ import kotlinx.serialization.Serializable
  * to verify that the planning phase is complete.
  */
 @Serializable
-data class StageApprovalRecord(
-    val stageId: String,
-    val approvedAtEpochMs: Long,
-    val inputHashes: Map<String, String>,
-)
+data class StageApprovalRecord(val stageId: String, val approvedAtEpochMs: Long, val inputHashes: Map<String, String>)

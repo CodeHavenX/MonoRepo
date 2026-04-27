@@ -11,19 +11,19 @@ import com.cramsan.edifikana.client.ui.resources.PropertyIcons
  * the string format used by the API ("drawable:ICON_NAME").
  */
 object PropertyIconOptions {
-
     /**
      * Get the list of default property icon options for the dropdown.
      *
      * @return List of ImageOptionUIModel representing available property icons
      */
-    fun getDefaultOptions(): List<ImageOptionUIModel> = PropertyIcons.getAllIcons().map { (id, drawable) ->
-        ImageOptionUIModel(
-            id = id,
-            displayName = getDisplayName(id),
-            imageSource = ImageSource.Drawable(drawable),
-        )
-    }
+    fun getDefaultOptions(): List<ImageOptionUIModel> =
+        PropertyIcons.getAllIcons().map { (id, drawable) ->
+            ImageOptionUIModel(
+                id = id,
+                displayName = getDisplayName(id),
+                imageSource = ImageSource.Drawable(drawable),
+            )
+        }
 
     /**
      * Get the list of property icon options including the upload option.
@@ -32,11 +32,12 @@ object PropertyIconOptions {
      */
     fun getOptionsWithUpload(): List<ImageOptionUIModel> {
         val defaultOptions = getDefaultOptions()
-        val uploadOption = ImageOptionUIModel(
-            id = "custom_upload",
-            displayName = "Upload Custom Image",
-            imageSource = ImageSource.UploadPlaceholder,
-        )
+        val uploadOption =
+            ImageOptionUIModel(
+                id = "custom_upload",
+                displayName = "Upload Custom Image",
+                imageSource = ImageSource.UploadPlaceholder,
+            )
         return defaultOptions + uploadOption
     }
 
@@ -48,8 +49,14 @@ object PropertyIconOptions {
      */
     fun toImageUrl(option: ImageOptionUIModel?): String? {
         return when (option?.imageSource) {
-            is ImageSource.Drawable -> "drawable:${option.id}"
-            is ImageSource.Url -> (option.imageSource as ImageSource.Url).url
+            is ImageSource.Drawable -> {
+                "drawable:${option.id}"
+            }
+
+            is ImageSource.Url -> {
+                (option.imageSource as ImageSource.Url).url
+            }
+
             is ImageSource.LocalFile -> {
                 // Check if this is an uploaded file with storage ref embedded in ID
                 if (option.id.startsWith("custom_uploaded:")) {
@@ -60,8 +67,15 @@ object PropertyIconOptions {
                     null // Not yet uploaded
                 }
             }
-            is ImageSource.UploadPlaceholder -> null // Upload placeholder should not be converted to URL
-            is ImageSource.None, null -> null
+
+            is ImageSource.UploadPlaceholder -> {
+                null
+            }
+
+            // Upload placeholder should not be converted to URL
+            is ImageSource.None, null -> {
+                null
+            }
         }
     }
 
@@ -88,7 +102,8 @@ object PropertyIconOptions {
         // Check if it's a storage reference or URL
         if (imageUrl.startsWith("storage:") ||
             imageUrl.startsWith("http://") ||
-            imageUrl.startsWith("https://")) {
+            imageUrl.startsWith("https://")
+        ) {
             return ImageOptionUIModel(
                 id = "custom_url",
                 displayName = "Custom Image",
@@ -102,12 +117,13 @@ object PropertyIconOptions {
     /**
      * Get a human-readable display name for an icon ID.
      */
-    private fun getDisplayName(iconId: String): String = when (iconId) {
-        PropertyIcons.CASA_ID -> "Casa"
-        PropertyIcons.QUINTA_ID -> "Quinta"
-        PropertyIcons.L_DEPA_ID -> "Large Department"
-        PropertyIcons.M_DEPA_ID -> "Medium Department"
-        PropertyIcons.S_DEPA_ID -> "Small Department"
-        else -> iconId
-    }
+    private fun getDisplayName(iconId: String): String =
+        when (iconId) {
+            PropertyIcons.CASA_ID -> "Casa"
+            PropertyIcons.QUINTA_ID -> "Quinta"
+            PropertyIcons.L_DEPA_ID -> "Large Department"
+            PropertyIcons.M_DEPA_ID -> "Medium Department"
+            PropertyIcons.S_DEPA_ID -> "Small Department"
+            else -> iconId
+        }
 }

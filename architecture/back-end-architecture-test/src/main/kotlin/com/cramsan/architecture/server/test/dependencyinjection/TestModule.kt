@@ -42,42 +42,44 @@ import kotlin.time.TestTimeSource
 /**
  * Produce a framework module for testing.
  */
-val TestFrameworkModule = module(createdAtStart = true) {
-    single<Logger> {
-        Log4J2Helpers.getRootLogger(false, get())
-    }
+val TestFrameworkModule =
+    module(createdAtStart = true) {
+        single<Logger> {
+            Log4J2Helpers.getRootLogger(false, get())
+        }
 
-    single {
-        Severity.VERBOSE
-    }
+        single {
+            Severity.VERBOSE
+        }
 
-    single<EventLoggerInterface> {
-        val instance = EventLoggerImpl(get(), null, LoggerJVM(get(), get()))
-        EventLogger.setInstance(instance)
-        EventLogger.singleton
+        single<EventLoggerInterface> {
+            val instance = EventLoggerImpl(get(), null, LoggerJVM(get(), get()))
+            EventLogger.setInstance(instance)
+            EventLogger.singleton
+        }
+        single<HaltUtilDelegate> { HaltUtilJVM(PassthroughEventLogger(NoopEventLoggerDelegate())) }
+        single<HaltUtil> { HaltUtilImpl(get()) }
+        single<AssertUtilInterface> {
+            val impl =
+                AssertUtilImpl(
+                    false,
+                    get(),
+                    get(),
+                )
+            AssertUtil.setInstance(impl)
+            AssertUtil.singleton
+        }
+        single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
+        single<ThreadUtilInterface> {
+            ThreadUtilImpl(get())
+        }
+        single<Configuration> {
+            NoopConfiguration()
+        }
+        single {
+            ConfigurationMultiplexer()
+        }
     }
-    single<HaltUtilDelegate> { HaltUtilJVM(PassthroughEventLogger(NoopEventLoggerDelegate())) }
-    single<HaltUtil> { HaltUtilImpl(get()) }
-    single<AssertUtilInterface> {
-        val impl = AssertUtilImpl(
-            false,
-            get(),
-            get(),
-        )
-        AssertUtil.setInstance(impl)
-        AssertUtil.singleton
-    }
-    single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
-    single<ThreadUtilInterface> {
-        ThreadUtilImpl(get())
-    }
-    single<Configuration> {
-        NoopConfiguration()
-    }
-    single {
-        ConfigurationMultiplexer()
-    }
-}
 
 /**
  * Produce a framework module for integration tests.
@@ -101,11 +103,12 @@ fun integTestFrameworkModule(
     single<HaltUtilDelegate> { HaltUtilJVM(PassthroughEventLogger(NoopEventLoggerDelegate())) }
     single<HaltUtil> { HaltUtilImpl(get()) }
     single<AssertUtilInterface> {
-        val impl = AssertUtilImpl(
-            false,
-            get(),
-            get(),
-        )
+        val impl =
+            AssertUtilImpl(
+                false,
+                get(),
+                get(),
+            )
         AssertUtil.setInstance(impl)
         AssertUtil.singleton
     }
@@ -132,7 +135,7 @@ fun integTestFrameworkModule(
             listOf(
                 environmentConfiguration, // Look for overrides in environment variables first
                 simpleConfiguration, // Then in the config file
-            )
+            ),
         )
         configurationMultiplexer
     }
@@ -142,12 +145,13 @@ fun integTestFrameworkModule(
  * Koin module for initializing Ktor-specific components for testing.
  * Provides a list of all registered controllers for test environments.
  */
-internal val TestKtorModule = module {
+internal val TestKtorModule =
+    module {
 
-    single<List<Controller>> {
-        getAll<Controller>()
+        single<List<Controller>> {
+            getAll<Controller>()
+        }
     }
-}
 
 /**
  * Koin module for initializing architecture-level test dependencies.
@@ -155,19 +159,20 @@ internal val TestKtorModule = module {
  * for deterministic testing behavior.
  */
 @OptIn(TestOnly::class)
-val TestArchitectureModule = module(createdAtStart = true) {
+val TestArchitectureModule =
+    module(createdAtStart = true) {
 
-    single {
-        TestTimeSource()
+        single {
+            TestTimeSource()
+        }
+
+        single<Clock> {
+            val testTimeSource: TestTimeSource = get()
+            val clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
+            Chronos.forceInitializeClock(clock)
+            Chronos.setTimeZoneOverride(TimeZone.UTC)
+            Chronos.clock()
+        }
+
+        single { SettingsHolder(get()) }
     }
-
-    single<Clock> {
-        val testTimeSource: TestTimeSource = get()
-        val clock = testTimeSource.asClock(2024, 1, 1, 0, 0)
-        Chronos.forceInitializeClock(clock)
-        Chronos.setTimeZoneOverride(TimeZone.UTC)
-        Chronos.clock()
-    }
-
-    single { SettingsHolder(get()) }
-}

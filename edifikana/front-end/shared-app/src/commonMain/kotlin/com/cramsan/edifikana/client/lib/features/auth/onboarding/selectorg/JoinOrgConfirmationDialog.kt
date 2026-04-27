@@ -6,10 +6,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import com.cramsan.framework.core.compose.Dialog
 import edifikana_lib.Res
+import edifikana_lib.edifikana_string_cancel
 import edifikana_lib.join_org_dialog_confirm_button
 import edifikana_lib.join_org_dialog_message
 import edifikana_lib.join_org_dialog_title
-import edifikana_lib.edifikana_string_cancel
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -17,11 +17,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  * A confirmation dialog that asks the user if they want to accept an
  * organization invite.
  */
-class JoinOrgConfirmationDialog(
-    private val onConfirm: () -> Unit,
-    private val onDismiss: () -> Unit,
-) : Dialog() {
-
+class JoinOrgConfirmationDialog(private val onConfirm: () -> Unit, private val onDismiss: () -> Unit) : Dialog() {
     @Composable
     override fun Content() {
         AlertDialog(
@@ -36,7 +32,7 @@ class JoinOrgConfirmationDialog(
                     onClick = {
                         hide()
                         onConfirm()
-                    }
+                    },
                 ) {
                     Text(stringResource(Res.string.join_org_dialog_confirm_button))
                 }
@@ -46,11 +42,11 @@ class JoinOrgConfirmationDialog(
                     onClick = {
                         hide()
                         onDismiss()
-                    }
+                    },
                 ) {
                     Text(stringResource(Res.string.edifikana_string_cancel))
                 }
-            }
+            },
         )
     }
 }
@@ -60,7 +56,7 @@ class JoinOrgConfirmationDialog(
 private fun JoinOrgConfirmationDialogPreview() {
     JoinOrgConfirmationDialog(
         onConfirm = {},
-        onDismiss = {}
+        onDismiss = {},
     ).Content()
 }
 
@@ -69,6 +65,6 @@ private fun JoinOrgConfirmationDialogPreview() {
 private fun JoinOrgConfirmationDialogPreview_ES() {
     JoinOrgConfirmationDialog(
         onConfirm = {},
-        onDismiss = {}
+        onDismiss = {},
     ).Content()
 }

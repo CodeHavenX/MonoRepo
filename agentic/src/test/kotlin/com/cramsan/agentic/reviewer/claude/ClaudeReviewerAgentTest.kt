@@ -17,69 +17,74 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class ClaudeReviewerAgentTest {
-
     private val aiProvider = mockk<AiProvider>()
     private val reviewerAgent = ClaudeReviewerAgent(aiProvider)
 
-    private val reviewerDef = ReviewerDefinition(
-        name = "security",
-        systemPrompt = "You are a security reviewer",
-    )
+    private val reviewerDef =
+        ReviewerDefinition(
+            name = "security",
+            systemPrompt = "You are a security reviewer",
+        )
 
-    private val task = Task(
-        id = "task-001",
-        title = "My Task",
-        description = "Description",
-        dependencies = emptyList(),
-    )
+    private val task =
+        Task(
+            id = "task-001",
+            title = "My Task",
+            description = "Description",
+            dependencies = emptyList(),
+        )
 
     @BeforeEach
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
-    private fun makeResponse(text: String) = AiResponse(
-        id = "resp-1",
-        content = listOf(AiContentBlock.Text(text)),
-        stopReason = "end_turn",
-    )
+    private fun makeResponse(text: String) =
+        AiResponse(
+            id = "resp-1",
+            content = listOf(AiContentBlock.Text(text)),
+            stopReason = "end_turn",
+        )
 
     @Test
-    fun `reviewDocuments calls provider with empty tools list and returns feedback content`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any()) } returns makeResponse("No security issues found")
+    fun `reviewDocuments calls provider with empty tools list and returns feedback content`() =
+        runTest {
+            coEvery { aiProvider.chat(any(), any(), any()) } returns makeResponse("No security issues found")
 
-        val feedback = reviewerAgent.reviewDocuments(reviewerDef, emptyList())
+            val feedback = reviewerAgent.reviewDocuments(reviewerDef, emptyList())
 
-        assertEquals("security", feedback.reviewerName)
-        assertEquals("No security issues found", feedback.content)
-        coVerify { aiProvider.chat(reviewerDef.systemPrompt, any(), emptyList()) }
-    }
-
-    @Test
-    fun `reviewCode includes task title and diff in message`() = runTest {
-        val diff = "- old line\n+ new line"
-        coEvery { aiProvider.chat(any(), any(), any()) } returns makeResponse("LGTM")
-
-        val feedback = reviewerAgent.reviewCode(reviewerDef, task, diff)
-
-        assertEquals("security", feedback.reviewerName)
-        assertEquals("LGTM", feedback.content)
-        coVerify {
-            aiProvider.chat(
-                reviewerDef.systemPrompt,
-                match { messages -> messages.any { it.content.contains("My Task") && it.content.contains(diff) } },
-                emptyList(),
-            )
+            assertEquals("security", feedback.reviewerName)
+            assertEquals("No security issues found", feedback.content)
+            coVerify { aiProvider.chat(reviewerDef.systemPrompt, any(), emptyList()) }
         }
-    }
 
     @Test
-    fun `reviewCode passes reviewer name through correctly`() = runTest {
-        coEvery { aiProvider.chat(any(), any(), any()) } returns makeResponse("All good")
-        val anotherReviewer = ReviewerDefinition("performance", "You check performance")
+    fun `reviewCode includes task title and diff in message`() =
+        runTest {
+            val diff = "- old line\n+ new line"
+            coEvery { aiProvider.chat(any(), any(), any()) } returns makeResponse("LGTM")
 
-        val feedback = reviewerAgent.reviewCode(anotherReviewer, task, "")
+            val feedback = reviewerAgent.reviewCode(reviewerDef, task, diff)
 
-        assertEquals("performance", feedback.reviewerName)
-    }
+            assertEquals("security", feedback.reviewerName)
+            assertEquals("LGTM", feedback.content)
+            coVerify {
+                aiProvider.chat(
+                    reviewerDef.systemPrompt,
+                    match { messages -> messages.any { it.content.contains("My Task") && it.content.contains(diff) } },
+                    emptyList(),
+                )
+            }
+        }
+
+    @Test
+    fun `reviewCode passes reviewer name through correctly`() =
+        runTest {
+            coEvery { aiProvider.chat(any(), any(), any()) } returns makeResponse("All good")
+            val anotherReviewer = ReviewerDefinition("performance", "You check performance")
+
+            val feedback = reviewerAgent.reviewCode(anotherReviewer, task, "")
+
+            assertEquals("performance", feedback.reviewerName)
+        }
 }

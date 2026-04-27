@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.TaskApi
-import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.network.task.CreateTaskNetworkRequest
 import com.cramsan.edifikana.lib.model.network.task.GetTasksQueryParams
 import com.cramsan.edifikana.lib.model.network.task.TaskListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.task.TaskNetworkResponse
 import com.cramsan.edifikana.lib.model.network.task.UpdateTaskNetworkRequest
+import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.TaskService
 import com.cramsan.edifikana.server.service.authorization.RBACService
@@ -40,7 +40,6 @@ class TaskController(
     private val rbacService: RBACService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -51,24 +50,25 @@ class TaskController(
             CreateTaskNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): TaskNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.propertyId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         val callerUserId = request.context.payload.userId
-        return taskService.createTask(
-            propertyId = request.requestBody.propertyId,
-            unitId = request.requestBody.unitId,
-            commonAreaId = request.requestBody.commonAreaId,
-            assigneeId = request.requestBody.assigneeId,
-            createdBy = callerUserId,
-            title = request.requestBody.title,
-            description = request.requestBody.description,
-            priority = request.requestBody.priority,
-            dueDate = request.requestBody.dueDate,
-        ).toTaskNetworkResponse()
+        return taskService
+            .createTask(
+                propertyId = request.requestBody.propertyId,
+                unitId = request.requestBody.unitId,
+                commonAreaId = request.requestBody.commonAreaId,
+                assigneeId = request.requestBody.assigneeId,
+                createdBy = callerUserId,
+                title = request.requestBody.title,
+                description = request.requestBody.description,
+                priority = request.requestBody.priority,
+                dueDate = request.requestBody.dueDate,
+            ).toTaskNetworkResponse()
     }
 
     /**
@@ -80,8 +80,8 @@ class TaskController(
             NoRequestBody,
             NoQueryParam,
             TaskId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): TaskNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
             throw NotFoundException("Task not found.")
@@ -98,19 +98,21 @@ class TaskController(
             NoRequestBody,
             GetTasksQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): TaskListNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.queryParam.propertyId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val tasks = taskService.getTasks(
-            propertyId = request.queryParam.propertyId,
-            unitId = request.queryParam.unitId,
-            status = request.queryParam.status,
-            assigneeId = request.queryParam.assigneeId,
-            priority = request.queryParam.priority,
-        ).map { it.toTaskNetworkResponse() }
+        val tasks =
+            taskService
+                .getTasks(
+                    propertyId = request.queryParam.propertyId,
+                    unitId = request.queryParam.unitId,
+                    status = request.queryParam.status,
+                    assigneeId = request.queryParam.assigneeId,
+                    priority = request.queryParam.priority,
+                ).map { it.toTaskNetworkResponse() }
         return TaskListNetworkResponse(tasks)
     }
 
@@ -122,23 +124,24 @@ class TaskController(
             UpdateTaskNetworkRequest,
             NoQueryParam,
             TaskId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): TaskNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         val callerUserId = request.context.payload.userId
-        return taskService.updateTask(
-            taskId = request.pathParam,
-            title = request.requestBody.title,
-            description = request.requestBody.description,
-            priority = request.requestBody.priority,
-            status = request.requestBody.status,
-            assigneeId = request.requestBody.assigneeId,
-            dueDate = request.requestBody.dueDate,
-            callerUserId = callerUserId,
-        ).toTaskNetworkResponse()
+        return taskService
+            .updateTask(
+                taskId = request.pathParam,
+                title = request.requestBody.title,
+                description = request.requestBody.description,
+                priority = request.requestBody.priority,
+                status = request.requestBody.status,
+                assigneeId = request.requestBody.assigneeId,
+                dueDate = request.requestBody.dueDate,
+                callerUserId = callerUserId,
+            ).toTaskNetworkResponse()
     }
 
     /**
@@ -149,8 +152,8 @@ class TaskController(
             NoRequestBody,
             NoQueryParam,
             TaskId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): NoResponseBody {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)

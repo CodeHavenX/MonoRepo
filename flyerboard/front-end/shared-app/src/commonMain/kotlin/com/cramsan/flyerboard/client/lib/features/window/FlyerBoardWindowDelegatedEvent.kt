@@ -8,11 +8,8 @@ import androidx.compose.material3.SnackbarResult
  * the event.
  */
 sealed class FlyerBoardWindowDelegatedEvent {
-
     /**
      * Handle the result of a snackbar.
      */
-    data class HandleSnackbarResult(
-        val result: SnackbarResult,
-    ) : FlyerBoardWindowDelegatedEvent()
+    data class HandleSnackbarResult(val result: SnackbarResult) : FlyerBoardWindowDelegatedEvent()
 }

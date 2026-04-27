@@ -60,13 +60,14 @@ object PropertyIcons {
     /**
      * Map of icon IDs to their corresponding DrawableResource.
      */
-    private val iconMap = mapOf(
-        CASA_ID to CASA,
-        QUINTA_ID to QUINTA,
-        L_DEPA_ID to L_DEPA,
-        M_DEPA_ID to M_DEPA,
-        S_DEPA_ID to S_DEPA,
-    )
+    private val iconMap =
+        mapOf(
+            CASA_ID to CASA,
+            QUINTA_ID to QUINTA,
+            L_DEPA_ID to L_DEPA,
+            M_DEPA_ID to M_DEPA,
+            S_DEPA_ID to S_DEPA,
+        )
 
     /**
      * Get the DrawableResource for a given icon ID.

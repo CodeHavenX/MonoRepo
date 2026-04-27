@@ -17,10 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 /**
  * Supabase implementation of [AuthService].
  */
-class AuthServiceImpl(
-    private val auth: Auth,
-) : AuthService {
-
+class AuthServiceImpl(private val auth: Auth) : AuthService {
     private val _activeUser = MutableStateFlow<UserId?>(null)
 
     override suspend fun signUp(email: String, password: String): Result<Unit> =
@@ -53,31 +50,33 @@ class AuthServiceImpl(
             }
         }
 
-    override suspend fun signOut(): Result<Unit> = runSuspendCatching(TAG) {
-        logD(TAG, "signOut")
-        auth.signOut()
-        _activeUser.value = null
-    }
-
-    override suspend fun isAuthenticated(): Result<Boolean> = runSuspendCatching(TAG) {
-        auth.awaitInitialization()
-        val user = auth.currentUserOrNull()
-        if (user == null) {
+    override suspend fun signOut(): Result<Unit> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "signOut")
+            auth.signOut()
             _activeUser.value = null
-            logD(TAG, "User not authenticated")
-            false
-        } else {
-            try {
-                auth.refreshCurrentSession()
-                _activeUser.value = UserId(user.id)
-                true
-            } catch (e: RestException) {
-                logE(TAG, "Failed to refresh session", e)
+        }
+
+    override suspend fun isAuthenticated(): Result<Boolean> =
+        runSuspendCatching(TAG) {
+            auth.awaitInitialization()
+            val user = auth.currentUserOrNull()
+            if (user == null) {
                 _activeUser.value = null
+                logD(TAG, "User not authenticated")
                 false
+            } else {
+                try {
+                    auth.refreshCurrentSession()
+                    _activeUser.value = UserId(user.id)
+                    true
+                } catch (e: RestException) {
+                    logE(TAG, "Failed to refresh session", e)
+                    _activeUser.value = null
+                    false
+                }
             }
         }
-    }
 
     override fun getAccessToken(): String? = auth.currentAccessTokenOrNull()
 

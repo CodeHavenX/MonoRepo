@@ -7,7 +7,6 @@ package com.cramsan.framework.halt
  * @see [HaltUtilDelegate]
  */
 interface HaltUtil {
-
     /**
      * If the current thread is halted, resume it.
      *

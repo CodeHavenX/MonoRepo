@@ -34,14 +34,17 @@ fun <T> Dropdown(
 ) {
     var expanded by remember(expanded) { mutableStateOf(false) }
     var selectedIndex by remember {
-        val startIndex = startValueMatcher?.let {
-            items.indexOfFirst(startValueMatcher)
-        }
+        val startIndex =
+            startValueMatcher?.let {
+                items.indexOfFirst(startValueMatcher)
+            }
         mutableStateOf(startIndex)
     }
-    val value = selectedIndex?.let {
-        itemLabels.getOrNull(it)
-    }.orEmpty()
+    val value =
+        selectedIndex
+            ?.let {
+                itemLabels.getOrNull(it)
+            }.orEmpty()
 
     ExposedDropdownMenuBox(
         modifier = modifier,
@@ -50,15 +53,17 @@ fun <T> Dropdown(
     ) {
         OutlinedTextField(
             value = value,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
             trailingIcon = {
-                val icon = if (expanded) {
-                    Icons.Filled.ArrowDropUp
-                } else {
-                    Icons.Filled.ArrowDropDown
-                }
+                val icon =
+                    if (expanded) {
+                        Icons.Filled.ArrowDropUp
+                    } else {
+                        Icons.Filled.ArrowDropDown
+                    }
                 Icon(icon, value)
             },
             singleLine = true,

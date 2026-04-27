@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class TimeCardEventListNetworkResponse(
-    val events: List<TimeCardEventNetworkResponse>,
-) : ResponseBody
+data class TimeCardEventListNetworkResponse(val events: List<TimeCardEventNetworkResponse>) : ResponseBody

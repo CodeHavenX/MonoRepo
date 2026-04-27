@@ -10,7 +10,6 @@ import kotlin.time.Instant
  * Interface defining data operations for flyers.
  */
 interface FlyerDatastore {
-
     /**
      * Inserts a new flyer record. Returns the created [Flyer].
      */

@@ -19,27 +19,29 @@ import org.koin.core.annotation.KoinExperimentalAPI
  * Main function for the desktop application.
  */
 @OptIn(KoinExperimentalAPI::class)
-fun main() = application {
-    ComposableKoinContext {
-        val processViewModel: RunasimiApplicationViewModel = koinInject()
-        val eventHandler = remember { RunasimiJvmMainScreenEventHandler() }
+fun main() =
+    application {
+        ComposableKoinContext {
+            val processViewModel: RunasimiApplicationViewModel = koinInject()
+            val eventHandler = remember { RunasimiJvmMainScreenEventHandler() }
 
-        LaunchedEffect(Unit) {
-            processViewModel.initialize()
-        }
+            LaunchedEffect(Unit) {
+                processViewModel.initialize()
+            }
 
-        Window(
-            onCloseRequest = ::exitApplication,
-            title = "Runasimi",
-            state = rememberWindowState(
-                size = DpSize(600.dp, 800.dp)
-            )
-        ) {
-            KoinScope<String>("root-window") {
-                RunasimiWindowScreen(
-                    eventHandler = eventHandler,
-                )
+            Window(
+                onCloseRequest = ::exitApplication,
+                title = "Runasimi",
+                state =
+                rememberWindowState(
+                    size = DpSize(600.dp, 800.dp),
+                ),
+            ) {
+                KoinScope<String>("root-window") {
+                    RunasimiWindowScreen(
+                        eventHandler = eventHandler,
+                    )
+                }
             }
         }
     }
-}

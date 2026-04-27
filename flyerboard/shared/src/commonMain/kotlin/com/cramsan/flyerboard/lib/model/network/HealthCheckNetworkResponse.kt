@@ -9,6 +9,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class HealthCheckNetworkResponse(
-    val message: String,
-) : ResponseBody
+data class HealthCheckNetworkResponse(val message: String) : ResponseBody

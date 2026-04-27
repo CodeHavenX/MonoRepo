@@ -9,6 +9,7 @@ private val SYMBOL_REGEX = Regex("[!@#\$%^&*(),.?\":{}|<>]")
 private val NUMBER_REGEX = Regex("\\d")
 
 // TODO: Update strings to be from resources instead of hardcoded
+
 /**
  * Validate that the [email] and [phoneNumber] are not empty. Returns a list of error messages.
  * Helpful when either email or phone number is required. Keeping for reference.
@@ -69,7 +70,7 @@ fun validatePassword(
     includeUppercase: Boolean = true,
     includeLowercase: Boolean = true,
     includeDigits: Boolean = true,
-    includeSymbols: Boolean = true
+    includeSymbols: Boolean = true,
 ): List<String> {
     val errors = mutableListOf<String>()
 
@@ -78,7 +79,7 @@ fun validatePassword(
     }
     if (minLength > maxLength) {
         errors.add(
-            "Invalid password length range: minimum length ($minLength) cannot exceed maximum length ($maxLength)."
+            "Invalid password length range: minimum length ($minLength) cannot exceed maximum length ($maxLength).",
         )
     } else if (minLength == maxLength) {
         if (password.length != minLength) {

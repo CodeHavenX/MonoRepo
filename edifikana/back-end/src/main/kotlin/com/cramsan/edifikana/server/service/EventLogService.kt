@@ -15,10 +15,7 @@ import kotlin.time.Instant
  * Service for event log operations.
  */
 @OptIn(ExperimentalTime::class)
-class EventLogService(
-    private val eventLogDatastore: EventLogDatastore,
-) {
-
+class EventLogService(private val eventLogDatastore: EventLogDatastore) {
     /**
      * Creates an event log entry with the provided parameters.
      */
@@ -34,17 +31,18 @@ class EventLogService(
         unit: UnitId?,
     ): EventLogEntry {
         logD(TAG, "createEventLogEntry")
-        return eventLogDatastore.createEventLogEntry(
-            employeeId = employeeId,
-            fallbackEmployeeName = fallbackEmployeeName,
-            propertyId = propertyId,
-            type = type,
-            fallbackEventType = fallbackEventType,
-            timestamp = timestamp,
-            title = title,
-            description = description,
-            unit = unit,
-        ).getOrThrow()
+        return eventLogDatastore
+            .createEventLogEntry(
+                employeeId = employeeId,
+                fallbackEmployeeName = fallbackEmployeeName,
+                propertyId = propertyId,
+                type = type,
+                fallbackEventType = fallbackEventType,
+                timestamp = timestamp,
+                title = title,
+                description = description,
+                unit = unit,
+            ).getOrThrow()
     }
 
     /**
@@ -54,9 +52,11 @@ class EventLogService(
         id: EventLogEntryId,
     ): EventLogEntry? {
         logD(TAG, "getEventLogEntry")
-        val eventLog = eventLogDatastore.getEventLogEntry(
-            id = id,
-        ).getOrNull()
+        val eventLog =
+            eventLogDatastore
+                .getEventLogEntry(
+                    id = id,
+                ).getOrNull()
 
         return eventLog
     }
@@ -81,14 +81,15 @@ class EventLogService(
         unit: UnitId?,
     ): EventLogEntry {
         logD(TAG, "updateEventLogEntry")
-        return eventLogDatastore.updateEventLogEntry(
-            id = id,
-            type = type,
-            fallbackEventType = fallbackEventType,
-            title = title,
-            description = description,
-            unit = unit,
-        ).getOrThrow()
+        return eventLogDatastore
+            .updateEventLogEntry(
+                id = id,
+                type = type,
+                fallbackEventType = fallbackEventType,
+                title = title,
+                description = description,
+                unit = unit,
+            ).getOrThrow()
     }
 
     /**
@@ -98,9 +99,10 @@ class EventLogService(
         id: EventLogEntryId,
     ): Boolean {
         logD(TAG, "deleteEventLogEntry")
-        return eventLogDatastore.deleteEventLogEntry(
-            id = id,
-        ).getOrThrow()
+        return eventLogDatastore
+            .deleteEventLogEntry(
+                id = id,
+            ).getOrThrow()
     }
 
     companion object {

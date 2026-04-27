@@ -6,7 +6,6 @@ package com.cramsan.framework.crashehandler
  * @see [CrashHandler]
  */
 interface CrashHandlerDelegate {
-
     /**
      * Initialize this delegate. This function will be called very early in the process's lifecycle.
      *

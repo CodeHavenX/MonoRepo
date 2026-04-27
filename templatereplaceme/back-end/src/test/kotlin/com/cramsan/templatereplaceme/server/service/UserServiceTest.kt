@@ -51,35 +51,37 @@ class UserServiceTest {
      * Tests that createUser creates a transient user.
      */
     @Test
-    fun `createUser should create user`() = runTest {
-        // Arrange
-        val firstName = "John"
-        val lastName = "Doe"
-        val user = User(
-            id = UserId("user123"),
-            firstName = "John",
-            lastName = "Doe",
-        )
-        coEvery {
-            userDatastore.createUser(
-                any(),
-                any(),
-            )
-        } returns Result.success(user)
-        coEvery {
-            settingsHolder.getBoolean(any())
-        } returns true
+    fun `createUser should create user`() =
+        runTest {
+            // Arrange
+            val firstName = "John"
+            val lastName = "Doe"
+            val user =
+                User(
+                    id = UserId("user123"),
+                    firstName = "John",
+                    lastName = "Doe",
+                )
+            coEvery {
+                userDatastore.createUser(
+                    any(),
+                    any(),
+                )
+            } returns Result.success(user)
+            coEvery {
+                settingsHolder.getBoolean(any())
+            } returns true
 
-        // Act
-        val result = userService.createUser(firstName, lastName)
+            // Act
+            val result = userService.createUser(firstName, lastName)
 
-        // Assert
-        assertTrue(result.isSuccess)
-        coVerify {
-            userDatastore.createUser(
-                "John",
-                "Doe",
-            )
+            // Assert
+            assertTrue(result.isSuccess)
+            coVerify {
+                userDatastore.createUser(
+                    "John",
+                    "Doe",
+                )
+            }
         }
-    }
 }

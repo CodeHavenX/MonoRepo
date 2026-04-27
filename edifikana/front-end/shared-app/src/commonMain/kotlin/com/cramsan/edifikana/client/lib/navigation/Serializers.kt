@@ -17,7 +17,7 @@ class PropertyIdNavType : NavType<PropertyId>(isNullableAllowed = false) {
     override fun put(
         bundle: SavedState,
         key: String,
-        value: PropertyId
+        value: PropertyId,
     ) {
         bundle.write {
             this.putString(key, value.propertyId)
@@ -26,7 +26,7 @@ class PropertyIdNavType : NavType<PropertyId>(isNullableAllowed = false) {
 
     override fun get(
         bundle: SavedState,
-        key: String
+        key: String,
     ): PropertyId? {
         return bundle.read {
             this.getStringOrNull(key)?.let { parseValue(it) }
@@ -45,7 +45,7 @@ class UserIdNavType : NavType<UserId>(isNullableAllowed = false) {
     override fun put(
         bundle: SavedState,
         key: String,
-        value: UserId
+        value: UserId,
     ) {
         bundle.write {
             this.putString(key, value.userId)
@@ -54,7 +54,7 @@ class UserIdNavType : NavType<UserId>(isNullableAllowed = false) {
 
     override fun get(
         bundle: SavedState,
-        key: String
+        key: String,
     ): UserId? {
         return bundle.read {
             this.getStringOrNull(key)?.let { parseValue(it) }
@@ -73,7 +73,7 @@ class TimeCardEventIdNavType : NavType<TimeCardEventId>(isNullableAllowed = fals
     override fun put(
         bundle: SavedState,
         key: String,
-        value: TimeCardEventId
+        value: TimeCardEventId,
     ) {
         bundle.write {
             this.putString(key, value.timeCardEventId)
@@ -82,7 +82,7 @@ class TimeCardEventIdNavType : NavType<TimeCardEventId>(isNullableAllowed = fals
 
     override fun get(
         bundle: SavedState,
-        key: String
+        key: String,
     ): TimeCardEventId? {
         return bundle.read {
             this.getStringOrNull(key)?.let { parseValue(it) }
@@ -101,20 +101,22 @@ class EmployeeIdNavType : NavType<EmployeeId>(isNullableAllowed = false) {
     override fun put(
         bundle: SavedState,
         key: String,
-        value: EmployeeId
+        value: EmployeeId,
     ) {
         bundle.write {
             this.putString(key, value.empId)
         }
     }
+
     override fun get(
         bundle: SavedState,
-        key: String
+        key: String,
     ): EmployeeId? {
         return bundle.read {
             this.getStringOrNull(key)?.let { parseValue(it) }
         }
     }
+
     override fun parseValue(value: String): EmployeeId {
         return EmployeeId(value)
     }
@@ -127,7 +129,7 @@ class EventLogEntryIdNavType : NavType<String>(isNullableAllowed = false) {
     override fun put(
         bundle: SavedState,
         key: String,
-        value: String
+        value: String,
     ) {
         bundle.write {
             this.putString(key, value)
@@ -136,7 +138,7 @@ class EventLogEntryIdNavType : NavType<String>(isNullableAllowed = false) {
 
     override fun get(
         bundle: SavedState,
-        key: String
+        key: String,
     ): String? {
         return bundle.read {
             this.getStringOrNull(key)
@@ -155,7 +157,7 @@ class OrganizationIdNavType : NavType<OrganizationId>(isNullableAllowed = false)
     override fun put(
         bundle: SavedState,
         key: String,
-        value: OrganizationId
+        value: OrganizationId,
     ) {
         bundle.write {
             this.putString(key, value.id)
@@ -164,7 +166,7 @@ class OrganizationIdNavType : NavType<OrganizationId>(isNullableAllowed = false)
 
     override fun get(
         bundle: SavedState,
-        key: String
+        key: String,
     ): OrganizationId? {
         return bundle.read {
             this.getStringOrNull(key)?.let { parseValue(it) }

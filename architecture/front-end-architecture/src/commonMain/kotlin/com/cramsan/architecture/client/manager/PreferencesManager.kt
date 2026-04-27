@@ -21,10 +21,7 @@ import kotlinx.coroutines.flow.asSharedFlow
  * @property settingsHolder The [SettingsHolder] instance for accessing application settings.
  * @property dependencies The [ManagerDependencies] instance providing necessary dependencies.
  */
-class PreferencesManager(
-    private val settingsHolder: SettingsHolder,
-    private val dependencies: ManagerDependencies,
-) {
+class PreferencesManager(private val settingsHolder: SettingsHolder, private val dependencies: ManagerDependencies) {
     private val _modifiedKey = MutableSharedFlow<SettingKey<*>>()
     val modifiedKey: SharedFlow<SettingKey<*>>
         get() = _modifiedKey.asSharedFlow()
@@ -34,10 +31,11 @@ class PreferencesManager(
      * @param key The [SettingKey] representing the preference to update.
      * @param value The [PropertyValue] to set for the given key.
      */
-    suspend fun updatePreference(key: SettingKey<*>, value: PropertyValue) = dependencies.getOrCatch(TAG) {
-        settingsHolder.saveValue(key, value)
-        _modifiedKey.emit(key)
-    }
+    suspend fun updatePreference(key: SettingKey<*>, value: PropertyValue) =
+        dependencies.getOrCatch(TAG) {
+            settingsHolder.saveValue(key, value)
+            _modifiedKey.emit(key)
+        }
 
     /**
      * Update a String, Boolean, Int, or Long preference with the given key and value.
@@ -46,9 +44,9 @@ class PreferencesManager(
      */
     suspend fun updatePreference(
         key: SettingKey<PropertyValueType.StringType>,
-        value: String
+        value: String,
     ) = dependencies.getOrCatch(
-        TAG
+        TAG,
     ) {
         settingsHolder.saveString(key, value)
         _modifiedKey.emit(key)
@@ -61,9 +59,9 @@ class PreferencesManager(
      */
     suspend fun updatePreference(
         key: SettingKey<PropertyValueType.BooleanType>,
-        value: Boolean
+        value: Boolean,
     ) = dependencies.getOrCatch(
-        TAG
+        TAG,
     ) {
         settingsHolder.saveBoolean(key, value)
         _modifiedKey.emit(key)
@@ -74,33 +72,36 @@ class PreferencesManager(
      * @param key The [SettingKey] representing the preference to update.
      * @param value The value to set for the given key.
      */
-    suspend fun updatePreference(key: SettingKey<PropertyValueType.IntType>, value: Int) = dependencies.getOrCatch(
-        TAG
-    ) {
-        settingsHolder.saveInt(key, value)
-        _modifiedKey.emit(key)
-    }
+    suspend fun updatePreference(key: SettingKey<PropertyValueType.IntType>, value: Int) =
+        dependencies.getOrCatch(
+            TAG,
+        ) {
+            settingsHolder.saveInt(key, value)
+            _modifiedKey.emit(key)
+        }
 
     /**
      * Update a String, Boolean, Int, or Long preference with the given key and value.
      * @param key The [SettingKey] representing the preference to update.
      * @param value The value to set for the given key.
      */
-    suspend fun updatePreference(key: SettingKey<PropertyValueType.LongType>, value: Long) = dependencies.getOrCatch(
-        TAG
-    ) {
-        settingsHolder.saveLong(key, value)
-        _modifiedKey.emit(key)
-    }
+    suspend fun updatePreference(key: SettingKey<PropertyValueType.LongType>, value: Long) =
+        dependencies.getOrCatch(
+            TAG,
+        ) {
+            settingsHolder.saveLong(key, value)
+            _modifiedKey.emit(key)
+        }
 
     /**
      * Get the preference value for the given key.
      * @param key The [SettingKey] representing the preference to retrieve.
      * @return A [Result] containing the [PropertyValue] if found, or null if not set.
      */
-    suspend fun getPreferenceValue(key: SettingKey<*>): Result<PropertyValue?> = dependencies.getOrCatch(TAG) {
-        settingsHolder.getValue(key)
-    }
+    suspend fun getPreferenceValue(key: SettingKey<*>): Result<PropertyValue?> =
+        dependencies.getOrCatch(TAG) {
+            settingsHolder.getValue(key)
+        }
 
     /**
      * Get a String, Boolean, Int, or Long preference with the given key.
@@ -108,12 +109,13 @@ class PreferencesManager(
      * @return A [Result] containing the value if found, or null if not set.
      */
     suspend fun getStringPreference(
-        key: SettingKey<PropertyValueType.StringType>
-    ): Result<String?> = dependencies.getOrCatch(
-        TAG
-    ) {
-        settingsHolder.getString(key)
-    }
+        key: SettingKey<PropertyValueType.StringType>,
+    ): Result<String?> =
+        dependencies.getOrCatch(
+            TAG,
+        ) {
+            settingsHolder.getString(key)
+        }
 
     /**
      * Get a String, Boolean, Int, or Long preference with the given key.
@@ -121,50 +123,55 @@ class PreferencesManager(
      * @return A [Result] containing the value if found, or null if not set.
      */
     suspend fun getBooleanPreference(
-        key: SettingKey<PropertyValueType.BooleanType>
-    ): Result<Boolean?> = dependencies.getOrCatch(
-        TAG
-    ) {
-        settingsHolder.getBoolean(key)
-    }
+        key: SettingKey<PropertyValueType.BooleanType>,
+    ): Result<Boolean?> =
+        dependencies.getOrCatch(
+            TAG,
+        ) {
+            settingsHolder.getBoolean(key)
+        }
 
     /**
      * Get a String, Boolean, Int, or Long preference with the given key.
      * @param key The [SettingKey] representing the preference to retrieve.
      * @return A [Result] containing the value if found, or null if not set.
      */
-    suspend fun getIntPreference(key: SettingKey<PropertyValueType.IntType>): Result<Int?> = dependencies.getOrCatch(
-        TAG
-    ) {
-        settingsHolder.getInt(key)
-    }
+    suspend fun getIntPreference(key: SettingKey<PropertyValueType.IntType>): Result<Int?> =
+        dependencies.getOrCatch(
+            TAG,
+        ) {
+            settingsHolder.getInt(key)
+        }
 
     /**
      * Get a String, Boolean, Int, or Long preference with the given key.
      * @param key The [SettingKey] representing the preference to retrieve.
      * @return A [Result] containing the value if found, or null if not set.
      */
-    suspend fun getLongPreference(key: SettingKey<PropertyValueType.LongType>): Result<Long?> = dependencies.getOrCatch(
-        TAG
-    ) {
-        settingsHolder.getLong(key)
-    }
+    suspend fun getLongPreference(key: SettingKey<PropertyValueType.LongType>): Result<Long?> =
+        dependencies.getOrCatch(
+            TAG,
+        ) {
+            settingsHolder.getLong(key)
+        }
 
     /**
      * Remove a preference with the given key.
      * @param key The [SettingKey] representing the preference to remove.
      */
-    suspend fun removePreference(key: SettingKey<*>) = dependencies.getOrCatch(TAG) {
-        settingsHolder.cleanPreference(key)
-        _modifiedKey.emit(key)
-    }
+    suspend fun removePreference(key: SettingKey<*>) =
+        dependencies.getOrCatch(TAG) {
+            settingsHolder.cleanPreference(key)
+            _modifiedKey.emit(key)
+        }
 
     /**
      * Clear all preferences.
      */
-    suspend fun clearPreferences() = dependencies.getOrCatch(TAG) {
-        settingsHolder.clearAllPreferences()
-    }
+    suspend fun clearPreferences() =
+        dependencies.getOrCatch(TAG) {
+            settingsHolder.clearAllPreferences()
+        }
 
     companion object {
         const val TAG = "PreferencesManager"

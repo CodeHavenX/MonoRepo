@@ -37,8 +37,9 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TestTimeSource
 
 @OptIn(ExperimentalTime::class)
-class NotificationControllerTest : CoroutineTest(), KoinTest {
-
+class NotificationControllerTest :
+    CoroutineTest(),
+    KoinTest {
     private lateinit var testTimeSource: TestTimeSource
 
     @BeforeTest
@@ -77,293 +78,316 @@ class NotificationControllerTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `test getNotifications returns list of notifications for authenticated user`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val notifications = listOf(
-            createTestNotification(NotificationId("notif1"), userId),
-            createTestNotification(NotificationId("notif2"), userId),
-        )
+    fun `test getNotifications returns list of notifications for authenticated user`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val notifications =
+                listOf(
+                    createTestNotification(NotificationId("notif1"), userId),
+                    createTestNotification(NotificationId("notif2"), userId),
+                )
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotificationsForUser(userId) } returns Result.success(notifications)
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotificationsForUser(userId) } returns Result.success(notifications)
 
-        // Act
-        val response = client.get("notification")
+            // Act
+            val response = client.get("notification")
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.bodyAsText()
-        assertTrue(body.contains("notif1"))
-        assertTrue(body.contains("notif2"))
-        coVerify { notificationService.getNotificationsForUser(userId) }
-    }
-
-    @Test
-    fun `test getNotifications returns empty list when no notifications`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotificationsForUser(userId) } returns Result.success(emptyList())
-
-        // Act
-        val response = client.get("notification")
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.bodyAsText()
-        assertTrue(body.contains("content"))
-        assertTrue(body.contains("[]"))
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.bodyAsText()
+            assertTrue(body.contains("notif1"))
+            assertTrue(body.contains("notif2"))
+            coVerify { notificationService.getNotificationsForUser(userId) }
+        }
 
     @Test
-    fun `test getNotification returns notification when owned by user`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val notificationId = NotificationId("notif123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val notification = createTestNotification(notificationId, userId)
+    fun `test getNotifications returns empty list when no notifications`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotificationsForUser(userId) } returns Result.success(emptyList())
 
-        // Act
-        val response = client.get("notification/notif123")
+            // Act
+            val response = client.get("notification")
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.bodyAsText()
-        assertTrue(body.contains("notif123"))
-        assertTrue(body.contains("Test notification"))
-        coVerify { notificationService.getNotification(notificationId) }
-    }
-
-    @Test
-    fun `test getNotification returns 404 when notification not found`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val notificationId = NotificationId("notif123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotification(notificationId) } returns Result.success(null)
-
-        // Act
-        val response = client.get("notification/notif123")
-
-        // Assert
-        assertEquals(HttpStatusCode.NotFound, response.status)
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.bodyAsText()
+            assertTrue(body.contains("content"))
+            assertTrue(body.contains("[]"))
+        }
 
     @Test
-    fun `test getNotification returns 403 when notification belongs to another user`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val otherUserId = UserId("otherUser")
-        val notificationId = NotificationId("notif123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val notification = createTestNotification(notificationId, otherUserId)
+    fun `test getNotification returns notification when owned by user`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val notificationId = NotificationId("notif123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val notification = createTestNotification(notificationId, userId)
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
 
-        // Act
-        val response = client.get("notification/notif123")
+            // Act
+            val response = client.get("notification/notif123")
 
-        // Assert
-        assertEquals(HttpStatusCode.Forbidden, response.status)
-    }
-
-    @Test
-    fun `test markAsRead marks notification as read when owned by user`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val notificationId = NotificationId("notif123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val notification = createTestNotification(notificationId, userId)
-        val updatedNotification = createTestNotification(notificationId, userId, isRead = true)
-
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
-        coEvery { notificationService.markAsRead(notificationId) } returns Result.success(updatedNotification)
-
-        // Act
-        val response = client.post("notification/notif123")
-
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        coVerify { notificationService.markAsRead(notificationId) }
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.bodyAsText()
+            assertTrue(body.contains("notif123"))
+            assertTrue(body.contains("Test notification"))
+            coVerify { notificationService.getNotification(notificationId) }
+        }
 
     @Test
-    fun `test markAsRead returns 404 when notification not found`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val notificationId = NotificationId("notif123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+    fun `test getNotification returns 404 when notification not found`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val notificationId = NotificationId("notif123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotification(notificationId) } returns Result.success(null)
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotification(notificationId) } returns Result.success(null)
 
-        // Act
-        val response = client.post("notification/notif123")
+            // Act
+            val response = client.get("notification/notif123")
 
-        // Assert
-        assertEquals(HttpStatusCode.NotFound, response.status)
-    }
-
-    @Test
-    fun `test markAsRead returns 403 when notification belongs to another user`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val otherUserId = UserId("otherUser")
-        val notificationId = NotificationId("notif123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val notification = createTestNotification(notificationId, otherUserId)
-
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
-
-        // Act
-        val response = client.post("notification/notif123")
-
-        // Assert
-        assertEquals(HttpStatusCode.Forbidden, response.status)
-    }
+            // Assert
+            assertEquals(HttpStatusCode.NotFound, response.status)
+        }
 
     @Test
-    fun `test deleteNotification deletes notification when owned by user`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val notificationId = NotificationId("notif123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val notification = createTestNotification(notificationId, userId)
+    fun `test getNotification returns 403 when notification belongs to another user`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val otherUserId = UserId("otherUser")
+            val notificationId = NotificationId("notif123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val notification = createTestNotification(notificationId, otherUserId)
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
-        coEvery { notificationService.deleteNotification(notificationId) } returns Result.success(true)
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
 
-        // Act
-        val response = client.delete("notification/notif123")
+            // Act
+            val response = client.get("notification/notif123")
 
-        // Assert
-        assertEquals(HttpStatusCode.OK, response.status)
-        coVerify { notificationService.deleteNotification(notificationId) }
-    }
-
-    @Test
-    fun `test deleteNotification returns 404 when notification not found`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val notificationId = NotificationId("notif123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotification(notificationId) } returns Result.success(null)
-
-        // Act
-        val response = client.delete("notification/notif123")
-
-        // Assert
-        assertEquals(HttpStatusCode.NotFound, response.status)
-    }
+            // Assert
+            assertEquals(HttpStatusCode.Forbidden, response.status)
+        }
 
     @Test
-    fun `test deleteNotification returns 403 when notification belongs to another user`() = testBackEndApplication {
-        // Arrange
-        val userId = UserId("user123")
-        val otherUserId = UserId("otherUser")
-        val notificationId = NotificationId("notif123")
-        val notificationService = get<NotificationService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val notification = createTestNotification(notificationId, otherUserId)
+    fun `test markAsRead marks notification as read when owned by user`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val notificationId = NotificationId("notif123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val notification = createTestNotification(notificationId, userId)
+            val updatedNotification = createTestNotification(notificationId, userId, isRead = true)
 
-        val context = ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(
-                userInfo = mockk(),
-                userId = userId,
-            )
-        )
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
+            coEvery { notificationService.markAsRead(notificationId) } returns Result.success(updatedNotification)
 
-        // Act
-        val response = client.delete("notification/notif123")
+            // Act
+            val response = client.post("notification/notif123")
 
-        // Assert
-        assertEquals(HttpStatusCode.Forbidden, response.status)
-    }
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            coVerify { notificationService.markAsRead(notificationId) }
+        }
+
+    @Test
+    fun `test markAsRead returns 404 when notification not found`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val notificationId = NotificationId("notif123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotification(notificationId) } returns Result.success(null)
+
+            // Act
+            val response = client.post("notification/notif123")
+
+            // Assert
+            assertEquals(HttpStatusCode.NotFound, response.status)
+        }
+
+    @Test
+    fun `test markAsRead returns 403 when notification belongs to another user`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val otherUserId = UserId("otherUser")
+            val notificationId = NotificationId("notif123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val notification = createTestNotification(notificationId, otherUserId)
+
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
+
+            // Act
+            val response = client.post("notification/notif123")
+
+            // Assert
+            assertEquals(HttpStatusCode.Forbidden, response.status)
+        }
+
+    @Test
+    fun `test deleteNotification deletes notification when owned by user`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val notificationId = NotificationId("notif123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val notification = createTestNotification(notificationId, userId)
+
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
+            coEvery { notificationService.deleteNotification(notificationId) } returns Result.success(true)
+
+            // Act
+            val response = client.delete("notification/notif123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            coVerify { notificationService.deleteNotification(notificationId) }
+        }
+
+    @Test
+    fun `test deleteNotification returns 404 when notification not found`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val notificationId = NotificationId("notif123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotification(notificationId) } returns Result.success(null)
+
+            // Act
+            val response = client.delete("notification/notif123")
+
+            // Assert
+            assertEquals(HttpStatusCode.NotFound, response.status)
+        }
+
+    @Test
+    fun `test deleteNotification returns 403 when notification belongs to another user`() =
+        testBackEndApplication {
+            // Arrange
+            val userId = UserId("user123")
+            val otherUserId = UserId("otherUser")
+            val notificationId = NotificationId("notif123")
+            val notificationService = get<NotificationService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val notification = createTestNotification(notificationId, otherUserId)
+
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { notificationService.getNotification(notificationId) } returns Result.success(notification)
+
+            // Act
+            val response = client.delete("notification/notif123")
+
+            // Assert
+            assertEquals(HttpStatusCode.Forbidden, response.status)
+        }
 }

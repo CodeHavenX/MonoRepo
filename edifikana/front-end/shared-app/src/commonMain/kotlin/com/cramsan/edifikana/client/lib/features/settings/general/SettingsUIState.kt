@@ -6,12 +6,11 @@ import com.cramsan.ui.components.themetoggle.SelectedTheme
 /**
  * UI State for the Settings screen.
  */
-data class SettingsUIState(
-    val selectedTheme: SelectedTheme,
-) : ViewModelUIState {
+data class SettingsUIState(val selectedTheme: SelectedTheme) : ViewModelUIState {
     companion object {
-        val Initial = SettingsUIState(
-            selectedTheme = SelectedTheme.SYSTEM_DEFAULT,
-        )
+        val Initial =
+            SettingsUIState(
+                selectedTheme = SelectedTheme.SYSTEM_DEFAULT,
+            )
     }
 }

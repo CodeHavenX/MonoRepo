@@ -13,7 +13,6 @@ import com.cramsan.framework.halt.R
  * [HaltUtilDelegate] implementation for the debug target.
  */
 class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
-
     private var shouldStop = true
 
     override fun stopThread() {
@@ -22,7 +21,7 @@ class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
         displayNotification()
 
         while (shouldStop) {
-            Thread.sleep(sleepTime)
+            Thread.sleep(SLEEP_TIME)
         }
     }
 
@@ -35,21 +34,25 @@ class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
     }
 
     private fun getStacktrace() =
-        Thread.currentThread().stackTrace
+        Thread
+            .currentThread()
+            .stackTrace
             .drop(STACK_TRACE_HEAD_EXTRA_LINES)
             .joinToString(separator = "\n") { "at ${it.methodName}(${it.fileName}:${it.lineNumber})" }
 
     private fun displayNotification() {
         createNotificationChannel()
-        val builder = NotificationCompat.Builder(appContext, CHANNEL_ID)
-            .setContentTitle("Thread has been halted")
-            .setSmallIcon(R.drawable.debug_icon)
-            .setContentText(getStacktrace())
-            .setStyle(
-                NotificationCompat.BigTextStyle()
-                    .bigText(getStacktrace()),
-            )
-            .setPriority(NotificationCompat.PRIORITY_MAX)
+        val builder =
+            NotificationCompat
+                .Builder(appContext, CHANNEL_ID)
+                .setContentTitle("Thread has been halted")
+                .setSmallIcon(R.drawable.debug_icon)
+                .setContentText(getStacktrace())
+                .setStyle(
+                    NotificationCompat
+                        .BigTextStyle()
+                        .bigText(getStacktrace()),
+                ).setPriority(NotificationCompat.PRIORITY_MAX)
         with(NotificationManagerCompat.from(appContext)) {
             // NotificationId is a unique int for each notification that you must define
             // Setting notification ID to MAX_VALUE as to reduce the risk
@@ -65,9 +68,10 @@ class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
             val name = appContext.getString(R.string.halt_util_channel_name)
             val descriptionText = appContext.getString(R.string.halt_util_channel_description)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
+            val channel =
+                NotificationChannel(CHANNEL_ID, name, importance).apply {
+                    description = descriptionText
+                }
             // Register the channel with the system
             val notificationManager: NotificationManager =
                 appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -77,7 +81,7 @@ class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
 
     companion object {
         private const val STACK_TRACE_HEAD_EXTRA_LINES = 90
-        private const val sleepTime = 1000L
+        private const val SLEEP_TIME = 1000L
         private const val CHANNEL_ID = "com.cramsan.framework.halt.implementation"
     }
 }

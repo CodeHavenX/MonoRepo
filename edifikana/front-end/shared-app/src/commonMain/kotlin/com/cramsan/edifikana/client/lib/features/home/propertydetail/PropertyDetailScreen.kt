@@ -49,11 +49,11 @@ import edifikana_lib.add_property_screen_property_name_label
 import edifikana_lib.edifikana_string_cancel
 import edifikana_lib.edifikana_string_delete
 import edifikana_lib.edifikana_string_save
+import edifikana_lib.edifikana_string_upload
 import edifikana_lib.property_detail_screen_delete_dialog_message
 import edifikana_lib.property_detail_screen_delete_label
 import edifikana_lib.property_detail_screen_edit_title
 import edifikana_lib.property_detail_screen_title
-import edifikana_lib.edifikana_string_upload
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -73,9 +73,7 @@ fun PropertyDetailScreen(
 
     val dialogController = rememberDialogController()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize(destination.propertyId)
     }
@@ -83,14 +81,15 @@ fun PropertyDetailScreen(
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
             PropertyDetailEvent.OpenImageSelector -> {
-                val modal = ImageSelectorBottomsheet(
-                    label = "Select Property Icon",
-                    options = PropertyIconOptions.getOptionsWithUpload(),
-                    selectedOption = uiState.selectedIcon,
-                    onOptionSelected = { option ->
-                        viewModel.selectPhoto(option)
-                    },
-                )
+                val modal =
+                    ImageSelectorBottomsheet(
+                        label = "Select Property Icon",
+                        options = PropertyIconOptions.getOptionsWithUpload(),
+                        selectedOption = uiState.selectedIcon,
+                        onOptionSelected = { option ->
+                            viewModel.selectPhoto(option)
+                        },
+                    )
                 dialogController.showDialog(modal)
             }
         }
@@ -101,10 +100,14 @@ fun PropertyDetailScreen(
             is EdifikanaWindowDelegatedEvent.HandleReceivedImage -> {
                 viewModel.handleReceivedImages(listOf(event.uri))
             }
+
             is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
                 viewModel.handleReceivedImages(event.uris)
             }
-            else -> Unit
+
+            else -> {
+                Unit
+            }
         }
     }
 
@@ -146,7 +149,14 @@ internal fun PropertyDetailContent(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = if (content.isEditMode) stringResource(Res.string.property_detail_screen_edit_title) else stringResource(Res.string.property_detail_screen_title),
+                title =
+                if (content.isEditMode) {
+                    stringResource(
+                        Res.string.property_detail_screen_edit_title,
+                    )
+                } else {
+                    stringResource(Res.string.property_detail_screen_title)
+                },
                 onNavigationIconSelected = onBackSelected,
                 content = {
                     if (!content.isEditMode) {
@@ -177,9 +187,13 @@ internal fun PropertyDetailContent(
                         modifier = sectionModifier,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(stringResource(Res.string.add_property_screen_property_icon_label), fontWeight = FontWeight.Bold)
-                        val iconOption = PropertyIconOptions.fromImageUrl(content.imageUrl)
-                            ?: PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
+                        Text(
+                            stringResource(Res.string.add_property_screen_property_icon_label),
+                            fontWeight = FontWeight.Bold,
+                        )
+                        val iconOption =
+                            PropertyIconOptions.fromImageUrl(content.imageUrl)
+                                ?: PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
                         iconOption?.let { option ->
                             EdifikanaImage(
                                 imageSource = option.imageSource,
@@ -199,7 +213,10 @@ internal fun PropertyDetailContent(
                             label = stringResource(Res.string.add_property_screen_property_name_label),
                         )
                     } else {
-                        Text(stringResource(Res.string.add_property_screen_property_name_label), fontWeight = FontWeight.Bold)
+                        Text(
+                            stringResource(Res.string.add_property_screen_property_name_label),
+                            fontWeight = FontWeight.Bold,
+                        )
                         Text(
                             text = content.name,
                             modifier = Modifier.padding(vertical = 8.dp),
@@ -228,7 +245,14 @@ internal fun PropertyDetailContent(
                             label = stringResource(Res.string.add_property_screen_property_icon_label),
                             selectedOption = content.selectedIcon,
                             onOpenSelectorSelected = onOpenSelectorSelected,
-                            placeholder = if (content.isUploading) stringResource(Res.string.edifikana_string_upload) else stringResource(Res.string.add_property_screen_property_icon_placeholder),
+                            placeholder =
+                            if (content.isUploading) {
+                                stringResource(
+                                    Res.string.edifikana_string_upload,
+                                )
+                            } else {
+                                stringResource(Res.string.add_property_screen_property_icon_placeholder)
+                            },
                         )
 
                         // Show upload error if any
@@ -243,7 +267,8 @@ internal fun PropertyDetailContent(
                     }
                 }
             },
-            buttonContent = if (content.isEditMode) {
+            buttonContent =
+            if (content.isEditMode) {
                 { buttonModifier ->
                     EdifikanaPrimaryButton(
                         text = stringResource(Res.string.edifikana_string_save),
@@ -262,7 +287,7 @@ internal fun PropertyDetailContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading || content.isUploading)
-            }
+            },
         )
     }
 
@@ -276,7 +301,7 @@ internal fun PropertyDetailContent(
                     onClick = {
                         showDeleteDialog = false
                         onDeleteProperty()
-                    }
+                    },
                 ) {
                     Text(stringResource(Res.string.edifikana_string_delete))
                 }
@@ -285,7 +310,7 @@ internal fun PropertyDetailContent(
                 TextButton(onClick = { showDeleteDialog = false }) {
                     Text(stringResource(Res.string.edifikana_string_cancel))
                 }
-            }
+            },
         )
     }
 }

@@ -5,10 +5,7 @@ import kotlin.math.pow
 /**
  * Manager that handles quechua related content generation.
  */
-class QuechuaManager(
-    private val verbTranslationRepository: VerbTranslationRepository,
-) {
-
+class QuechuaManager(private val verbTranslationRepository: VerbTranslationRepository) {
     /**
      * Generate a random verb conjugation content.
      */
@@ -33,7 +30,7 @@ class QuechuaManager(
         val translation = number.toYupay()
         return Content(
             translated = translation,
-            original = number.toString()
+            original = number.toString(),
         )
     }
 }

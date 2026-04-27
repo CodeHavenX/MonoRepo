@@ -30,16 +30,18 @@ fun EdifikanaAvatar(
     size: Dp = 120.dp,
 ) {
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .size(size)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surfaceContainerHighest),
     ) {
-        val imageSource = if (imageUrl != null) {
-            ImageSource.Url(imageUrl)
-        } else {
-            ImageSource.None
-        }
+        val imageSource =
+            if (imageUrl != null) {
+                ImageSource.Url(imageUrl)
+            } else {
+                ImageSource.None
+            }
         EdifikanaImage(
             imageSource = imageSource,
             contentDescription = contentDescription,

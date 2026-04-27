@@ -12,6 +12,4 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class GetAllUsersQueryParams(
-    val orgId: OrganizationId,
-) : QueryParam
+data class GetAllUsersQueryParams(val orgId: OrganizationId) : QueryParam

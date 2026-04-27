@@ -40,77 +40,78 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 @OptIn(SupabaseExperimental::class)
-internal val ServiceModule = module {
+internal val ServiceModule =
+    module {
 
-    single {
-        val settingsHolder: SettingsHolder = get()
-        val supabaseUrl = settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideUrl).orEmpty().trim()
-        val supabaseKey = settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideKey).orEmpty().trim()
+        single {
+            val settingsHolder: SettingsHolder = get()
+            val supabaseUrl = settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideUrl).orEmpty().trim()
+            val supabaseKey = settingsHolder.getString(EdifikanaSettingKey.SupabaseOverrideKey).orEmpty().trim()
 
-        createSupabaseClient(
-            supabaseUrl = supabaseUrl,
-            supabaseKey = supabaseKey,
-        ) {
-            install(Storage)
-            install(Auth) {
-                sessionManager = SettingsSessionManager(key = "$supabaseUrl-client")
+            createSupabaseClient(
+                supabaseUrl = supabaseUrl,
+                supabaseKey = supabaseKey,
+            ) {
+                install(Storage)
+                install(Auth) {
+                    sessionManager = SettingsSessionManager(key = "$supabaseUrl-client")
+                }
+                install(ComposeAuth) {
+                    googleNativeLogin(
+                        serverClientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID,
+                    )
+                    appleNativeLogin()
+                }
+                install(Coil3Integration)
             }
-            install(ComposeAuth) {
-                googleNativeLogin(
-                    serverClientId = BuildConfig.GOOGLE_OAUTH_CLIENT_ID
-                )
-                appleNativeLogin()
-            }
-            install(Coil3Integration)
+        }
+
+        single<Coil3Provider> {
+            Coil3Provider(get<Coil3Integration>())
+        }
+
+        single<Auth> {
+            get<SupabaseClient>().auth
+        }
+
+        single<ComposeAuth> {
+            get<SupabaseClient>().composeAuth
+        }
+
+        single<Storage> {
+            get<SupabaseClient>().storage
+        }
+
+        single<Coil3Integration> {
+            get<SupabaseClient>().coil3
+        }
+
+        singleOf(::AuthServiceImpl) {
+            bind<AuthService>()
+        }
+        singleOf(::EventLogServiceImpl) {
+            bind<EventLogService>()
+        }
+        singleOf(::PropertyServiceImpl) {
+            bind<PropertyService>()
+        }
+        singleOf(::StorageServiceImpl) {
+            bind<StorageService>()
+        }
+        singleOf(::TimeCardServiceImpl) {
+            bind<TimeCardService>()
+        }
+        singleOf(::EmployeeServiceImpl) {
+            bind<EmployeeService>()
+        }
+        singleOf(::OrganizationServiceImpl) {
+            bind<OrganizationService>()
+        }
+        singleOf(::NotificationServiceImpl) {
+            bind<NotificationService>()
+        }
+
+        single {
+            AuthRequestPlugin(get())
         }
     }
-
-    single<Coil3Provider> {
-        Coil3Provider(get<Coil3Integration>())
-    }
-
-    single<Auth> {
-        get<SupabaseClient>().auth
-    }
-
-    single<ComposeAuth> {
-        get<SupabaseClient>().composeAuth
-    }
-
-    single<Storage> {
-        get<SupabaseClient>().storage
-    }
-
-    single<Coil3Integration> {
-        get<SupabaseClient>().coil3
-    }
-
-    singleOf(::AuthServiceImpl) {
-        bind<AuthService>()
-    }
-    singleOf(::EventLogServiceImpl) {
-        bind<EventLogService>()
-    }
-    singleOf(::PropertyServiceImpl) {
-        bind<PropertyService>()
-    }
-    singleOf(::StorageServiceImpl) {
-        bind<StorageService>()
-    }
-    singleOf(::TimeCardServiceImpl) {
-        bind<TimeCardService>()
-    }
-    singleOf(::EmployeeServiceImpl) {
-        bind<EmployeeService>()
-    }
-    singleOf(::OrganizationServiceImpl) {
-        bind<OrganizationService>()
-    }
-    singleOf(::NotificationServiceImpl) {
-        bind<NotificationService>()
-    }
-
-    single {
-        AuthRequestPlugin(get())
-    }
-}

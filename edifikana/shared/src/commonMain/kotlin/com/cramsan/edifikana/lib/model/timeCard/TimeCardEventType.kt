@@ -8,8 +8,8 @@ enum class TimeCardEventType {
     CLOCK_OUT,
     OTHER,
     ;
-    companion object {
 
+    companion object {
         /**
          * Converts a string to a TimeCardEventType.
          */

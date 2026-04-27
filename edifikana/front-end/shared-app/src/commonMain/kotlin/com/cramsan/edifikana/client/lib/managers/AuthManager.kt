@@ -17,37 +17,37 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Manager for authentication.
  */
-class AuthManager(
-    private val dependencies: ManagerDependencies,
-    private val authService: AuthService,
-) {
+class AuthManager(private val dependencies: ManagerDependencies, private val authService: AuthService) {
     /**
      * Signs in the user with the given email and password.
      */
-    suspend fun isSignedIn(): Result<Boolean> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "isSignedIn")
-        authService.isSignedIn().getOrThrow()
-    }
+    suspend fun isSignedIn(): Result<Boolean> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "isSignedIn")
+            authService.isSignedIn().getOrThrow()
+        }
 
     /**
      * Signs in the user with the given email and password.
      */
-    suspend fun signInWithPassword(email: String, password: String): Result<UserModel> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "signIn")
-        val userModel = authService.signInWithPassword(email, password).getOrThrow()
+    suspend fun signInWithPassword(email: String, password: String): Result<UserModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "signIn")
+            val userModel = authService.signInWithPassword(email, password).getOrThrow()
 
-        userModel
-    }
+            userModel
+        }
 
     /**
      * Sends an OTP code email to the user with the provided [email] address.
      */
     suspend fun sendOtpCode(
-        email: String
-    ): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "sending OTP code email")
-        authService.sendOtpEmail(email).getOrThrow()
-    }
+        email: String,
+    ): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "sending OTP code email")
+            authService.sendOtpEmail(email).getOrThrow()
+        }
 
     /**
      * Sign in the user with a magic link that contains the user's [email] and a [hashToken] to verify.
@@ -56,12 +56,13 @@ class AuthManager(
         email: String,
         hashToken: String,
         createUser: Boolean,
-    ): Result<UserModel> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "signing in with OTP code")
-        val userModel = authService.signInWithOtp(email, hashToken, createUser).getOrThrow()
+    ): Result<UserModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "signing in with OTP code")
+            val userModel = authService.signInWithOtp(email, hashToken, createUser).getOrThrow()
 
-        userModel
-    }
+            userModel
+        }
 
     /**
      * Signs up the user with the given email and password.
@@ -71,36 +72,40 @@ class AuthManager(
         phoneNumber: String,
         firstName: String,
         lastName: String,
-    ): Result<UserModel> = dependencies.getOrCatch(
-        TAG
-    ) {
-        logI(TAG, "signUp")
-        authService.signUp(email, phoneNumber, firstName, lastName).getOrThrow()
-    }
+    ): Result<UserModel> =
+        dependencies.getOrCatch(
+            TAG,
+        ) {
+            logI(TAG, "signUp")
+            authService.signUp(email, phoneNumber, firstName, lastName).getOrThrow()
+        }
 
     /**
      * Signs out the user.
      */
-    suspend fun signOut(): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "signOut")
-        authService.signOut()
-    }
+    suspend fun signOut(): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "signOut")
+            authService.signOut()
+        }
 
     /**
      * Gets the current user.
      */
-    suspend fun getUser(): Result<UserModel> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getUser")
-        authService.getUser().getOrThrow()
-    }
+    suspend fun getUser(): Result<UserModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getUser")
+            authService.getUser().getOrThrow()
+        }
 
     /**
      * Gets the users for the given organization.
      */
-    suspend fun getUsers(organizationId: OrganizationId): Result<List<UserModel>> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getUsers for organizationId: $organizationId")
-        authService.getUsersByOrganization(organizationId).getOrThrow()
-    }
+    suspend fun getUsers(organizationId: OrganizationId): Result<List<UserModel>> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getUsers for organizationId: $organizationId")
+            authService.getUsersByOrganization(organizationId).getOrThrow()
+        }
 
     /**
      * Gets the active user as an observable flow.
@@ -111,18 +116,20 @@ class AuthManager(
      * Verifies the permissions of the library. This is used to ensure that we
      * have the right permissions and also to prevent using admin credentials.
      */
-    suspend fun verifyPermissions() = dependencies.getOrCatch(TAG) {
-        logI(TAG, "verifyPermissions")
-        authService.verifyPermissions().getOrThrow()
-    }
+    suspend fun verifyPermissions() =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "verifyPermissions")
+            authService.verifyPermissions().getOrThrow()
+        }
 
     /**
      * Check if a user exists with the provided [email].
      */
-    suspend fun checkUserExists(email: String): Result<Boolean> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "checkUserExists")
-        authService.checkUserExists(email).getOrThrow()
-    }
+    suspend fun checkUserExists(email: String): Result<Boolean> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "checkUserExists")
+            authService.checkUserExists(email).getOrThrow()
+        }
 
     /**
      * Update the user information with the provided [firstName], [lastName], [email], and [phoneNumber].
@@ -132,15 +139,17 @@ class AuthManager(
         lastName: String?,
         email: String?,
         phoneNumber: String?,
-    ): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "updateUser")
-        authService.updateUser(
-            firstName = firstName,
-            lastName = lastName,
-            email = email,
-            phoneNumber = phoneNumber
-        ).getOrThrow()
-    }
+    ): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "updateUser")
+            authService
+                .updateUser(
+                    firstName = firstName,
+                    lastName = lastName,
+                    email = email,
+                    phoneNumber = phoneNumber,
+                ).getOrThrow()
+        }
 
     /**
      * Update the current user's password and set it to [newPassword]. If a password is already set, then
@@ -150,15 +159,17 @@ class AuthManager(
     suspend fun changePassword(
         currentPassword: SecureString,
         newPassword: SecureString,
-    ): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "changePassword")
-        val email = authService.getUser().getOrThrow().email
-        authService.changePassword(
-            email,
-            currentPassword,
-            newPassword,
-        ).getOrThrow()
-    }
+    ): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "changePassword")
+            val email = authService.getUser().getOrThrow().email
+            authService
+                .changePassword(
+                    email,
+                    currentPassword,
+                    newPassword,
+                ).getOrThrow()
+        }
 
     /**
      * Invite a employee with the specified [role] to the organization.
@@ -169,36 +180,40 @@ class AuthManager(
         role: UserRole,
     ) = dependencies.getOrCatch(TAG) {
         logI(TAG, "inviteEmployee")
-        authService.inviteEmployee(
-            email = email,
-            organizationId = orgId,
-            role = role,
-        ).getOrThrow()
+        authService
+            .inviteEmployee(
+                email = email,
+                organizationId = orgId,
+                role = role,
+            ).getOrThrow()
     }
 
     /**
      * Get the invites for the given organization.
      */
-    suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "getInvitedEmployees for organizationId: $organizationId")
-        authService.getInvites(organizationId).getOrThrow()
-    }
+    suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getInvitedEmployees for organizationId: $organizationId")
+            authService.getInvites(organizationId).getOrThrow()
+        }
 
     /**
      * Accepts an invitation.
      */
-    suspend fun acceptInvite(inviteId: InviteId): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "acceptInvite: $inviteId")
-        authService.acceptInvite(inviteId).getOrThrow()
-    }
+    suspend fun acceptInvite(inviteId: InviteId): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "acceptInvite: $inviteId")
+            authService.acceptInvite(inviteId).getOrThrow()
+        }
 
     /**
      * Declines an invitation.
      */
-    suspend fun declineInvite(inviteId: InviteId): Result<Unit> = dependencies.getOrCatch(TAG) {
-        logI(TAG, "declineInvite: $inviteId")
-        authService.declineInvite(inviteId).getOrThrow()
-    }
+    suspend fun declineInvite(inviteId: InviteId): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "declineInvite: $inviteId")
+            authService.declineInvite(inviteId).getOrThrow()
+        }
 
     companion object {
         private const val TAG = "AuthManager"

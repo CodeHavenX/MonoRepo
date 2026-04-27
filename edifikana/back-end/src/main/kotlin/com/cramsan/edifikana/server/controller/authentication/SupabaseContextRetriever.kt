@@ -13,14 +13,12 @@ import io.ktor.server.application.ApplicationCall
 /**
  * A [ContextRetriever] that retrieves the client context from a Supabase auth token.
  */
-class SupabaseContextRetriever(
-    private val auth: Auth,
-) : ContextRetriever<SupabaseContextPayload> {
-
+class SupabaseContextRetriever(private val auth: Auth) : ContextRetriever<SupabaseContextPayload> {
     override suspend fun getContext(applicationCall: ApplicationCall): ClientContext<SupabaseContextPayload> {
-        val headerMap = applicationCall.request.headers.entries().associate {
-            it.key to it.value
-        }
+        val headerMap =
+            applicationCall.request.headers.entries().associate {
+                it.key to it.value
+            }
 
         val token = headerMap[HEADER_TOKEN_AUTH]?.firstOrNull()
 
@@ -29,19 +27,20 @@ class SupabaseContextRetriever(
             return ClientContext.UnauthenticatedClientContext()
         }
 
-        val user = try {
-            auth.retrieveUser(token)
-        } catch (e: Exception) {
-            logW(TAG, "Error retrieving user from Supabase token: ${e.message}")
-            return ClientContext.UnauthenticatedClientContext()
-        }
+        val user =
+            try {
+                auth.retrieveUser(token)
+            } catch (e: Exception) {
+                logW(TAG, "Error retrieving user from Supabase token: ${e.message}")
+                return ClientContext.UnauthenticatedClientContext()
+            }
         assertNull(auth.currentUserOrNull(), TAG, "Library cannot sign in user")
 
         return ClientContext.AuthenticatedClientContext(
             SupabaseContextPayload(
                 userInfo = user,
                 userId = UserId(user.id),
-            )
+            ),
         )
     }
 

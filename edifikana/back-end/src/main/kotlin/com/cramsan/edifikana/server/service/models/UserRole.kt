@@ -13,9 +13,10 @@ enum class UserRole(val level: Int) {
     MANAGER(30),
     EMPLOYEE(40),
     USER(50),
-    UNAUTHORIZED(1000);
-    companion object {
+    UNAUTHORIZED(1000),
+    ;
 
+    companion object {
         /**
          * Converts a string value to a UserRole.
          */

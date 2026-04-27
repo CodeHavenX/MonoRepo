@@ -16,17 +16,18 @@ import org.koin.dsl.module
 /**
  * Koin module that registers all screen ViewModels.
  */
-internal val ViewModelModule = module {
-    scope<String> {
-        viewModelOf(::SplashViewModel)
-        viewModelOf(::SignInViewModel)
-        viewModelOf(::SignUpViewModel)
-        viewModelOf(::FlyerListViewModel)
-        viewModelOf(::FlyerDetailViewModel)
-        viewModelOf(::FlyerEditViewModel)
-        viewModelOf(::MyFlyersViewModel)
-        viewModelOf(::ArchiveViewModel)
-        viewModelOf(::ModerationQueueViewModel)
-        viewModelOf(::MainMenuViewModel)
+internal val ViewModelModule =
+    module {
+        scope<String> {
+            viewModelOf(::SplashViewModel)
+            viewModelOf(::SignInViewModel)
+            viewModelOf(::SignUpViewModel)
+            viewModelOf(::FlyerListViewModel)
+            viewModelOf(::FlyerDetailViewModel)
+            viewModelOf(::FlyerEditViewModel)
+            viewModelOf(::MyFlyersViewModel)
+            viewModelOf(::ArchiveViewModel)
+            viewModelOf(::ModerationQueueViewModel)
+            viewModelOf(::MainMenuViewModel)
+        }
     }
-}

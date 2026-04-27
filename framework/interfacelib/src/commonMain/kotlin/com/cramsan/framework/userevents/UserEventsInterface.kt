@@ -4,7 +4,6 @@ package com.cramsan.framework.userevents
  * Module to record events around user engagement.
  */
 interface UserEventsInterface {
-
     /**
      * Initialize the module
      */

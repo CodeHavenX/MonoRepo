@@ -60,33 +60,34 @@ class OtpValidationViewModel(
         }
 
         viewModelScope.launch {
-            auth.signInWithOtp(
-                email,
-                otpToken,
-                uiState.value.accountCreationFlow,
-            ).onFailure {
-                logW(TAG, "signInWithOtp failed: ${it.message}")
+            auth
+                .signInWithOtp(
+                    email,
+                    otpToken,
+                    uiState.value.accountCreationFlow,
+                ).onFailure {
+                    logW(TAG, "signInWithOtp failed: ${it.message}")
 
-                emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(getErrorMessage(it)))
-            }.onSuccess {
-                val organizations = organizationManager.getOrganizations().getOrNull()
+                    emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(getErrorMessage(it)))
+                }.onSuccess {
+                    val organizations = organizationManager.getOrganizations().getOrNull()
 
-                if (organizations.isNullOrEmpty()) {
-                    emitWindowEvent(
-                        EdifikanaWindowsEvent.NavigateToScreen(
-                            AuthDestination.SelectOrgDestination,
-                            clearTop = true,
+                    if (organizations.isNullOrEmpty()) {
+                        emitWindowEvent(
+                            EdifikanaWindowsEvent.NavigateToScreen(
+                                AuthDestination.SelectOrgDestination,
+                                clearTop = true,
+                            ),
                         )
-                    )
-                } else {
-                    emitWindowEvent(
-                        EdifikanaWindowsEvent.NavigateToNavGraph(
-                            EdifikanaNavGraphDestination.HomeNavGraphDestination,
-                            clearTop = true,
+                    } else {
+                        emitWindowEvent(
+                            EdifikanaWindowsEvent.NavigateToNavGraph(
+                                EdifikanaNavGraphDestination.HomeNavGraphDestination,
+                                clearTop = true,
+                            ),
                         )
-                    )
+                    }
                 }
-            }
         }
     }
 
@@ -100,7 +101,7 @@ class OtpValidationViewModel(
             updateUiState {
                 it.copy(
                     otpCode = sanitizedText,
-                    enabledContinueButton = sanitizedText.length == uiState.value.otpLength
+                    enabledContinueButton = sanitizedText.length == uiState.value.otpLength,
                 )
             }
         }
@@ -113,7 +114,7 @@ class OtpValidationViewModel(
         logD(TAG, "navigateBack called")
         viewModelScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack
+                EdifikanaWindowsEvent.NavigateBack,
             )
         }
     }
@@ -123,10 +124,13 @@ class OtpValidationViewModel(
      */
     private suspend fun getErrorMessage(exception: Throwable): String {
         return when (exception) {
-            is ClientRequestExceptions.UnauthorizedException ->
+            is ClientRequestExceptions.UnauthorizedException -> {
                 "OTP code is not valid. Please try again."
+            }
 
-            else -> stringProvider.getString(Res.string.error_message_unexpected_error)
+            else -> {
+                stringProvider.getString(Res.string.error_message_unexpected_error)
+            }
         }
     }
 

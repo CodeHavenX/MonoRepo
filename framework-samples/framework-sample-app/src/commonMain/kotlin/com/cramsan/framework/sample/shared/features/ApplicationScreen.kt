@@ -72,20 +72,25 @@ private fun handleApplicationEvent(
             }
             navController.navigate(event.destination)
         }
+
         is SampleWindowEvent.NavigateToScreen -> {
             navController.navigate(event.destination)
         }
+
         is SampleWindowEvent.NavigateBack -> {
             navController.popBackStack()
         }
+
         is SampleWindowEvent.CloseNavGraph -> {
-            val currentNavGraph = navController.currentBackStack.value.reversed().find {
-                it.destination.navigatorName == "navigation"
-            }
+            val currentNavGraph =
+                navController.currentBackStack.value.reversed().find {
+                    it.destination.navigatorName == "navigation"
+                }
             currentNavGraph?.destination?.route?.let {
                 navController.popBackStack(it, inclusive = true)
             }
         }
+
         is SampleWindowEvent.ShowSnackbar -> {
             scope.launch {
                 handleSnackbarEvent(
@@ -107,11 +112,12 @@ private suspend fun handleSnackbarEvent(
     onResult: (SnackbarResult) -> Unit,
 ) {
     snackbarHostState.currentSnackbarData?.dismiss()
-    val result = snackbarHostState
-        .showSnackbar(
-            message = event.message,
-            duration = SnackbarDuration.Short,
-        )
+    val result =
+        snackbarHostState
+            .showSnackbar(
+                message = event.message,
+                duration = SnackbarDuration.Short,
+            )
     onResult(result)
 }
 

@@ -10,7 +10,6 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 sealed class AccountDestination : Destination {
-
     /**
      * A class representing navigating to the account screen within the account nav graph.
      */

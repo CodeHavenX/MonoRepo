@@ -84,9 +84,7 @@ fun rememberDialogController(): DialogController {
  *
  * @param state The initial visibility state of the dialog.
  */
-abstract class Dialog(
-    val state: MutableTransitionState<Boolean> = MutableTransitionState(false)
-) {
+abstract class Dialog(val state: MutableTransitionState<Boolean> = MutableTransitionState(false)) {
     private val _animationStarted = mutableStateOf(false)
 
     /**

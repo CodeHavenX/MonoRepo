@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.lib.model.user
 
 import kotlinx.serialization.SerialName
+
 /**
  * Enum representing a user's role in an organization for network transport.
  */

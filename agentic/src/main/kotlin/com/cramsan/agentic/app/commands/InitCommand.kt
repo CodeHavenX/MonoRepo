@@ -1,8 +1,5 @@
 package com.cramsan.agentic.app.commands
 
-import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.option
 import com.cramsan.agentic.core.AgenticConfig
 import com.cramsan.agentic.core.PlanningConfig
 import com.cramsan.agentic.core.VcsProviderConfig
@@ -12,6 +9,9 @@ import com.cramsan.agentic.core.defaultReviewers
 import com.cramsan.agentic.input.DefaultScaffolder
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.option
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.nio.file.Files
@@ -29,7 +29,6 @@ private const val TAG = "InitCommand"
  * and the docs in `.agentic/docs/` before proceeding to `agentic plan`.
  */
 class InitCommand : CliktCommand(name = "init", help = "Scaffold input docs and write default config.json") {
-
     private val outputDir by option("--dir", help = "Output directory for docs").default(".agentic")
 
     override fun run() {
@@ -48,16 +47,21 @@ class InitCommand : CliktCommand(name = "init", help = "Scaffold input docs and 
         val scaffolder = DefaultScaffolder(defaultInputDocuments(), defaultReviewers(), defaultWorkflow.stages)
         scaffolder.scaffold(docsDir)
 
-        val json = Json { prettyPrint = true; encodeDefaults = true }
+        val json =
+            Json {
+                prettyPrint = true
+                encodeDefaults = true
+            }
 
         // Write application config
         logD(TAG, "Building default AgenticConfig")
-        val config = AgenticConfig(
-            agentPoolSize = 2,
-            baseBranch = "main",
-            docsDir = docsDir.toString(),
-            vcsProvider = VcsProviderConfig.GitHub(owner = "your-org", repo = "your-repo"),
-        )
+        val config =
+            AgenticConfig(
+                agentPoolSize = 2,
+                baseBranch = "main",
+                docsDir = docsDir.toString(),
+                vcsProvider = VcsProviderConfig.GitHub(owner = "your-org", repo = "your-repo"),
+            )
         val configJson = json.encodeToString(config)
         val configPath = dir.resolve("config.json")
         logI(TAG, "Writing config to: $configPath")

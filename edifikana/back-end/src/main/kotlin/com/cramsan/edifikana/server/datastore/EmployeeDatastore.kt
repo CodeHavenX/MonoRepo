@@ -11,7 +11,6 @@ import com.cramsan.edifikana.server.service.models.Employee
  * Interface for interacting with the employee database.
  */
 interface EmployeeDatastore {
-
     /**
      * Creates a new employee member with the given details. Returns the [Result] of the operation with the created [Employee].
      */

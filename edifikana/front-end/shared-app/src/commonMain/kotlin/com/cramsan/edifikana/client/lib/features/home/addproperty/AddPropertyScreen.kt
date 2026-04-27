@@ -31,7 +31,6 @@ import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
 import edifikana_lib.add_property_screen_address_label
 import edifikana_lib.add_property_screen_address_placeholder
-import edifikana_lib.add_property_screen_property_icon_label
 import edifikana_lib.add_property_screen_property_icon_placeholder
 import edifikana_lib.add_property_screen_property_name_label
 import edifikana_lib.add_property_screen_property_name_placeholder
@@ -57,9 +56,7 @@ fun AddPropertyScreen(
 
     val dialogController = rememberDialogController()
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize(destination.orgId)
     }
@@ -73,14 +70,15 @@ fun AddPropertyScreen(
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
             AddPropertyEvent.OpenImageSelector -> {
-                val modal = ImageSelectorBottomsheet(
-                    label = "Select Property Icon",
-                    options = PropertyIconOptions.getOptionsWithUpload(),
-                    selectedOption = uiState.selectedIcon,
-                    onOptionSelected = { option ->
-                        viewModel.selectPhoto(option)
-                    },
-                )
+                val modal =
+                    ImageSelectorBottomsheet(
+                        label = "Select Property Icon",
+                        options = PropertyIconOptions.getOptionsWithUpload(),
+                        selectedOption = uiState.selectedIcon,
+                        onOptionSelected = { option ->
+                            viewModel.selectPhoto(option)
+                        },
+                    )
                 dialogController.showDialog(modal)
             }
         }
@@ -91,10 +89,14 @@ fun AddPropertyScreen(
             is EdifikanaWindowDelegatedEvent.HandleReceivedImage -> {
                 viewModel.handleReceivedImages(listOf(event.uri))
             }
+
             is EdifikanaWindowDelegatedEvent.HandleReceivedImages -> {
                 viewModel.handleReceivedImages(event.uris)
             }
-            else -> Unit
+
+            else -> {
+                Unit
+            }
         }
     }
 
@@ -155,11 +157,13 @@ internal fun AddPropertyContent(
                 EdifikanaImageSelector(
                     label = "Property Icon",
                     selectedOption = content.selectedIcon,
-                    placeholder = if (content.isUploading) {
+                    placeholder =
+                    if (content.isUploading) {
                         stringResource(Res.string.edifikana_string_upload)
                     } else {
                         stringResource(Res.string.add_property_screen_property_icon_placeholder)
-                    },                    onOpenSelectorSelected = onOpenSelectorSelected,
+                    },
+                    onOpenSelectorSelected = onOpenSelectorSelected,
                     modifier = sectionModifier,
                 )
             },
@@ -175,7 +179,7 @@ internal fun AddPropertyContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading || content.isUploading)
-            }
+            },
         )
     }
 }

@@ -27,7 +27,6 @@ data class UserOrganizationMappingEntity(
     @SerialName("joined_at")
     val joinedAt: Instant?,
 ) {
-
     /**
      * Entity used to insert a new user–organization mapping row for directly-added members.
      *
@@ -42,7 +41,7 @@ data class UserOrganizationMappingEntity(
         @SerialName("user_id")
         val userId: UserId,
         @SerialName("organization_id")
-        val organizationId: OrganizationId ,
+        val organizationId: OrganizationId,
         val role: OrgRole,
     )
 

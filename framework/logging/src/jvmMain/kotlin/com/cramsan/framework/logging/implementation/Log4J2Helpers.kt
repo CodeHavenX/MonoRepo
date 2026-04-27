@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration
  * are present, our default configuration will be ignored.
  */
 object Log4J2Helpers {
-
     /**
      * Configures Log4J2 and returns the root logger.
      */
@@ -40,10 +39,11 @@ object Log4J2Helpers {
         val config: Configuration = context.configuration
 
         if (config is DefaultConfiguration) {
-            val loggerConfiguration = buildConfiguration(
-                logToFile,
-                initializationLogLevel,
-            )
+            val loggerConfiguration =
+                buildConfiguration(
+                    logToFile,
+                    initializationLogLevel,
+                )
 
             Configurator.initialize(loggerConfiguration)
         }
@@ -81,25 +81,33 @@ object Log4J2Helpers {
 
     private fun createConsoleAppender(builder: ConfigurationBuilder<BuiltConfiguration>): AppenderComponentBuilder {
         // set the pattern layout and pattern
-        val layoutBuilder: LayoutComponentBuilder = builder.newLayout("PatternLayout")
-            .addAttribute("pattern", LOG_PATTERN)
+        val layoutBuilder: LayoutComponentBuilder =
+            builder
+                .newLayout("PatternLayout")
+                .addAttribute("pattern", LOG_PATTERN)
 
-        return builder.newAppender("Console", "Console")
+        return builder
+            .newAppender("Console", "Console")
             .addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT)
             .add(layoutBuilder)
     }
 
     private fun createFileAppender(builder: ConfigurationBuilder<BuiltConfiguration>): AppenderComponentBuilder {
         // set the pattern layout and pattern
-        val layoutBuilder: LayoutComponentBuilder = builder.newLayout("PatternLayout")
-            .addAttribute("pattern", LOG_PATTERN)
+        val layoutBuilder: LayoutComponentBuilder =
+            builder
+                .newLayout("PatternLayout")
+                .addAttribute("pattern", LOG_PATTERN)
 
         // specifying the policy for rolling file
-        val triggeringPolicy = builder.newComponent("Policies")
-            .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "10MB"))
+        val triggeringPolicy =
+            builder
+                .newComponent("Policies")
+                .addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "10MB"))
 
         // create a console appender
-        return builder.newAppender("LogToRollingFile", "RollingFile")
+        return builder
+            .newAppender("LogToRollingFile", "RollingFile")
             .addAttribute("fileName", LoggerJVM.FILENAME)
             .addAttribute("filePattern", "${LoggerJVM.FILENAME}-%d{MM-dd-yy-HH-mm-ss}.log.")
             .add(layoutBuilder)

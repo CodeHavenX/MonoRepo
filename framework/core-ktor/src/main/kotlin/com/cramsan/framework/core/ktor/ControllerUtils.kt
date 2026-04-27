@@ -47,7 +47,8 @@ inline fun <
         val response = handler(request)
 
         HttpResponse(
-            status = if (response == null) {
+            status =
+            if (response == null) {
                 HttpStatusCode.NotFound
             } else {
                 HttpStatusCode.OK
@@ -72,14 +73,13 @@ inline fun <
     ResponseType : ResponseBody,
     T : Api,
     P,
-    >
-    OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
-        operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
-        contextRetriever: ContextRetriever<P>,
-        crossinline handler: suspend (
-            OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
-        ) -> ResponseType?,
-    ) {
+    > OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
+    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
+    contextRetriever: ContextRetriever<P>,
+    crossinline handler: suspend (
+        OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
+    ) -> ResponseType?,
+) {
     operation.handle(
         route,
         { contextRetriever.getContext(this) },
@@ -87,7 +87,8 @@ inline fun <
         val response = handler(request)
 
         HttpResponse(
-            status = if (response == null) {
+            status =
+            if (response == null) {
                 HttpStatusCode.NotFound
             } else {
                 HttpStatusCode.OK
@@ -174,9 +175,10 @@ suspend inline fun <P, T : ClientContext<P>> ApplicationCall.handleCall(
         )
     }
 
-    val result = runCatching {
-        function(contextResult.getOrThrow())
-    }
+    val result =
+        runCatching {
+            function(contextResult.getOrThrow())
+        }
 
     if (result.isSuccess) {
         val functionResponse = result.getOrNull()
@@ -215,7 +217,7 @@ suspend inline fun <P, T : ClientContext<P>> ApplicationCall.handleCall(
  */
 @Suppress("UseCheckOrError")
 inline fun <P> requireAuthenticatedClientContext(
-    clientContext: ClientContext<P>
+    clientContext: ClientContext<P>,
 ): ClientContext.AuthenticatedClientContext<P> {
     when (clientContext) {
         is ClientContext.AuthenticatedClientContext -> {

@@ -38,33 +38,33 @@ suspend inline fun <
     reified RequestType : RequestBody,
     reified QueryParamsType : QueryParam,
     reified PathParamsType : PathParam,
-    reified ResponseType : ResponseBody
-    >
-    OperationRequest<RequestType, QueryParamsType, PathParamsType, ResponseType>.execute(
-        http: HttpClient,
-        noinline headersBlock: (HeadersBuilder.() -> Unit)? = null,
-    ): ResponseType {
+    reified ResponseType : ResponseBody,
+    > OperationRequest<RequestType, QueryParamsType, PathParamsType, ResponseType>.execute(
+    http: HttpClient,
+    noinline headersBlock: (HeadersBuilder.() -> Unit)? = null,
+): ResponseType {
     val request = this
-    val httpRequest = http.request {
-        method = request.method
-        headersBlock?.let {
-            headers(it)
-        }
-        url {
-            appendPathSegments(request.fullPath)
-            if (QueryParamsType::class != NoQueryParam::class) {
-                val paramsMap = encodeToKeyValueMap(request.queryParam)
+    val httpRequest =
+        http.request {
+            method = request.method
+            headersBlock?.let {
+                headers(it)
+            }
+            url {
+                appendPathSegments(request.fullPath)
+                if (QueryParamsType::class != NoQueryParam::class) {
+                    val paramsMap = encodeToKeyValueMap(request.queryParam)
 
-                paramsMap.forEach { (key, value) ->
-                    parameters.appendAll(key, value)
+                    paramsMap.forEach { (key, value) ->
+                        parameters.appendAll(key, value)
+                    }
                 }
             }
+            if (request.body != NoRequestBody) {
+                setBody(request.body)
+                contentType(ContentType.Application.Json)
+            }
         }
-        if (request.body != NoRequestBody) {
-            setBody(request.body)
-            contentType(ContentType.Application.Json)
-        }
-    }
 
     return if (ResponseType::class == NoResponseBody::class) {
         NoResponseBody as ResponseType

@@ -19,11 +19,12 @@ fun ButtonSection(
     modifier: Modifier = Modifier,
     buttons: @Composable ColumnScope.(Modifier) -> Unit,
 ) {
-    val buttonModifier = Modifier
-        .fillMaxWidth()
-        .padding(
-            horizontal = Padding.MEDIUM,
-        )
+    val buttonModifier =
+        Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = Padding.MEDIUM,
+            )
     Column(
         modifier = modifier,
         content = {

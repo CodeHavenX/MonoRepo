@@ -13,11 +13,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 private fun QuestionsScreenPreview() {
     AppTheme {
         QuestionsContent(
-            content = QuestionsUIState(
+            content =
+            QuestionsUIState(
                 Content(
                     translated = "Sample",
                     original = "Chaymi rikhurqa",
-                )
+                ),
             ),
         )
     }

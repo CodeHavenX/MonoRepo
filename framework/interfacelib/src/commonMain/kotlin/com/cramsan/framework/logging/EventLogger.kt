@@ -14,7 +14,6 @@ import kotlin.native.concurrent.ThreadLocal
  */
 @ThreadLocal
 object EventLogger {
-
     private lateinit var _singleton: EventLoggerInterface
 
     /**
@@ -36,10 +35,6 @@ object EventLogger {
         _singleton = eventLogger
     }
 }
-
-/**
- * List of global functions to provide an easy API for logging
- */
 
 /**
  * Global function that delegates to [EventLogger.singleton] and calls [EventLoggerInterface.log]

@@ -7,7 +7,6 @@ import com.cramsan.edifikana.lib.model.employee.EmployeeId
  * Service for managing employee.
  */
 interface EmployeeService {
-
     /**
      * Get all employee.
      */

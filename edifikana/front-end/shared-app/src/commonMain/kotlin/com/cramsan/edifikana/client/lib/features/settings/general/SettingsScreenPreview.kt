@@ -7,24 +7,28 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun SettingsScreenPreview() = AppTheme {
-    SettingsContent(
-        uiState = SettingsUIState(
-            selectedTheme = SelectedTheme.LIGHT,
-        ),
-        onThemeSelected = {},
-        onBackSelected = { },
-    )
-}
+private fun SettingsScreenPreview() =
+    AppTheme {
+        SettingsContent(
+            uiState =
+            SettingsUIState(
+                selectedTheme = SelectedTheme.LIGHT,
+            ),
+            onThemeSelected = {},
+            onBackSelected = { },
+        )
+    }
 
 @Preview(locale = "es")
 @Composable
-private fun SettingsScreenPreview_ES() = AppTheme {
-    SettingsContent(
-        uiState = SettingsUIState(
-            selectedTheme = SelectedTheme.LIGHT,
-        ),
-        onThemeSelected = {},
-        onBackSelected = { },
-    )
-}
+private fun SettingsScreenPreview_ES() =
+    AppTheme {
+        SettingsContent(
+            uiState =
+            SettingsUIState(
+                selectedTheme = SelectedTheme.LIGHT,
+            ),
+            onThemeSelected = {},
+            onBackSelected = { },
+        )
+    }

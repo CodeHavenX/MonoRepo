@@ -6,10 +6,7 @@ package com.cramsan.framework.configuration
  * @param domainPrefix The prefix to use for the environment variables. This IS REQUIRED to be a non-empty
  * alphanumeric string. Only uppercase letters, numbers and underscores are allowed.
  */
-class EnvironmentConfiguration(
-    private val domainPrefix: String,
-) : Configuration {
-
+class EnvironmentConfiguration(private val domainPrefix: String) : Configuration {
     init {
         // Ensure that the domain prefix is not empty and uppercase and underscores
         require(domainPrefix.isNotEmpty()) {
@@ -18,9 +15,9 @@ class EnvironmentConfiguration(
         require(
             domainPrefix.all {
                 it.isDigit() ||
-                    it.isLetter() && it.isUpperCase() ||
+                    (it.isLetter() && it.isUpperCase()) ||
                     it == '_'
-            }
+            },
         ) {
             "Domain prefix must only contain uppercase letters, numbers and underscores"
         }
@@ -67,14 +64,16 @@ class EnvironmentConfiguration(
      * Transforms the key to match environment variable naming conventions.
      */
     override fun transformKey(key: String): String {
-        val keyName = key.map {
-            // Check if character is alphanumeric
-            if (it.isLetterOrDigit()) {
-                it.uppercase()
-            } else {
-                '_'
-            }
-        }.joinToString("")
+        val keyName =
+            key
+                .map {
+                    // Check if character is alphanumeric
+                    if (it.isLetterOrDigit()) {
+                        it.uppercase()
+                    } else {
+                        '_'
+                    }
+                }.joinToString("")
         return "${domainPrefix}_$keyName"
     }
 }

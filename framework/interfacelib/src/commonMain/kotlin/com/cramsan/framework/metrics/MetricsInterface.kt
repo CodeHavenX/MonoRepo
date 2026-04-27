@@ -4,7 +4,6 @@ package com.cramsan.framework.metrics
  * Module to record operational events.
  */
 interface MetricsInterface {
-
     /**
      * Initialize the module
      */

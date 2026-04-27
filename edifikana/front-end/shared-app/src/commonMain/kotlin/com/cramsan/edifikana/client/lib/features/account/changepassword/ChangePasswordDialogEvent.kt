@@ -7,7 +7,6 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * This sealed class is used to define specific events that can be handled by the ViewModel.
  */
 sealed class ChangePasswordDialogEvent : ViewModelEvent {
-
     /**
      * Event triggered when the user submits the change password form.
      */

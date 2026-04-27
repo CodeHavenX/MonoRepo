@@ -9,8 +9,9 @@ import org.koin.dsl.module
 /**
  * Class to initialize and bind the ktor components.
  */
-internal val ControllerModule = module {
-    singleOf(::UserController) {
-        bind<Controller>()
+internal val ControllerModule =
+    module {
+        singleOf(::UserController) {
+            bind<Controller>()
+        }
     }
-}

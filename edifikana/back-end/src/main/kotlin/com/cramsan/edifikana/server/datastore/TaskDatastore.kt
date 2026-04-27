@@ -17,7 +17,6 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 interface TaskDatastore {
-
     /**
      * Creates a new task record scoped to [propertyId]. Returns the created [Task].
      */

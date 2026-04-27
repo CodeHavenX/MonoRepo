@@ -41,9 +41,7 @@ fun MenuScreen(
     val uiState by viewModel.uiState.collectAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    /**
-     * For other possible lifecycle events, see the [Lifecycle.Event] documentation.
-     */
+    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize()
     }
@@ -65,6 +63,7 @@ fun MenuScreen(
                     }
                 }
             }
+
             MenuEvent.CloseDrawer -> {
                 if (!drawerState.isAnimationRunning) {
                     drawerState.close()
@@ -99,10 +98,11 @@ internal fun MenuContent(
         drawerContent = {
             ModalDrawerSheet {
                 Column(
-                    modifier = Modifier.padding(
+                    modifier =
+                    Modifier.padding(
                         horizontal = Padding.SMALL,
                         vertical = Padding.LARGE,
-                    )
+                    ),
                 ) {
                     content.drawerItems.forEach { item ->
                         DrawerItem(item, content.selectedItem) {
@@ -122,12 +122,15 @@ internal fun MenuContent(
                 SelectableDrawerItem.Numbers -> {
                     YupayScreen()
                 }
+
                 SelectableDrawerItem.Verbs -> {
                     VerbsScreen()
                 }
+
                 SelectableDrawerItem.Questions -> {
                     QuestionsScreen()
                 }
+
                 null -> {
                     // No-op
                 }
@@ -149,7 +152,7 @@ private fun DrawerItem(
                 item = item.item,
                 selected = item.item == selectedItem,
                 onClick = onClick,
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -162,11 +165,12 @@ private fun SelectableDrawerItem(
     onClick: (SelectableDrawerItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val text = when (item) {
-        SelectableDrawerItem.Numbers -> "Yupaykuna"
-        SelectableDrawerItem.Verbs -> "Ruwaykuna"
-        SelectableDrawerItem.Questions -> "Tapuykuna"
-    }
+    val text =
+        when (item) {
+            SelectableDrawerItem.Numbers -> "Yupaykuna"
+            SelectableDrawerItem.Verbs -> "Ruwaykuna"
+            SelectableDrawerItem.Questions -> "Tapuykuna"
+        }
     NavigationDrawerItem(
         label = { Text(text = text, style = MaterialTheme.typography.labelLarge) },
         selected = selected,

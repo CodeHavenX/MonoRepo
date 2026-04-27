@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
 import com.cramsan.edifikana.lib.model.occupant.OccupantId
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.SupabaseModel

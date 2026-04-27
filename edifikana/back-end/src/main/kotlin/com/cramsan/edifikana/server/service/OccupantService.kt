@@ -6,7 +6,6 @@ import com.cramsan.edifikana.lib.model.occupant.OccupantType
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.OccupantDatastore
-import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.service.models.Occupant
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ConflictException

@@ -31,6 +31,8 @@ class Initializer(
         enforcePermissions()
     }
 
+    // Once seeded, this value is sticky forever. If a future release ships a new DEFAULT_API_URL (e.g., dev → prod cutover),
+    // existing installs will keep pointing at the old URL.
     private fun seedDefaults() {
         if (settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) == null) {
             settingsHolder.saveString(

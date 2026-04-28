@@ -192,14 +192,16 @@ roborazzi {
         packages = listOf("com.cramsan.edifikana.client.lib")
     }
 }
-
+val buildConfigFile = rootProject.file("edifikana/front-end/config.properties")
+tasks.withType<com.github.gmazzo.buildconfig.BuildConfigTask>().configureEach {
+    inputs.file(buildConfigFile).optional()
+}
 buildConfig {
     packageName("com.cramsan.edifikana.client.lib")
 
     val configProps = Properties().apply {
-        val file = rootProject.file("edifikana/front-end/config.properties")
-        if (file.exists()) {
-            file.inputStream().use { input ->
+        if (buildConfigFile.exists()) {
+            buildConfigFile.inputStream().use { input ->
                 load(input)
             }
         }
@@ -211,6 +213,7 @@ buildConfig {
         "DEFAULT_API_URL",
         configProps.getProperty("DEFAULT_API_URL", "http://localhost:9292")
     )
+    // Accepting risk of silent build failure here with default value being blank
     buildConfigField<String>(
         "GOOGLE_OAUTH_CLIENT_ID",
         configProps.getProperty("GOOGLE_OAUTH_CLIENT_ID", "")

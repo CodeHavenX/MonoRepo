@@ -152,7 +152,7 @@ class PropertyManager(
         logI(TAG, "Filename: $filename")
         val targetRef = "private/properties/${propertyId}_$filename"
         logI(TAG, "Uploading image to: $targetRef")
-        val storageRef = storageManager.uploadImage(imageUri, targetRef).getOrThrow()
+        val storageRef = storageManager.uploadImage(imageUri, targetRef, PROPERTY_IMAGE_BUCKET).getOrThrow()
         logI(TAG, "Upload successful: $storageRef")
         return "storage:$storageRef"
     }
@@ -171,5 +171,6 @@ class PropertyManager(
 
     companion object {
         private const val TAG = "PropertyManager"
+        private const val PROPERTY_IMAGE_BUCKET = "images"
     }
 }

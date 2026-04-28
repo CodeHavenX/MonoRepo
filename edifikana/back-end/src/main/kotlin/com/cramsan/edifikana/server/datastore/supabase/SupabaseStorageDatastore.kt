@@ -37,10 +37,11 @@ class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore 
      */
     override suspend fun createSignedUploadUrl(
         fileName: String,
+        bucketId: String,
     ): Result<Pair<String, String>> =
         runSuspendCatching(TAG) {
-            logD(TAG, "Creating signed upload URL for: %s", fileName)
-            val bucket = storage.from("images/timecard-images")
+            logD(TAG, "Creating signed upload URL for: %s in bucket: %s", fileName, bucketId)
+            val bucket = storage.from(bucketId)
             val signedUpload = bucket.createSignedUploadUrl(fileName)
             Pair(signedUpload.url, signedUpload.path)
         }

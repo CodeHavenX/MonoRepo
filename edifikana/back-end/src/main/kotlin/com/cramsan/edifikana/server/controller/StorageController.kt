@@ -58,7 +58,8 @@ class StorageController(
             >,
     ): SignedUploadUrlNetworkResponse {
         val fileName = requireNotBlank(request.queryParam.filename)
-        val (signedUrl, path) = storageService.getSignedUploadUrl(fileName)
+        val bucketId = requireNotBlank(request.queryParam.bucketId)
+        val (signedUrl, path) = storageService.getSignedUploadUrl(fileName, bucketId)
         return SignedUploadUrlNetworkResponse(signedUrl = signedUrl, path = path)
     }
 

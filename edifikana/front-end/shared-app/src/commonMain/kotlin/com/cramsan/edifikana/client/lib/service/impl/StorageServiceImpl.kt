@@ -27,11 +27,12 @@ class StorageServiceImpl(
     private val downloadStrategy: DownloadStrategy,
 ) : StorageService {
 
-    override suspend fun uploadFile(data: ByteArray, targetRef: String): Result<String> =
+    override suspend fun uploadFile(data: ByteArray, targetRef: String, bucketId: String): Result<String> =
         runSuspendCatching(TAG) {
             val response = StorageApi.createSignedUpload
-                .buildRequest(queryParam = CreateSignedUploadQueryParams(filename = targetRef))
+                .buildRequest(queryParam = CreateSignedUploadQueryParams(filename = targetRef, bucketId = bucketId))
                 .execute(http)
+            // Get response and upload to that url
             http.put(response.signedUrl) {
                 setBody(data)
                 contentType(ContentType.Application.OctetStream)

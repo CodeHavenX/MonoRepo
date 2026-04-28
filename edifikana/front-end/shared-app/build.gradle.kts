@@ -192,13 +192,11 @@ roborazzi {
         packages = listOf("com.cramsan.edifikana.client.lib")
     }
 }
-val buildConfigFile = rootProject.file("edifikana/front-end/config.properties")
-tasks.withType<com.github.gmazzo.buildconfig.BuildConfigTask>().configureEach {
-    inputs.file(buildConfigFile).optional()
-}
+
 buildConfig {
     packageName("com.cramsan.edifikana.client.lib")
-
+    // config file is not being linked as an input, so changes to config.properties won't reflect with build.gradle
+    val buildConfigFile = rootProject.file("edifikana/front-end/config.properties")
     val configProps = Properties().apply {
         if (buildConfigFile.exists()) {
             buildConfigFile.inputStream().use { input ->

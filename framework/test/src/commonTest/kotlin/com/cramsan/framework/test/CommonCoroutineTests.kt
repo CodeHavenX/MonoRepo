@@ -11,6 +11,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.days
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class CommonCoroutineTests : CoroutineTest() {
 
     lateinit var viewModel: SimpleViewModel

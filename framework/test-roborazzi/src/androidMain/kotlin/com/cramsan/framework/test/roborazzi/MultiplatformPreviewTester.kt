@@ -9,6 +9,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.takahirom.roborazzi.ComposePreviewTester
 import com.github.takahirom.roborazzi.ComposePreviewTester.TestParameter.JUnit4TestParameter
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
+import com.github.takahirom.roborazzi.InternalRoborazziApi
 import com.github.takahirom.roborazzi.RoborazziActivity
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.provideRoborazziContext
@@ -29,7 +30,7 @@ import sergio.sastre.composable.preview.scanner.jvm.JvmAnnotationScanner
  *  - https://github.com/CodeHavenX/MonoRepo/issues/113#issuecomment-2784480774
  *  - https://github.com/takahirom/roborazzi/tree/main/sample-generate-preview-tests-multiplatform
  */
-@OptIn(ExperimentalRoborazziApi::class)
+@OptIn(ExperimentalRoborazziApi::class, InternalRoborazziApi::class)
 class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmAnnotationInfo>> {
     override fun options(): ComposePreviewTester.Options = super.options().copy(
         testLifecycleOptions = ComposePreviewTester.Options.JUnit4TestLifecycleOptions(

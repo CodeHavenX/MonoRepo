@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.debug.main
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingKey
+import com.cramsan.edifikana.client.lib.BuildConfig
 import com.cramsan.edifikana.client.lib.features.debug.DebugDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
@@ -156,8 +157,8 @@ class DebugViewModel(
             val openDebugWindow = preferencesManager.getBooleanPreference(
                 EdifikanaSettingKey.OpenDebugWindow,
             ).getOrNull()
-            val edifikanaBeUrl = preferencesManager.getStringPreference(
-                EdifikanaSettingKey.EdifikanaBeUrl,
+            val backEndUrl = preferencesManager.getStringPreference(
+                FrontEndApplicationSettingKey.BackEndUrl,
             ).getOrNull()
             val loggingSeverity = preferencesManager.getStringPreference(
                 FrontEndApplicationSettingKey.LoggingLevel,
@@ -166,6 +167,15 @@ class DebugViewModel(
             updateUiState {
                 it.copy(
                     fields = listOf(
+                        Field.Divider,
+                        Field.Label(
+                            "App Version",
+                            BuildConfig.APP_VERSION,
+                        ),
+                        Field.Label(
+                            "Build Type",
+                            BuildConfig.BUILD_TYPE,
+                        ),
                         Field.Divider,
                         Field.Label(
                             "Supabase Settings",
@@ -192,8 +202,8 @@ class DebugViewModel(
                         Field.StringField(
                             title = "Edifikana Back End URL",
                             subtitle = "Provide an override URL",
-                            key = EdifikanaSettingKey.EdifikanaBeUrl,
-                            value = edifikanaBeUrl.orEmpty(),
+                            key = FrontEndApplicationSettingKey.BackEndUrl,
+                            value = backEndUrl.orEmpty(),
                         ),
                         Field.Divider,
                         Field.Label("Core Framework Settings"),

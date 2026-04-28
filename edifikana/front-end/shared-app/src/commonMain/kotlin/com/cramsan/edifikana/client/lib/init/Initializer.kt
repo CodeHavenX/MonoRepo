@@ -1,5 +1,8 @@
 package com.cramsan.edifikana.client.lib.init
 
+import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
+import com.cramsan.architecture.client.settings.SettingsHolder
+import com.cramsan.edifikana.client.lib.BuildConfig
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.logging.EventLoggerInterface
@@ -12,6 +15,7 @@ import org.koin.core.component.KoinComponent
 class Initializer(
     private val eventLogger: EventLoggerInterface,
     private val authManager: AuthManager,
+    private val settingsHolder: SettingsHolder,
 ) : KoinComponent {
 
     /**
@@ -23,7 +27,19 @@ class Initializer(
             TAG,
             "Starting initialization steps",
         )
+        seedDefaults()
         enforcePermissions()
+    }
+
+    // Once seeded, this value is sticky forever. If a future release ships a new DEFAULT_API_URL (e.g., dev → prod cutover),
+    // existing installs will keep pointing at the old URL.
+    private fun seedDefaults() {
+        if (settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) == null) {
+            settingsHolder.saveString(
+                FrontEndApplicationSettingKey.BackEndUrl,
+                BuildConfig.DEFAULT_API_URL,
+            )
+        }
     }
 
     private suspend fun enforcePermissions() {

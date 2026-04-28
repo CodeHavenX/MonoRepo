@@ -12,21 +12,6 @@ import com.cramsan.framework.logging.logD
 @BackendService
 class StorageService(private val storageDatastore: StorageDatastore) {
     /**
-     * Creates a file with the provided [fileName] and [content].
-     */
-    suspend fun createAsset(
-        fileName: String,
-        content: ByteArray,
-    ): Asset {
-        logD(TAG, "createFile")
-        return storageDatastore
-            .createAsset(
-                fileName = fileName,
-                content = content,
-            ).getOrThrow()
-    }
-
-    /**
      * Retrieves a file with the provided [id] if it exists.
      */
     suspend fun getAsset(

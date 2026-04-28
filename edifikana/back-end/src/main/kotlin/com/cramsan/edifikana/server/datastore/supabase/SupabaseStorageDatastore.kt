@@ -15,23 +15,6 @@ import kotlin.time.Duration.Companion.minutes
 @BackendDatastore
 class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore {
     /**
-     * Uploads a new asset to storage with the given [fileName] and [content].
-     */
-    override suspend fun createAsset(
-        fileName: String,
-        content: ByteArray,
-    ): Result<Asset> =
-        runSuspendCatching(TAG) {
-            logD(TAG, "Creating a new asset: %s", fileName)
-            val bucket = storage.from("images/timecard-images")
-            bucket.upload(fileName, content) {
-                upsert = false
-            }
-            val assetId = generateAssetId(bucket.bucketId, fileName)
-            Asset(assetId, fileName, null, content)
-        }
-
-    /**
      * Retrieves an asset by [id], returning a short-lived signed download URL.
      */
     override suspend fun getAsset(

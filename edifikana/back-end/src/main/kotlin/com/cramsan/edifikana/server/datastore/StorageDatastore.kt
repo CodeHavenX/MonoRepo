@@ -10,14 +10,6 @@ import com.cramsan.framework.annotations.BackendDatastore
 @BackendDatastore
 interface StorageDatastore {
     /**
-     * Creates a new file with the given [fileName] and [content]. Returns the [Result] of the operation with the created [Asset].
-     */
-    suspend fun createAsset(
-        fileName: String,
-        content: ByteArray,
-    ): Result<Asset>
-
-    /**
      * Retrieves a file with the given [id]. Returns the [Result] of the operation with the fetched [Asset] if found.
      */
     suspend fun getAsset(

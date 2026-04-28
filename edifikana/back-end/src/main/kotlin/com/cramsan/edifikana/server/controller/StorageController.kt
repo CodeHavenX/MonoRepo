@@ -3,7 +3,6 @@ package com.cramsan.edifikana.server.controller
 import com.cramsan.edifikana.api.StorageApi
 import com.cramsan.edifikana.lib.model.asset.AssetId
 import com.cramsan.edifikana.lib.model.network.asset.AssetNetworkResponse
-import com.cramsan.edifikana.lib.model.network.asset.CreateAssetQueryParams
 import com.cramsan.edifikana.lib.model.network.asset.CreateSignedUploadQueryParams
 import com.cramsan.edifikana.lib.model.network.asset.GetAssetQueryParams
 import com.cramsan.edifikana.lib.model.network.asset.SignedUploadUrlNetworkResponse
@@ -11,7 +10,6 @@ import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.StorageService
 import com.cramsan.framework.annotations.BackendController
-import com.cramsan.framework.annotations.api.BytesRequestBody
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.core.ktor.Controller
@@ -31,30 +29,6 @@ class StorageController(
     private val storageService: StorageService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-    /**
-     * Handles the creation of a new asset (file upload).
-     * Expects a byte array as the request body and a filename as a query parameter.
-     * Returns the created asset as a network response.
-     */
-    suspend fun createAsset(
-        request: OperationRequest<
-            BytesRequestBody,
-            CreateAssetQueryParams,
-            NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-            >,
-    ): AssetNetworkResponse {
-        val uploadFile = request.requestBody.bytes
-        val fileName = requireNotBlank(request.queryParam.filename)
-
-        val newAsset =
-            storageService.createAsset(
-                fileName = fileName,
-                content = uploadFile,
-            )
-        return newAsset.toAssetNetworkResponse()
-    }
-
     /**
      * Handles retrieval of an asset by ID, returning a signed download URL.
      */
@@ -93,9 +67,6 @@ class StorageController(
      */
     override fun registerRoutes(route: Routing) {
         StorageApi.register(route) {
-            handler(api.createAsset, contextRetriever) { request ->
-                createAsset(request)
-            }
             handler(api.getAsset, contextRetriever) { request ->
                 getAsset(request)
             }

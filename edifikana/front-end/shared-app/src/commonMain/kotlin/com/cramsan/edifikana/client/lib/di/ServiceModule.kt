@@ -33,8 +33,6 @@ import io.github.jan.supabase.compose.auth.appleNativeLogin
 import io.github.jan.supabase.compose.auth.composeAuth
 import io.github.jan.supabase.compose.auth.googleNativeLogin
 import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.storage.Storage
-import io.github.jan.supabase.storage.storage
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -52,7 +50,6 @@ internal val ServiceModule =
                 supabaseUrl = supabaseUrl,
                 supabaseKey = supabaseKey,
             ) {
-                install(Storage)
                 install(Auth) {
                     sessionManager = SettingsSessionManager(key = "$supabaseUrl-client")
                 }
@@ -76,10 +73,6 @@ internal val ServiceModule =
 
         single<ComposeAuth> {
             get<SupabaseClient>().composeAuth
-        }
-
-        single<Storage> {
-            get<SupabaseClient>().storage
         }
 
         single<Coil3Integration> {

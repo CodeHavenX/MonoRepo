@@ -43,6 +43,14 @@ class StorageService(private val storageDatastore: StorageDatastore) {
     }
 
     /**
+     * Returns a signed upload URL and storage path for [fileName].
+     */
+    suspend fun getSignedUploadUrl(fileName: String): Pair<String, String> {
+        logD(TAG, "getSignedUploadUrl")
+        return storageDatastore.createSignedUploadUrl(fileName).getOrThrow()
+    }
+
+    /**
      * Companion object for logging purposes.
      */
     companion object {

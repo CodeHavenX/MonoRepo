@@ -32,25 +32,34 @@ class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore 
         }
 
     /**
-     * Retrieves an asset by [id], including its signed download URL and content bytes.
+     * Retrieves an asset by [id], returning a short-lived signed download URL.
      */
     override suspend fun getAsset(
         id: AssetId,
     ): Result<Asset?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting assetId: %s", id)
-            // Extract the file's bucketId and file name from the assetId
             val fileIdParts = extractFileIdPartsFromAssetId(id)
             val bucketId = fileIdParts.dropLast(1).joinToString("/")
             val fileName = fileIdParts.last()
 
-            // Download the file from the storage bucket
             val bucket = storage.from(bucketId)
             val signedUrl = bucket.createSignedUrl(fileName, expiresIn = 3.minutes)
-            val bytes = bucket.downloadAuthenticated(fileName)
 
-            // Create and return the Asset object
-            Asset(id, fileName, signedUrl, bytes)
+            Asset(id, fileName, signedUrl, byteArrayOf())
+        }
+
+    /**
+     * Creates a signed upload URL for [fileName] in the timecard-images bucket.
+     */
+    override suspend fun createSignedUploadUrl(
+        fileName: String,
+    ): Result<Pair<String, String>> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Creating signed upload URL for: %s", fileName)
+            val bucket = storage.from("images/timecard-images")
+            val signedUpload = bucket.createSignedUploadUrl(fileName)
+            Pair(signedUpload.url, signedUpload.path)
         }
 
     /**

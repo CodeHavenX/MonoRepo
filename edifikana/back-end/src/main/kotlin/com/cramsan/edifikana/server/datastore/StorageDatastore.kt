@@ -23,4 +23,9 @@ interface StorageDatastore {
     suspend fun getAsset(
         id: AssetId,
     ): Result<Asset?>
+
+    /**
+     * Creates a signed upload URL for the given [fileName]. Returns the signed URL and storage path.
+     */
+    suspend fun createSignedUploadUrl(fileName: String): Result<Pair<String, String>>
 }

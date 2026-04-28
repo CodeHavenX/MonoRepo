@@ -12,7 +12,7 @@ interface StorageDatastore {
     /**
      * Retrieves a file with the given [id]. Returns the [Result] of the operation with the fetched [Asset] if found.
      */
-    suspend fun getAsset(
+    suspend fun getSignedDownloadUrl(
         id: AssetId,
     ): Result<Asset?>
 

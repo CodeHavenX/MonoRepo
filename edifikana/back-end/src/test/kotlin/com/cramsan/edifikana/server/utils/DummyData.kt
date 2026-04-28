@@ -250,6 +250,8 @@ val TIME_CARD_EVENT_5 =
         timestamp = Instant.fromEpochSeconds(1727712654),
     )
 
+const val BUCKET_ID = "images/timecard-images"
+
 val ASSET_1 =
     Asset(
         id = AssetId("images/timecard-images/employee1.png"),

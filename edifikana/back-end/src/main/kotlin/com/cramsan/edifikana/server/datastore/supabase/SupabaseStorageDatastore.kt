@@ -17,7 +17,7 @@ class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore 
     /**
      * Retrieves an asset by [id], returning a short-lived signed download URL.
      */
-    override suspend fun getAsset(
+    override suspend fun getSignedDownloadUrl(
         id: AssetId,
     ): Result<Asset?> =
         runSuspendCatching(TAG) {

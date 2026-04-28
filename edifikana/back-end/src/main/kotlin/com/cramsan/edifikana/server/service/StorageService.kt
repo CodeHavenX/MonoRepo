@@ -14,13 +14,13 @@ class StorageService(private val storageDatastore: StorageDatastore) {
     /**
      * Retrieves a file with the provided [id] if it exists.
      */
-    suspend fun getAsset(
+    suspend fun getSignedDownloadUrl(
         id: AssetId,
     ): Asset? {
         logD(TAG, "getFile")
         val file =
             storageDatastore
-                .getAsset(
+                .getSignedDownloadUrl(
                     id = id,
                 ).getOrNull()
 

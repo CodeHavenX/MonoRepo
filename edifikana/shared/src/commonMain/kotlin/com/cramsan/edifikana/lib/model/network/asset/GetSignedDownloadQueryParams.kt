@@ -6,10 +6,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Query parameters for retrieving an asset.
+ * Query parameters for retrieving a signed download URL for an asset.
  */
 @NetworkModel
 @Serializable
-data class GetAssetQueryParams(
+data class GetSignedDownloadQueryParams(
     @SerialName("asset_id") val assetId: String,
 ) : QueryParam

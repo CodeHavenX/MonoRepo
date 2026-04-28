@@ -4,7 +4,7 @@ import com.cramsan.edifikana.api.StorageApi
 import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.lib.model.network.asset.CreateSignedUploadQueryParams
-import com.cramsan.edifikana.lib.model.network.asset.GetAssetQueryParams
+import com.cramsan.edifikana.lib.model.network.asset.GetSignedDownloadQueryParams
 import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.runSuspendCatching
@@ -45,8 +45,8 @@ class StorageServiceImpl(
             if (downloadStrategy.isFileCached(targetRef)) {
                 return@runSuspendCatching downloadStrategy.getCachedFile(targetRef)
             }
-            val response = StorageApi.getAsset
-                .buildRequest(queryParam = GetAssetQueryParams(assetId = targetRef))
+            val response = StorageApi.getSignedDownload
+                .buildRequest(queryParam = GetSignedDownloadQueryParams(assetId = targetRef))
                 .execute(http)
             val signedUrl = checkNotNull(response.signedUrl) { "No signed URL returned for $targetRef" }
             val bytes = http.get(signedUrl).body<ByteArray>()

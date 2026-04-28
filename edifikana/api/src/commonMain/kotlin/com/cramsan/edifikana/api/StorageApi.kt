@@ -2,7 +2,7 @@ package com.cramsan.edifikana.api
 
 import com.cramsan.edifikana.lib.model.network.asset.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.asset.CreateSignedUploadQueryParams
-import com.cramsan.edifikana.lib.model.network.asset.GetAssetQueryParams
+import com.cramsan.edifikana.lib.model.network.asset.GetSignedDownloadQueryParams
 import com.cramsan.edifikana.lib.model.network.asset.SignedUploadUrlNetworkResponse
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
@@ -15,13 +15,13 @@ import io.ktor.http.HttpMethod
  */
 
 object StorageApi : Api("storage") {
-    val getAsset =
+    val getSignedDownload =
         operation<
             NoRequestBody,
-            GetAssetQueryParams,
+            GetSignedDownloadQueryParams,
             NoPathParam,
             AssetNetworkResponse,
-            >(HttpMethod.Get, "asset")
+            >(HttpMethod.Get, "signed-download")
 
     val createSignedUpload =
         operation<

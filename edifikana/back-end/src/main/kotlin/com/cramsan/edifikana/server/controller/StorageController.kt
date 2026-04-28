@@ -4,7 +4,7 @@ import com.cramsan.edifikana.api.StorageApi
 import com.cramsan.edifikana.lib.model.asset.AssetId
 import com.cramsan.edifikana.lib.model.network.asset.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.asset.CreateSignedUploadQueryParams
-import com.cramsan.edifikana.lib.model.network.asset.GetAssetQueryParams
+import com.cramsan.edifikana.lib.model.network.asset.GetSignedDownloadQueryParams
 import com.cramsan.edifikana.lib.model.network.asset.SignedUploadUrlNetworkResponse
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
@@ -30,12 +30,12 @@ class StorageController(
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
     /**
-     * Handles retrieval of an asset by ID, returning a signed download URL.
+     * Handles retrieval of a signed download URL for an asset.
      */
-    suspend fun getAsset(
+    suspend fun getSignedDownload(
         request: OperationRequest<
             NoRequestBody,
-            GetAssetQueryParams,
+            GetSignedDownloadQueryParams,
             NoPathParam,
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
@@ -68,8 +68,8 @@ class StorageController(
      */
     override fun registerRoutes(route: Routing) {
         StorageApi.register(route) {
-            handler(api.getAsset, contextRetriever) { request ->
-                getAsset(request)
+            handler(api.getSignedDownload, contextRetriever) { request ->
+                getSignedDownload(request)
             }
             handler(api.createSignedUpload, contextRetriever) { request ->
                 createSignedUpload(request)

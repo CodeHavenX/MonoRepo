@@ -53,7 +53,7 @@ internal val KtorModule = module {
             }
             defaultRequest {
                 val resolvedUrl =
-                    settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) ?: "http://0.0.0.0:9292"
+                    settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) ?: "http://localhost:9292"
 
                 url(resolvedUrl)
             }

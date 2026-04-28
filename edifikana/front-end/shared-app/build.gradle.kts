@@ -198,14 +198,18 @@ buildConfig {
 
     val configProps = Properties().apply {
         val file = rootProject.file("edifikana/front-end/config.properties")
-        if (file.exists()) load(file.inputStream())
+        if (file.exists()) {
+            file.inputStream().use { input ->
+                load(input)
+            }
+        }
     }
 
     val gradleAppVersion = properties["app.version"]?.toString() ?: "0.0.0"
 
     buildConfigField<String>(
         "DEFAULT_API_URL",
-        configProps.getProperty("DEFAULT_API_URL", "http://0.0.0.0:9292")
+        configProps.getProperty("DEFAULT_API_URL", "http://localhost:9292")
     )
     buildConfigField<String>(
         "GOOGLE_OAUTH_CLIENT_ID",

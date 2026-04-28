@@ -1,0 +1,10 @@
+{
+    "unit_id": "unit123",
+    "user_id": "user123",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "occupant_type": "TENANT",
+    "is_primary": true,
+    "start_date": "2026-01-01",
+    "end_date": null
+}

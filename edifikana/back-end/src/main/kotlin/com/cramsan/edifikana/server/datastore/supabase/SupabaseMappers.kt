@@ -43,6 +43,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.OccupantEntity
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
 import com.cramsan.edifikana.server.service.models.PaymentRecord
@@ -569,5 +570,26 @@ fun RentConfigEntity.toRentConfig(): RentConfig {
         updatedAt = this.updatedAt,
         updatedBy = this.updatedBy,
         createdAt = this.createdAt,
+    )
+}
+
+/**
+ * Maps an [OccupantEntity] to the [Occupant] service model.
+ */
+@OptIn(SupabaseModel::class)
+fun OccupantEntity.toOccupant(): com.cramsan.edifikana.server.service.models.Occupant {
+    return com.cramsan.edifikana.server.service.models.Occupant(
+        id = this.occupantId,
+        unitId = this.unitId,
+        userId = this.userId,
+        addedBy = this.addedBy,
+        name = this.name,
+        email = this.email,
+        occupantType = enumValueOf(this.occupantType),
+        isPrimary = this.isPrimary,
+        startDate = this.startDate,
+        endDate = this.endDate,
+        status = enumValueOf(this.status),
+        addedAt = this.addedAt,
     )
 }

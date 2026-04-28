@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
+import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
@@ -54,6 +55,7 @@ class RBACServiceTest {
     private lateinit var unitDatastore: UnitDatastore
     private lateinit var paymentRecordDatastore: PaymentRecordDatastore
     private lateinit var rentConfigDatastore: RentConfigDatastore
+    private lateinit var occupantDatastore: OccupantDatastore
     private lateinit var rbac: RBACService
 
     @BeforeEach
@@ -70,6 +72,7 @@ class RBACServiceTest {
         taskDatastore = mockk()
         paymentRecordDatastore = mockk()
         rentConfigDatastore = mockk()
+        occupantDatastore = mockk()
         rbac = RBACService(
             propertyDatastore,
             orgDatastore,
@@ -82,6 +85,7 @@ class RBACServiceTest {
             unitDatastore,
             paymentRecordDatastore,
             rentConfigDatastore,
+            occupantDatastore,
         )
     }
 

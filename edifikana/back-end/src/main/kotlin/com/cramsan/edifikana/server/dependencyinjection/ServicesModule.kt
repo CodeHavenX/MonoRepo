@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.edifikana.server.service.CommonAreaService
+import com.cramsan.edifikana.server.service.OccupantService
 import com.cramsan.edifikana.server.service.PaymentRecordService
 import com.cramsan.edifikana.server.service.RentConfigService
 import com.cramsan.edifikana.server.service.TaskService
@@ -39,4 +40,5 @@ internal val ServicesModule = module {
     singleOf(::TaskService)
     singleOf(::PaymentRecordService)
     singleOf(::RentConfigService)
+    singleOf(::OccupantService)
 }

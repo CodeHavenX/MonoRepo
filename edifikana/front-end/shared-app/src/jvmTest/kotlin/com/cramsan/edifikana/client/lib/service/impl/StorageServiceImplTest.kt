@@ -45,8 +45,8 @@ class StorageServiceImplTest : CoroutineTest() {
     @Test
     fun `uploadFile returns assetId on success`() = runTest {
         // Arrange
-        val targetRef = "employee.png"
-        val bucketId = "images/timecard-images"
+        val targetRef = "timecard-images/employee.png"
+        val bucketId = "images"
         val testData = "test content".toByteArray()
         val signedUploadUrl = "https://storage.example.com/upload/signed/employee.png"
         val expectedAssetId = "images/timecard-images/employee.png"

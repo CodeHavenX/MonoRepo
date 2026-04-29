@@ -250,18 +250,18 @@ val TIME_CARD_EVENT_5 =
         timestamp = Instant.fromEpochSeconds(1727712654),
     )
 
-const val BUCKET_ID = "images/timecard-images"
+const val BUCKET_ID = "images"
 
 val ASSET_1 =
     Asset(
         id = AssetId("images/timecard-images/employee1.png"),
-        fileName = "employee1.png",
+        fileName = "timecard-images/employee1.png",
         signedUrl = null,
     )
 
 val ASSET_2 =
     Asset(
         id = AssetId("images/timecard-images/employee2.png"),
-        fileName = "employee2.png",
+        fileName = "timecard-images/employee2.png",
         signedUrl = "fakeSignedUrl.url.com",
     )

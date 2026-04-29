@@ -11,6 +11,7 @@ import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
@@ -21,6 +22,7 @@ import kotlin.time.Duration.Companion.days
 /**
  * Service for user operations.
  */
+@BackendService
 class UserService(
     private val userDatastore: UserDatastore,
     private val notificationDatastore: NotificationDatastore,

@@ -8,12 +8,14 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.service.models.Document
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 
 /**
  * Service for managing document metadata. Delegates persistence to [DocumentDatastore].
  * Actual file content is managed separately via [StorageService].
  */
+@BackendService
 class DocumentService(private val documentDatastore: DocumentDatastore) {
     /**
      * Creates a new document metadata record.

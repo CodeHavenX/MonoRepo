@@ -14,7 +14,7 @@ import com.cramsan.edifikana.lib.model.network.user.UserEmailQueryParam
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.model.user.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -40,6 +40,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Default implementation for the [AuthService].
  */
+@FrontendService
 class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : AuthService {
     private val _activeUser = MutableStateFlow<UserId?>(null)
 
@@ -62,7 +63,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             }
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun getUser(): Result<UserModel> =
         runSuspendCatching(TAG) {
             val userId =
@@ -79,7 +79,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             userModel
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun getUsersByOrganization(
         organizationId: OrganizationId,
     ): Result<List<UserModel>> =
@@ -116,7 +115,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
         return _activeUser.asStateFlow()
     }
 
-    @OptIn(NetworkModel::class)
     override suspend fun signUp(
         email: String,
         phoneNumber: String,
@@ -155,7 +153,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             }
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun signInWithOtp(
         email: String,
         hashToken: String,
@@ -182,7 +179,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             getUser().getOrThrow()
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun passwordReset(email: String?, phoneNumber: String?): Result<Unit> =
         runSuspendCatching(TAG) {
             requireAtLeastOne(
@@ -211,7 +207,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
         return Result.success(!hasServicePermissions)
     }
 
-    @OptIn(NetworkModel::class)
     override suspend fun checkUserExists(email: String): Result<Boolean> =
         runSuspendCatching(TAG) {
             UserApi.checkUserExists
@@ -260,7 +255,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             }
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun inviteEmployee(
         email: String,
         organizationId: OrganizationId,
@@ -279,7 +273,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
                 ).execute(http)
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun getInvites(organizationId: OrganizationId): Result<List<Invite>> =
         runSuspendCatching(TAG) {
             val response =
@@ -291,7 +284,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             invites
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun acceptInvite(inviteId: InviteId): Result<Unit> =
         runSuspendCatching(TAG) {
             UserApi.acceptInvite
@@ -300,7 +292,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
                 ).execute(http)
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun declineInvite(inviteId: InviteId): Result<Unit> =
         runSuspendCatching(TAG) {
             UserApi.declineInvite
@@ -314,7 +305,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
     }
 }
 
-@OptIn(NetworkModel::class, ExperimentalTime::class)
+@OptIn(ExperimentalTime::class)
 private fun InviteNetworkResponse.toInvite(): Invite {
     return Invite(
         id = this.inviteId,

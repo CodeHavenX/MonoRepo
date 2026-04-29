@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Property
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
  * Contains property data plus the user_id from the mapping.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class UserPropertyViewEntity(
     val id: String,
     val name: String,

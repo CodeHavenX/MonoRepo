@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.EventEmitter
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 /**
  * View model for the entire window.
  */
+@FrontendViewModel
 class EdifikanaWindowViewModel(
     dependencies: ViewModelDependencies,
     private val windowEventEmitter: EventEmitter<WindowEvent>,

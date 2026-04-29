@@ -5,11 +5,13 @@ import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 
 /**
  * Service for organization operations.
  */
+@BackendService
 class OrganizationService(private val organizationDatastore: OrganizationDatastore) {
     /**
      * Retrieves an organization with the provided [id].

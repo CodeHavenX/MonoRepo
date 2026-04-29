@@ -8,6 +8,7 @@ import com.cramsan.edifikana.lib.model.task.TaskStatus
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Task
+import com.cramsan.framework.annotations.BackendDatastore
 import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -15,6 +16,7 @@ import kotlin.time.Instant
 /**
  * Interface for the task datastore.
  */
+@BackendDatastore
 @OptIn(ExperimentalTime::class)
 interface TaskDatastore {
     /**

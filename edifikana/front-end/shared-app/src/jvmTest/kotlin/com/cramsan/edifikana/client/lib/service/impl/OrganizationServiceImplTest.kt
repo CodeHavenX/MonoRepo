@@ -46,7 +46,7 @@ class OrganizationServiceImplTest {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getOrganization should return mapped organization`() = runTest {
         // Arrange
@@ -73,7 +73,7 @@ class OrganizationServiceImplTest {
         assertEquals("Test Description", organization?.description)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getOrganizations should return mapped organization list`() = runTest {
         // Arrange
@@ -111,7 +111,7 @@ class OrganizationServiceImplTest {
         assertEquals("Description 2", list?.get(1)?.description)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getOrganizations should return empty list when no organizations exist`() = runTest {
         // Arrange
@@ -132,7 +132,7 @@ class OrganizationServiceImplTest {
         assertEquals(0, list?.size)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `createOrganization should return mapped organization after creation`() = runTest {
         // Arrange

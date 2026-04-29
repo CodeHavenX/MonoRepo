@@ -137,7 +137,7 @@ class AuthServiceImplTest {
     /**
      * Tests that getUser returns mapped user when signed in.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getUser returns mapped user when signed in`() = runTest {
         // Arrange
@@ -217,7 +217,7 @@ class AuthServiceImplTest {
     /**
      * Tests that checkUserExists returns true when the backend reports the user is registered.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `checkUserExists returns true when backend reports registered`() = runTest {
         // Arrange
@@ -239,7 +239,7 @@ class AuthServiceImplTest {
     /**
      * Tests that checkUserExists returns false when the backend reports the user is not registered.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `checkUserExists returns false when backend reports not registered`() = runTest {
         // Arrange
@@ -261,7 +261,7 @@ class AuthServiceImplTest {
     /**
      * Test that getUsersByOrganization returns a list of users for the organization.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getUsersByOrganization returns list of users`() = runTest {
         // Arrange
@@ -304,7 +304,7 @@ class AuthServiceImplTest {
     /**
      * Tests that signInWithPassword returns user model when credentials are valid.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `signInWithPassword returns user model when credentials are valid`() = runTest {
         val email = "valid@example.com"
@@ -336,7 +336,7 @@ class AuthServiceImplTest {
     /**
      * Tests that signOut clears the active user.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `signOut clears active user`() = runTest {
         coEvery { auth.signOut() } just Runs
@@ -350,7 +350,7 @@ class AuthServiceImplTest {
     /**
      * Tests that signUp creates a new user and returns the user model.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `signUp creates new user and returns user model`() = runTest {
         val email = "newuser@example.com"
@@ -382,7 +382,7 @@ class AuthServiceImplTest {
     /**
      * Tests that signInWithOtp returns user model when OTP verification succeeds and user is created.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `signInWithOtp returns user model when OTP verification succeeds and user is created`() = runTest {
         val email = "user@example.com"
@@ -413,7 +413,7 @@ class AuthServiceImplTest {
     /**
      * Tests that signInWithOtp returns user model when OTP verification succeeds and user is not created.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `signInWithOtp returns user model when OTP verification succeeds and user is not created`() = runTest {
         val email = "user@example.com"
@@ -476,7 +476,7 @@ class AuthServiceImplTest {
     /**
      * Tests that checkUserExists returns true when the backend reports the user is registered.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `checkUserExists returns true when user is registered`() = runTest {
         // Arrange
@@ -498,7 +498,7 @@ class AuthServiceImplTest {
     /**
      * Tests that checkUserExists returns false when the backend reports the user is not registered.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `checkUserExists returns false when user is not registered`() = runTest {
         // Arrange
@@ -551,7 +551,7 @@ class AuthServiceImplTest {
      * Verifies that inviteEmployee sends an invite successfully.
      */
     @Ignore("Requires backend support for inviting employees, related to TODO() on method")
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `inviteEmployee sends invite successfully`() = runTest {
         // Arrange
@@ -572,7 +572,7 @@ class AuthServiceImplTest {
     /**
      * Verifies that getInvites returns a list of invites for the organization.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getInvites returns list of invites`() = runTest {
         // Arrange

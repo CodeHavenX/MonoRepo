@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.service
 
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.CoreUri
 
 /**
@@ -13,6 +14,7 @@ import com.cramsan.framework.core.CoreUri
  * - Image processing (EXIF rotation, compression)
  * - Filename extraction from URIs
  */
+@FrontendService
 interface FileService {
     /**
      * Read bytes from a file URI.

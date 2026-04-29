@@ -8,7 +8,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserPropertyMappingEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserPropertyViewEntity
 import com.cramsan.edifikana.server.service.models.Property
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -17,11 +17,12 @@ import kotlin.time.Clock
 /**
  * Datastore for managing properties.
  */
+@BackendDatastore
 class SupabasePropertyDatastore(private val postgrest: Postgrest, private val clock: Clock) : PropertyDatastore {
     /**
      * Creates a new property and associates it with [creatorUserId].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun createProperty(
         name: String,
         address: String,
@@ -68,7 +69,7 @@ class SupabasePropertyDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Retrieves a property by [propertyId]. Returns the [Property] if found, null otherwise.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getProperty(
         propertyId: PropertyId,
     ): Result<Property?> =
@@ -92,7 +93,7 @@ class SupabasePropertyDatastore(private val postgrest: Postgrest, private val cl
      * Gets all properties accessible to the given user.
      * Uses the v_user_properties view for single-query retrieval (eliminates N+1 pattern).
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getProperties(
         userId: UserId,
     ): Result<List<Property>> =
@@ -111,7 +112,7 @@ class SupabasePropertyDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Updates a property's attributes. Only non-null parameters are updated.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun updateProperty(
         propertyId: PropertyId,
         name: String?,
@@ -141,7 +142,7 @@ class SupabasePropertyDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Soft deletes a property by [propertyId]. Returns true if successful.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deleteProperty(
         propertyId: PropertyId,
     ): Result<Boolean> =
@@ -166,7 +167,7 @@ class SupabasePropertyDatastore(private val postgrest: Postgrest, private val cl
      * Permanently deletes a soft-deleted property by [propertyId]. Returns true if successful.
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun purgeProperty(
         propertyId: PropertyId,
     ): Result<Boolean> =

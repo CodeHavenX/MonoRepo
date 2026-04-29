@@ -3,7 +3,7 @@ package com.cramsan.flyerboard.server.controller
 import com.cramsan.flyerboard.api.UserApi
 import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.service.UserService
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
@@ -13,11 +13,11 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for user related operations.
  */
+@BackendController
 class UserController(
     private val userService: UserService,
     private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>,
 ) : Controller {
-    @OptIn(NetworkModel::class)
     override fun registerRoutes(route: Routing) {
         UserApi.register(route) {
             unauthenticatedHandler(api.createUser, contextRetriever) { request ->

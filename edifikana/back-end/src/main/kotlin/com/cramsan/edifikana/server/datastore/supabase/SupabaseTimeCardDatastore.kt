@@ -7,7 +7,7 @@ import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -17,11 +17,12 @@ import kotlin.time.Instant
 /**
  * Datastore for managing time card events.
  */
+@BackendDatastore
 class SupabaseTimeCardDatastore(private val postgrest: Postgrest, private val clock: Clock) : TimeCardDatastore {
     /**
      * Creates a new time card event for an employee clock-in/out.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun createTimeCardEvent(
         employeeId: EmployeeId,
         fallbackEmployeeName: String?,
@@ -55,7 +56,7 @@ class SupabaseTimeCardDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Retrieves a time card event by [id]. Returns the [TimeCardEvent] if found, null otherwise.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getTimeCardEvent(
         id: TimeCardEventId,
     ): Result<TimeCardEvent?> =
@@ -78,7 +79,7 @@ class SupabaseTimeCardDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Gets time card events, optionally filtered by [employeeId].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getTimeCardEvents(
         employeeId: EmployeeId?,
     ): Result<List<TimeCardEvent>> =
@@ -102,7 +103,7 @@ class SupabaseTimeCardDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Soft deletes a time card event by [id]. Returns true if successful.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deleteTimeCardEvent(
         id: TimeCardEventId,
     ): Result<Boolean> =
@@ -126,7 +127,7 @@ class SupabaseTimeCardDatastore(private val postgrest: Postgrest, private val cl
      * Permanently deletes a soft-deleted time card event by [id]. Returns true if successful.
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun purgeTimeCardEvent(
         id: TimeCardEventId,
     ): Result<Boolean> =

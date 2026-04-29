@@ -4,10 +4,12 @@ import com.cramsan.edifikana.lib.model.rent.RentConfigId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.RentConfig
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface for the rent configuration datastore.
  */
+@BackendDatastore
 interface RentConfigDatastore {
     /**
      * Retrieves the active rent configuration for [unitId]. Returns null if none exists.

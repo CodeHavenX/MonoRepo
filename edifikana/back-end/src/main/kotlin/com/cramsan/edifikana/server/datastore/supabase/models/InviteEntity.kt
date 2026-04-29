@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -13,7 +13,7 @@ import kotlin.time.Instant
  * Supabase entity representing an invite to join an organization.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class InviteEntity(
     @SerialName("id")
     val id: String,
@@ -42,7 +42,7 @@ data class InviteEntity(
      * Supabase entity representing a create invite request.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class Create(
         @SerialName("email")
         val email: String,

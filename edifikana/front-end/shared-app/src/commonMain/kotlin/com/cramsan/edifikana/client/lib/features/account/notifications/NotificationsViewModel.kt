@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.models.Notification
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.notification.NotificationType
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ import kotlin.time.ExperimentalTime
 /**
  * ViewModel for the Notifications screen.
  **/
+@FrontendViewModel
 @OptIn(ExperimentalTime::class)
 class NotificationsViewModel(
     dependencies: ViewModelDependencies,

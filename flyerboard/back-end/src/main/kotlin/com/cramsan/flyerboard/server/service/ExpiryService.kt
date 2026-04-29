@@ -2,6 +2,7 @@ package com.cramsan.flyerboard.server.service
 
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.server.datastore.FlyerDatastore
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logI
@@ -19,6 +20,7 @@ import kotlin.time.ExperimentalTime
  * (which is a [CoroutineScope] tied to the server lifecycle). The launched coroutine will be
  * cancelled automatically when the server shuts down.
  */
+@BackendService
 @OptIn(ExperimentalTime::class)
 class ExpiryService(private val flyerDatastore: FlyerDatastore) {
     /**

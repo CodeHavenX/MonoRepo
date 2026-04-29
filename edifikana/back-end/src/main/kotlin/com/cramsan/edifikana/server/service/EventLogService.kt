@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.service.models.EventLogEntry
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -14,6 +15,7 @@ import kotlin.time.Instant
 /**
  * Service for event log operations.
  */
+@BackendService
 @OptIn(ExperimentalTime::class)
 class EventLogService(private val eventLogDatastore: EventLogDatastore) {
     /**

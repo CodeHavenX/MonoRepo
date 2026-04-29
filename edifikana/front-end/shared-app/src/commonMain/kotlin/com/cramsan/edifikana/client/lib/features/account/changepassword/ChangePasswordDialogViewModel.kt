@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.account.changepassword
 import com.cramsan.edifikana.client.lib.features.account.account.AccountEvent
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
  *
  * @property dependencies The ViewModelDependencies instance providing necessary dependencies.
  */
+@FrontendViewModel
 class ChangePasswordDialogViewModel(
     private val authManager: AuthManager,
     private val stringProvider: StringProvider,

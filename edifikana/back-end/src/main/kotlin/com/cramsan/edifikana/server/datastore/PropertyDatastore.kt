@@ -4,10 +4,12 @@ import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface for interacting with the property database.
  */
+@BackendDatastore
 interface PropertyDatastore {
     /**
      * Creates a new property. Returns the [Result] of the operation with the created [Property].

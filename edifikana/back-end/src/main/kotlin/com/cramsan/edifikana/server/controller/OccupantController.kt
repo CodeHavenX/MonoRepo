@@ -11,7 +11,7 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.edifikana.server.service.OccupantService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -34,13 +34,12 @@ import io.ktor.server.routing.Routing
  * RBAC for create and list resolves via the unitId in the request body / query params.
  * RBAC for get, update, and remove resolves via the occupantId (occupant → unit → org lookup).
  */
-@OptIn(NetworkModel::class)
+@BackendController
 class OccupantController(
     private val occupantService: OccupantService,
     private val rbacService: RBACService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
-
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -51,23 +50,24 @@ class OccupantController(
             CreateOccupantNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OccupantNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.requestBody.unitId, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        return occupantService.addOccupant(
-            unitId = request.requestBody.unitId,
-            userId = request.requestBody.userId,
-            addedBy = request.context.payload.userId,
-            name = request.requestBody.name,
-            email = request.requestBody.email,
-            occupantType = request.requestBody.occupantType,
-            isPrimary = request.requestBody.isPrimary,
-            startDate = request.requestBody.startDate,
-            endDate = request.requestBody.endDate,
-        ).toOccupantNetworkResponse()
+        return occupantService
+            .addOccupant(
+                unitId = request.requestBody.unitId,
+                userId = request.requestBody.userId,
+                addedBy = request.context.payload.userId,
+                name = request.requestBody.name,
+                email = request.requestBody.email,
+                occupantType = request.requestBody.occupantType,
+                isPrimary = request.requestBody.isPrimary,
+                startDate = request.requestBody.startDate,
+                endDate = request.requestBody.endDate,
+            ).toOccupantNetworkResponse()
     }
 
     /**
@@ -79,8 +79,8 @@ class OccupantController(
             NoRequestBody,
             NoQueryParam,
             OccupantId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OccupantNetworkResponse {
         val hasStaffAccess = rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)
         if (hasStaffAccess) {
@@ -88,8 +88,9 @@ class OccupantController(
                 ?: throw NotFoundException("Occupant not found.")
         }
         // Residents can read their own occupant record (where userId matches the caller).
-        val occupant = occupantService.getOccupant(request.pathParam)
-            ?: throw NotFoundException("Occupant not found.")
+        val occupant =
+            occupantService.getOccupant(request.pathParam)
+                ?: throw NotFoundException("Occupant not found.")
         if (occupant.userId == request.context.payload.userId) {
             return occupant.toOccupantNetworkResponse()
         }
@@ -104,16 +105,18 @@ class OccupantController(
             NoRequestBody,
             GetOccupantsForUnitQueryParams,
             NoPathParam,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OccupantListNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.queryParam.unitId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val occupants = occupantService.listOccupantsForUnit(
-            unitId = request.queryParam.unitId,
-            includeInactive = request.queryParam.includeInactive,
-        ).map { it.toOccupantNetworkResponse() }
+        val occupants =
+            occupantService
+                .listOccupantsForUnit(
+                    unitId = request.queryParam.unitId,
+                    includeInactive = request.queryParam.includeInactive,
+                ).map { it.toOccupantNetworkResponse() }
         return OccupantListNetworkResponse(occupants)
     }
 
@@ -125,22 +128,23 @@ class OccupantController(
             UpdateOccupantNetworkRequest,
             NoQueryParam,
             OccupantId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OccupantNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         return try {
-            occupantService.updateOccupant(
-                occupantId = request.pathParam,
-                name = request.requestBody.name,
-                email = request.requestBody.email,
-                occupantType = request.requestBody.occupantType,
-                isPrimary = request.requestBody.isPrimary,
-                endDate = request.requestBody.endDate,
-                status = request.requestBody.status,
-            ).toOccupantNetworkResponse()
+            occupantService
+                .updateOccupant(
+                    occupantId = request.pathParam,
+                    name = request.requestBody.name,
+                    email = request.requestBody.email,
+                    occupantType = request.requestBody.occupantType,
+                    isPrimary = request.requestBody.isPrimary,
+                    endDate = request.requestBody.endDate,
+                    status = request.requestBody.status,
+                ).toOccupantNetworkResponse()
         } catch (e: NoSuchElementException) {
             throw NotFoundException("Occupant not found.", e)
         }
@@ -155,8 +159,8 @@ class OccupantController(
             NoRequestBody,
             NoQueryParam,
             OccupantId,
-            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>
-            >
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
     ): OccupantNetworkResponse {
         if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.ADMIN)) {
             throw UnauthorizedException(unauthorizedMsg)

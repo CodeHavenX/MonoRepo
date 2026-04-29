@@ -6,6 +6,7 @@ import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.model.user.UserRole
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Service for managing authentication.
  */
+@FrontendService
 interface AuthService {
     /**
      * Check if the user is signed in.

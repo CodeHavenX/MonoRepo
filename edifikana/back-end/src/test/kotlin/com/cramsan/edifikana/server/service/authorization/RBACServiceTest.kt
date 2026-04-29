@@ -7,17 +7,17 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
-import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
-import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
-import com.cramsan.edifikana.server.datastore.RentConfigDatastore
-import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
+import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
+import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
+import com.cramsan.edifikana.server.datastore.RentConfigDatastore
 import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
+import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.edifikana.server.service.models.User
@@ -73,20 +73,21 @@ class RBACServiceTest {
         paymentRecordDatastore = mockk()
         rentConfigDatastore = mockk()
         occupantDatastore = mockk()
-        rbac = RBACService(
-            propertyDatastore,
-            orgDatastore,
-            employeeDatastore,
-            timeCardDatastore,
-            eventLogDatastore,
-            documentDatastore,
-            commonAreaDatastore,
-            taskDatastore,
-            unitDatastore,
-            paymentRecordDatastore,
-            rentConfigDatastore,
-            occupantDatastore,
-        )
+        rbac =
+            RBACService(
+                propertyDatastore,
+                orgDatastore,
+                employeeDatastore,
+                timeCardDatastore,
+                eventLogDatastore,
+                documentDatastore,
+                commonAreaDatastore,
+                taskDatastore,
+                unitDatastore,
+                paymentRecordDatastore,
+                rentConfigDatastore,
+                occupantDatastore,
+            )
     }
 
     /**
@@ -140,52 +141,54 @@ class RBACServiceTest {
      * Tests that hasRole returns true when the user has the required role for an organization action.
      */
     @Test
-    fun `hasRole for org action returns expected role for authorized user`() = runTest {
-        // Arrange
-        val userId = UserId("testUser")
-        val orgId = OrganizationId("testOrg")
-        val requiredRole = UserRole.ADMIN
+    fun `hasRole for org action returns expected role for authorized user`() =
+        runTest {
+            // Arrange
+            val userId = UserId("testUser")
+            val orgId = OrganizationId("testOrg")
+            val requiredRole = UserRole.ADMIN
 
-        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
+            val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
 
-        coEvery {
-            orgDatastore.getUserRole(userId, orgId)
-        } returns Result.success(OrgRole.ADMIN)
+            coEvery {
+                orgDatastore.getUserRole(userId, orgId)
+            } returns Result.success(OrgRole.ADMIN)
 
-        // Act
-        val result = rbac.hasRole(context, orgId, requiredRole)
+            // Act
+            val result = rbac.hasRole(context, orgId, requiredRole)
 
-        // Assert
-        assertTrue(result)
-    }
+            // Assert
+            assertTrue(result)
+        }
 
     /**
      * Tests that hasRole returns false when the user does not have the required role for an organization action.
      */
     @Test
-    fun `hasRole for org action returns false`() = runTest {
-        // Arrange
-        val userId = UserId("testUser")
-        val userRole = UserRole.EMPLOYEE
-        val orgId = OrganizationId("testOrg")
-        val requiredRole = UserRole.OWNER
+    fun `hasRole for org action returns false`() =
+        runTest {
+            // Arrange
+            val userId = UserId("testUser")
+            val userRole = UserRole.EMPLOYEE
+            val orgId = OrganizationId("testOrg")
+            val requiredRole = UserRole.OWNER
 
-        val user = mockk<User>()
-        every { user.id } returns userId
-        every { user.role } returns userRole
+            val user = mockk<User>()
+            every { user.id } returns userId
+            every { user.role } returns userRole
 
-        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
+            val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
 
-        coEvery {
-            orgDatastore.getUserRole(userId, orgId)
-        } returns Result.success(OrgRole.EMPLOYEE)
+            coEvery {
+                orgDatastore.getUserRole(userId, orgId)
+            } returns Result.success(OrgRole.EMPLOYEE)
 
-        // Act
-        val result = rbac.hasRole(context, orgId, requiredRole)
+            // Act
+            val result = rbac.hasRole(context, orgId, requiredRole)
 
-        // Assert
-        assertFalse(result)
-    }
+            // Assert
+            assertFalse(result)
+        }
 
     /**
      * Tests hasRoleOrHigher for organization actions using parameterized inputs from a CSV file.
@@ -232,7 +235,7 @@ class RBACServiceTest {
     @ParameterizedTest
     @CsvSource(
         "testUserId, OWNER, testProperty, OWNER, true",
-        "testUserId2, EMPLOYEE, testProp2, OWNER, false"
+        "testUserId2, EMPLOYEE, testProp2, OWNER, false",
     )
     fun `hasRole for property actions returns expected results for requester`(
         userId: UserId,
@@ -297,7 +300,7 @@ class RBACServiceTest {
     @ParameterizedTest
     @CsvSource(
         "testUserId, EMPLOYEE, Employee1, EMPLOYEE, true",
-        "testUserId2, MANAGER, Employee2, ADMIN, false"
+        "testUserId2, MANAGER, Employee2, ADMIN, false",
     )
     fun `hasRole for employee actions returns expected results for requester`(
         userId: UserId,

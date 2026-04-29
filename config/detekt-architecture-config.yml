@@ -1,0 +1,16 @@
+architecture:
+  excludes:
+    - '**/build/generated/**'
+  AnnotationCallerRestrictionRule:
+    active: true
+    # Format: 'InjectableAnnotation:AllowedCaller1,AllowedCaller2'
+    # Left side:  the annotation on the type being referenced
+    # Right side: the annotation(s) the referencing class must have (at least one)
+    # Add a new line here to extend the architecture with a new layer — no Kotlin changes required.
+    layers:
+      - 'BackendDatastore:BackendService'
+      - 'BackendService:BackendController,BackendService'
+      - 'FrontendService:FrontendManager'
+      - 'FrontendManager:FrontendViewModel'
+      - 'NetworkModel:BackendController,NetworkModel'
+      - 'DatabaseModel:BackendDatastore,DatabaseModel'

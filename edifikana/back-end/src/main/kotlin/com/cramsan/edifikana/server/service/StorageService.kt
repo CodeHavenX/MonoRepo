@@ -3,11 +3,13 @@ package com.cramsan.edifikana.server.service
 import com.cramsan.edifikana.lib.model.asset.AssetId
 import com.cramsan.edifikana.server.datastore.StorageDatastore
 import com.cramsan.edifikana.server.service.models.Asset
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 
 /**
  * Service for managing storage of files (assets).
  */
+@BackendService
 class StorageService(private val storageDatastore: StorageDatastore) {
     /**
      * Creates a file with the provided [fileName] and [content].

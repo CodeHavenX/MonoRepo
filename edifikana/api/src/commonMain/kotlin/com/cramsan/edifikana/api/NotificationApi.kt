@@ -3,7 +3,6 @@ package com.cramsan.edifikana.api
 import com.cramsan.edifikana.lib.model.network.notification.NotificationListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
 import com.cramsan.edifikana.lib.model.notification.NotificationId
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -14,7 +13,7 @@ import io.ktor.http.HttpMethod
 /**
  * Singleton object representing the Notification API with its operations.
  */
-@OptIn(NetworkModel::class)
+
 object NotificationApi : Api("notification") {
     /**
      * Get all notifications for the authenticated user.

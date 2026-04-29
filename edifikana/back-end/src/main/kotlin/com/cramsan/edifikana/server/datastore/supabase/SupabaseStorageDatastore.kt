@@ -3,6 +3,7 @@ package com.cramsan.edifikana.server.datastore.supabase
 import com.cramsan.edifikana.lib.model.asset.AssetId
 import com.cramsan.edifikana.server.datastore.StorageDatastore
 import com.cramsan.edifikana.server.service.models.Asset
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.storage.Storage
@@ -11,6 +12,7 @@ import kotlin.time.Duration.Companion.minutes
 /**
  * Datastore for managing storage of assets using Supabase.
  */
+@BackendDatastore
 class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore {
     /**
      * Uploads a new asset to storage with the given [fileName] and [content].

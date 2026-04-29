@@ -8,6 +8,7 @@ import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
@@ -16,8 +17,8 @@ import io.ktor.client.HttpClient
 /**
  * Default implementation for the [PropertyService].
  */
+@FrontendService
 class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
-    @OptIn(NetworkModel::class)
     override suspend fun getPropertyList(): Result<List<PropertyModel>> =
         runSuspendCatching(TAG) {
             val response =
@@ -32,7 +33,6 @@ class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
             propertyList
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun getProperty(propertyId: PropertyId): Result<PropertyModel> =
         runSuspendCatching(TAG) {
             val response =
@@ -43,7 +43,6 @@ class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
             response.toPropertyModel()
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun addProperty(
         propertyName: String,
         address: String,
@@ -66,7 +65,6 @@ class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
             response.toPropertyModel()
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun updateProperty(
         propertyId: PropertyId,
         name: String,

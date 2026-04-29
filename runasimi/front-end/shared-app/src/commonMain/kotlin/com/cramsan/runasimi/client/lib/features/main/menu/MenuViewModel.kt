@@ -1,6 +1,7 @@
 package com.cramsan.runasimi.client.lib.features.main.menu
 
 import com.cramsan.architecture.client.manager.PreferencesManager
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.runasimi.client.lib.features.window.RunasimiWindowsEvent
@@ -10,6 +11,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Menu screen.
  **/
+@FrontendViewModel
 class MenuViewModel(dependencies: ViewModelDependencies, private val preferencesManager: PreferencesManager) :
     BaseViewModel<MenuEvent, MenuUIState>(
         dependencies,

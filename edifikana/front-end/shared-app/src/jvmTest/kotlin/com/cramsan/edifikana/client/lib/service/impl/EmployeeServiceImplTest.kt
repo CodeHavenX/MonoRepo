@@ -55,7 +55,7 @@ class EmployeeServiceImplTest {
     /**
      * Tests that getEmployeeList returns a mapped list of employee models.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getEmployeeList should return mapped employee list`() = runTest {
         // Arrange
@@ -96,7 +96,7 @@ class EmployeeServiceImplTest {
     /**
      * Tests that getEmployee returns a mapped employee model for the given employeePK.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getEmployee should return mapped employee for employeePK`() = runTest {
         // Arrange
@@ -126,7 +126,7 @@ class EmployeeServiceImplTest {
     /**
      * Tests that createEmployee returns a mapped employee model after creation.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `createEmployee should return mapped employee after creation`() = runTest {
         // Arrange
@@ -163,7 +163,7 @@ class EmployeeServiceImplTest {
     /**
      * Tests that updateEmployee returns a mapped employee model after update.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `updateEmployee should return mapped employee after update`() = runTest {
         // Arrange

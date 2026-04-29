@@ -9,7 +9,7 @@ import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.EmployeeEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEmployeeViewEntity
 import com.cramsan.edifikana.server.service.models.Employee
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -18,11 +18,12 @@ import kotlin.time.Clock
 /**
  * Datastore for managing employee members.
  */
+@BackendDatastore
 class SupabaseEmployeeDatastore(private val postgrest: Postgrest, private val clock: Clock) : EmployeeDatastore {
     /**
      * Creates a new employee member. Returns the created [Employee].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun createEmployee(
         idType: IdType,
         firstName: String,
@@ -54,7 +55,7 @@ class SupabaseEmployeeDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Retrieves an employee by [id]. Returns the [Employee] if found, null otherwise.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getEmployee(
         id: EmployeeId,
     ): Result<Employee?> =
@@ -78,7 +79,7 @@ class SupabaseEmployeeDatastore(private val postgrest: Postgrest, private val cl
      * Gets all employees accessible to the given user.
      * Uses the v_user_employees view for single-query retrieval (eliminates N+1 pattern).
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getEmployees(currentUser: UserId): Result<List<Employee>> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting all employees for user: %s", currentUser)
@@ -95,7 +96,7 @@ class SupabaseEmployeeDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Updates an employee's properties. Only non-null parameters are updated.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun updateEmployee(
         employeeId: EmployeeId,
         idType: IdType?,
@@ -127,7 +128,7 @@ class SupabaseEmployeeDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Soft deletes an employee by [id]. Returns true if successful.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deleteEmployee(
         id: EmployeeId,
     ): Result<Boolean> =
@@ -151,7 +152,7 @@ class SupabaseEmployeeDatastore(private val postgrest: Postgrest, private val cl
      * Permanently deletes a soft-deleted employee by [id]. Returns true if successful.
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun purgeEmployee(
         id: EmployeeId,
     ): Result<Boolean> =

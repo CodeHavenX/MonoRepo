@@ -47,7 +47,7 @@ class PropertyServiceImplTest {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getPropertyList should return mapped property list and set active from preferences`() = runTest {
         // Arrange
@@ -85,7 +85,7 @@ class PropertyServiceImplTest {
         assertEquals("drawable:CASA", list?.get(0)?.imageUrl)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getPropertyList should select first when preference not found`() = runTest {
         // Arrange
@@ -121,7 +121,7 @@ class PropertyServiceImplTest {
         assertEquals(2, list?.size)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getProperty should return mapped property`() = runTest {
         // Arrange
@@ -148,7 +148,7 @@ class PropertyServiceImplTest {
         assertEquals("drawable:L_DEPA", result.getOrNull()?.imageUrl)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `addProperty should return mapped property after creation`() = runTest {
         // Arrange
@@ -175,7 +175,7 @@ class PropertyServiceImplTest {
         assertEquals("drawable:CASA", result.getOrNull()?.imageUrl)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `updateProperty should return mapped property after update`() = runTest {
         // Arrange

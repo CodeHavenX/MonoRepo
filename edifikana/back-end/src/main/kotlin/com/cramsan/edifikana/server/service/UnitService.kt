@@ -4,11 +4,13 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.service.models.Unit
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 
 /**
  * Service for managing property units. Delegates persistence to [UnitDatastore].
  */
+@BackendService
 class UnitService(private val unitDatastore: UnitDatastore) {
     /**
      * Creates a new unit record.

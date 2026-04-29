@@ -1,10 +1,12 @@
 package com.cramsan.flyerboard.server.datastore
 
 import com.cramsan.flyerboard.server.service.models.User
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface defining user-related data operations.
  */
+@BackendDatastore
 interface UserDatastore {
     /**
      * Creates a new user with the given first and last name.

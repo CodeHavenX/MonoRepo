@@ -2,7 +2,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -11,7 +11,7 @@ import kotlin.time.Instant
  * Entity representing a property.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class PropertyEntity(
     val id: PropertyId,
     val name: String,
@@ -31,7 +31,7 @@ data class PropertyEntity(
      * Entity representing a new property.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreatePropertyEntity(
         val name: String,
         val address: String,

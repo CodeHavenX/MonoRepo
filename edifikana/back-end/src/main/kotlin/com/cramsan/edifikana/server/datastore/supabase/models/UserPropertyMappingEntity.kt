@@ -2,7 +2,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
  * Entity representing a property.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class UserPropertyMappingEntity(
     val id: String,
     @SerialName("user_id")
@@ -22,7 +22,7 @@ data class UserPropertyMappingEntity(
      * Creates a new instance of [UserPropertyMappingEntity].
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateUserPropertyMappingEntity(
         @SerialName("user_id")
         val userId: UserId,

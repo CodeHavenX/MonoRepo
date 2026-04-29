@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -13,7 +13,7 @@ import kotlin.time.Instant
  * Entity representing an event log entry.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class EventLogEntryEntity(
     val id: String,
     @SerialName("employee_id")
@@ -40,7 +40,7 @@ data class EventLogEntryEntity(
      * Entity representing a new event log entry.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateEventLogEntryEntity(
         @SerialName("employee_id")
         val employeeId: EmployeeId?,

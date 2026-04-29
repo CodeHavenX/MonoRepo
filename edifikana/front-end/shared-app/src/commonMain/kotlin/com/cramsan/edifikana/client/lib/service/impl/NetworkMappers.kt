@@ -21,7 +21,7 @@ import com.cramsan.framework.annotations.NetworkModel
 /**
  * Maps the [EventLogEntryNetworkResponse] models to [EventLogRecordModel] domain models.
  */
-@OptIn(NetworkModel::class)
+
 fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
     return EventLogRecordModel(
         id = id,
@@ -42,7 +42,7 @@ fun EventLogEntryNetworkResponse.toEventLogRecordModel(): EventLogRecordModel {
 /**
  * Maps the [EventLogRecordModel] domain models to [CreateEventLogEntryNetworkRequest] models.
  */
-@OptIn(NetworkModel::class)
+
 fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEntryNetworkRequest {
     return CreateEventLogEntryNetworkRequest(
         employeeId = employeePk,
@@ -60,7 +60,7 @@ fun EventLogRecordModel.toCreateEventLogEntryNetworkRequest(): CreateEventLogEnt
 /**
  * Maps the [EventLogRecordModel] domain models to [UpdateEventLogEntryNetworkRequest] models.
  */
-@OptIn(NetworkModel::class)
+
 fun EventLogRecordModel.toUpdateEventLogEntryNetworkRequest(): UpdateEventLogEntryNetworkRequest {
     return UpdateEventLogEntryNetworkRequest(
         type = eventType,
@@ -168,7 +168,7 @@ fun UserNetworkResponse.toUserModel(): UserModel {
 /**
  * Maps the [OrganizationNetworkResponse] models to [Organization] domain models.
  */
-@OptIn(NetworkModel::class)
+
 fun OrganizationNetworkResponse.toOrganizationModel(): Organization {
     return Organization(
         id = id,

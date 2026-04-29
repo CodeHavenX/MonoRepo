@@ -4,11 +4,10 @@ import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.datastore.supabase.toUser
-import com.cramsan.framework.annotations.SupabaseModel
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-@OptIn(SupabaseModel::class, kotlin.time.ExperimentalTime::class)
+@OptIn(kotlin.time.ExperimentalTime::class)
 class SupabaseMappersTest {
     @Test
     fun `UserEntity toUser maps all fields correctly`() {

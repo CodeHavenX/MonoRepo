@@ -4,7 +4,7 @@ import com.cramsan.edifikana.api.EmployeeApi
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
 import io.ktor.client.HttpClient
@@ -12,8 +12,8 @@ import io.ktor.client.HttpClient
 /**
  * Default implementation for the [EmployeeService].
  */
+@FrontendService
 class EmployeeServiceImpl(private val http: HttpClient) : EmployeeService {
-    @OptIn(NetworkModel::class)
     override suspend fun getEmployeeList(): Result<List<EmployeeModel>> =
         runSuspendCatching(TAG) {
             val response = EmployeeApi.getEmployees.buildRequest().execute(http)
@@ -24,7 +24,6 @@ class EmployeeServiceImpl(private val http: HttpClient) : EmployeeService {
             employeeList
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun getEmployee(employeePK: EmployeeId): Result<EmployeeModel> =
         runSuspendCatching(TAG) {
             val response = EmployeeApi.getEmployee.buildRequest(employeePK).execute(http)
@@ -32,7 +31,6 @@ class EmployeeServiceImpl(private val http: HttpClient) : EmployeeService {
             employee
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun createEmployee(
         employee: EmployeeModel.CreateEmployeeRequest,
     ): Result<EmployeeModel> =
@@ -46,7 +44,6 @@ class EmployeeServiceImpl(private val http: HttpClient) : EmployeeService {
             employeeModel
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun updateEmployee(
         employee: EmployeeModel.UpdateEmployeeRequest,
     ): Result<EmployeeModel> =

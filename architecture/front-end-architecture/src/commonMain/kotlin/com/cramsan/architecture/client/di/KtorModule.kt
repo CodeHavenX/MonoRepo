@@ -20,52 +20,63 @@ import org.koin.dsl.module
  * This module configures the HTTP client with content negotiation, exception handling,
  * and default request settings including the back-end URL.
  */
-internal val KtorModule = module {
+internal val KtorModule =
+    module {
 
-    single<HttpClient> {
-        val settingsHolder: SettingsHolder = get()
+        single<HttpClient> {
+            val settingsHolder: SettingsHolder = get()
 
-        HttpClient {
-            expectSuccess = true
-            HttpResponseValidator {
-                // Handle 4xx errors and map to custom exceptions
-                handleResponseExceptionWithRequest { exception, request ->
-                    val clientException =
-                        exception as? ClientRequestException ?: return@handleResponseExceptionWithRequest
-                    val exceptionResponse = clientException.response
-                    when (exceptionResponse.status) {
-                        HttpStatusCode.NotFound ->
-                            throw ClientRequestExceptions.NotFoundException(exceptionResponse.bodyAsText())
-                        HttpStatusCode.Unauthorized ->
-                            throw ClientRequestExceptions.UnauthorizedException(exceptionResponse.bodyAsText())
-                        HttpStatusCode.Forbidden ->
-                            throw ClientRequestExceptions.ForbiddenException(exceptionResponse.bodyAsText())
-                        HttpStatusCode.Conflict ->
-                            throw ClientRequestExceptions.ConflictException(exceptionResponse.bodyAsText())
-                        HttpStatusCode.BadRequest ->
-                            throw ClientRequestExceptions.InvalidRequestException(exceptionResponse.bodyAsText())
-                        else -> {
-                            // Throw the default exception
-                            throw clientException
+            HttpClient {
+                expectSuccess = true
+                HttpResponseValidator {
+                    // Handle 4xx errors and map to custom exceptions
+                    handleResponseExceptionWithRequest { exception, request ->
+                        val clientException =
+                            exception as? ClientRequestException ?: return@handleResponseExceptionWithRequest
+                        val exceptionResponse = clientException.response
+                        when (exceptionResponse.status) {
+                            HttpStatusCode.NotFound -> {
+                                throw ClientRequestExceptions.NotFoundException(exceptionResponse.bodyAsText())
+                            }
+
+                            HttpStatusCode.Unauthorized -> {
+                                throw ClientRequestExceptions.UnauthorizedException(exceptionResponse.bodyAsText())
+                            }
+
+                            HttpStatusCode.Forbidden -> {
+                                throw ClientRequestExceptions.ForbiddenException(exceptionResponse.bodyAsText())
+                            }
+
+                            HttpStatusCode.Conflict -> {
+                                throw ClientRequestExceptions.ConflictException(exceptionResponse.bodyAsText())
+                            }
+
+                            HttpStatusCode.BadRequest -> {
+                                throw ClientRequestExceptions.InvalidRequestException(exceptionResponse.bodyAsText())
+                            }
+
+                            else -> {
+                                // Throw the default exception
+                                throw clientException
+                            }
                         }
                     }
                 }
-            }
-            defaultRequest {
-                val resolvedUrl =
-                    settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) ?: "http://localhost:9292"
+                defaultRequest {
+                    val resolvedUrl =
+                        settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) ?: "http://localhost:9292"
 
-                url(resolvedUrl)
-            }
-            install(ContentNegotiation) {
-                json(get())
-            }
-            install(Logging)
+                    url(resolvedUrl)
+                }
+                install(ContentNegotiation) {
+                    json(get())
+                }
+                install(Logging)
 
-            val pluginList: List<ClientPlugin<*>> = getAll()
-            pluginList.forEach { plugin ->
-                install(plugin)
+                val pluginList: List<ClientPlugin<*>> = getAll()
+                pluginList.forEach { plugin ->
+                    install(plugin)
+                }
             }
         }
     }
-}

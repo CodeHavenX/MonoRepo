@@ -5,7 +5,6 @@ import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkL
 import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.organization.UpdateOrganizationNetworkRequest
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -15,7 +14,7 @@ import io.ktor.http.HttpMethod
 /**
  * API definition for organization related operations.
  */
-@OptIn(NetworkModel::class)
+
 object OrganizationApi : Api("organization") {
     val getOrganizationList =
         operation<

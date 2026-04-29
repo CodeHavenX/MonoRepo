@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.organization.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -15,7 +15,7 @@ import kotlin.time.Instant
  * joined_at is returned as TIMESTAMPTZ from the view.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class OrgMemberViewEntity(
     @SerialName("user_id")
     val userId: UserId,

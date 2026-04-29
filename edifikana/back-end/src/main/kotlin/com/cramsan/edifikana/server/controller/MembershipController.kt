@@ -17,7 +17,7 @@ import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.MembershipService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
@@ -31,6 +31,7 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for organization membership management operations.
  */
+@BackendController
 class MembershipController(
     private val membershipService: MembershipService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
@@ -43,7 +44,7 @@ class MembershipController(
      * RESIDENT role is rejected at the API boundary.
      * Inviter cannot assign a role higher than their own.
      */
-    @OptIn(NetworkModel::class)
+
     @Suppress("ThrowsCount")
     suspend fun inviteMember(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
@@ -69,7 +70,7 @@ class MembershipController(
     /**
      * Lists all active members of the organization. Requires EMPLOYEE+.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun listMembers(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         orgId: OrganizationId,
@@ -88,7 +89,7 @@ class MembershipController(
     /**
      * Updates a member's role. Requires ADMIN+.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun updateMemberRole(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         orgId: OrganizationId,
@@ -104,7 +105,7 @@ class MembershipController(
     /**
      * Removes a member from the organization. Requires MANAGER+.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun removeMember(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         orgId: OrganizationId,
@@ -121,7 +122,7 @@ class MembershipController(
      * Leaves the organization as the authenticated user. Requires active membership (EMPLOYEE+).
      * The sole owner cannot leave.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun leaveOrganization(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         orgId: OrganizationId,
@@ -137,7 +138,7 @@ class MembershipController(
     /**
      * Transfers organization ownership to another member. Requires OWNER.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun transferOwnership(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         orgId: OrganizationId,
@@ -154,7 +155,7 @@ class MembershipController(
     /**
      * Lists pending invites for the organization. Requires MANAGER+.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun listPendingInvites(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         orgId: OrganizationId,
@@ -173,7 +174,7 @@ class MembershipController(
     /**
      * Cancels a pending invite. Requires MANAGER+ in the invite's organization.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun cancelInvite(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         inviteId: InviteId,
@@ -190,7 +191,7 @@ class MembershipController(
      * Resends a pending invite with a new code and reset expiry.
      * Requires MANAGER+ in the invite's organization.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun resendInvite(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         inviteId: InviteId,
@@ -206,7 +207,7 @@ class MembershipController(
     /**
      * Joins an organization via an invite code. Requires authentication only.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun joinViaCode(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         request: JoinViaCodeNetworkRequest,
@@ -216,7 +217,6 @@ class MembershipController(
         return NoResponseBody
     }
 
-    @OptIn(NetworkModel::class)
     override fun registerRoutes(route: Routing) {
         MembershipApi.register(route) {
             handler(api.inviteMember, contextRetriever) { request ->

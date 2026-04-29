@@ -1,10 +1,12 @@
 package com.cramsan.edifikana.client.lib.service
 
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.CoreUri
 
 /**
  * Service for managing storage.
  */
+@FrontendService
 interface StorageService {
     /**
      * Upload a file.

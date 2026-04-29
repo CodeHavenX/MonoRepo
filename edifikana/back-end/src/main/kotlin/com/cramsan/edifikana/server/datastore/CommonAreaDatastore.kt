@@ -4,10 +4,12 @@ import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.service.models.CommonArea
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface for the common area datastore.
  */
+@BackendDatastore
 interface CommonAreaDatastore {
     /**
      * Creates a new common area record. Returns the [Result] with the created [CommonArea].

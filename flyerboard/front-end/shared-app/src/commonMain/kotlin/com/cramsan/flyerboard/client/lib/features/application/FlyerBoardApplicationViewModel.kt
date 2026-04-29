@@ -1,6 +1,7 @@
 package com.cramsan.flyerboard.client.lib.features.application
 
 import com.cramsan.flyerboard.client.lib.init.Initializer
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.launch
@@ -8,6 +9,7 @@ import kotlinx.coroutines.launch
 /**
  * View model for the entire application.
  */
+@FrontendViewModel
 class FlyerBoardApplicationViewModel(private val initHandler: Initializer, dependencies: ViewModelDependencies) :
     BaseViewModel<FlyerBoardApplicationViewModelEvent, FlyerBoardApplicationUIState>(
         dependencies,

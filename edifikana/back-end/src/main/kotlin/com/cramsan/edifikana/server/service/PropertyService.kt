@@ -6,12 +6,14 @@ import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.service.models.Property
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logD
 
 /**
  * Service for property operations.
  */
+@BackendService
 class PropertyService(private val propertyDatastore: PropertyDatastore) {
     /**
      * Creates a property with the provided [name].

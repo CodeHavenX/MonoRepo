@@ -6,10 +6,12 @@ import com.cramsan.edifikana.lib.model.identification.IdType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Employee
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface for interacting with the employee database.
  */
+@BackendDatastore
 interface EmployeeDatastore {
     /**
      * Creates a new employee member with the given details. Returns the [Result] of the operation with the created [Employee].

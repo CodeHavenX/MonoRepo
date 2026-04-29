@@ -6,7 +6,6 @@ import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaNetworkRespo
 import com.cramsan.edifikana.lib.model.network.commonArea.CreateCommonAreaNetworkRequest
 import com.cramsan.edifikana.lib.model.network.commonArea.UpdateCommonAreaNetworkRequest
 import com.cramsan.edifikana.lib.model.property.PropertyId
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -21,7 +20,7 @@ import io.ktor.http.HttpMethod
  * All operations require MANAGER role or higher in the property's organization, depending on
  * the operation. In some cases it will be ADMIN+, in others it will be MANAGER+
  */
-@OptIn(NetworkModel::class)
+
 object CommonAreaApi : Api("common-area") {
     val createCommonArea =
         operation<

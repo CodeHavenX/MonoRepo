@@ -1,5 +1,6 @@
 package com.cramsan.runasimi.client.lib.features.main.verbs
 
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.runasimi.client.lib.manager.QuechuaManager
@@ -8,6 +9,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Verbs screen.
  **/
+@FrontendViewModel
 class VerbsViewModel(dependencies: ViewModelDependencies, private val quechuaManager: QuechuaManager) :
     BaseViewModel<VerbsEvent, VerbsUIState>(
         dependencies,

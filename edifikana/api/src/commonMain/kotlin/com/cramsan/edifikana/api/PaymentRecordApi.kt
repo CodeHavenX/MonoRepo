@@ -6,7 +6,6 @@ import com.cramsan.edifikana.lib.model.network.payment.PaymentRecordListNetworkR
 import com.cramsan.edifikana.lib.model.network.payment.PaymentRecordNetworkResponse
 import com.cramsan.edifikana.lib.model.network.payment.UpdatePaymentRecordNetworkRequest
 import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -19,7 +18,7 @@ import io.ktor.http.HttpMethod
  * Payment records are unit-scoped financial records tracking rent and other payments.
  * Write operations require ADMIN role or higher. Read operations require EMPLOYEE role or higher.
  */
-@OptIn(NetworkModel::class)
+
 object PaymentRecordApi : Api("payment-records") {
     val createPaymentRecord =
         operation<

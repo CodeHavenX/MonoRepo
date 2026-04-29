@@ -2,6 +2,7 @@ package com.cramsan.flyerboard.client.lib.managers
 
 import com.cramsan.flyerboard.client.lib.service.AuthService
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Manager to handle authentication operations.
  */
+@FrontendManager
 class AuthManager(private val dependencies: ManagerDependencies, private val authService: AuthService) {
     /**
      * Registers a new user with [email] and [password].

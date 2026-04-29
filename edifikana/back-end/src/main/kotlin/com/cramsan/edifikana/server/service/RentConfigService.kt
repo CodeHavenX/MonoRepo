@@ -4,11 +4,13 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.RentConfigDatastore
 import com.cramsan.edifikana.server.service.models.RentConfig
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 
 /**
  * Service for managing rent configurations. Delegates persistence to [RentConfigDatastore].
  */
+@BackendService
 class RentConfigService(private val rentConfigDatastore: RentConfigDatastore) {
     /**
      * Retrieves the active rent configuration for [unitId]. Returns null if none exists.

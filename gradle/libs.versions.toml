@@ -8,8 +8,8 @@
 
 [versions]
 android-agp = "8.10.0"
-detekt = "2.0.0-alpha.2"
-detekt-rules-ktlint-wrapper = "2.0.0-alpha.2"
+detekt = "2.0.0-alpha.3"
+detekt-rules-ktlint-wrapper = "2.0.0-alpha.3"
 hilt = "2.58"
 composable-preview-scanner = "0.8.1"
 kotlin = "2.3.20"

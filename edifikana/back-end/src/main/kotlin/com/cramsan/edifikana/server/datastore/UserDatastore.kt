@@ -3,10 +3,12 @@ package com.cramsan.edifikana.server.datastore
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface for interacting with the user database.
  */
+@BackendDatastore
 interface UserDatastore {
     /**
      * Creates a new user for the given [request]. Returns the [Result] of the operation with the created [User].

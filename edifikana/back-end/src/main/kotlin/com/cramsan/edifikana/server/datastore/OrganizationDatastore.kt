@@ -4,10 +4,12 @@ import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Organization
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface for interacting with the organization database.
  */
+@BackendDatastore
 interface OrganizationDatastore {
     /**
      * Create a new organization.

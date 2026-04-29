@@ -8,7 +8,7 @@ import com.cramsan.flyerboard.server.datastore.PagedResult
 import com.cramsan.flyerboard.server.datastore.entity.FlyerEntity
 import com.cramsan.flyerboard.server.datastore.entity.toFlyer
 import com.cramsan.flyerboard.server.service.models.Flyer
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -19,7 +19,7 @@ import kotlin.time.Instant
 /**
  * Supabase implementation of [FlyerDatastore].
  */
-@OptIn(SupabaseModel::class)
+@BackendDatastore
 class SupabaseFlyerDatastore(private val postgrest: Postgrest) : FlyerDatastore {
     override suspend fun createFlyer(
         title: String,

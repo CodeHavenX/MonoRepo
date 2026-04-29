@@ -11,7 +11,7 @@ import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.TaskEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TaskEntity.CreateTaskEntity
 import com.cramsan.edifikana.server.service.models.Task
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -23,12 +23,13 @@ import kotlin.time.Instant
 /**
  * Supabase implementation of [TaskDatastore].
  */
+@BackendDatastore
 @OptIn(ExperimentalTime::class)
 class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock: Clock) : TaskDatastore {
     /**
      * Inserts a new task row and returns the created [Task].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun createTask(
         propertyId: PropertyId,
         unitId: UnitId?,
@@ -65,7 +66,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
     /**
      * Retrieves a single task by [taskId]. Returns null if not found or soft-deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getTask(taskId: TaskId): Result<Task?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting task: %s", taskId)
@@ -83,7 +84,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
     /**
      * Lists all non-deleted tasks for the given [propertyId], with optional filters.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getTasks(
         propertyId: PropertyId,
         unitId: UnitId?,
@@ -111,7 +112,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
     /**
      * Updates an existing task. Only non-null parameters are applied.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun updateTask(
         taskId: TaskId,
         title: String?,
@@ -151,7 +152,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
     /**
      * Soft-deletes a task by setting [TaskEntity.deletedAt]. Returns true if the record was found and deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deleteTask(taskId: TaskId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Soft deleting task: %s", taskId)
@@ -171,7 +172,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
     /**
      * Hard-deletes a task row. For integration test cleanup only.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun purgeTask(taskId: TaskId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Purging task: %s", taskId)

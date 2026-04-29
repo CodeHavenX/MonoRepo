@@ -6,6 +6,7 @@ import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -13,6 +14,7 @@ import kotlin.time.Instant
 /**
  * Service for time card operations.
  */
+@BackendService
 @OptIn(ExperimentalTime::class)
 class TimeCardService(private val timeCardDatastore: TimeCardDatastore) {
     /**

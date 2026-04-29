@@ -6,6 +6,7 @@ import com.cramsan.flyerboard.client.lib.service.FlyerService
 import com.cramsan.flyerboard.client.lib.service.FlyerService.Companion.DEFAULT_PAGE_SIZE
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
@@ -13,6 +14,7 @@ import com.cramsan.framework.logging.logI
 /**
  * Manager to handle flyer operations.
  */
+@FrontendManager
 class FlyerManager(private val dependencies: ManagerDependencies, private val flyerService: FlyerService) {
     /**
      * Lists publicly visible flyers with optional filtering and pagination.

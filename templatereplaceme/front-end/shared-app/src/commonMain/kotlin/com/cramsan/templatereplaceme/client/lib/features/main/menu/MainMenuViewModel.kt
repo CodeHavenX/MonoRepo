@@ -1,5 +1,6 @@
 package com.cramsan.templatereplaceme.client.lib.features.main.menu
 
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Main Menu screen.
  */
+@FrontendViewModel
 class MainMenuViewModel(dependencies: ViewModelDependencies, private val userManager: UserManager) :
     BaseViewModel<MainMenuEvent, MainMenuUIState>(dependencies, MainMenuUIState.Initial, TAG) {
     /**

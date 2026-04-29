@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -10,7 +10,7 @@ import kotlin.time.Instant
  * Supabase entity representing a notification.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class NotificationEntity(
     @SerialName("id")
     val id: String,
@@ -37,7 +37,7 @@ data class NotificationEntity(
      * Supabase entity representing a create notification request.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class Create(
         @SerialName("recipient_user_id")
         val recipientUserId: UserId?,

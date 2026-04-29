@@ -5,7 +5,6 @@ import com.cramsan.edifikana.lib.model.network.timeCard.GetTimeCardEventsQueryPa
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -15,7 +14,7 @@ import io.ktor.http.HttpMethod
 /**
  * API definition for time card related operations.
  */
-@OptIn(NetworkModel::class)
+
 object TimeCardApi : Api("time_card") {
     val createTimeCardEvent =
         operation<

@@ -7,11 +7,13 @@ import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.OrgMemberView
+import com.cramsan.framework.annotations.BackendDatastore
 import kotlin.time.Instant
 
 /**
  * Interface for interacting with organization membership data.
  */
+@BackendDatastore
 interface MembershipDatastore {
     /**
      * Returns all active members of [orgId] via the v_org_members view.

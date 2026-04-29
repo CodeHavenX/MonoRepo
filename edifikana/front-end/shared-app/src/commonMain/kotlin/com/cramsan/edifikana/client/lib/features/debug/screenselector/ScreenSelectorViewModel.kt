@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.debug.screenselector
 
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.navigation.Destination
@@ -9,6 +10,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the ScreenSelector screen.
  **/
+@FrontendViewModel
 class ScreenSelectorViewModel(dependencies: ViewModelDependencies) :
     BaseViewModel<ScreenSelectorEvent, ScreenSelectorUIState>(
         dependencies,

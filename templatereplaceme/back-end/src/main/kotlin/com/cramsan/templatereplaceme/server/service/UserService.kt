@@ -1,6 +1,7 @@
 package com.cramsan.templatereplaceme.server.service
 
 import com.cramsan.architecture.server.settings.SettingsHolder
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import com.cramsan.templatereplaceme.server.datastore.UserDatastore
 import com.cramsan.templatereplaceme.server.service.models.User
@@ -9,6 +10,7 @@ import com.cramsan.templatereplaceme.server.settings.TemplateReplaceMeSettingKey
 /**
  * Example of service to manage users.
  */
+@BackendService
 class UserService(private val userDatastore: UserDatastore, private val settingsHolder: SettingsHolder) {
     /**
      * Creates a new user with the given first and last name.

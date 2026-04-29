@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.network.timeCard.GetTimeCardEventsQueryParams
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
@@ -15,8 +16,8 @@ import io.ktor.client.HttpClient
 /**
  * Time card service default implementation.
  */
+@FrontendService
 class TimeCardServiceImpl(private val http: HttpClient) : TimeCardService {
-    @OptIn(NetworkModel::class)
     override suspend fun getRecords(
         employeePK: EmployeeId,
         propertyId: PropertyId,
@@ -25,7 +26,6 @@ class TimeCardServiceImpl(private val http: HttpClient) : TimeCardService {
             getRecordsImpl(employeePK, propertyId).getOrThrow()
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun getAllRecords(
         propertyId: PropertyId,
     ): Result<List<TimeCardRecordModel>> =
@@ -52,7 +52,6 @@ class TimeCardServiceImpl(private val http: HttpClient) : TimeCardService {
             records
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun getRecord(
         timeCardRecordPK: TimeCardEventId,
     ): Result<TimeCardRecordModel> =
@@ -66,7 +65,6 @@ class TimeCardServiceImpl(private val http: HttpClient) : TimeCardService {
             record
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun addRecord(
         timeCardRecord: TimeCardRecordModel,
     ): Result<TimeCardRecordModel> =

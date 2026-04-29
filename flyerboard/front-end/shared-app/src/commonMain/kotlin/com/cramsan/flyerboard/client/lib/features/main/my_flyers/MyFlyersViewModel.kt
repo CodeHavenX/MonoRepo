@@ -4,6 +4,7 @@ import com.cramsan.flyerboard.client.lib.features.main.MainDestination
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import com.cramsan.flyerboard.client.lib.managers.FlyerManager
 import com.cramsan.flyerboard.lib.model.FlyerId
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the My Flyers screen.
  */
+@FrontendViewModel
 class MyFlyersViewModel(dependencies: ViewModelDependencies, private val flyerManager: FlyerManager) :
     BaseViewModel<MyFlyersEvent, MyFlyersUIState>(dependencies, MyFlyersUIState.Initial, TAG) {
     /**

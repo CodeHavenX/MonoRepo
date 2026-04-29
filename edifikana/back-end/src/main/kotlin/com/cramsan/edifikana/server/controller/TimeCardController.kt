@@ -10,7 +10,7 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.edifikana.server.service.TimeCardService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -28,7 +28,8 @@ import kotlin.time.ExperimentalTime
 /**
  * Controller for time card related operations.
  */
-@OptIn(ExperimentalTime::class, NetworkModel::class)
+@BackendController
+@OptIn(ExperimentalTime::class)
 class TimeCardController(
     private val timeCardService: TimeCardService,
     private val rbacService: RBACService,

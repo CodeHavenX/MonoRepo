@@ -6,7 +6,7 @@ import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.network.eventLog.GetEventLogEntriesQueryParams
 import com.cramsan.edifikana.lib.model.property.PropertyId
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
 import io.ktor.client.HttpClient
@@ -14,8 +14,8 @@ import io.ktor.client.HttpClient
 /**
  * Implementation of [EventLogService] that uses Supabase as the backend.
  */
+@FrontendService
 class EventLogServiceImpl(private val http: HttpClient) : EventLogService {
-    @OptIn(NetworkModel::class)
     override suspend fun getRecords(propertyId: PropertyId): Result<List<EventLogRecordModel>> =
         runSuspendCatching(
             TAG,
@@ -29,7 +29,6 @@ class EventLogServiceImpl(private val http: HttpClient) : EventLogService {
             response.content.map { it.toEventLogRecordModel() }
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun getRecord(
         eventLogRecordPK: EventLogEntryId,
     ): Result<EventLogRecordModel> =
@@ -42,7 +41,6 @@ class EventLogServiceImpl(private val http: HttpClient) : EventLogService {
             record
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun addRecord(
         eventLogRecord: EventLogRecordModel,
     ): Result<EventLogRecordModel> =
@@ -55,7 +53,6 @@ class EventLogServiceImpl(private val http: HttpClient) : EventLogService {
             record
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun updateRecord(
         eventLogRecord: EventLogRecordModel,
     ): Result<EventLogRecordModel> =

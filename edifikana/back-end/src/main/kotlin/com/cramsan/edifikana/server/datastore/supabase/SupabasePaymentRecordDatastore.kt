@@ -9,7 +9,7 @@ import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.PaymentRecordEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PaymentRecordEntity.CreatePaymentRecordEntity
 import com.cramsan.edifikana.server.service.models.PaymentRecord
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -20,13 +20,14 @@ import kotlin.time.ExperimentalTime
 /**
  * Supabase implementation of [PaymentRecordDatastore].
  */
+@BackendDatastore
 @OptIn(ExperimentalTime::class)
 class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private val clock: Clock) :
     PaymentRecordDatastore {
     /**
      * Inserts a new payment record row and returns the created [PaymentRecord].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun createPaymentRecord(
         unitId: UnitId,
         paymentType: PaymentType,
@@ -59,7 +60,7 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
     /**
      * Retrieves a single payment record by [paymentRecordId]. Returns null if not found or soft-deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getPaymentRecord(paymentRecordId: PaymentRecordId): Result<PaymentRecord?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting payment record: %s", paymentRecordId)
@@ -80,7 +81,7 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
      * [periodMonth] is a string in "YYYY-MM" format (e.g. "2026-03"). If provided, only records
      * whose period_month starts with that prefix are returned.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun listPaymentRecords(
         unitId: UnitId,
         periodMonth: String?,
@@ -102,7 +103,7 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
     /**
      * Updates an existing payment record. Only non-null parameters are applied.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun updatePaymentRecord(
         paymentRecordId: PaymentRecordId,
         amountPaid: Double?,
@@ -133,7 +134,7 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
      * Soft-deletes a payment record by setting [PaymentRecordEntity.deletedAt].
      * Returns true if the record was found and deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deletePaymentRecord(paymentRecordId: PaymentRecordId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Soft deleting payment record: %s", paymentRecordId)
@@ -153,7 +154,7 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
     /**
      * Hard-deletes a payment record row. For integration test cleanup only.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun purgePaymentRecord(paymentRecordId: PaymentRecordId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Purging payment record: %s", paymentRecordId)

@@ -10,6 +10,7 @@ import com.cramsan.edifikana.client.lib.utils.readBytes
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
@@ -24,6 +25,7 @@ import kotlinx.coroutines.sync.withLock
 /**
  * Manager for time cards.
  */
+@FrontendManager
 class TimeCardManager(
     private val timeCardService: TimeCardService,
     private val timeCardCache: TimeCardCache,

@@ -5,7 +5,7 @@ import com.cramsan.flyerboard.api.UserApi
 import com.cramsan.flyerboard.client.lib.models.UserModel
 import com.cramsan.flyerboard.client.lib.service.UserService
 import com.cramsan.flyerboard.lib.model.network.CreateUserNetworkRequest
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
 import io.ktor.client.HttpClient
@@ -13,8 +13,8 @@ import io.ktor.client.HttpClient
 /**
  * Implementation of [UserService].
  */
+@FrontendService
 class UserServiceImpl(private val http: HttpClient) : UserService {
-    @OptIn(NetworkModel::class)
     override suspend fun createUser(
         firstName: String,
         lastName: String,

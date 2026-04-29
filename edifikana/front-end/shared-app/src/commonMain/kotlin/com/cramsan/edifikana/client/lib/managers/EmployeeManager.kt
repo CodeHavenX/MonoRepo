@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
@@ -10,6 +11,7 @@ import com.cramsan.framework.logging.logI
 /**
  * Manager for employee.
  */
+@FrontendManager
 class EmployeeManager(private val employeeService: EmployeeService, private val dependencies: ManagerDependencies) {
     /**
      * Get all employees.

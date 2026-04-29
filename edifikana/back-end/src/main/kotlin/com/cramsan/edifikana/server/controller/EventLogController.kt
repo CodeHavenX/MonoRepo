@@ -11,7 +11,7 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.edifikana.server.service.EventLogService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -29,6 +29,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Controller for event log related operations.
  */
+@BackendController
 class EventLogController(
     private val eventLogService: EventLogService,
     private val rbacService: RBACService,
@@ -39,7 +40,7 @@ class EventLogController(
      * then creates the event log entry using the [eventLogService].
      * Returns the created event log entry as a network response.
      */
-    @OptIn(NetworkModel::class, ExperimentalTime::class)
+    @OptIn(ExperimentalTime::class)
     suspend fun createEventLogEntry(
         request: OperationRequest<
             CreateEventLogEntryNetworkRequest,
@@ -78,7 +79,7 @@ class EventLogController(
      * and fetches the event log entry using the [eventLogService].
      * Returns the event log entry as a network response, or null if not found.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getEventLogEntry(
         request: OperationRequest<
             NoRequestBody,
@@ -105,7 +106,7 @@ class EventLogController(
      * Handles the retrieval of all event log entries. This function is currently not implemented.
      * Intended to fetch and return a list of all event log entries as a network response.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getEventLogEntries(
         request: OperationRequest<
             NoRequestBody,
@@ -135,7 +136,7 @@ class EventLogController(
      * the event log entry using the [eventLogService].
      * Returns the updated event log entry as a network response.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun updateEventLogEntry(
         request: OperationRequest<
             UpdateEventLogEntryNetworkRequest,
@@ -187,7 +188,7 @@ class EventLogController(
      * Registers the routes for the event log controller.
      * Sets up the API endpoints and handlers for event log operations.
      */
-    @OptIn(NetworkModel::class)
+
     override fun registerRoutes(route: Routing) {
         EventLogApi.register(route) {
             handler(api.createEventLogEntry, contextRetriever) { request ->

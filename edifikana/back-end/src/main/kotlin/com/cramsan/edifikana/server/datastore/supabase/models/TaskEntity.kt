@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -19,7 +19,7 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class TaskEntity(
     val id: String,
     @SerialName("property_id")
@@ -59,7 +59,7 @@ data class TaskEntity(
      * (status, completed_at, status_changed_at, status_changed_by).
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateTaskEntity(
         @SerialName("property_id")
         val propertyId: PropertyId,

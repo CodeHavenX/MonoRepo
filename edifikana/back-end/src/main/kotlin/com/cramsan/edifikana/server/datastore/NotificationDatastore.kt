@@ -5,10 +5,12 @@ import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.notification.NotificationType
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Notification
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface for interacting with the notification database.
  */
+@BackendDatastore
 interface NotificationDatastore {
     /**
      * Creates a new notification.

@@ -2,6 +2,7 @@ package com.cramsan.flyerboard.client.lib.service.impl
 
 import com.cramsan.flyerboard.client.lib.service.AuthService
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 /**
  * Supabase implementation of [AuthService].
  */
+@FrontendService
 class AuthServiceImpl(private val auth: Auth) : AuthService {
     private val _activeUser = MutableStateFlow<UserId?>(null)
 

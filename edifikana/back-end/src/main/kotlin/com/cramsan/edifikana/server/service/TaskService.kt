@@ -9,6 +9,7 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.service.models.Task
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.InvalidRequestException
 import com.cramsan.framework.utils.exceptions.NotFoundException
@@ -21,6 +22,7 @@ import kotlin.time.Instant
  * Service for managing tasks. Delegates persistence to [TaskDatastore] and enforces
  * status-transition rules before delegating updates.
  */
+@BackendService
 @OptIn(ExperimentalTime::class)
 class TaskService(private val taskDatastore: TaskDatastore, private val clock: Clock) {
     /**

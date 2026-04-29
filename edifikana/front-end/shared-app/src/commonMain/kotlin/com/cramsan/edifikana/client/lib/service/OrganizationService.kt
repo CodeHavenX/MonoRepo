@@ -2,10 +2,12 @@ package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.framework.annotations.FrontendService
 
 /**
  * Service interface for managing organizations.
  */
+@FrontendService
 interface OrganizationService {
     /**
      * Fetches a single organization by its ID.

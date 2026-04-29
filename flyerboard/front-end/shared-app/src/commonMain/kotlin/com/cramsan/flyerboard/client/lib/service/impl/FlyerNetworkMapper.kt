@@ -4,12 +4,11 @@ import com.cramsan.flyerboard.client.lib.models.FlyerModel
 import com.cramsan.flyerboard.client.lib.models.PaginatedFlyerModel
 import com.cramsan.flyerboard.lib.model.network.FlyerListNetworkResponse
 import com.cramsan.flyerboard.lib.model.network.FlyerNetworkResponse
-import com.cramsan.framework.annotations.NetworkModel
 
 /**
  * Maps a [FlyerNetworkResponse] to a [FlyerModel].
  */
-@OptIn(NetworkModel::class)
+
 fun FlyerNetworkResponse.toFlyerModel(): FlyerModel =
     FlyerModel(
         id = id,
@@ -26,7 +25,7 @@ fun FlyerNetworkResponse.toFlyerModel(): FlyerModel =
 /**
  * Maps a [FlyerListNetworkResponse] to a [PaginatedFlyerModel].
  */
-@OptIn(NetworkModel::class)
+
 fun FlyerListNetworkResponse.toPaginatedFlyerModel(): PaginatedFlyerModel =
     PaginatedFlyerModel(
         flyers = flyers.map { it.toFlyerModel() },

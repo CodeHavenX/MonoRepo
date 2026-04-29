@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.init.Initializer
 import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.edifikana.client.lib.toSelectedTheme
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 /**
  * View model for the entire application.
  */
+@FrontendViewModel
 class EdifikanaApplicationViewModel(
     private val initHandler: Initializer,
     dependencies: ViewModelDependencies,

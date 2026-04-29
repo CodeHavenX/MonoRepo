@@ -1,5 +1,6 @@
 package com.cramsan.runasimi.client.lib.features.application
 
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.runasimi.client.lib.init.Initializer
@@ -7,6 +8,7 @@ import com.cramsan.runasimi.client.lib.init.Initializer
 /**
  * View model for the entire application.
  */
+@FrontendViewModel
 class RunasimiApplicationViewModel(private val initHandler: Initializer, dependencies: ViewModelDependencies) :
     BaseViewModel<RunasimiApplicationViewModelEvent, RunasimiApplicationUIState>(
         dependencies,

@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.auth.onboarding.createneworg
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logE
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the CreateNewOrg screen.
  */
+@FrontendViewModel
 class CreateNewOrgViewModel(
     dependencies: ViewModelDependencies,
     private val organizationManager: OrganizationManager,

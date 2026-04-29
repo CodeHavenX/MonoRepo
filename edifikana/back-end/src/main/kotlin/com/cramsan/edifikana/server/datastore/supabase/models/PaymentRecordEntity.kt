@@ -3,7 +3,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -18,7 +18,7 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class PaymentRecordEntity(
     @SerialName("payment_record_id")
     val paymentRecordId: PaymentRecordId,
@@ -54,7 +54,7 @@ data class PaymentRecordEntity(
      * (recorded_at, deleted_at) and server-managed fields (amount_paid, paid_date, status).
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreatePaymentRecordEntity(
         @SerialName("unit_id")
         val unitId: UnitId,

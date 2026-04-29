@@ -1,5 +1,6 @@
 package com.cramsan.templatereplaceme.server.datastore.impl
 
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.utils.uuid.UUID
 import com.cramsan.templatereplaceme.lib.model.UserId
@@ -10,6 +11,7 @@ import kotlinx.coroutines.delay
 /**
  * Implementation of [UserDatastore] that provides user-related data operations.
  */
+@BackendDatastore
 class UserDatastoreImpl : UserDatastore {
     override suspend fun createUser(
         firstName: String,

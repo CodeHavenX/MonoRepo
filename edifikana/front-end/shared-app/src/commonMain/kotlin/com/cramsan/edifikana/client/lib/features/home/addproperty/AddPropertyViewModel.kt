@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the AddProperty screen.
  **/
+@FrontendViewModel
 class AddPropertyViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,

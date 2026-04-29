@@ -8,7 +8,7 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.service.models.EventLogEntry
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -18,11 +18,12 @@ import kotlin.time.Instant
 /**
  * Datastore for managing event log entries.
  */
+@BackendDatastore
 class SupabaseEventLogDatastore(private val postgrest: Postgrest, private val clock: Clock) : EventLogDatastore {
     /**
      * Creates a new event log entry for tracking property events.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun createEventLogEntry(
         employeeId: EmployeeId?,
         fallbackEmployeeName: String?,
@@ -62,7 +63,7 @@ class SupabaseEventLogDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Retrieves an event log entry by [id]. Returns the [EventLogEntry] if found, null otherwise.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getEventLogEntry(
         id: EventLogEntryId,
     ): Result<EventLogEntry?> =
@@ -85,7 +86,7 @@ class SupabaseEventLogDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Gets all event log entries for a [propertyId].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getEventLogEntries(
         propertyId: PropertyId,
     ): Result<List<EventLogEntry>> =
@@ -106,7 +107,7 @@ class SupabaseEventLogDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Updates an event log entry's attributes. Only non-null parameters are updated.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun updateEventLogEntry(
         id: EventLogEntryId,
         type: EventLogEventType?,
@@ -140,7 +141,7 @@ class SupabaseEventLogDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Soft deletes an event log entry by [id]. Returns true if successful.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deleteEventLogEntry(
         id: EventLogEntryId,
     ): Result<Boolean> =
@@ -164,7 +165,7 @@ class SupabaseEventLogDatastore(private val postgrest: Postgrest, private val cl
      * Permanently deletes a soft-deleted event log entry by [id]. Returns true if successful.
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun purgeEventLogEntry(
         id: EventLogEntryId,
     ): Result<Boolean> =

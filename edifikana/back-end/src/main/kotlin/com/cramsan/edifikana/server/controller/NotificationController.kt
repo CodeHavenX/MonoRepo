@@ -6,7 +6,7 @@ import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkR
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.NotificationService
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
@@ -20,6 +20,7 @@ import io.ktor.server.routing.Routing
  * Controller for notification related operations.
  * Handles fetching, marking as read, and deleting notifications for authenticated users.
  */
+@BackendController
 class NotificationController(
     private val notificationService: NotificationService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
@@ -28,7 +29,7 @@ class NotificationController(
      * Get all notifications for the authenticated user.
      * Returns a list of notifications ordered by creation date (newest first).
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getNotifications(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
     ): NotificationListNetworkResponse {
@@ -50,7 +51,7 @@ class NotificationController(
      * Throws [ClientRequestExceptions.NotFoundException] if not found.
      * Throws [ClientRequestExceptions.ForbiddenException] if the notification doesn't belong to the user.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getNotification(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         notificationId: NotificationId,
@@ -75,7 +76,7 @@ class NotificationController(
      * Throws [ClientRequestExceptions.NotFoundException] if not found.
      * Throws [ClientRequestExceptions.ForbiddenException] if the notification doesn't belong to the user.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun markAsRead(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         notificationId: NotificationId,
@@ -101,7 +102,7 @@ class NotificationController(
      * Throws [ClientRequestExceptions.NotFoundException] if not found.
      * Throws [ClientRequestExceptions.ForbiddenException] if the notification doesn't belong to the user.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun deleteNotification(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         notificationId: NotificationId,
@@ -124,7 +125,7 @@ class NotificationController(
     /**
      * Registers the routes for the notification controller.
      */
-    @OptIn(NetworkModel::class)
+
     override fun registerRoutes(route: Routing) {
         NotificationApi.register(route) {
             handler(api.getNotifications, contextRetriever) { request ->

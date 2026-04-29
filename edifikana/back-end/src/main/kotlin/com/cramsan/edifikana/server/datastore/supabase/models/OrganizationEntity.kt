@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -10,7 +10,7 @@ import kotlin.time.Instant
  * Supabase entity representing an organization.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class OrganizationEntity(
     val id: OrganizationId,
     val name: String,
@@ -26,7 +26,7 @@ data class OrganizationEntity(
      * Supabase entity representing a create organization request.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateOrganizationEntity(
         @SerialName("name")
         val name: String,
@@ -38,7 +38,7 @@ data class OrganizationEntity(
      * Supabase entity representing an update organization request.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class UpdateOrganizationEntity(
         @SerialName("name")
         val name: String?,

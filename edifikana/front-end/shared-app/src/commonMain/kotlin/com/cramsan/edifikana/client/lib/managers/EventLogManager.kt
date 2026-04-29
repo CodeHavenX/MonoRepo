@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.service.EventLogService
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logE
@@ -18,6 +19,7 @@ import kotlinx.coroutines.sync.withLock
 /**
  * Manager for event logs.
  */
+@FrontendManager
 class EventLogManager(
     private val eventLogService: EventLogService,
     private val eventLogCache: EventLogCache,

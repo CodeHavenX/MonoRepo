@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
@@ -10,6 +11,7 @@ import com.cramsan.framework.logging.logI
 /**
  * Manager for organization configuration.
  */
+@FrontendManager
 class OrganizationManager(
     private val organizationService: OrganizationService,
     private val dependencies: ManagerDependencies,

@@ -4,10 +4,12 @@ import com.cramsan.flyerboard.client.lib.models.FlyerModel
 import com.cramsan.flyerboard.client.lib.models.PaginatedFlyerModel
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
+import com.cramsan.framework.annotations.FrontendService
 
 /**
  * Service for communicating with the FlyerBoard backend flyer and moderation APIs.
  */
+@FrontendService
 interface FlyerService {
     /**
      * Lists publicly visible flyers with optional filtering and pagination.

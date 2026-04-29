@@ -6,7 +6,7 @@ import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.RentConfigDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.RentConfigEntity
 import com.cramsan.edifikana.server.service.models.RentConfig
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -26,12 +26,13 @@ import kotlin.time.Instant
  * create or update the active rent configuration for a unit. This eliminates the TOCTOU
  * race that existed with the previous UPDATE-then-INSERT pattern.
  */
+@BackendDatastore
 @OptIn(ExperimentalTime::class)
 class SupabaseRentConfigDatastore(private val postgrest: Postgrest, private val clock: Clock) : RentConfigDatastore {
     /**
      * Retrieves the active rent configuration for [unitId]. Returns null if none exists.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getRentConfig(unitId: UnitId): Result<RentConfig?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting rent config for unit: %s", unitId)
@@ -49,7 +50,7 @@ class SupabaseRentConfigDatastore(private val postgrest: Postgrest, private val 
     /**
      * Retrieves the active rent configuration by [rentConfigId]. Returns null if not found or soft-deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getRentConfigById(rentConfigId: RentConfigId): Result<RentConfig?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting rent config by id: %s", rentConfigId)
@@ -70,7 +71,7 @@ class SupabaseRentConfigDatastore(private val postgrest: Postgrest, private val 
      * `INSERT ... ON CONFLICT (unit_id) WHERE deleted_at IS NULL DO UPDATE`,
      * which is safe under concurrent calls. Returns the created or updated [RentConfig].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun setRentConfig(
         unitId: UnitId,
         monthlyAmount: Double,
@@ -96,7 +97,7 @@ class SupabaseRentConfigDatastore(private val postgrest: Postgrest, private val 
     /**
      * Soft-deletes the rent configuration for [unitId]. Returns true if a record was deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deleteRentConfigByUnitId(unitId: UnitId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Soft deleting rent config for unit: %s", unitId)
@@ -116,7 +117,7 @@ class SupabaseRentConfigDatastore(private val postgrest: Postgrest, private val 
     /**
      * Hard-deletes the rent configuration with [rentConfigId]. For integration test cleanup only.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun purgeRentConfig(rentConfigId: RentConfigId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Purging rent config: %s", rentConfigId)

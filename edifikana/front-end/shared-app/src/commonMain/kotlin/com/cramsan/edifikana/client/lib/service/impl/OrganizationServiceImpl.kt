@@ -5,7 +5,7 @@ import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.lib.model.network.organization.CreateOrganizationNetworkRequest
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
 import io.ktor.client.HttpClient
@@ -13,8 +13,8 @@ import io.ktor.client.HttpClient
 /**
  * Implementation of [OrganizationService] that interacts with the backend to fetch organization data.
  */
+@FrontendService
 class OrganizationServiceImpl(private val http: HttpClient) : OrganizationService {
-    @OptIn(NetworkModel::class)
     override suspend fun getOrganization(
         organizationId: OrganizationId,
     ): Result<Organization> =
@@ -27,7 +27,6 @@ class OrganizationServiceImpl(private val http: HttpClient) : OrganizationServic
             response.toOrganizationModel()
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun getOrganizations(): Result<List<Organization>> =
         runSuspendCatching(TAG) {
             val response =
@@ -38,7 +37,6 @@ class OrganizationServiceImpl(private val http: HttpClient) : OrganizationServic
             response.organizations.map { it.toOrganizationModel() }
         }
 
-    @OptIn(NetworkModel::class)
     override suspend fun createOrganization(
         name: String,
         description: String,

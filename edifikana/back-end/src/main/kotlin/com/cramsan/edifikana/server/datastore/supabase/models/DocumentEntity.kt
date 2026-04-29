@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -13,7 +13,7 @@ import kotlin.time.Instant
  * Entity representing a document stored in the document library.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class DocumentEntity(
     @SerialName("document_id")
     val documentId: String,
@@ -45,7 +45,7 @@ data class DocumentEntity(
      * Entity representing a new document to be inserted.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateDocumentEntity(
         @SerialName("org_id")
         val orgId: OrganizationId,

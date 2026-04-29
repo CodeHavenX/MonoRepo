@@ -4,10 +4,12 @@ import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
+import com.cramsan.framework.annotations.FrontendService
 
 /**
  * Service for managing time card records.
  */
+@FrontendService
 interface TimeCardService {
     /**
      * Get all time card records for a specific employee and [propertyId].

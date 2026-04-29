@@ -5,11 +5,13 @@ import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.service.models.CommonArea
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 
 /**
  * Service for managing common areas. Delegates persistence to [CommonAreaDatastore].
  */
+@BackendService
 class CommonAreaService(private val commonAreaDatastore: CommonAreaDatastore) {
     /**
      * Creates a new common area record.

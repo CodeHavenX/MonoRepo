@@ -2,11 +2,9 @@ package com.cramsan.flyerboard.server.controller
 
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.flyerboard.server.service.models.User
-import com.cramsan.framework.annotations.NetworkModel
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-@OptIn(NetworkModel::class)
 class NetworkMapperTests {
     @Test
     fun `test user network response`() {

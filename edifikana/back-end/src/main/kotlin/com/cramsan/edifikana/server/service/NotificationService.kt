@@ -4,12 +4,14 @@ import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.service.models.Notification
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 
 /**
  * Service for managing notifications.
  * Handles creation, retrieval, and management of notifications.
  */
+@BackendService
 class NotificationService(private val notificationDatastore: NotificationDatastore) {
     /**
      * Retrieves notifications for a user.

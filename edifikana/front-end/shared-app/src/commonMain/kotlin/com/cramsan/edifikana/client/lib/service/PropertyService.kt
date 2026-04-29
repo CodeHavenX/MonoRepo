@@ -3,10 +3,12 @@ package com.cramsan.edifikana.client.lib.service
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.framework.annotations.FrontendService
 
 /**
  * Property service interface.
  */
+@FrontendService
 interface PropertyService {
     /**
      * Get a list of properties associated with current user.

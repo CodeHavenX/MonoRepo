@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.model.user.UserRole
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * Manager for authentication.
  */
+@FrontendManager
 class AuthManager(private val dependencies: ManagerDependencies, private val authService: AuthService) {
     /**
      * Signs in the user with the given email and password.

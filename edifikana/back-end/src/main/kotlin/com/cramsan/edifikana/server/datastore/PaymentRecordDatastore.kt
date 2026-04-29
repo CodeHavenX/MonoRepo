@@ -6,11 +6,13 @@ import com.cramsan.edifikana.lib.model.payment.PaymentType
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.PaymentRecord
+import com.cramsan.framework.annotations.BackendDatastore
 import kotlinx.datetime.LocalDate
 
 /**
  * Interface for the payment record datastore.
  */
+@BackendDatastore
 interface PaymentRecordDatastore {
     /**
      * Creates a new payment record. Returns the [Result] with the created [PaymentRecord].

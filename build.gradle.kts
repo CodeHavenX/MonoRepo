@@ -47,6 +47,16 @@ subprojects {
     }
 }
 
+subprojects {
+    // Add the custom architecture rules to every module except the rules module itself
+    // (to avoid a circular project dependency).
+    if (path != ":detekt-rules") {
+        dependencies {
+            "detektPlugins"(project(":detekt-rules"))
+        }
+    }
+}
+
 /**
  * Production task settings for all projects. These must pass to consider
  * all projects are running correctly.
@@ -132,5 +142,5 @@ tasks.register("releaseAll") {
     dependsOn("flyerboard:front-end:shared-app:release")
     dependsOn("flyerboard:front-end:app-wasm:release")
 
-    dependsOn("agentic:release")
+    dependsOn("detekt-rules:release")
 }

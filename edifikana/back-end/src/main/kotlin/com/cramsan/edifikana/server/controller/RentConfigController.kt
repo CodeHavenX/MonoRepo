@@ -8,7 +8,7 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.edifikana.server.service.RentConfigService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.core.ktor.Controller
@@ -31,7 +31,7 @@ import io.ktor.server.routing.Routing
  *
  * TODO: Resident read-only access via unit_occupants is deferred to a future phase.
  */
-@OptIn(NetworkModel::class)
+@BackendController
 class RentConfigController(
     private val rentConfigService: RentConfigService,
     private val rbacService: RBACService,

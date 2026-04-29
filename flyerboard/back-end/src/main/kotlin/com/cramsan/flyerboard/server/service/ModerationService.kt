@@ -9,6 +9,7 @@ import com.cramsan.flyerboard.server.datastore.FlyerDatastore
 import com.cramsan.flyerboard.server.datastore.UserProfileDatastore
 import com.cramsan.flyerboard.server.service.models.Flyer
 import com.cramsan.flyerboard.server.service.models.PaginatedList
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
@@ -19,6 +20,7 @@ import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
  * All mutating operations verify that the acting user holds the [ADMIN][UserRole.ADMIN] role before
  * performing any status transition.
  */
+@BackendService
 class ModerationService(
     private val flyerDatastore: FlyerDatastore,
     private val fileDatastore: FileDatastore,

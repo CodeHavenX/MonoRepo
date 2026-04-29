@@ -10,7 +10,7 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.edifikana.server.service.PropertyService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -27,7 +27,7 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for property related operations.
  */
-@OptIn(NetworkModel::class)
+@BackendController
 class PropertyController(
     private val propertyService: PropertyService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
@@ -68,7 +68,7 @@ class PropertyController(
      * Returns the property as a network response if the user has MANAGER role or higher.
      * Throws [UnauthorizedException] if the user does not have permission.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getProperty(
         request: OperationRequest<
             NoRequestBody,
@@ -87,7 +87,7 @@ class PropertyController(
      * Retrieves the list of properties assigned to the authenticated user.
      * Returns a list of properties as a network response.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getAssignedProperties(
         request: OperationRequest<
             NoRequestBody,
@@ -106,7 +106,7 @@ class PropertyController(
      * Returns the updated property as a network response.
      * Throws [UnauthorizedException] if the user does not have ADMIN role for the property.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun updateProperty(
         request: OperationRequest<
             UpdatePropertyNetworkRequest,

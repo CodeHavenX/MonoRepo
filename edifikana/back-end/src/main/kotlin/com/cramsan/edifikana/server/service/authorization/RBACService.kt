@@ -4,10 +4,10 @@ import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.document.DocumentId
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
+import com.cramsan.edifikana.lib.model.occupant.OccupantId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.edifikana.lib.model.property.PropertyId
-import com.cramsan.edifikana.lib.model.occupant.OccupantId
 import com.cramsan.edifikana.lib.model.rent.RentConfigId
 import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
@@ -15,10 +15,10 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
-import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
+import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
@@ -28,6 +28,7 @@ import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.models.UserRole
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ForbiddenException
@@ -36,6 +37,7 @@ import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.InvalidReq
 /**
  * Service responsible for Role-Based Access Control (RBAC) checks.
  */
+@BackendService
 class RBACService(
     private val propertyDatastore: PropertyDatastore,
     private val orgDataStore: OrganizationDatastore,
@@ -691,8 +693,9 @@ class RBACService(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         targetOccupantId: OccupantId,
     ): UserRole {
-        val occupant = occupantDatastore.getOccupant(targetOccupantId).getOrThrow()
-            ?: return UserRole.UNAUTHORIZED
+        val occupant =
+            occupantDatastore.getOccupant(targetOccupantId).getOrThrow()
+                ?: return UserRole.UNAUTHORIZED
         return getUserRoleForUnitAction(context, occupant.unitId)
     }
 

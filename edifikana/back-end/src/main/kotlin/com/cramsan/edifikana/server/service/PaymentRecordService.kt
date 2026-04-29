@@ -7,12 +7,14 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
 import com.cramsan.edifikana.server.service.models.PaymentRecord
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import kotlinx.datetime.LocalDate
 
 /**
  * Service for managing payment records. Delegates persistence to [PaymentRecordDatastore].
  */
+@BackendService
 class PaymentRecordService(private val paymentRecordDatastore: PaymentRecordDatastore) {
     /**
      * Creates a new payment record.

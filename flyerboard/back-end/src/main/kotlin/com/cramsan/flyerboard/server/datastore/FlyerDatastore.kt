@@ -4,11 +4,13 @@ import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.flyerboard.server.service.models.Flyer
+import com.cramsan.framework.annotations.BackendDatastore
 import kotlin.time.Instant
 
 /**
  * Interface defining data operations for flyers.
  */
+@BackendDatastore
 interface FlyerDatastore {
     /**
      * Inserts a new flyer record. Returns the created [Flyer].

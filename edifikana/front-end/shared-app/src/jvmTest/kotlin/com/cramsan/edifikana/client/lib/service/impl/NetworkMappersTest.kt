@@ -33,7 +33,7 @@ class NetworkMappersTest {
     /**
      * Tests that the [EmployeeNetworkResponse] is correctly mapped to [EmployeeModel].
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `toTimeCardRecordModel maps all fields correctly`() {
         // Arrange
@@ -64,7 +64,7 @@ class NetworkMappersTest {
     /**
      * Tests that the [UserNetworkResponse] is correctly mapped to [UserModel].
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `toUserModel maps all fields correctly`() {
         // Arrange
@@ -94,7 +94,7 @@ class NetworkMappersTest {
     /**
      * Tests that the [EventLogEntryNetworkResponse] is correctly mapped to [EventLogRecordModel].
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `toEventLogRecordModel maps all fields correctly`() {
         // Arrange
@@ -130,7 +130,7 @@ class NetworkMappersTest {
     /**
      * Tests that the [EventLogRecordModel] is correctly mapped to [CreateEventLogEntryNetworkRequest].
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `toCreateEventLogEntryNetworkRequest maps all fields correctly`() {
         // Arrange
@@ -167,7 +167,7 @@ class NetworkMappersTest {
     /**
      * Tests that the [EventLogRecordModel] is correctly mapped to [UpdateEventLogEntryNetworkRequest].
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `toUpdateEventLogEntryNetworkRequest maps all fields correctly`() {
         // Arrange
@@ -200,7 +200,7 @@ class NetworkMappersTest {
     /**
      * Tests that the [CreateEmployeeRequest] is correctly mapped to [CreateEmployeeNetworkRequest].
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `toCreateEmployeeNetworkRequest maps all fields correctly`() {
         // Arrange
@@ -226,7 +226,7 @@ class NetworkMappersTest {
     /**
      * Tests that the [EmployeeNetworkResponse] is correctly mapped to [EmployeeModel].
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `toEmployeeModel maps all fields correctly`() {
         // Arrange
@@ -254,7 +254,7 @@ class NetworkMappersTest {
     /**
      * Tests that the [TimeCardRecordModel] is correctly mapped to [CreateTimeCardEventNetworkRequest].
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `toCreateTimeCardEventNetworkRequest maps all fields correctly`() {
         // Arrange

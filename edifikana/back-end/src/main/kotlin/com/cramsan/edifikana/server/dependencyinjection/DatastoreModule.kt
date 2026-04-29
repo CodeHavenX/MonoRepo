@@ -2,32 +2,32 @@ package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
-import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
-import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
-import com.cramsan.edifikana.server.datastore.RentConfigDatastore
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.datastore.EventLogDatastore
 import com.cramsan.edifikana.server.datastore.MembershipDatastore
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
+import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.datastore.OrganizationDatastore
+import com.cramsan.edifikana.server.datastore.PaymentRecordDatastore
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
+import com.cramsan.edifikana.server.datastore.RentConfigDatastore
 import com.cramsan.edifikana.server.datastore.StorageDatastore
 import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseCommonAreaDatastore
-import com.cramsan.edifikana.server.datastore.supabase.SupabaseOccupantDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseDocumentDatastore
-import com.cramsan.edifikana.server.datastore.supabase.SupabasePaymentRecordDatastore
-import com.cramsan.edifikana.server.datastore.supabase.SupabaseRentConfigDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseEmployeeDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseEventLogDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseMembershipDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseNotificationDatastore
+import com.cramsan.edifikana.server.datastore.supabase.SupabaseOccupantDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseOrganizationDatastore
+import com.cramsan.edifikana.server.datastore.supabase.SupabasePaymentRecordDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabasePropertyDatastore
+import com.cramsan.edifikana.server.datastore.supabase.SupabaseRentConfigDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseStorageDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseTaskDatastore
 import com.cramsan.edifikana.server.datastore.supabase.SupabaseTimeCardDatastore
@@ -48,102 +48,107 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import kotlin.time.Clock
 
-val DatastoreModule = module {
+val DatastoreModule =
+    module {
 
-    // Provide Clock.System for soft delete timestamps
-    single<Clock> { Clock.System }
+        // Provide Clock.System for soft delete timestamps
+        single<Clock> { Clock.System }
 
-    single {
-        val settingsHolder: SettingsHolder = get()
-        val supabaseUrl: String = settingsHolder.getString(EdifikanaSettingKey.SupabaseUrl).orEmpty()
-        val supabaseKey: String = settingsHolder.getString(EdifikanaSettingKey.SupabaseKey).orEmpty()
+        single {
+            val settingsHolder: SettingsHolder = get()
+            val supabaseUrl: String = settingsHolder.getString(EdifikanaSettingKey.SupabaseUrl).orEmpty()
+            val supabaseKey: String = settingsHolder.getString(EdifikanaSettingKey.SupabaseKey).orEmpty()
 
-        if (supabaseUrl.isBlank()) {
-            val supabaseUrlKeyNames = settingsHolder.getKeyNames(EdifikanaSettingKey.SupabaseUrl).joinToString()
-            error("Value needs to be provided in one of the following settings: $supabaseUrlKeyNames")
-        }
+            if (supabaseUrl.isBlank()) {
+                val supabaseUrlKeyNames = settingsHolder.getKeyNames(EdifikanaSettingKey.SupabaseUrl).joinToString()
+                error("Value needs to be provided in one of the following settings: $supabaseUrlKeyNames")
+            }
 
-        if (supabaseKey.isBlank()) {
-            val supabaseKeySettingKeyName = settingsHolder.getKeyNames(EdifikanaSettingKey.SupabaseKey).joinToString()
-            error("Value needs to be provided in one of the following settings: $supabaseKeySettingKeyName")
-        }
+            if (supabaseKey.isBlank()) {
+                val supabaseKeySettingKeyName =
+                    settingsHolder
+                        .getKeyNames(
+                            EdifikanaSettingKey.SupabaseKey,
+                        ).joinToString()
+                error("Value needs to be provided in one of the following settings: $supabaseKeySettingKeyName")
+            }
 
-        createSupabaseClient(
-            supabaseUrl = supabaseUrl,
-            supabaseKey = supabaseKey,
-        ) {
-            install(Postgrest)
-            install(Storage)
-            install(Auth) {
-                sessionManager = SettingsSessionManager(key = "$supabaseUrl-server")
+            createSupabaseClient(
+                supabaseUrl = supabaseUrl,
+                supabaseKey = supabaseKey,
+            ) {
+                install(Postgrest)
+                install(Storage)
+                install(Auth) {
+                    sessionManager = SettingsSessionManager(key = "$supabaseUrl-server")
+                }
             }
         }
-    }
 
-    // Supabase Components
-    single {
-        get<SupabaseClient>().auth
-    }
+        // Supabase Components
+        single {
+            get<SupabaseClient>().auth
+        }
 
-    single {
-        get<SupabaseClient>().auth.admin
-    }
+        single {
+            get<SupabaseClient>().auth.admin
+        }
 
-    single {
-        get<SupabaseClient>().storage
-    }
+        single {
+            get<SupabaseClient>().storage
+        }
 
-    single {
-        get<SupabaseClient>().postgrest
-    }
+        single {
+            get<SupabaseClient>().postgrest
+        }
 
-    // Supabase Datastores
-    singleOf(::SupabaseUserDatastore) {
-        bind<UserDatastore>()
+        // Supabase Datastores
+        singleOf(::SupabaseUserDatastore) {
+            bind<UserDatastore>()
+        }
+        singleOf(::SupabaseEmployeeDatastore) {
+            bind<EmployeeDatastore>()
+        }
+        singleOf(::SupabasePropertyDatastore) {
+            bind<PropertyDatastore>()
+        }
+        singleOf(::SupabaseTimeCardDatastore) {
+            bind<TimeCardDatastore>()
+        }
+        singleOf(::SupabaseEventLogDatastore) {
+            bind<EventLogDatastore>()
+        }
+        singleOf(::SupabaseStorageDatastore) {
+            bind<StorageDatastore>()
+        }
+        singleOf(::SupabaseOrganizationDatastore) {
+            bind<OrganizationDatastore>()
+        }
+        singleOf(::SupabaseNotificationDatastore) {
+            bind<NotificationDatastore>()
+        }
+        singleOf(::SupabaseDocumentDatastore) {
+            bind<DocumentDatastore>()
+        }
+        singleOf(::SupabaseMembershipDatastore) {
+            bind<MembershipDatastore>()
+        }
+        singleOf(::SupabaseCommonAreaDatastore) {
+            bind<CommonAreaDatastore>()
+        }
+        singleOf(::SupabaseTaskDatastore) {
+            bind<TaskDatastore>()
+        }
+        singleOf(::SupabaseUnitDatastore) {
+            bind<UnitDatastore>()
+        }
+        singleOf(::SupabasePaymentRecordDatastore) {
+            bind<PaymentRecordDatastore>()
+        }
+        singleOf(::SupabaseRentConfigDatastore) {
+            bind<RentConfigDatastore>()
+        }
+        singleOf(::SupabaseOccupantDatastore) {
+            bind<OccupantDatastore>()
+        }
     }
-    singleOf(::SupabaseEmployeeDatastore) {
-        bind<EmployeeDatastore>()
-    }
-    singleOf(::SupabasePropertyDatastore) {
-        bind<PropertyDatastore>()
-    }
-    singleOf(::SupabaseTimeCardDatastore) {
-        bind<TimeCardDatastore>()
-    }
-    singleOf(::SupabaseEventLogDatastore) {
-        bind<EventLogDatastore>()
-    }
-    singleOf(::SupabaseStorageDatastore) {
-        bind<StorageDatastore>()
-    }
-    singleOf(::SupabaseOrganizationDatastore) {
-        bind<OrganizationDatastore>()
-    }
-    singleOf(::SupabaseNotificationDatastore) {
-        bind<NotificationDatastore>()
-    }
-    singleOf(::SupabaseDocumentDatastore) {
-        bind<DocumentDatastore>()
-    }
-    singleOf(::SupabaseMembershipDatastore) {
-        bind<MembershipDatastore>()
-    }
-    singleOf(::SupabaseCommonAreaDatastore) {
-        bind<CommonAreaDatastore>()
-    }
-    singleOf(::SupabaseTaskDatastore) {
-        bind<TaskDatastore>()
-    }
-    singleOf(::SupabaseUnitDatastore) {
-        bind<UnitDatastore>()
-    }
-    singleOf(::SupabasePaymentRecordDatastore) {
-        bind<PaymentRecordDatastore>()
-    }
-    singleOf(::SupabaseRentConfigDatastore) {
-        bind<RentConfigDatastore>()
-    }
-    singleOf(::SupabaseOccupantDatastore) {
-        bind<OccupantDatastore>()
-    }
-}

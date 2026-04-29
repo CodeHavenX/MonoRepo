@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.auth.signup
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 /**
  * Sign Up feature ViewModel.
  */
+@FrontendViewModel
 class SignUpViewModel(
     dependencies: ViewModelDependencies,
     private val auth: AuthManager,

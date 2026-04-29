@@ -10,7 +10,7 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -27,6 +27,7 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for employee related operations. CRUD operations for employee.
  */
+@BackendController
 class EmployeeController(
     private val employeeService: EmployeeService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
@@ -38,7 +39,7 @@ class EmployeeController(
      * Creates a new employee using the provided request data.
      * Returns the created employee as a network response.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun createEmployee(
         request: OperationRequest<
             CreateEmployeeNetworkRequest,
@@ -73,7 +74,7 @@ class EmployeeController(
      * Retrieves an employee by their [employeeId].
      * Returns the employee as a network response, or null if not found.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getEmployee(
         request: OperationRequest<
             NoRequestBody,
@@ -98,7 +99,7 @@ class EmployeeController(
      * Returns a list of employees as a network response.
      * TODO: Update to pass the organizationID with the request
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getEmployees(
         request: OperationRequest<
             NoRequestBody,
@@ -115,7 +116,7 @@ class EmployeeController(
      * Updates an employee identified by [employeeId] with the provided request data.
      * Returns the updated employee as a network response.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun updateEmployee(
         request: OperationRequest<
             UpdateEmployeeNetworkRequest,
@@ -186,7 +187,7 @@ class EmployeeController(
      * Registers the routes for the employee controller.
      * Sets up the API endpoints and handlers for employee operations.
      */
-    @OptIn(NetworkModel::class)
+
     override fun registerRoutes(route: Routing) {
         EmployeeApi.register(route) {
             handler(api.createEmployee, contextRetriever) { request ->

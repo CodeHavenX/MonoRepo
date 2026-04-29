@@ -6,7 +6,7 @@ import com.cramsan.edifikana.lib.model.network.asset.CreateAssetQueryParams
 import com.cramsan.edifikana.lib.utils.requireNotBlank
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.StorageService
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.BytesRequestBody
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.core.ktor.Controller
@@ -20,7 +20,7 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for storage related operations, specifically for file management.
  */
-@OptIn(NetworkModel::class)
+@BackendController
 class StorageController(
     private val storageService: StorageService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,

@@ -5,7 +5,6 @@ import com.cramsan.flyerboard.lib.model.network.FlyerListNetworkResponse
 import com.cramsan.flyerboard.lib.model.network.FlyerNetworkResponse
 import com.cramsan.flyerboard.lib.model.network.ModerationActionNetworkRequest
 import com.cramsan.flyerboard.lib.model.network.PaginationParams
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -15,7 +14,7 @@ import io.ktor.http.HttpMethod
 /**
  * API definition for moderation operations. All operations require admin role.
  */
-@OptIn(NetworkModel::class)
+
 object ModerationApi : Api("api/v1/moderation") {
     /**
      * List all flyers with pending status. Admin-only.

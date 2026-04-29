@@ -9,6 +9,7 @@ import com.cramsan.flyerboard.server.datastore.FlyerDatastore
 import com.cramsan.flyerboard.server.service.models.Flyer
 import com.cramsan.flyerboard.server.service.models.PaginatedList
 import com.cramsan.flyerboard.server.settings.FlyerBoardSettingKey
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
@@ -20,6 +21,7 @@ import kotlin.time.Instant
  * Validates inputs, orchestrates datastore and file storage calls, enforces ownership, and
  * generates signed URLs for file access.
  */
+@BackendService
 class FlyerService(
     private val flyerDatastore: FlyerDatastore,
     private val fileDatastore: FileDatastore,

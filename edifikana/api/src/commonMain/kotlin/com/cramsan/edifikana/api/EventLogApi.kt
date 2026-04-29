@@ -6,7 +6,6 @@ import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryListNetwork
 import com.cramsan.edifikana.lib.model.network.eventLog.EventLogEntryNetworkResponse
 import com.cramsan.edifikana.lib.model.network.eventLog.GetEventLogEntriesQueryParams
 import com.cramsan.edifikana.lib.model.network.eventLog.UpdateEventLogEntryNetworkRequest
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -17,7 +16,7 @@ import io.ktor.http.HttpMethod
 /**
  * API definition for event log related operations.
  */
-@OptIn(NetworkModel::class)
+
 object EventLogApi : Api("event_log") {
     val createEventLogEntry =
         operation<

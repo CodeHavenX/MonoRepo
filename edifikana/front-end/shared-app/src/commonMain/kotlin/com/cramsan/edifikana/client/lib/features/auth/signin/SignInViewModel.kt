@@ -8,6 +8,7 @@ import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 /**
  * Sign in ViewModel.
  */
+@FrontendViewModel
 class SignInViewModel(
     dependencies: ViewModelDependencies,
     private val auth: AuthManager,

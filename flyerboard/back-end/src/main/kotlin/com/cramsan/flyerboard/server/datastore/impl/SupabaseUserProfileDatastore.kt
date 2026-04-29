@@ -6,7 +6,7 @@ import com.cramsan.flyerboard.server.datastore.UserProfileDatastore
 import com.cramsan.flyerboard.server.datastore.entity.UserProfileEntity
 import com.cramsan.flyerboard.server.datastore.entity.toUserProfile
 import com.cramsan.flyerboard.server.service.models.UserProfile
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
@@ -15,7 +15,7 @@ import io.github.jan.supabase.postgrest.Postgrest
 /**
  * Supabase implementation of [UserProfileDatastore].
  */
-@OptIn(SupabaseModel::class)
+@BackendDatastore
 class SupabaseUserProfileDatastore(private val postgrest: Postgrest) : UserProfileDatastore {
     override suspend fun getUserProfile(userId: UserId): Result<UserProfile?> =
         runSuspendCatching(TAG) {

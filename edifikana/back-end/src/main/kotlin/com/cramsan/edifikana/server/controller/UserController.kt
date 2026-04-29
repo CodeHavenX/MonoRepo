@@ -21,7 +21,7 @@ import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.UserService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
@@ -36,6 +36,7 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for user related operations. CRUD operations for users.
  */
+@BackendController
 class UserController(
     private val userService: UserService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
@@ -48,7 +49,7 @@ class UserController(
      * Creates a user with the provided request data and returns the created user as a network response.
      * Throws [IllegalArgumentException] if required fields are missing.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun createUser(createUserRequest: CreateUserNetworkRequest): UserNetworkResponse {
         requireAll(
             "An email and phone number must be provided.",
@@ -73,7 +74,7 @@ class UserController(
      * Returns the user as a network response if the authenticated context has the required role, or null if not found.
      * Throws [UnauthorizedException] if the user does not have permission.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         userId: UserId,
@@ -94,7 +95,7 @@ class UserController(
      * the authenticated context has the required role.
      * Throws [UnauthorizedException] if the user does not have permission.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getUsers(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         queryParams: GetAllUsersQueryParams,
@@ -121,7 +122,7 @@ class UserController(
      * Returns the updated user as a network response.
      * Throws [UnauthorizedException] if the user does not have permission.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun updateUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         updateUserRequest: UpdateUserNetworkRequest,
@@ -169,7 +170,7 @@ class UserController(
      * Returns the associated user as a network response.
      * Throws [IllegalArgumentException] if the user does not have a configured email.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun associate(
         authenticatedContext: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
     ): UserNetworkResponse {
@@ -194,7 +195,7 @@ class UserController(
      * Returns [NoResponseBody] to indicate successful invitation.
      * Throws [UnauthorizedException] if the user does not have permission.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun inviteUser(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         inviteRequest: InviteUserNetworkRequest,
@@ -228,7 +229,7 @@ class UserController(
      * authenticated context has the required role.
      * Throws [UnauthorizedException] if the user does not have permission.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun getInvites(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         orgId: OrganizationId,
@@ -251,7 +252,7 @@ class UserController(
      * Returns a [CheckUserNetworkResponse] indicating whether the user exists.
      * Throws [IllegalArgumentException] if required fields are missing.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun checkUserIsRegistered(
         email: String,
     ): CheckUserNetworkResponse {
@@ -325,7 +326,7 @@ class UserController(
      * Handles a password reset request. Always returns 200 regardless of email or phone number existence
      * to prevent enumeration. No authentication required.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun requestPasswordReset(request: PasswordResetNetworkRequest): NoResponseBody {
         userService.requestPasswordReset(request.email, request.phoneNumber)
         return NoResponseBody
@@ -334,7 +335,7 @@ class UserController(
     /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
-    @OptIn(NetworkModel::class)
+
     override fun registerRoutes(route: Routing) {
         UserApi.register(route) {
             handler(api.getUser, contextRetriever) { request ->

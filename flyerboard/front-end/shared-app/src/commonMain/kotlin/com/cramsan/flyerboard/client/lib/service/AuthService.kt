@@ -1,11 +1,13 @@
 package com.cramsan.flyerboard.client.lib.service
 
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.framework.annotations.FrontendService
 import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Service to manage authentication.
  */
+@FrontendService
 interface AuthService {
     /**
      * Registers a new user with the given [email] and [password].

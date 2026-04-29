@@ -4,6 +4,7 @@ import com.cramsan.flyerboard.client.lib.features.auth.AuthDestination
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import com.cramsan.flyerboard.client.lib.managers.AuthManager
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Sign In screen.
  */
+@FrontendViewModel
 class SignInViewModel(dependencies: ViewModelDependencies, private val authManager: AuthManager) :
     BaseViewModel<SignInEvent, SignInUIState>(dependencies, SignInUIState.Initial, TAG) {
     /**

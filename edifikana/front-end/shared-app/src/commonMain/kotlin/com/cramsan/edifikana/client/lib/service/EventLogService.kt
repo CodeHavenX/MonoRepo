@@ -3,10 +3,12 @@ package com.cramsan.edifikana.client.lib.service
 import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.framework.annotations.FrontendService
 
 /**
  * Service for managing event logs.
  */
+@FrontendService
 interface EventLogService {
     /**
      * Get all event log records.

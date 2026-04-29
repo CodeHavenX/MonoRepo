@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.utils.requireSuccess
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
@@ -14,6 +15,7 @@ import com.cramsan.framework.logging.logI
 /**
  * Manager for property configuration.
  */
+@FrontendManager
 class PropertyManager(
     private val propertyService: PropertyService,
     private val storageManager: StorageManager,

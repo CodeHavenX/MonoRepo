@@ -1,6 +1,6 @@
 package com.cramsan.templatereplaceme.server.controller
 
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
@@ -14,6 +14,7 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for user related operations.
  */
+@BackendController
 class UserController(private val userService: UserService, private val contextRetriever: ContextRetriever<Unit>) :
     Controller {
     /**
@@ -22,7 +23,7 @@ class UserController(private val userService: UserService, private val contextRe
      * @param createUserRequest The request containing user details.
      * @return The created user's network response.
      */
-    @OptIn(NetworkModel::class)
+
     suspend fun createUser(createUserRequest: CreateUserNetworkRequest): UserNetworkResponse {
         val newUserResult =
             userService.createUser(
@@ -33,7 +34,6 @@ class UserController(private val userService: UserService, private val contextRe
         return newUserResult.getOrThrow().toUserNetworkResponse()
     }
 
-    @OptIn(NetworkModel::class)
     override fun registerRoutes(route: Routing) {
         UserApi.register(route) {
             unauthenticatedHandler(api.createUser, contextRetriever) { request ->

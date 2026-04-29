@@ -6,7 +6,7 @@ import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
 import com.cramsan.edifikana.server.service.models.Unit
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
@@ -16,11 +16,12 @@ import kotlin.time.Clock
 /**
  * Datastore for managing unit records using Supabase.
  */
+@BackendDatastore
 class SupabaseUnitDatastore(private val postgrest: Postgrest, private val clock: Clock) : UnitDatastore {
     /**
      * Inserts a new unit row and returns the created [Unit].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun createUnit(
         propertyId: PropertyId,
         unitNumber: String,
@@ -67,7 +68,7 @@ class SupabaseUnitDatastore(private val postgrest: Postgrest, private val clock:
     /**
      * Retrieves a single unit by [unitId]. Returns null if not found or soft-deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getUnit(unitId: UnitId): Result<Unit?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting unit: %s", unitId)
@@ -99,7 +100,7 @@ class SupabaseUnitDatastore(private val postgrest: Postgrest, private val clock:
     /**
      * Lists all non-deleted units for [propertyId].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getUnits(
         propertyId: PropertyId,
     ): Result<List<Unit>> =
@@ -135,7 +136,7 @@ class SupabaseUnitDatastore(private val postgrest: Postgrest, private val clock:
      * (e.g. set [notes] back to null) through this method. Callers that need to clear a field
      * must use a dedicated operation.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun updateUnit(
         unitId: UnitId,
         unitNumber: String?,
@@ -194,7 +195,7 @@ class SupabaseUnitDatastore(private val postgrest: Postgrest, private val clock:
     /**
      * Soft-deletes a unit by setting [UnitEntity.deletedAt]. Returns true if the record was found and updated.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deleteUnit(unitId: UnitId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Soft deleting unit: %s", unitId)
@@ -215,7 +216,7 @@ class SupabaseUnitDatastore(private val postgrest: Postgrest, private val clock:
      * Permanently deletes a soft-deleted unit by [unitId]. Returns true if the record was purged.
      * Only purges records that are already soft-deleted (deletedAt is not null).
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun purgeUnit(unitId: UnitId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Purging soft-deleted unit: %s", unitId)

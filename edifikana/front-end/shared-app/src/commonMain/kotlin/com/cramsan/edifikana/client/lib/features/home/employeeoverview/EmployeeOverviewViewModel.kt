@@ -4,6 +4,7 @@ import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.launch
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the EmployeeOverview screen.
  **/
+@FrontendViewModel
 class EmployeeOverviewViewModel(dependencies: ViewModelDependencies, private val authManager: AuthManager) :
     BaseViewModel<EmployeeOverviewEvent, EmployeeOverviewUIState>(
         dependencies,

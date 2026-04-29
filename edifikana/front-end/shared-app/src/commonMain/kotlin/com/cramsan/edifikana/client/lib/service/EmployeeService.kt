@@ -2,10 +2,12 @@ package com.cramsan.edifikana.client.lib.service
 
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.framework.annotations.FrontendService
 
 /**
  * Service for managing employee.
  */
+@FrontendService
 interface EmployeeService {
     /**
      * Get all employee.

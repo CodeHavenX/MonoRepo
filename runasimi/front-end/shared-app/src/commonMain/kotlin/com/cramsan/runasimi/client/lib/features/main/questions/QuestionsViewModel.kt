@@ -1,5 +1,6 @@
 package com.cramsan.runasimi.client.lib.features.main.questions
 
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.runasimi.client.lib.manager.QuestionsManager
@@ -8,6 +9,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Questions screen.
  **/
+@FrontendViewModel
 class QuestionsViewModel(dependencies: ViewModelDependencies, private val questionsManager: QuestionsManager) :
     BaseViewModel<QuestionsEvent, QuestionsUIState>(
         dependencies,

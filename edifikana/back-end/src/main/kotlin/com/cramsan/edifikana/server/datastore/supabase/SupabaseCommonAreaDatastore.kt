@@ -7,7 +7,7 @@ import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.CommonAreaEntity.CreateCommonAreaEntity
 import com.cramsan.edifikana.server.service.models.CommonArea
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -16,11 +16,12 @@ import kotlin.time.Clock
 /**
  * Supabase implementation of [CommonAreaDatastore].
  */
+@BackendDatastore
 class SupabaseCommonAreaDatastore(private val postgrest: Postgrest, private val clock: Clock) : CommonAreaDatastore {
     /**
      * Inserts a new common area row and returns the created [CommonArea].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun createCommonArea(
         propertyId: PropertyId,
         name: String,
@@ -47,7 +48,7 @@ class SupabaseCommonAreaDatastore(private val postgrest: Postgrest, private val 
     /**
      * Retrieves a single common area by [commonAreaId]. Returns null if not found or soft-deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getCommonArea(commonAreaId: CommonAreaId): Result<CommonArea?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting common area: %s", commonAreaId)
@@ -65,7 +66,7 @@ class SupabaseCommonAreaDatastore(private val postgrest: Postgrest, private val 
     /**
      * Lists all non-deleted common areas for the given [propertyId].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getCommonAreasForProperty(propertyId: PropertyId): Result<List<CommonArea>> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting common areas for property: %s", propertyId)
@@ -83,7 +84,7 @@ class SupabaseCommonAreaDatastore(private val postgrest: Postgrest, private val 
     /**
      * Updates the [name], [type], and/or [description] of an existing common area.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun updateCommonArea(
         commonAreaId: CommonAreaId,
         name: String?,
@@ -111,7 +112,7 @@ class SupabaseCommonAreaDatastore(private val postgrest: Postgrest, private val 
     /**
      * Soft-deletes a common area by setting [CommonAreaEntity.deletedAt]. Returns true if the record was found and deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deleteCommonArea(commonAreaId: CommonAreaId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Soft deleting common area: %s", commonAreaId)
@@ -131,7 +132,7 @@ class SupabaseCommonAreaDatastore(private val postgrest: Postgrest, private val 
     /**
      * Hard-deletes a common area row. For integration test cleanup only.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun purgeCommonArea(commonAreaId: CommonAreaId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Purging common area: %s", commonAreaId)

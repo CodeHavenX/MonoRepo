@@ -4,6 +4,7 @@ import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import kotlinx.coroutines.launch
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * Account screen view model.
  */
+@FrontendViewModel
 class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDependencies) :
     BaseViewModel<AccountEvent, AccountUIState>(dependencies, AccountUIState.Empty, TAG) {
     /**

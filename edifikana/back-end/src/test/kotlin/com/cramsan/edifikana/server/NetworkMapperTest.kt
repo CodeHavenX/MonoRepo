@@ -12,7 +12,6 @@ import com.cramsan.edifikana.server.controller.toUserNetworkResponse
 import com.cramsan.edifikana.server.service.models.Notification
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.test.asClock
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,7 +19,6 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.TestTimeSource
 
 class NetworkMapperTest {
-    @OptIn(NetworkModel::class)
     @Test
     fun `map user to network response`() {
         // Arrange
@@ -50,7 +48,7 @@ class NetworkMapperTest {
         assertEquals(expectedResponse, response)
     }
 
-    @OptIn(NetworkModel::class, ExperimentalTime::class)
+    @OptIn(ExperimentalTime::class)
     @Test
     fun `map notification to network response`() {
         // Arrange
@@ -88,7 +86,7 @@ class NetworkMapperTest {
         assertEquals(expectedResponse, response)
     }
 
-    @OptIn(NetworkModel::class, ExperimentalTime::class)
+    @OptIn(ExperimentalTime::class)
     @Test
     fun `map notification to network response with read timestamp`() {
         // Arrange

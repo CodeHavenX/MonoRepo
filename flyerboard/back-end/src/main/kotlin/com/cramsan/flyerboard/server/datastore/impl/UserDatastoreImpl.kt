@@ -3,12 +3,14 @@ package com.cramsan.flyerboard.server.datastore.impl
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.flyerboard.server.datastore.UserDatastore
 import com.cramsan.flyerboard.server.service.models.User
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.utils.uuid.UUID
 
 /**
  * Implementation of [UserDatastore] that provides user-related data operations.
  */
+@BackendDatastore
 class UserDatastoreImpl : UserDatastore {
     override suspend fun createUser(
         firstName: String,

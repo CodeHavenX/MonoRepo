@@ -3,7 +3,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.edifikana.lib.model.employee.EmployeeRole
 import com.cramsan.edifikana.lib.model.identification.IdType
 import com.cramsan.edifikana.lib.model.property.PropertyId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -12,7 +12,7 @@ import kotlin.time.Instant
  * Entity representing employee member.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class EmployeeEntity(
     val id: String,
     @SerialName("id_type")
@@ -35,7 +35,7 @@ data class EmployeeEntity(
      * Entity representing a new employee member.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateEmployeeEntity(
         @SerialName("id_type")
         val idType: IdType,

@@ -3,7 +3,7 @@ package com.cramsan.flyerboard.server.datastore.entity
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.flyerboard.server.service.models.UserProfile
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -12,7 +12,7 @@ import kotlin.time.Instant
  * Supabase entity representing a row in the `user_profiles` table.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class UserProfileEntity(
     @SerialName("id")
     val id: String,
@@ -31,7 +31,7 @@ data class UserProfileEntity(
      * Entity for inserting a new user profile row on signup.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateUserProfileEntity(
         @SerialName("id")
         val id: String,
@@ -43,7 +43,7 @@ data class UserProfileEntity(
 /**
  * Maps a [UserProfileEntity] to the [UserProfile] domain model.
  */
-@OptIn(SupabaseModel::class)
+
 fun UserProfileEntity.toUserProfile(): UserProfile =
     UserProfile(
         id = UserId(id),

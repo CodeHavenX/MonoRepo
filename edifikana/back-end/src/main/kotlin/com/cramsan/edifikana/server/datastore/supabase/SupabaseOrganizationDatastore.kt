@@ -7,7 +7,7 @@ import com.cramsan.edifikana.server.datastore.OrganizationDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.service.models.Organization
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -17,7 +17,7 @@ import kotlin.time.Clock
 /**
  * Datastore for managing organizations in Supabase.
  */
-@OptIn(SupabaseModel::class)
+@BackendDatastore
 class SupabaseOrganizationDatastore(private val postgrest: Postgrest, private val clock: Clock) :
     OrganizationDatastore {
     /**

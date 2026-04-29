@@ -3,7 +3,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -12,7 +12,7 @@ import kotlin.time.Instant
  * Supabase entity representing a time card event.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class TimeCardEventEntity(
     val id: String,
     @SerialName("employee_id")
@@ -36,7 +36,7 @@ data class TimeCardEventEntity(
      * Supabase entity representing creating a new time card event.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateTimeCardEventEntity(
         @SerialName("employee_id")
         val employeeId: EmployeeId?,

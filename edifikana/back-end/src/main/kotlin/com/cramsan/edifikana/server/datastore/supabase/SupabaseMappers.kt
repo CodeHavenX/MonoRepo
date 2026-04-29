@@ -34,6 +34,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.EmployeeEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.EventLogEntryEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.NotificationEntity
+import com.cramsan.edifikana.server.datastore.supabase.models.OccupantEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OrganizationEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.PaymentRecordEntity
@@ -43,7 +44,6 @@ import com.cramsan.edifikana.server.datastore.supabase.models.TaskEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.TimeCardEventEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
-import com.cramsan.edifikana.server.datastore.supabase.models.OccupantEntity
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Document
 import com.cramsan.edifikana.server.service.models.Employee
@@ -60,7 +60,7 @@ import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.edifikana.server.service.models.User
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import kotlin.time.ExperimentalTime
@@ -128,7 +128,7 @@ fun InviteRole.toUserRole(): UserRole =
 /**
  * Maps a [UserEntity] to the [User] model.
  */
-@OptIn(SupabaseModel::class)
+
 fun UserEntity.toUser(): User {
     return User(
         id = UserId(this.id),
@@ -148,7 +148,7 @@ fun UserEntity.toUser(): User {
  * Create a [UserEntity.CreateUserEntity] from the provided parameters.
  * This function is used to create a new user entity in the database.
  */
-@OptIn(SupabaseModel::class, SecureStringAccess::class)
+@OptIn(SecureStringAccess::class)
 fun CreateUserEntity(
     userId: UserId,
     email: String,
@@ -179,7 +179,7 @@ fun CreateUserEntity(
  * This function is used to create a new user entity in the database with the existing user entity.
  * This is useful in cases of migrating from a transient user to a permanent user.
  */
-@OptIn(SupabaseModel::class)
+
 fun CreateUserEntity(
     userId: UserId,
     email: String,
@@ -201,7 +201,7 @@ fun CreateUserEntity(
 /**
  * Create a [UserEntity.CreateUserEntity] from the provided parameters.
  */
-@OptIn(SupabaseModel::class)
+
 fun CreateEmployeeEntity(
     idType: IdType,
     firstName: String,
@@ -221,7 +221,7 @@ fun CreateEmployeeEntity(
 /**
  * Maps a [EmployeeEntity] to the [Employee] model.
  */
-@OptIn(SupabaseModel::class)
+
 fun EmployeeEntity.toEmployee(): Employee {
     return Employee(
         id = EmployeeId(this.id),
@@ -236,7 +236,7 @@ fun EmployeeEntity.toEmployee(): Employee {
 /**
  * Maps a [CreatePropertyRequest] to the [PropertyEntity.CreatePropertyEntity] model.
  */
-@OptIn(SupabaseModel::class)
+
 fun CreatePropertyEntity(
     name: String,
     address: String,
@@ -254,7 +254,7 @@ fun CreatePropertyEntity(
 /**
  * Maps a [PropertyEntity] to the [Property] model.
  */
-@OptIn(SupabaseModel::class)
+
 fun PropertyEntity.toProperty(): Property {
     return Property(
         id = this.id,
@@ -268,7 +268,7 @@ fun PropertyEntity.toProperty(): Property {
 /**
  * Creates a [TimeCardEventEntity.CreateTimeCardEventEntity] from the provided parameters.
  */
-@OptIn(SupabaseModel::class)
+
 fun CreateTimeCardEventEntity(
     employeeId: EmployeeId,
     fallbackEmpName: String?,
@@ -290,7 +290,7 @@ fun CreateTimeCardEventEntity(
 /**
  * Maps a [TimeCardEventEntity] to the [TimeCardEvent] model.
  */
-@OptIn(SupabaseModel::class)
+
 fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent? {
     val employeeId = this.employeeId ?: return null
     return TimeCardEvent(
@@ -307,7 +307,7 @@ fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent? {
 /**
  * Create a [EventLogEntryEntity.CreateEventLogEntryEntity] from the provided parameters.
  */
-@OptIn(SupabaseModel::class)
+
 fun CreateEventLogEntryEntity(
     employeeId: EmployeeId?,
     fallbackEmployeeName: String?,
@@ -335,7 +335,7 @@ fun CreateEventLogEntryEntity(
 /**
  * Maps a [EventLogEntryEntity] to the [EventLogEntry] model.
  */
-@OptIn(SupabaseModel::class)
+
 fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
     return EventLogEntry(
         id = EventLogEntryId(this.id),
@@ -354,7 +354,7 @@ fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
 /**
  * Maps an [OrganizationEntity] to the [Organization] model.
  */
-@OptIn(SupabaseModel::class)
+
 fun OrganizationEntity.toOrganization() =
     Organization(
         id = this.id,
@@ -365,7 +365,7 @@ fun OrganizationEntity.toOrganization() =
 /**
  * Maps a [NotificationEntity] to the [Notification] model.
  */
-@SupabaseModel
+@DatabaseModel
 fun NotificationEntity.toNotification(): Notification {
     return Notification(
         id = NotificationId(this.id),
@@ -383,7 +383,7 @@ fun NotificationEntity.toNotification(): Notification {
 /**
  * Maps an [InviteEntity] to the [Invite] model.
  */
-@OptIn(SupabaseModel::class)
+
 fun InviteEntity.toInvite(): Invite {
     return Invite(
         id = InviteId(this.id),
@@ -401,7 +401,7 @@ fun InviteEntity.toInvite(): Invite {
 /**
  * Creates a [DocumentEntity.CreateDocumentEntity] from the provided parameters.
  */
-@OptIn(SupabaseModel::class)
+
 fun CreateDocumentEntity(
     orgId: OrganizationId,
     propertyId: PropertyId?,
@@ -427,7 +427,7 @@ fun CreateDocumentEntity(
 /**
  * Maps a [DocumentEntity] to the [Document] service model.
  */
-@OptIn(SupabaseModel::class)
+
 fun DocumentEntity.toDocument(): Document {
     return Document(
         id = DocumentId(this.documentId),
@@ -446,7 +446,7 @@ fun DocumentEntity.toDocument(): Document {
 /**
  * Maps an [OrgMemberViewEntity] to the [OrgMemberView] domain model.
  */
-@OptIn(SupabaseModel::class)
+
 fun OrgMemberViewEntity.toOrgMemberView(): OrgMemberView {
     return OrgMemberView(
         userId = this.userId,
@@ -463,7 +463,7 @@ fun OrgMemberViewEntity.toOrgMemberView(): OrgMemberView {
 /**
  * Maps a [CommonAreaEntity] to the [CommonArea] domain model.
  */
-@OptIn(SupabaseModel::class)
+
 fun CommonAreaEntity.toCommonArea(): CommonArea {
     return CommonArea(
         id = CommonAreaId(commonAreaId),
@@ -478,7 +478,7 @@ fun CommonAreaEntity.toCommonArea(): CommonArea {
 /**
  * Maps a [TaskEntity] to the [Task] domain model.
  */
-@OptIn(SupabaseModel::class)
+
 fun TaskEntity.toTask(): Task {
     return Task(
         id = TaskId(id),
@@ -502,7 +502,7 @@ fun TaskEntity.toTask(): Task {
 /**
  * Creates a [UnitEntity.CreateUnitEntity] from the provided parameters.
  */
-@OptIn(SupabaseModel::class)
+
 fun CreateUnitEntity(
     propertyId: PropertyId,
     unitNumber: String,
@@ -526,7 +526,7 @@ fun CreateUnitEntity(
 /**
  * Maps a [UnitEntity] to the [Unit] service model.
  */
-@OptIn(SupabaseModel::class)
+
 fun UnitEntity.toUnit(orgId: OrganizationId): Unit {
     return Unit(
         id = this.unitId,
@@ -545,7 +545,7 @@ fun UnitEntity.toUnit(orgId: OrganizationId): Unit {
 /**
  * Maps a [PaymentRecordEntity] to the [PaymentRecord] service model.
  */
-@OptIn(SupabaseModel::class)
+
 fun PaymentRecordEntity.toPaymentRecord(): PaymentRecord {
     return PaymentRecord(
         id = this.paymentRecordId,
@@ -566,7 +566,7 @@ fun PaymentRecordEntity.toPaymentRecord(): PaymentRecord {
 /**
  * Maps a [RentConfigEntity] to the [RentConfig] service model.
  */
-@OptIn(SupabaseModel::class)
+
 fun RentConfigEntity.toRentConfig(): RentConfig {
     return RentConfig(
         id = this.rentConfigId,
@@ -583,7 +583,7 @@ fun RentConfigEntity.toRentConfig(): RentConfig {
 /**
  * Maps an [OccupantEntity] to the [Occupant] service model.
  */
-@OptIn(SupabaseModel::class)
+
 fun OccupantEntity.toOccupant(): com.cramsan.edifikana.server.service.models.Occupant {
     return com.cramsan.edifikana.server.service.models.Occupant(
         id = this.occupantId,

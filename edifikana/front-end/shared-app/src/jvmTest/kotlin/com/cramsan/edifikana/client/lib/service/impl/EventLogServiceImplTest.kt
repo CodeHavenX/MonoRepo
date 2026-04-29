@@ -58,7 +58,7 @@ class EventLogServiceImplTest {
      * Tests that getRecord returns a mapped record for the given eventLogRecordPK.
      */
     @Test
-    @OptIn(NetworkModel::class)
+
     fun `getRecord should return mapped record for eventLogRecordPK`() = runTest {
         // Arrange
         val eventLogEntryId = EventLogEntryId("event-1")
@@ -91,7 +91,7 @@ class EventLogServiceImplTest {
      * Tests that getRecords returns a mapped list of event log records.
      */
     @Test
-    @OptIn(NetworkModel::class)
+
     fun `getRecords should return mapped records`() = runTest {
         // Arrange
         val propertyId = PropertyId("Muralla")
@@ -126,7 +126,7 @@ class EventLogServiceImplTest {
     /**
      * Tests that addRecord returns a mapped record after creation.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `addRecord should return mapped record after creation`() = runTest {
         // Arrange
@@ -172,7 +172,7 @@ class EventLogServiceImplTest {
     /**
      * Tests that updateRecord returns a mapped record after update.
      */
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `updateRecord should return mapped record after update`() = runTest {
         // Arrange

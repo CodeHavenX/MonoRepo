@@ -7,12 +7,14 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
 import com.cramsan.edifikana.server.service.models.Employee
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logD
 
 /**
  * Service for employee operations.
  */
+@BackendService
 class EmployeeService(private val employeeDatastore: EmployeeDatastore) {
     /**
      * Creates an employee with the provided [name].

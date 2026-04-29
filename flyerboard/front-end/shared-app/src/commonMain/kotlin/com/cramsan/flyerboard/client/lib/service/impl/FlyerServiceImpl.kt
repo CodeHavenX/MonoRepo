@@ -14,7 +14,7 @@ import com.cramsan.flyerboard.lib.model.network.ListFlyersQueryParams
 import com.cramsan.flyerboard.lib.model.network.ModerationActionNetworkRequest
 import com.cramsan.flyerboard.lib.model.network.PaginationParams
 import com.cramsan.flyerboard.lib.serialization.HEADER_TOKEN_AUTH
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logW
 import com.cramsan.framework.networkapi.buildRequest
@@ -38,7 +38,7 @@ import io.ktor.http.HttpHeaders
  * ([createFlyer], [updateFlyer]) use raw Ktor form-data requests because the framework's
  * [BytesRequestBody] path only supports a single binary blob, not keyed form fields.
  */
-@OptIn(NetworkModel::class)
+@FrontendService
 class FlyerServiceImpl(private val http: HttpClient, private val authService: AuthService) : FlyerService {
     // ── JSON operations ───────────────────────────────────────────────────────
 

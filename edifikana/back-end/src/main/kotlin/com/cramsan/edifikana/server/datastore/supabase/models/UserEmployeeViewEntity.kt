@@ -6,7 +6,7 @@ import com.cramsan.edifikana.lib.model.identification.IdType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Employee
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
  * Contains employee data plus the user_id from the property mapping.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class UserEmployeeViewEntity(
     val id: String,
     @SerialName("id_type")

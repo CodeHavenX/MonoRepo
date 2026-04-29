@@ -1,7 +1,7 @@
 package com.cramsan.templatereplaceme.client.lib.service.impl
 
 import com.cramsan.architecture.client.service.execute
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.templatereplaceme.api.UserApi
@@ -13,8 +13,8 @@ import io.ktor.client.HttpClient
 /**
  * Implementation of [UserService].
  */
+@FrontendService
 class UserServiceImpl(private val http: HttpClient) : UserService {
-    @OptIn(NetworkModel::class)
     override suspend fun createUser(
         firstName: String,
         lastName: String,

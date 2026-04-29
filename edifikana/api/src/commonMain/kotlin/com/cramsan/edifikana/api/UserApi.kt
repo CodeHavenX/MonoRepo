@@ -13,7 +13,6 @@ import com.cramsan.edifikana.lib.model.network.user.UserListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -24,7 +23,7 @@ import io.ktor.http.HttpMethod
 /**
  * Singleton object representing the User API with its operations.
  */
-@OptIn(NetworkModel::class)
+
 object UserApi : Api("user") {
     val createUser =
         operation<

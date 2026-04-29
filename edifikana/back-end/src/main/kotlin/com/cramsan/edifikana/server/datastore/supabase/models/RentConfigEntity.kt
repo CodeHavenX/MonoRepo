@@ -3,7 +3,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.edifikana.lib.model.rent.RentConfigId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
@@ -17,7 +17,7 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class RentConfigEntity(
     @SerialName("rent_config_id")
     val rentConfigId: RentConfigId,

@@ -5,11 +5,13 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
+import com.cramsan.framework.annotations.BackendDatastore
 import kotlin.time.Instant
 
 /**
  * Interface for interacting with the time card database.
  */
+@BackendDatastore
 interface TimeCardDatastore {
     /**
      * Creates a new time card event. Returns the [Result] of the operation with the created [TimeCardEvent].

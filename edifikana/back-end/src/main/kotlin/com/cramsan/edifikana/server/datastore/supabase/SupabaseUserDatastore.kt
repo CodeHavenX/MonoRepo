@@ -7,7 +7,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.runSuspendCatching
@@ -26,7 +26,7 @@ import kotlin.time.Clock
 /**
  * Datastore for managing users.
  */
-@OptIn(SupabaseModel::class)
+@BackendDatastore
 class SupabaseUserDatastore(
     private val adminApi: AdminApi,
     private val postgrest: Postgrest,

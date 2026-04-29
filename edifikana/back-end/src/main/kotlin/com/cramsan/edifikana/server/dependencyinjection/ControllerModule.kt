@@ -1,19 +1,19 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.edifikana.server.controller.CommonAreaController
-import com.cramsan.edifikana.server.controller.OccupantController
-import com.cramsan.edifikana.server.controller.PaymentRecordController
-import com.cramsan.edifikana.server.controller.RentConfigController
-import com.cramsan.edifikana.server.controller.TaskController
 import com.cramsan.edifikana.server.controller.DocumentController
 import com.cramsan.edifikana.server.controller.EmployeeController
 import com.cramsan.edifikana.server.controller.EventLogController
 import com.cramsan.edifikana.server.controller.HealthCheckController
 import com.cramsan.edifikana.server.controller.MembershipController
 import com.cramsan.edifikana.server.controller.NotificationController
+import com.cramsan.edifikana.server.controller.OccupantController
 import com.cramsan.edifikana.server.controller.OrganizationController
+import com.cramsan.edifikana.server.controller.PaymentRecordController
 import com.cramsan.edifikana.server.controller.PropertyController
+import com.cramsan.edifikana.server.controller.RentConfigController
 import com.cramsan.edifikana.server.controller.StorageController
+import com.cramsan.edifikana.server.controller.TaskController
 import com.cramsan.edifikana.server.controller.TimeCardController
 import com.cramsan.edifikana.server.controller.UnitController
 import com.cramsan.edifikana.server.controller.UserController
@@ -26,22 +26,23 @@ import org.koin.dsl.module
  * Koin module for initializing all controller components in the Edifikana application.
  * Controllers are responsible for handling HTTP requests and routing them to appropriate services.
  */
-internal val ControllerModule = module {
-    singleOf(::UserController) { bind<Controller>() }
-    singleOf(::MembershipController) { bind<Controller>() }
-    singleOf(::EventLogController) { bind<Controller>() }
-    singleOf(::HealthCheckController) { bind<Controller>() }
-    singleOf(::PropertyController) { bind<Controller>() }
-    singleOf(::EmployeeController) { bind<Controller>() }
-    singleOf(::TimeCardController) { bind<Controller>() }
-    singleOf(::StorageController) { bind<Controller>() }
-    singleOf(::OrganizationController) { bind<Controller>() }
-    singleOf(::NotificationController) { bind<Controller>() }
-    singleOf(::DocumentController) { bind<Controller>() }
-    singleOf(::UnitController) { bind<Controller>() }
-    singleOf(::CommonAreaController) { bind<Controller>() }
-    singleOf(::TaskController) { bind<Controller>() }
-    singleOf(::PaymentRecordController) { bind<Controller>() }
-    singleOf(::RentConfigController) { bind<Controller>() }
-    singleOf(::OccupantController) { bind<Controller>() }
-}
+internal val ControllerModule =
+    module {
+        singleOf(::UserController) { bind<Controller>() }
+        singleOf(::MembershipController) { bind<Controller>() }
+        singleOf(::EventLogController) { bind<Controller>() }
+        singleOf(::HealthCheckController) { bind<Controller>() }
+        singleOf(::PropertyController) { bind<Controller>() }
+        singleOf(::EmployeeController) { bind<Controller>() }
+        singleOf(::TimeCardController) { bind<Controller>() }
+        singleOf(::StorageController) { bind<Controller>() }
+        singleOf(::OrganizationController) { bind<Controller>() }
+        singleOf(::NotificationController) { bind<Controller>() }
+        singleOf(::DocumentController) { bind<Controller>() }
+        singleOf(::UnitController) { bind<Controller>() }
+        singleOf(::CommonAreaController) { bind<Controller>() }
+        singleOf(::TaskController) { bind<Controller>() }
+        singleOf(::PaymentRecordController) { bind<Controller>() }
+        singleOf(::RentConfigController) { bind<Controller>() }
+        singleOf(::OccupantController) { bind<Controller>() }
+    }

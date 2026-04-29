@@ -1,5 +1,6 @@
 package com.cramsan.templatereplaceme.client.lib.managers
 
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
@@ -9,6 +10,7 @@ import com.cramsan.templatereplaceme.client.lib.service.UserService
 /**
  * Manager to handle user operations.
  */
+@FrontendManager
 class UserManager(private val dependencies: ManagerDependencies, private val authService: UserService) {
     /**
      * Create a new user.

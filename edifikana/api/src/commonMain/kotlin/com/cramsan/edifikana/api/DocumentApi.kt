@@ -6,7 +6,6 @@ import com.cramsan.edifikana.lib.model.network.document.DocumentListNetworkRespo
 import com.cramsan.edifikana.lib.model.network.document.DocumentNetworkResponse
 import com.cramsan.edifikana.lib.model.network.document.GetDocumentsQueryParams
 import com.cramsan.edifikana.lib.model.network.document.UpdateDocumentNetworkRequest
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -20,7 +19,7 @@ import io.ktor.http.HttpMethod
  * Files are stored in the Supabase 'documents' bucket via [StorageApi].
  * This API manages the metadata records that reference those stored files.
  */
-@OptIn(NetworkModel::class)
+
 object DocumentApi : Api("document") {
     val createDocument =
         operation<

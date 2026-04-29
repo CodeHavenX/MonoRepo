@@ -7,7 +7,7 @@ import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.NotificationDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.NotificationEntity
 import com.cramsan.edifikana.server.service.models.Notification
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
@@ -17,7 +17,7 @@ import kotlin.time.Clock
 /**
  * Datastore for managing notifications using Supabase.
  */
-@OptIn(SupabaseModel::class)
+@BackendDatastore
 class SupabaseNotificationDatastore(private val postgrest: Postgrest, private val clock: Clock) :
     NotificationDatastore {
     /**

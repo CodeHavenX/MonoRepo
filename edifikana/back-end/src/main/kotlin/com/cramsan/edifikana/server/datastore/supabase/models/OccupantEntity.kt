@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
 import com.cramsan.edifikana.lib.model.occupant.OccupantId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -18,7 +18,7 @@ import kotlin.time.Instant
  */
 @OptIn(ExperimentalTime::class)
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class OccupantEntity(
     @SerialName("occupant_id")
     val occupantId: OccupantId,
@@ -53,7 +53,7 @@ data class OccupantEntity(
      * ([occupantId], [addedAt], [deletedAt]).
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateOccupantEntity(
         @SerialName("unit_id")
         val unitId: UnitId,

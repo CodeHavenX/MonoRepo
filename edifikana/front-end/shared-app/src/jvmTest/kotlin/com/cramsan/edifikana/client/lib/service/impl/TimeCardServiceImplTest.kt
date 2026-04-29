@@ -47,7 +47,7 @@ class TimeCardServiceImplTest {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getRecords should return mapped time card records for employee`() = runTest {
         // Arrange
@@ -88,7 +88,7 @@ class TimeCardServiceImplTest {
         assertEquals(EmployeeId("employee-2"), list?.get(1)?.employeePk)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getAllRecords should return mapped time card records for property`() = runTest {
         // Arrange
@@ -119,7 +119,7 @@ class TimeCardServiceImplTest {
         assertEquals(PropertyId("property-2"), list?.get(0)?.propertyId)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `getRecord should return mapped time card record for id`() = runTest {
         // Arrange
@@ -148,7 +148,7 @@ class TimeCardServiceImplTest {
         assertEquals(EmployeeId("employee-1"), record?.employeePk)
     }
 
-    @OptIn(NetworkModel::class)
+
     @Test
     fun `addRecord should return mapped time card after creation`() = runTest {
         // Arrange

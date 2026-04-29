@@ -4,7 +4,7 @@ import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.flyerboard.server.service.models.Flyer
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -13,7 +13,7 @@ import kotlin.time.Instant
  * Supabase entity representing a row in the `flyers` table.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class FlyerEntity(
     @SerialName("id")
     val id: String,
@@ -42,7 +42,7 @@ data class FlyerEntity(
      * Entity for inserting a new flyer row. Excludes server-generated fields (id, status, created_at, updated_at).
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateFlyerEntity(
         @SerialName("title")
         val title: String,
@@ -60,7 +60,7 @@ data class FlyerEntity(
 /**
  * Maps a [FlyerEntity] to the [Flyer] domain model.
  */
-@OptIn(SupabaseModel::class)
+
 fun FlyerEntity.toFlyer(): Flyer =
     Flyer(
         id = FlyerId(id),

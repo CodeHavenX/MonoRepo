@@ -4,7 +4,7 @@ import com.cramsan.flyerboard.api.ModerationApi
 import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.service.ModerationService
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
@@ -17,7 +17,7 @@ import io.ktor.server.routing.Routing
  *
  * All endpoints require an authenticated caller with [UserRole.ADMIN].
  */
-@OptIn(NetworkModel::class)
+@BackendController
 class ModerationController(
     private val moderationService: ModerationService,
     private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>,

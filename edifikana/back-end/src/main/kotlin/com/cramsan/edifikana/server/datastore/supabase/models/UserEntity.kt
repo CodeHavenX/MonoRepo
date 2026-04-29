@@ -1,6 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -9,7 +9,7 @@ import kotlin.time.Instant
  * Supabase entity representing a user.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class UserEntity(
     val id: String,
     val email: String,
@@ -32,7 +32,7 @@ data class UserEntity(
      * Supabase entity representing a create user request.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateUserEntity(
         val id: String,
         val email: String,
@@ -52,7 +52,7 @@ data class UserEntity(
  * This is used to store additional information about the user's authentication capabilities.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class AuthMetadataEntity(
     @SerialName("pending_association")
     val pendingAssociation: Boolean = true,

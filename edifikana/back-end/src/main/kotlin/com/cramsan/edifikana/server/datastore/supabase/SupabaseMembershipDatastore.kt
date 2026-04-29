@@ -13,7 +13,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.OrgMemberViewEntit
 import com.cramsan.edifikana.server.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.OrgMemberView
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -27,7 +27,7 @@ import kotlin.time.Instant
 /**
  * Supabase implementation of [MembershipDatastore].
  */
-@OptIn(SupabaseModel::class)
+@BackendDatastore
 class SupabaseMembershipDatastore(private val postgrest: Postgrest, private val clock: Clock) : MembershipDatastore {
     /**
      * Returns all active members of [orgId] from the v_org_members view.

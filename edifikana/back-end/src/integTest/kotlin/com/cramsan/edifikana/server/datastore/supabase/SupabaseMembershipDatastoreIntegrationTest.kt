@@ -7,7 +7,7 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.task.TaskStatus
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.model.invite.InviteId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.serialization.SerialName
@@ -24,7 +24,7 @@ import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.runBlocking
 import org.koin.test.inject
 
-@OptIn(ExperimentalTime::class, SupabaseModel::class)
+@OptIn(ExperimentalTime::class)
 class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     private val clock: Clock by inject()
@@ -601,7 +601,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Minimal entity for inserting a task row directly in tests.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     private data class TaskInsertEntity(
         @SerialName("property_id") val propertyId: String,
         @SerialName("created_by") val createdBy: String,
@@ -615,7 +615,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Minimal entity for reading a task row directly in tests.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     private data class TaskRowEntity(
         val id: String,
         @SerialName("assignee_id") val assigneeId: String?,

@@ -1,5 +1,6 @@
 package com.cramsan.templatereplaceme.client.lib.features.splash
 
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Splash screen.
  **/
+@FrontendViewModel
 class SplashViewModel(dependencies: ViewModelDependencies) :
     BaseViewModel<SplashEvent, SplashUIState>(
         dependencies,

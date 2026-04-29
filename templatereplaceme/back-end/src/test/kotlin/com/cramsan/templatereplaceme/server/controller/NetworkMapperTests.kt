@@ -1,12 +1,10 @@
 package com.cramsan.templatereplaceme.server.controller
 
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.templatereplaceme.lib.model.UserId
 import com.cramsan.templatereplaceme.server.service.models.User
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-@OptIn(NetworkModel::class)
 class NetworkMapperTests {
     @Test
     fun `test user network response`() {

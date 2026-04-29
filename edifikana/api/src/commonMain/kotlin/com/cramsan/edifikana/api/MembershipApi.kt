@@ -9,7 +9,6 @@ import com.cramsan.edifikana.lib.model.network.organization.RemoveMemberNetworkR
 import com.cramsan.edifikana.lib.model.network.organization.TransferOwnershipNetworkRequest
 import com.cramsan.edifikana.lib.model.network.organization.UpdateRoleNetworkRequest
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -23,7 +22,7 @@ import io.ktor.http.HttpMethod
  * Routes are structured as /membership/{subPath}/{pathParam} to fit the
  * single-path-parameter constraint of the API framework.
  */
-@OptIn(NetworkModel::class)
+
 object MembershipApi : Api("membership") {
     /**
      * Invite a new member to the organization.

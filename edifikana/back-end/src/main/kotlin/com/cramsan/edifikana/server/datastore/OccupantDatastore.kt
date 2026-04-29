@@ -7,13 +7,14 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Occupant
+import com.cramsan.framework.annotations.BackendDatastore
 import kotlinx.datetime.LocalDate
 
 /**
  * Interface for the occupant datastore.
  */
+@BackendDatastore
 interface OccupantDatastore {
-
     /**
      * Creates a new occupant record. Returns the [Result] with the created [Occupant].
      */
@@ -49,7 +50,6 @@ interface OccupantDatastore {
         propertyId: PropertyId,
         includeInactive: Boolean,
     ): Result<List<Occupant>>
-
 
     /**
      * Sets isPrimary to false on all active occupants for [unitId].

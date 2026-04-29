@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.utils.FileValidationUtils
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
@@ -17,6 +18,7 @@ import com.cramsan.framework.logging.logI
  * Provides a layer between ViewModels and StorageService, following the application's
  * architectural pattern where ViewModels interact with Managers, not Services directly.
  */
+@FrontendManager
 class StorageManager(
     private val storageService: StorageService,
     private val fileService: FileService,

@@ -6,7 +6,6 @@ import com.cramsan.edifikana.lib.model.network.task.TaskListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.task.TaskNetworkResponse
 import com.cramsan.edifikana.lib.model.network.task.UpdateTaskNetworkRequest
 import com.cramsan.edifikana.lib.model.task.TaskId
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -24,7 +23,7 @@ import io.ktor.http.HttpMethod
  * - GET operations: EMPLOYEE role or higher
  * - POST / PUT / DELETE (create / update / delete): MANAGER role or higher
  */
-@OptIn(NetworkModel::class)
+
 object TaskApi : Api("task") {
     val createTask =
         operation<

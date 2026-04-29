@@ -5,7 +5,6 @@ import com.cramsan.edifikana.lib.model.network.employee.CreateEmployeeNetworkReq
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.UpdateEmployeeNetworkRequest
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -16,7 +15,7 @@ import io.ktor.http.HttpMethod
 /**
  * API definition for employee related operations.
  */
-@OptIn(NetworkModel::class)
+
 object EmployeeApi : Api("employee") {
     val createEmployee =
         operation<

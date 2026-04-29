@@ -5,7 +5,6 @@ import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkRespo
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.property.PropertyId
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -16,7 +15,7 @@ import io.ktor.http.HttpMethod
 /**
  * API definition for property related operations.
  */
-@OptIn(NetworkModel::class)
+
 object PropertyApi : Api("property") {
     val createProperty =
         operation<

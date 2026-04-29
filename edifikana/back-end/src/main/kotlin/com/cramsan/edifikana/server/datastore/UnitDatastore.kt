@@ -3,10 +3,12 @@ package com.cramsan.edifikana.server.datastore
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.service.models.Unit
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface for the unit datastore.
  */
+@BackendDatastore
 interface UnitDatastore {
     /**
      * Creates a new unit record. Returns the [Result] of the operation with the created [Unit].

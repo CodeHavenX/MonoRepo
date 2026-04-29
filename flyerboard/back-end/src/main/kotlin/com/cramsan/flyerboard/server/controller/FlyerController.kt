@@ -5,7 +5,7 @@ import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.service.FlyerService
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ClientContext
@@ -34,7 +34,7 @@ import kotlin.time.Instant
  * [updateFlyer]) accept `multipart/form-data` bodies and therefore bypass the framework's
  * `BytesRequestBody` path, registering raw Ktor routes instead.
  */
-@OptIn(NetworkModel::class)
+@BackendController
 class FlyerController(
     private val flyerService: FlyerService,
     private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>,

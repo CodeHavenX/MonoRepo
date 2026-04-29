@@ -4,6 +4,7 @@ package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.StorageService
+import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logE
@@ -14,6 +15,7 @@ import io.github.jan.supabase.storage.Storage
 /**
  * Supabase implementation of [StorageService].
  */
+@FrontendService
 class StorageServiceImpl(private val storage: Storage, private val downloadStrategy: DownloadStrategy) :
     StorageService {
     override suspend fun uploadFile(data: ByteArray, targetRef: String): Result<String> =

@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.BuildConfig
 import com.cramsan.edifikana.client.lib.features.debug.DebugDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.configuration.PropertyValueType
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -20,6 +21,7 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * ViewModel for the Debug screen.
  **/
+@FrontendViewModel
 class DebugViewModel(
     dependencies: ViewModelDependencies,
     private val preferencesManager: PreferencesManager,

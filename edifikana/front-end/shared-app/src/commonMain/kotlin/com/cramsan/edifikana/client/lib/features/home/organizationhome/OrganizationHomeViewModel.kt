@@ -9,6 +9,7 @@ import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.settings.getLastSelectedOrganizationId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.utils.requireSuccess
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Hub screen.
  **/
+@FrontendViewModel
 class OrganizationHomeViewModel(
     dependencies: ViewModelDependencies,
     private val organizationManager: OrganizationManager,

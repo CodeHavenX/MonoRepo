@@ -9,6 +9,7 @@ import com.cramsan.edifikana.server.datastore.MembershipDatastore
 import com.cramsan.edifikana.server.datastore.UserDatastore
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.OrgMemberView
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ConflictException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ForbiddenException
@@ -22,6 +23,7 @@ import kotlin.time.Duration.Companion.days
  * Service for organization membership management operations.
  * RBAC authorization is handled by the controller layer; this service focuses on business logic.
  */
+@BackendService
 class MembershipService(
     private val membershipDatastore: MembershipDatastore,
     private val userDatastore: UserDatastore,

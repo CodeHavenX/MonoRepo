@@ -8,6 +8,7 @@ import com.cramsan.edifikana.client.lib.managers.NotificationManager
 import com.cramsan.edifikana.client.lib.models.Notification
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.notification.NotificationType
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logI
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the SelectOrg screen.
  */
+@FrontendViewModel
 class SelectOrgViewModel(
     private val authManager: AuthManager,
     private val notificationManager: NotificationManager,

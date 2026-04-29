@@ -2,6 +2,7 @@ package com.cramsan.flyerboard.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
 import com.cramsan.flyerboard.client.lib.managers.AuthManager
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 /**
  * View model for the entire window.
  */
+@FrontendViewModel
 class FlyerBoardWindowViewModel(
     dependencies: ViewModelDependencies,
     private val windowEventEmitter: EventEmitter<WindowEvent>,

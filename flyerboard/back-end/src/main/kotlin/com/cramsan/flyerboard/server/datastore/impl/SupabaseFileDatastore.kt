@@ -1,6 +1,7 @@
 package com.cramsan.flyerboard.server.datastore.impl
 
 import com.cramsan.flyerboard.server.datastore.FileDatastore
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.uuid.UUID
@@ -13,6 +14,7 @@ import kotlin.time.Duration.Companion.hours
  * Files are stored in the private `flyer-files` bucket. Each uploaded file is given a
  * UUID-prefixed name to prevent collisions between uploads with the same original filename.
  */
+@BackendDatastore
 class SupabaseFileDatastore(private val storage: Storage) : FileDatastore {
     override suspend fun uploadFile(fileName: String, content: ByteArray): Result<String> =
         runSuspendCatching(TAG) {

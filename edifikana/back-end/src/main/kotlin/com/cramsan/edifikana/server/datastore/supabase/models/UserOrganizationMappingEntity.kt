@@ -4,7 +4,7 @@ import com.cramsan.edifikana.lib.model.organization.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -13,7 +13,7 @@ import kotlin.time.Instant
  * Entity representing a mapping between a user and an organization.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class UserOrganizationMappingEntity(
     val id: String,
     @SerialName("user_id")
@@ -36,7 +36,7 @@ data class UserOrganizationMappingEntity(
      * The invite-acceptance flow uses a separate update path to set those columns.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateUserOrganizationMappingEntity(
         @SerialName("user_id")
         val userId: UserId,
@@ -53,7 +53,7 @@ data class UserOrganizationMappingEntity(
      * so a previously-inactive member is reactivated with the new role.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class AcceptInviteEntity(
         @SerialName("user_id")
         val userId: String,

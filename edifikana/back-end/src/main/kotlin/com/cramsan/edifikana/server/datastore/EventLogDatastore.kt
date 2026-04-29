@@ -6,11 +6,13 @@ import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.service.models.EventLogEntry
+import com.cramsan.framework.annotations.BackendDatastore
 import kotlin.time.Instant
 
 /**
  * Interface for interacting with the event log database.
  */
+@BackendDatastore
 interface EventLogDatastore {
     /**
      * Creates a new event log entry for the given [request]. Returns the [Result] of the operation with the created [EventLogEntry].

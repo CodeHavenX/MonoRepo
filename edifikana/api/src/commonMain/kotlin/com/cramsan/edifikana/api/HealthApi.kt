@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.api
 
 import com.cramsan.edifikana.lib.model.network.health.HealthCheckNetworkResponse
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -11,7 +10,7 @@ import io.ktor.http.HttpMethod
 /**
  * API definition for health check operations.
  */
-@OptIn(NetworkModel::class)
+
 object HealthApi : Api("health") {
     val healthCheck =
         operation<

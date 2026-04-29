@@ -11,7 +11,7 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.edifikana.server.service.UnitService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -29,7 +29,7 @@ import io.ktor.server.routing.Routing
 /**
  * Controller for unit CRUD operations.
  */
-@OptIn(NetworkModel::class)
+@BackendController
 class UnitController(
     private val unitService: UnitService,
     private val rbacService: RBACService,

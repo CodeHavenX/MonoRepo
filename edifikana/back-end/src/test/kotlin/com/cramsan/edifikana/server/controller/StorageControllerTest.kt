@@ -11,7 +11,6 @@ import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
 import com.cramsan.edifikana.server.service.StorageService
 import com.cramsan.edifikana.server.utils.ASSET_1
 import com.cramsan.edifikana.server.utils.readFileContent
-import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import io.ktor.client.request.post
@@ -35,7 +34,7 @@ import kotlin.test.assertEquals
 /**
  * Unit tests for StorageController.
  */
-@OptIn(NetworkModel::class)
+
 class StorageControllerTest :
     CoroutineTest(),
     KoinTest {

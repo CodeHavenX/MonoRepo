@@ -1,10 +1,12 @@
 package com.cramsan.templatereplaceme.server.datastore
 
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.templatereplaceme.server.service.models.User
 
 /**
  * Interface defining user-related data operations.
  */
+@BackendDatastore
 interface UserDatastore {
     /**
      * Creates a new user with the given first and last name.

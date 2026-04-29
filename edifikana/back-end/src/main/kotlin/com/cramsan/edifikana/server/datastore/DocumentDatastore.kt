@@ -7,10 +7,12 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Document
+import com.cramsan.framework.annotations.BackendDatastore
 
 /**
  * Interface for the document datastore.
  */
+@BackendDatastore
 interface DocumentDatastore {
     /**
      * Creates a new document record. Returns the [Result] of the operation with the created [Document].

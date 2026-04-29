@@ -2,7 +2,7 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -11,7 +11,7 @@ import kotlin.time.Instant
  * Entity representing a property unit stored in the database.
  */
 @Serializable
-@SupabaseModel
+@DatabaseModel
 data class UnitEntity(
     @SerialName("unit_id")
     val unitId: UnitId,
@@ -38,7 +38,7 @@ data class UnitEntity(
      * Entity representing a new unit to be inserted.
      */
     @Serializable
-    @SupabaseModel
+    @DatabaseModel
     data class CreateUnitEntity(
         @SerialName("property_id")
         val propertyId: PropertyId,

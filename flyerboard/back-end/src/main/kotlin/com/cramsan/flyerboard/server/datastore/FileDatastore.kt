@@ -1,8 +1,11 @@
 package com.cramsan.flyerboard.server.datastore
 
+import com.cramsan.framework.annotations.BackendDatastore
+
 /**
  * Interface defining file storage operations for flyer assets.
  */
+@BackendDatastore
 interface FileDatastore {
     /**
      * Uploads [content] to storage under a collision-safe name derived from [fileName].

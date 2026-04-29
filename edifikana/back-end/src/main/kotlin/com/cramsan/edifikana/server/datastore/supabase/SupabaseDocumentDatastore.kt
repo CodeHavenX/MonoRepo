@@ -9,7 +9,7 @@ import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.DocumentDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.DocumentEntity
 import com.cramsan.edifikana.server.service.models.Document
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -18,11 +18,12 @@ import kotlin.time.Clock
 /**
  * Datastore for managing document metadata records using Supabase.
  */
+@BackendDatastore
 class SupabaseDocumentDatastore(private val postgrest: Postgrest, private val clock: Clock) : DocumentDatastore {
     /**
      * Inserts a new document metadata row and returns the created [Document].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun createDocument(
         orgId: OrganizationId,
         propertyId: PropertyId?,
@@ -59,7 +60,7 @@ class SupabaseDocumentDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Retrieves a single document by [documentId]. Returns null if not found or soft-deleted.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getDocument(documentId: DocumentId): Result<Document?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting document: %s", documentId)
@@ -77,7 +78,7 @@ class SupabaseDocumentDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Lists all non-deleted documents for [orgId], with optional [propertyId] and [unitId] filters.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun getDocuments(
         orgId: OrganizationId,
         propertyId: PropertyId?,
@@ -101,7 +102,7 @@ class SupabaseDocumentDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Updates the [title] and/or [documentType] of an existing document. Returns the updated [Document].
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun updateDocument(
         documentId: DocumentId,
         filename: String?,
@@ -127,7 +128,7 @@ class SupabaseDocumentDatastore(private val postgrest: Postgrest, private val cl
     /**
      * Soft-deletes a document by setting [DocumentEntity.deletedAt]. Returns true if the record was found and updated.
      */
-    @OptIn(SupabaseModel::class)
+
     override suspend fun deleteDocument(documentId: DocumentId): Result<Boolean> =
         runSuspendCatching(TAG) {
             logD(TAG, "Soft deleting document: %s", documentId)

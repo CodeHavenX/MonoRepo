@@ -647,13 +647,13 @@ class MembershipServiceTest {
             val inviteId = InviteId("invite123")
             val invite =
                 Invite(
-                id = inviteId,
-                email = email,
-                organizationId = orgId,
-                role = InviteRole.ADMIN,
-                expiration = clock.now() + 14.days,
-                inviteCode = inviteCode,
-            )
+                    id = inviteId,
+                    email = email,
+                    organizationId = orgId,
+                    role = InviteRole.ADMIN,
+                    expiration = clock.now() + 14.days,
+                    inviteCode = inviteCode,
+                )
             val user = mockk<User>()
             every { user.email } returns email
             coEvery { membershipDatastore.getInviteByCode(inviteCode) } returns Result.success(invite)

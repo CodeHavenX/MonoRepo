@@ -1,10 +1,13 @@
 package com.cramsan.runasimi.client.lib.manager
 
+import com.cramsan.framework.annotations.FrontendManager
+
 /**
  * Manager that provides common daily questions and their translations.
  *
  * Translations are left as placeholders for now and can be filled later.
  */
+@FrontendManager
 class QuestionsManager {
     private val questions: List<Pair<String, String>> =
         listOf(

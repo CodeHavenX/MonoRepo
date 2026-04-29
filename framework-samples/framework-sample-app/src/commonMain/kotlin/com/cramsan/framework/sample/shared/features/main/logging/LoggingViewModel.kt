@@ -1,5 +1,6 @@
 package com.cramsan.framework.sample.shared.features.main.logging
 
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
@@ -11,6 +12,7 @@ import com.cramsan.framework.logging.logW
 /**
  * ViewModel for the Logging screen.
  **/
+@FrontendViewModel
 class LoggingViewModel(dependencies: ViewModelDependencies) :
     BaseViewModel<LoggingEvent, LoggingUIState>(
         dependencies,

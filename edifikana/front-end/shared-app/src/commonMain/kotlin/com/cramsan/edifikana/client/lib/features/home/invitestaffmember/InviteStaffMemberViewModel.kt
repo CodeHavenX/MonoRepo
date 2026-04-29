@@ -24,7 +24,7 @@ class InviteStaffMemberViewModel(dependencies: ViewModelDependencies, private va
      * Initialize the ViewModel with the organization ID.
      */
     fun initialize(orgId: OrganizationId) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val roles =
                 listOf(
                     StaffRoleUIModel(UserRole.ADMIN, "Admin"),
@@ -39,7 +39,7 @@ class InviteStaffMemberViewModel(dependencies: ViewModelDependencies, private va
      * Navigate back to the previous screen.
      */
     fun navigateBack() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
@@ -48,7 +48,7 @@ class InviteStaffMemberViewModel(dependencies: ViewModelDependencies, private va
      * Send an invitation to the specified email with the selected role.
      */
     fun sendInvitation(email: String, role: StaffRoleUIModel?) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val organizationId = requireNotNull(uiState.value.orgId)
 
             val emailErrors = validateEmail(email)

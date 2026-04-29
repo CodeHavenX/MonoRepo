@@ -1,4 +1,4 @@
-package com.cramsan.framework.thread.implemantation
+package com.cramsan.framework.thread.implementation
 
 import com.cramsan.framework.thread.ThreadUtilDelegate
 

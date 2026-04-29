@@ -20,7 +20,7 @@ class FlyerEditViewModel(dependencies: ViewModelDependencies, private val flyerM
      */
     fun loadFlyer(flyerIdValue: String) {
         logI(TAG, "loadFlyer: $flyerIdValue")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
             flyerManager
                 .getFlyer(FlyerId(flyerIdValue))
@@ -51,21 +51,21 @@ class FlyerEditViewModel(dependencies: ViewModelDependencies, private val flyerM
      * Update the title field in the UI state.
      */
     fun onTitleChanged(title: String) {
-        viewModelScope.launch { updateUiState { it.copy(title = title) } }
+        viewModelCoroutineScope.launch { updateUiState { it.copy(title = title) } }
     }
 
     /**
      * Update the description field in the UI state.
      */
     fun onDescriptionChanged(description: String) {
-        viewModelScope.launch { updateUiState { it.copy(description = description) } }
+        viewModelCoroutineScope.launch { updateUiState { it.copy(description = description) } }
     }
 
     /**
      * Update the expiresAt field in the UI state.
      */
     fun onExpiresAtChanged(expiresAt: String) {
-        viewModelScope.launch { updateUiState { it.copy(expiresAt = expiresAt.takeIf { it.isNotBlank() }) } }
+        viewModelCoroutineScope.launch { updateUiState { it.copy(expiresAt = expiresAt.takeIf { it.isNotBlank() }) } }
     }
 
     /**
@@ -73,7 +73,7 @@ class FlyerEditViewModel(dependencies: ViewModelDependencies, private val flyerM
      */
     fun saveFlyer(flyerIdValue: String) {
         logI(TAG, "saveFlyer: $flyerIdValue")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val state = uiState.value
             updateUiState { it.copy(isSaving = true, errorMessage = null) }
             flyerManager
@@ -99,7 +99,7 @@ class FlyerEditViewModel(dependencies: ViewModelDependencies, private val flyerM
      */
     fun navigateBack() {
         logI(TAG, "navigateBack")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
         }
     }

@@ -62,8 +62,8 @@ fun logD(tag: String, message: String, vararg args: Any?) {
  *
  * @see EventLoggerInterface.log
  */
-fun logI(tag: String, message: String) {
-    singleton.i(tag, message)
+fun logI(tag: String, message: String, vararg args: Any?) {
+    singleton.i(tag, message, *args)
 }
 
 /**

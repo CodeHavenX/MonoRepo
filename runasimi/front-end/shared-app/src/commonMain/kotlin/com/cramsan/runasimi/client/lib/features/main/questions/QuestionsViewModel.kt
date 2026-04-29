@@ -20,7 +20,7 @@ class QuestionsViewModel(dependencies: ViewModelDependencies, private val questi
      * Update the UI with a new question content.
      */
     fun generateNewQuestion() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val content = questionsManager.generateQuestion()
             updateUiState {
                 it.copy(

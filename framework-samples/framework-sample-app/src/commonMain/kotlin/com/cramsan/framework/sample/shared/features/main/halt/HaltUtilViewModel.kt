@@ -1,5 +1,6 @@
 package com.cramsan.framework.sample.shared.features.main.halt
 
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.halt.HaltUtil
@@ -7,6 +8,7 @@ import com.cramsan.framework.halt.HaltUtil
 /**
  * ViewModel for the HaltUtil screen.
  **/
+@FrontendViewModel
 class HaltUtilViewModel(dependencies: ViewModelDependencies, private val haltUtil: HaltUtil) :
     BaseViewModel<HaltUtilEvent, HaltUtilUIState>(
         dependencies,

@@ -3,12 +3,8 @@ package com.cramsan.framework.preferences.implementation
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.cramsan.framework.preferences.PreferencesDelegateTest
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 import org.robolectric.RobolectricTestRunner
-import kotlin.test.Test
 
 /**
  * @Author cramsan
@@ -17,10 +13,8 @@ import kotlin.test.Test
 
 @RunWith(RobolectricTestRunner::class)
 class AndroidPreferencesDelegateTest : PreferencesDelegateTest() {
-
-    @BeforeTest
-    fun setupTest() {
+    override fun createPreferencesDelegate(): PreferencesAndroid {
         val mockContext: Context = ApplicationProvider.getApplicationContext()
-        preferencesDelegate = PreferencesAndroid(mockContext)
+        return PreferencesAndroid(mockContext, "com.cramsan.framework.preferences.test")
     }
 }

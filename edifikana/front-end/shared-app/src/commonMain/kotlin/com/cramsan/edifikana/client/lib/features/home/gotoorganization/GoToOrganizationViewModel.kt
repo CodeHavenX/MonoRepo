@@ -20,7 +20,7 @@ class GoToOrganizationViewModel(dependencies: ViewModelDependencies) :
      * Trigger the back event.
      */
     fun onBackSelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }

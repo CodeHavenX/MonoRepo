@@ -121,6 +121,19 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
+    fun test_logI_top_level_function_with_args() = runCoroutineTest {
+        val eventLogger: EventLoggerInterface = mockk(relaxed = true)
+        val tag = "TestTag"
+        val message = "Hello %s"
+        val arg = "world"
+
+        EventLogger.setInstance(eventLogger)
+
+        logI(tag, message, arg)
+        verify { eventLogger.i(tag, message, arg) }
+    }
+
+    @Test
     fun test_logW_top_level_functions() = runCoroutineTest {
         val eventLogger: EventLoggerInterface = mockk(relaxed = true)
         val warningException: Throwable = mockk(relaxed = true)

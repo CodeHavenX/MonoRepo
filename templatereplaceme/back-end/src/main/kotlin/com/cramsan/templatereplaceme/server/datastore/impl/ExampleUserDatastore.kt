@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
  * Implementation of [UserDatastore] that provides user-related data operations.
  */
 @BackendDatastore
-class UserDatastoreImpl : UserDatastore {
+class ExampleUserDatastore : UserDatastore {
     override suspend fun createUser(
         firstName: String,
         lastName: String,

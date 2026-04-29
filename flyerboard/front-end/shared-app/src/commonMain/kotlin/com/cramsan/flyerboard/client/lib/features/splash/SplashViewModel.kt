@@ -26,7 +26,7 @@ class SplashViewModel(dependencies: ViewModelDependencies) :
      */
     fun navigateToMainScreen() {
         logI(TAG, "Navigating to Main Screen")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             delay(SPLASH_DELAY_MS)
             emitWindowEvent(
                 FlyerBoardWindowsEvent.NavigateToNavGraph(

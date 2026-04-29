@@ -21,7 +21,7 @@ class ArchiveViewModel(dependencies: ViewModelDependencies, private val flyerMan
      */
     fun loadFlyers() {
         logI(TAG, "loadFlyers")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
             flyerManager
                 .listArchived()
@@ -56,7 +56,7 @@ class ArchiveViewModel(dependencies: ViewModelDependencies, private val flyerMan
      */
     fun onFlyerSelected(flyerId: FlyerId) {
         logI(TAG, "onFlyerSelected: ${flyerId.flyerId}")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 FlyerBoardWindowsEvent.NavigateToScreen(
                     MainDestination.FlyerDetailDestination(flyerId.flyerId),
@@ -70,7 +70,7 @@ class ArchiveViewModel(dependencies: ViewModelDependencies, private val flyerMan
      */
     fun navigateBack() {
         logI(TAG, "navigateBack")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
         }
     }

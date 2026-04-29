@@ -31,7 +31,7 @@ class SignUpViewModel(
      */
     fun initializePage(destination: AuthDestination.SignUpDestination) {
         logI(TAG, "SignUpViewModel initialized")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     email = destination.userEmail,
@@ -46,7 +46,7 @@ class SignUpViewModel(
      */
     fun onEmailValueChange(username: String) {
         // Here we can implement any validation logic.
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     email = username,
@@ -60,7 +60,7 @@ class SignUpViewModel(
      */
     fun onPhoneNumberValueChange(username: String) {
         // Here we can implement any validation logic.
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     phoneNumber = username,
@@ -74,7 +74,7 @@ class SignUpViewModel(
      */
     fun onFirstNameValueChange(firstName: String) {
         // Here we can implement any validation logic.
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     firstName = firstName,
@@ -88,7 +88,7 @@ class SignUpViewModel(
      */
     fun onLastNameValueChange(lastName: String) {
         // Here we can implement any validation logic.
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     lastName = lastName,
@@ -101,7 +101,7 @@ class SignUpViewModel(
      * Call this function to navigate back.
      */
     fun navigateBack() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateBack,
             )
@@ -114,7 +114,7 @@ class SignUpViewModel(
     @Suppress("LongMethod")
     fun signUp() {
         logI(TAG, "signUp called")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val firstName = uiState.value.firstName.trim()
             val lastName = uiState.value.lastName.trim()
             val email = uiState.value.email.trim()
@@ -171,7 +171,7 @@ class SignUpViewModel(
      * Called when the policy checkbox is checked or unchecked.
      */
     fun onPolicyChecked(checked: Boolean) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     policyChecked = checked,

@@ -24,7 +24,7 @@ class SplashViewModel(dependencies: ViewModelDependencies) :
      */
     fun navigateToMainScreen() {
         logI(TAG, "Navigating to Main Screen")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             @Suppress("MagicNumber")
             delay(1000) // Simulate loading time
             emitWindowEvent(

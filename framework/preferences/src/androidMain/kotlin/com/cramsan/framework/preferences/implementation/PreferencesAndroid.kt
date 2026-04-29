@@ -7,17 +7,17 @@ import com.cramsan.framework.preferences.PreferencesDelegate
 /**
  * This implementation of [PreferencesDelegate] uses the [context] to manage a [SharedPreferences].
  *
- * TODO: Remove the hardcoded file name. Preferably make it injectable.
- * TODO: Keep a reference to the [SharedPreferences] after initialization to prevent excessive IO.
+ * @param preferenceName Unique name for the shared preferences file. Use a reverse-domain string
+ *   (e.g. "com.example.app.prefs") to avoid key collisions between features.
  */
-class PreferencesAndroid(context: Context) : PreferencesDelegate {
+class PreferencesAndroid(context: Context, preferenceName: String) : PreferencesDelegate {
 
-    private val sharedPref = context.getSharedPreferences("global", Context.MODE_PRIVATE)
+    private val sharedPref = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE)
 
     override fun saveString(key: String, value: String?) {
         with(sharedPref.edit()) {
             putString(key, value)
-            commit()
+            apply()
         }
     }
 
@@ -32,7 +32,7 @@ class PreferencesAndroid(context: Context) : PreferencesDelegate {
     override fun saveInt(key: String, value: Int) {
         with(sharedPref.edit()) {
             putInt(key, value)
-            commit()
+            apply()
         }
     }
 
@@ -47,7 +47,7 @@ class PreferencesAndroid(context: Context) : PreferencesDelegate {
     override fun saveLong(key: String, value: Long) {
         with(sharedPref.edit()) {
             putLong(key, value)
-            commit()
+            apply()
         }
     }
 
@@ -62,7 +62,7 @@ class PreferencesAndroid(context: Context) : PreferencesDelegate {
     override fun saveBoolean(key: String, value: Boolean) {
         with(sharedPref.edit()) {
             putBoolean(key, value)
-            commit()
+            apply()
         }
     }
 
@@ -77,14 +77,14 @@ class PreferencesAndroid(context: Context) : PreferencesDelegate {
     override fun remove(key: String) {
         with(sharedPref.edit()) {
             remove(key)
-            commit()
+            apply()
         }
     }
 
     override fun clear() {
         with(sharedPref.edit()) {
             clear()
-            commit()
+            apply()
         }
     }
 }

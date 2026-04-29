@@ -27,10 +27,8 @@ import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallback
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
 import com.cramsan.framework.preferences.implementation.JVMPreferencesDelegate
-import com.cramsan.framework.preferences.implementation.PreferencesImpl
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
-import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
 import org.apache.logging.log4j.Logger
 import org.koin.core.qualifier.named
@@ -43,7 +41,7 @@ val FrameworkModule =
     module(createdAtStart = true) {
         single<PreferencesDelegate> { JVMPreferencesDelegate(get(named(NamedDependency.DOMAIN_KEY))) }
 
-        single<Preferences> { PreferencesImpl(get()) }
+        single<Preferences> { get<PreferencesDelegate>() }
 
         single {
             val settingsHolder: SettingsHolder = get()
@@ -94,9 +92,7 @@ val FrameworkModule =
 
         single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
 
-        single<ThreadUtilInterface> {
-            ThreadUtilImpl(get())
-        }
+        single<ThreadUtilInterface> { get<ThreadUtilDelegate>() }
 
         single<DispatcherProvider> { BEDispatcherProvider() }
 
@@ -107,15 +103,14 @@ val FrameworkModule =
         single<EnvironmentConfiguration> { EnvironmentConfiguration(get(named(NamedDependency.DOMAIN_KEY))) }
 
         single {
-            val configurationMultiplexer = ConfigurationMultiplexer()
             val simpleConfiguration: SimpleConfiguration = get()
             val environmentConfiguration: EnvironmentConfiguration = get()
-            configurationMultiplexer.setConfigurations(
+            ConfigurationMultiplexer(
+                configurations =
                 listOf(
                     environmentConfiguration, // Look for overrides in environment variables first
                     simpleConfiguration, // Then in the config file
                 ),
             )
-            configurationMultiplexer
         }
     }

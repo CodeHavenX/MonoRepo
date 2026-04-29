@@ -1,5 +1,6 @@
 package com.cramsan.framework.sample.shared.features.main.menu
 
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.sample.shared.features.SampleWindowEvent
@@ -9,13 +10,14 @@ import kotlinx.coroutines.launch
 /**
  * Main Menu ViewModel.
  */
+@FrontendViewModel
 class MainMenuViewModel(dependencies: ViewModelDependencies) :
     BaseViewModel<MainMenuEvent, MainMenuIState>(dependencies, MainMenuIState, TAG) {
     /**
      * Navigate to the HaltUtil screen.
      */
     fun navigateToHaltUtil() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 SampleWindowEvent.NavigateToScreen(MainDestination.HaltUtilDestination),
             )
@@ -26,7 +28,7 @@ class MainMenuViewModel(dependencies: ViewModelDependencies) :
      * Navigate to the Logging screen.
      */
     fun navigateToLogging() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 SampleWindowEvent.NavigateToScreen(MainDestination.LoggingDestination),
             )

@@ -22,7 +22,7 @@ class ${Feature_Name}ViewModel(
      * Trigger the back event.
      */
     fun onBackSelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             // TODO: Update this with the respective Window Event type.
             emitWindowEvent(WindowEvent.NavigateBack)
         }

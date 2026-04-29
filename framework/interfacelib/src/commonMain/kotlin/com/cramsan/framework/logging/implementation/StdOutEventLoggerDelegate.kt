@@ -8,11 +8,17 @@ import com.cramsan.framework.logging.Severity
  */
 class StdOutEventLoggerDelegate : EventLoggerDelegate {
     override fun log(severity: Severity, tag: String, message: String, throwable: Throwable?, vararg args: Any?) {
-        if (args.isEmpty()) {
-            println("[$severity][$tag] $message")
-        } else {
-            println("[$severity][$tag] $message, args: ${args.toList()}")
-        }
+        val formattedMessage =
+            if (args.isNotEmpty()) {
+                args.fold(message) { acc, arg -> acc.replaceFirst(FORMAT_SPECIFIER_REGEX, arg?.toString() ?: "null") }
+            } else {
+                message
+            }
+        println("[$severity][$tag] $formattedMessage")
         throwable?.printStackTrace()
+    }
+
+    companion object {
+        private val FORMAT_SPECIFIER_REGEX = Regex("%[sdifbh%]")
     }
 }

@@ -29,7 +29,7 @@ class TemplateReplaceMeApplicationViewModel(
      * Set whether to show the debug window.
      */
     fun setShowDebugWindow(show: Boolean) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(showDebugWindow = show)
             }

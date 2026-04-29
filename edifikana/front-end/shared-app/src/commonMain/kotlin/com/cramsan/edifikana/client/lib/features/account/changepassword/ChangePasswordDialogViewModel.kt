@@ -38,7 +38,7 @@ class ChangePasswordDialogViewModel(
      */
     @OptIn(SecureStringAccess::class)
     fun onCurrentPasswordChange(password: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(currentPassword = SecureString(password)) }
             if (password.isEmpty()) {
                 updateUiState {
@@ -68,7 +68,7 @@ class ChangePasswordDialogViewModel(
      */
     @OptIn(SecureStringAccess::class)
     fun onNewPasswordChange(password: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(newPassword = SecureString(password)) }
             if (password.isEmpty()) {
                 updateUiState {
@@ -107,7 +107,7 @@ class ChangePasswordDialogViewModel(
      */
     @OptIn(SecureStringAccess::class)
     fun onConfirmPasswordChange(password: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(confirmPassword = SecureString(password)) }
             if (password.isEmpty()) {
                 updateUiState {
@@ -165,7 +165,7 @@ class ChangePasswordDialogViewModel(
      */
     @OptIn(SecureStringAccess::class)
     fun onSubmitSelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             authManager
                 .changePassword(
@@ -199,7 +199,7 @@ class ChangePasswordDialogViewModel(
      * This is typically used to close the dialog or return to the previous screen.
      */
     fun navigateBack() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
@@ -209,7 +209,7 @@ class ChangePasswordDialogViewModel(
      */
     @OptIn(SecureStringAccess::class)
     fun loadUserData() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             val response = authManager.getUser()
             if (response.isFailure) {

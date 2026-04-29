@@ -26,7 +26,7 @@ class PropertiesOverviewViewModel(
      * Initialize the ViewModel.
      */
     fun initialize() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(isLoading = true)
             }
@@ -58,7 +58,7 @@ class PropertiesOverviewViewModel(
      * Called when the user selects to add a new property.
      */
     fun onAddPropertySelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val organization = organizationManager.getOrganizations().getOrThrow().firstOrNull()
 
             if (organization == null) {
@@ -84,7 +84,7 @@ class PropertiesOverviewViewModel(
      * Called when the user selects a property from the list.
      */
     fun onPropertySelected(property: PropertyItemUIModel) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     HomeDestination.PropertyManagementDestination(

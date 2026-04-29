@@ -1,5 +1,6 @@
 package com.cramsan.architecture.client.di
 
+import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingsHolder
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -11,12 +12,12 @@ import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.core.compose.resources.ComposeStringProvider
 import com.cramsan.framework.core.compose.resources.StringProvider
+import com.cramsan.framework.halt.HaltUtil
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.utils.time.Chronos
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.withOptions
@@ -40,13 +41,14 @@ internal val ExtrasModule =
         }
 
         single {
+            val haltUtil: HaltUtil = get()
             CoroutineExceptionHandler { _, throwable ->
                 logE("CoroutineExceptionHandler", "Uncaught Exception", throwable)
+                haltUtil.crashApp()
             }
         }
 
-        @OptIn(DelicateCoroutinesApi::class)
-        single<CoroutineScope> { GlobalScope }
+        single<CoroutineScope> { CoroutineScope(SupervisorJob() + get<CoroutineExceptionHandler>()) }
 
         singleOf(::ComposeStringProvider) {
             bind<StringProvider>()
@@ -54,6 +56,11 @@ internal val ExtrasModule =
 
         single {
             SettingsHolder(get())
+        }
+
+        single(named(ApplicationIdentifier.IS_DEBUG)) {
+            val settingsHolder: SettingsHolder = get()
+            settingsHolder.getBoolean(FrontEndApplicationSettingKey.IsDebug) ?: platformIsDebugBuild
         }
 
         single { ManagerDependencies(get(), get()) }
@@ -79,6 +86,7 @@ internal val ExtrasModule =
                 get(),
                 get(named(ApplicationIdentifier.WINDOW_EVENT_BUS)),
                 get(named(ApplicationIdentifier.EVENT_BUS)),
+                get(named(ApplicationIdentifier.IS_DEBUG)),
             )
         }
 
@@ -97,6 +105,7 @@ internal val ExtrasModule =
                     get(),
                     get(named(WindowIdentifier.EVENT_BUS)),
                     get(named(ApplicationIdentifier.EVENT_BUS)),
+                    get(named(ApplicationIdentifier.IS_DEBUG)),
                 )
             }
         }
@@ -117,4 +126,5 @@ enum class ApplicationIdentifier {
     EVENT_BUS,
     WINDOW_EVENT_BUS,
     VIEW_MODEL_DEPENDENCIES,
+    IS_DEBUG,
 }

@@ -5,30 +5,17 @@ package com.cramsan.framework.configuration
  *
  * It tries to read properties from each configuration in order until it finds a valid value
  * based on the provided [propertyValueTypePredicate].
+ *
+ * @param configurations The ordered list of [Configuration] sources to query. Sources are
+ *   tried in order; the first valid value wins.
+ * @param propertyValueTypePredicate Determines whether a read value is considered valid.
+ *   Defaults to [DefaultPropertyValueTypePredicate].
  */
-class ConfigurationMultiplexer {
-    private val configurations = mutableListOf<Configuration>()
-
-    private var propertyValueTypePredicate: ((PropertyValue?) -> Boolean) = DefaultPropertyValueTypePredicate
-
-    /**
-     * Sets the list of configurations to read from.
-     *
-     * @param configs The list of configurations.
-     */
-    fun setConfigurations(configs: List<Configuration>) {
-        configurations.clear()
-        configurations.addAll(configs)
-    }
-
-    /**
-     * Sets the predicate to determine if a property value is valid.
-     *
-     * @param predicate The predicate function.
-     */
-    fun setPropertyValueTypePredicate(predicate: (PropertyValue?) -> Boolean) {
-        propertyValueTypePredicate = predicate
-    }
+class ConfigurationMultiplexer(
+    configurations: List<Configuration> = emptyList(),
+    private val propertyValueTypePredicate: (PropertyValue?) -> Boolean = DefaultPropertyValueTypePredicate,
+) {
+    private val configurations: List<Configuration> = configurations.toList()
 
     /**
      * Reads a property from the configurations.

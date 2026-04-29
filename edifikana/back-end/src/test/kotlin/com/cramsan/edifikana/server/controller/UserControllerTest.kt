@@ -153,7 +153,7 @@ class UserControllerTest :
 
             // Assert
             assertEquals(HttpStatusCode.InternalServerError, response.status)
-            assertTrue(response.bodyAsText().contains("There was an unexpected error."))
+            assertEquals("Internal server error", response.bodyAsText())
         }
 
     /**

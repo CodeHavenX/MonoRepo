@@ -1,6 +1,8 @@
 package com.cramsan.framework.preferences
 
 import com.cramsan.framework.test.CoroutineTest
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -10,7 +12,23 @@ import kotlin.test.assertNull
  * @created 1/16/2021
  */
 abstract class PreferencesTest : CoroutineTest() {
-    protected lateinit var preferences: Preferences
+    private lateinit var _preferences: Preferences
+    protected val preferences: Preferences get() = _preferences
+
+    /** Returns the [Preferences] instance to test. Called before each test. */
+    protected abstract fun createPreferences(): Preferences
+
+    /** Initializes [preferences] before each test by calling [createPreferences]. */
+    @BeforeTest
+    fun setUpPreferences() {
+        _preferences = createPreferences()
+    }
+
+    /** Clears preferences after each test. */
+    @AfterTest
+    fun tearDown() {
+        preferences.clear()
+    }
 
     /**
      * Save a string and try to read it.
@@ -49,6 +67,18 @@ abstract class PreferencesTest : CoroutineTest() {
     }
 
     /**
+     * Save a boolean and try to read it.
+     */
+    @Test
+    fun testSaveBoolean() {
+        preferences.saveBoolean("Hello1", true)
+
+        val result = preferences.loadBoolean("Hello1")
+
+        assertEquals(true, result)
+    }
+
+    /**
      * Remove a previously saved key.
      */
     @Test
@@ -58,5 +88,19 @@ abstract class PreferencesTest : CoroutineTest() {
         preferences.remove("Hello1")
 
         assertNull(preferences.loadString("Hello1"))
+    }
+
+    /**
+     * Clear all preferences and verify keys are gone.
+     */
+    @Test
+    fun testClear() {
+        preferences.saveString("key1", "value1")
+        preferences.saveInt("key2", 42)
+
+        preferences.clear()
+
+        assertNull(preferences.loadString("key1"))
+        assertNull(preferences.loadInt("key2"))
     }
 }

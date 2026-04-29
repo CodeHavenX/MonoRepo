@@ -27,7 +27,6 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.test.asClock
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
-import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import com.cramsan.framework.thread.implementation.ThreadUtilJVM
 import com.cramsan.framework.utils.time.Chronos
 import kotlinx.datetime.TimeZone
@@ -70,14 +69,12 @@ val TestFrameworkModule =
             AssertUtil.singleton
         }
         single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
-        single<ThreadUtilInterface> {
-            ThreadUtilImpl(get())
-        }
+        single<ThreadUtilInterface> { get<ThreadUtilDelegate>() }
         single<Configuration> {
             NoopConfiguration()
         }
         single {
-            ConfigurationMultiplexer()
+            ConfigurationMultiplexer(emptyList())
         }
     }
 
@@ -113,9 +110,7 @@ fun integTestFrameworkModule(
         AssertUtil.singleton
     }
     single<ThreadUtilDelegate> { ThreadUtilJVM(get(), get()) }
-    single<ThreadUtilInterface> {
-        ThreadUtilImpl(get())
-    }
+    single<ThreadUtilInterface> { get<ThreadUtilDelegate>() }
 
     single<SimpleConfiguration> {
         SimpleConfiguration("config.properties.integ")
@@ -128,16 +123,15 @@ fun integTestFrameworkModule(
     }
 
     single {
-        val configurationMultiplexer = ConfigurationMultiplexer()
         val simpleConfiguration: SimpleConfiguration = get()
         val environmentConfiguration: EnvironmentConfiguration = get()
-        configurationMultiplexer.setConfigurations(
+        ConfigurationMultiplexer(
+            configurations =
             listOf(
                 environmentConfiguration, // Look for overrides in environment variables first
                 simpleConfiguration, // Then in the config file
             ),
         )
-        configurationMultiplexer
     }
 }
 

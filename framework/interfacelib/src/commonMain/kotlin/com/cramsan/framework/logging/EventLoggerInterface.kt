@@ -37,7 +37,7 @@ interface EventLoggerInterface {
     /**
      * Log a message with [Severity.INFO] severity
      */
-    fun i(tag: String, message: String) = log(Severity.INFO, tag, message)
+    fun i(tag: String, message: String, vararg args: Any?) = log(Severity.INFO, tag, message, args = args)
 
     /**
      * Log a message with [Severity.WARNING] message

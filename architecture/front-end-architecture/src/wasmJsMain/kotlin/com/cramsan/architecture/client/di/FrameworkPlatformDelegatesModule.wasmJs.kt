@@ -3,7 +3,7 @@ package com.cramsan.architecture.client.di
 import com.cramsan.framework.core.DispatcherProvider
 import com.cramsan.framework.core.UIDispatcherProvider
 import com.cramsan.framework.halt.HaltUtilDelegate
-import com.cramsan.framework.halt.implementation.HaltUtilDelegateImpl
+import com.cramsan.framework.halt.implementation.NoopHaltUtilDelegate
 import com.cramsan.framework.logging.EventLoggerDelegate
 import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
@@ -11,7 +11,7 @@ import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.preferences.PreferencesDelegate
 import com.cramsan.framework.preferences.implementation.BrowserLocalStoragePreferencesDelegate
 import com.cramsan.framework.thread.ThreadUtilDelegate
-import com.cramsan.framework.thread.implemantation.ThreadUtilDelegateNoop
+import com.cramsan.framework.thread.implementation.ThreadUtilDelegateNoop
 import org.koin.dsl.module
 
 /**
@@ -35,7 +35,7 @@ internal actual val FrameworkPlatformDelegatesModule =
         }
 
         single<HaltUtilDelegate> {
-            HaltUtilDelegateImpl()
+            NoopHaltUtilDelegate()
         }
 
         single<DispatcherProvider> {

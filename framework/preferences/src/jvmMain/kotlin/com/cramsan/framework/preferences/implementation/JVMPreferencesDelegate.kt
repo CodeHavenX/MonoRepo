@@ -93,11 +93,15 @@ class JVMPreferencesDelegate(private val fqdn: String) : PreferencesDelegate {
     }
 
     override fun remove(key: String) {
-        prefs.remove(key)
+        writeAndFlush {
+            prefs.remove(key)
+        }
     }
 
     override fun clear() {
-        prefs.clear()
+        writeAndFlush {
+            prefs.clear()
+        }
     }
 }
 

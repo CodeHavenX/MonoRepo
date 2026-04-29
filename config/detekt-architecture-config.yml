@@ -14,3 +14,14 @@ architecture:
       - 'FrontendManager:FrontendViewModel'
       - 'NetworkModel:BackendController,NetworkModel'
       - 'DatabaseModel:BackendDatastore,DatabaseModel'
+  ArchitectureNamingRule:
+    active: true
+    # Format: 'Suffix:Annotation1,Annotation2'
+    # Left side:  the class name suffix to enforce
+    # Right side: the annotation(s) that class must carry (at least one)
+    namingSuffixes:
+      - 'ViewModel:FrontendViewModel'
+      - 'Manager:FrontendManager'
+      - 'Service:FrontendService,BackendService'
+      - 'Controller:BackendController'
+      - 'Datastore:BackendDatastore'

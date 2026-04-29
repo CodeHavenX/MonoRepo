@@ -56,9 +56,7 @@ class SingleValueEncoder : AbstractEncoder() {
     }
 
     /**
-     * Returns the encoded string value.
-     *
-     * @return The encoded string, or null if the value was null.
+     * Returns the encoded string value. Returns an empty string if [encodeNull] was called.
      */
     fun encode(): String = encoded.orEmpty()
 }
@@ -68,7 +66,7 @@ class SingleValueEncoder : AbstractEncoder() {
  *
  * @param serializer The serialization strategy for type [T].
  * @param value The value to encode.
- * @return The string representation of the value, or null if the value is null.
+ * @return The string representation of the value, or an empty string if the value is null.
  */
 @OptIn(ExperimentalSerializationApi::class)
 fun <T> encodeToValue(serializer: SerializationStrategy<T>, value: T): String =

@@ -23,4 +23,10 @@ object FrontEndApplicationSettingKey {
      * Key for the back-end URL setting.
      */
     val BackEndUrl = SettingKey.string("backend.url")
+
+    /**
+     * Key for controlling debug-mode logging. When true, verbose ViewModel logs are emitted.
+     * Defaults to the platform build type if not explicitly set.
+     */
+    val IsDebug = SettingKey.boolean("is_debug")
 }

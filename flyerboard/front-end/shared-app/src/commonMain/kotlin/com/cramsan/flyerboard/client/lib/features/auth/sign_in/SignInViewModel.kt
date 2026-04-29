@@ -21,7 +21,7 @@ class SignInViewModel(dependencies: ViewModelDependencies, private val authManag
      * Update the email field value.
      */
     fun onEmailChanged(email: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logD(TAG, "Email changed")
             updateUiState { it.copy(email = email) }
         }
@@ -31,7 +31,7 @@ class SignInViewModel(dependencies: ViewModelDependencies, private val authManag
      * Update the password field value.
      */
     fun onPasswordChanged(password: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logD(TAG, "Password changed")
             updateUiState { it.copy(password = password) }
         }
@@ -44,7 +44,7 @@ class SignInViewModel(dependencies: ViewModelDependencies, private val authManag
      */
     fun signIn() {
         logI(TAG, "signIn called")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             val email = uiState.value.email
             val password = uiState.value.password
@@ -74,7 +74,7 @@ class SignInViewModel(dependencies: ViewModelDependencies, private val authManag
      */
     fun navigateToSignUp() {
         logI(TAG, "Navigating to sign up")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 FlyerBoardWindowsEvent.NavigateToScreen(
                     destination = AuthDestination.SignUpDestination,

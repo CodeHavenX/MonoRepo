@@ -14,7 +14,7 @@ plugins {
 }
 
 android {
-    namespace = "com.cramsan.framework.crashehandler"
+    namespace = "com.cramsan.framework.crashhandler"
 }
 
 dependencies {

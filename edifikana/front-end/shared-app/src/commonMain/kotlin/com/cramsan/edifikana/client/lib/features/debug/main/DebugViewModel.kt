@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.debug.main
 
+import com.cramsan.architecture.client.manager.PreferencesEvent
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingKey
@@ -40,10 +41,12 @@ class DebugViewModel(
      */
     fun loadData() {
         loadDataImpl()
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             // Listen to changes in preferences
-            preferencesManager.modifiedKey.collect { key ->
-                logI(TAG, "Preference key modified: $key")
+            preferencesManager.events.collect { event ->
+                if (event is PreferencesEvent.KeyModified) {
+                    logI(TAG, "Preference key modified: %s", event.key)
+                }
                 loadDataImpl()
             }
         }
@@ -53,7 +56,7 @@ class DebugViewModel(
      * Save the value of the field.
      */
     fun saveValue(key: SettingKey<*>, value: Any) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             saveValueImpl(key, value)
         }
     }
@@ -114,7 +117,7 @@ class DebugViewModel(
      * Clear all the preferences.
      */
     fun clearPreferences() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             preferencesManager.clearPreferences()
             loadDataImpl()
             emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Preferences cleared. Don't forget to restart the app."))
@@ -125,7 +128,7 @@ class DebugViewModel(
      * Force closing the application.
      */
     fun closeApplication() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Closing application..."))
             delay(2.seconds)
             haltUtil.crashApp()
@@ -136,7 +139,7 @@ class DebugViewModel(
      * Navigate back.
      */
     fun navigateBack() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateBack,
             )
@@ -145,7 +148,7 @@ class DebugViewModel(
 
     @Suppress("MaxLineLength", "MaximumLineLength", "LongMethod")
     private fun loadDataImpl() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val supabaseOverrideUrl =
                 preferencesManager
                     .getStringPreference(
@@ -281,7 +284,7 @@ class DebugViewModel(
      * This is useful for actions that need to be run in the ViewModel scope.
      */
     fun runAction(action: suspend () -> Unit) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             action()
         }
     }

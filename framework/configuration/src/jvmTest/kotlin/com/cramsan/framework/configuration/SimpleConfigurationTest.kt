@@ -5,6 +5,7 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Path
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class SimpleConfigurationTest {
 
@@ -26,6 +27,14 @@ class SimpleConfigurationTest {
         assertEquals(42, cfg.readInt("intKey"))
         assertEquals(1234567890123L, cfg.readLong("longKey"))
         assertEquals(true, cfg.readBoolean("booleanKey"))
+    }
+
+    @Test
+    fun `throws on missing config file`(@TempDir tempDir: Path) {
+        val missingPath = tempDir.resolve("does_not_exist.properties").toString()
+        assertFailsWith<IllegalArgumentException> {
+            SimpleConfiguration(missingPath)
+        }
     }
 
     @Test

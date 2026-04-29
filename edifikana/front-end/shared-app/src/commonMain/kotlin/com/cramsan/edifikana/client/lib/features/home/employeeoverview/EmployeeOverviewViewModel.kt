@@ -23,7 +23,7 @@ class EmployeeOverviewViewModel(dependencies: ViewModelDependencies, private val
      * Initialize the ViewModel.
      */
     fun initialize() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             loadEmployeesAndInvites()
         }
     }
@@ -32,7 +32,7 @@ class EmployeeOverviewViewModel(dependencies: ViewModelDependencies, private val
      * Set the organization ID and load employees and invites.
      */
     fun setOrgId(orgId: OrganizationId) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(orgId = orgId)
             }
@@ -108,7 +108,7 @@ class EmployeeOverviewViewModel(dependencies: ViewModelDependencies, private val
      * Navigate to the add employee screen.
      */
     fun navigateToAddEmployeeScreen() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             uiState.value.orgId?.let { orgId ->
                 emitWindowEvent(
                     EdifikanaWindowsEvent.NavigateToScreen(

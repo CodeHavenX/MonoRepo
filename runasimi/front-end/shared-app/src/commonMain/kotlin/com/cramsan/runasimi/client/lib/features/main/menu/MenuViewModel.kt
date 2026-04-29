@@ -22,7 +22,7 @@ class MenuViewModel(dependencies: ViewModelDependencies, private val preferences
      * Initialize the ViewModel.
      */
     fun initialize() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val selectedItemOrdinal =
                 preferencesManager
                     .getIntPreference(RunasimiSettingKey.MainMenuSelectedDrawerItem)
@@ -42,7 +42,7 @@ class MenuViewModel(dependencies: ViewModelDependencies, private val preferences
      * Trigger the back event.
      */
     fun onBackSelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(RunasimiWindowsEvent.NavigateBack)
         }
     }
@@ -51,7 +51,7 @@ class MenuViewModel(dependencies: ViewModelDependencies, private val preferences
      * Handle drawer item selection.
      */
     fun onDrawerItemSelected(item: SelectableDrawerItem) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             preferencesManager.updatePreference(RunasimiSettingKey.MainMenuSelectedDrawerItem, item.ordinal)
             updateUiState {
                 it.copy(
@@ -66,7 +66,7 @@ class MenuViewModel(dependencies: ViewModelDependencies, private val preferences
      * Toggle the drawer state.
      */
     fun toggleDrawer() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(MenuEvent.ToggleDrawer)
         }
     }

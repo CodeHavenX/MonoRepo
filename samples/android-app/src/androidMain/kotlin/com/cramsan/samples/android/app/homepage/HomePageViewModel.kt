@@ -29,7 +29,7 @@ class HomePageViewModel @Inject constructor() : ViewModel() {
         Log.e(TAG, "Unhandled exception in VM: $throwable")
     }
 
-    private val viewModelScope = CoroutineScope(SupervisorJob() + exceptionHandler + Dispatchers.Main)
+    private val viewModelCoroutineScope = CoroutineScope(SupervisorJob() + exceptionHandler + Dispatchers.Main)
 
     private val _uiState = MutableStateFlow(HomePageUIState.InitialState)
     val uiState = _uiState.asStateFlow()
@@ -42,7 +42,7 @@ class HomePageViewModel @Inject constructor() : ViewModel() {
      */
     @Suppress("MagicNumber")
     fun loadData(forceRefresh: Boolean = false) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             _uiState.value = _uiState.value.copy(loading = true)
             try {
                 if (forceRefresh) {
@@ -62,7 +62,7 @@ class HomePageViewModel @Inject constructor() : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        viewModelScope.cancel()
+        viewModelCoroutineScope.cancel()
     }
 
     companion object {

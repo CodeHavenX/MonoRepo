@@ -44,7 +44,7 @@ class SignInViewModel(
      * Called when the username value changes.
      */
     fun changeUsernameValue(username: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logD(TAG, "onUsernameValueChange called")
             updateUiState {
                 it.copy(
@@ -58,7 +58,7 @@ class SignInViewModel(
      * Called when the password value changes.
      */
     fun changePasswordValue(password: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logD(TAG, "onPasswordValueChange called")
             updateUiState {
                 it.copy(
@@ -75,7 +75,7 @@ class SignInViewModel(
      */
     fun continueWithPassword() {
         logI(TAG, "continue sign in with a password.")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(showPassword = true) }
         }
     }
@@ -85,7 +85,7 @@ class SignInViewModel(
      */
     fun signInWithPassword() {
         logI(TAG, "signIn called")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             val email = uiState.value.email.trim()
             val password = uiState.value.password
@@ -129,7 +129,7 @@ class SignInViewModel(
      */
     fun signInWithOtp() {
         logI(TAG, "signIn with OTP called")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val email = uiState.value.email.trim()
             if (!checkEmailValid(email)) {
                 return@launch
@@ -162,7 +162,7 @@ class SignInViewModel(
      * Navigate to the signUp page.
      */
     fun navigateToSignUpPage() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val email = uiState.value.email.trim()
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email)),
@@ -174,7 +174,7 @@ class SignInViewModel(
      * Navigate to the debug page.
      */
     fun navigateToDebugPage() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination),
             )
@@ -226,7 +226,7 @@ class SignInViewModel(
      * Change the selected theme preference.
      */
     fun changeSelectedTheme(theme: SelectedTheme) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val themeToSave =
                 when (theme) {
                     SelectedTheme.LIGHT -> Theme.LIGHT

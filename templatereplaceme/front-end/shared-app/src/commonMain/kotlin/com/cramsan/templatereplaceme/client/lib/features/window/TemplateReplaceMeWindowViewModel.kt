@@ -24,7 +24,7 @@ class TemplateReplaceMeWindowViewModel(
     TAG,
 ) {
     init {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")
                 emitEvent(
@@ -40,7 +40,7 @@ class TemplateReplaceMeWindowViewModel(
      * Handle snackbar result and emits it as a delegated event. Any observer can then consume this event.
      */
     fun handleSnackbarResult(result: SnackbarResult) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logI(TAG, "Result from snackbar: $result")
             delegatedEvents.push(TemplateReplaceMeWindowDelegatedEvent.HandleSnackbarResult(result))
         }

@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.application
 
+import com.cramsan.architecture.client.manager.PreferencesEvent
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.init.Initializer
 import com.cramsan.edifikana.client.lib.models.Theme
@@ -29,20 +30,22 @@ class EdifikanaApplicationViewModel(
      * Initialize the view model and all required state for the entire application.
      */
     fun initialize() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             initHandler.startStep()
 
-            viewModelScope.launch {
-                preferences.modifiedKey.collect { changedKey ->
-                    when (changedKey) {
-                        EdifikanaSettingKey.SelectedTheme -> {
-                            logI(TAG, "Theme mode preference changed, emitting event.")
-                            loadSelectedThemeSetting()
-                        }
+            viewModelCoroutineScope.launch {
+                preferences.events.collect { event ->
+                    if (event is PreferencesEvent.KeyModified) {
+                        when (event.key) {
+                            EdifikanaSettingKey.SelectedTheme -> {
+                                logI(TAG, "Theme mode preference changed, emitting event.")
+                                loadSelectedThemeSetting()
+                            }
 
-                        EdifikanaSettingKey.OpenDebugWindow -> {
-                            logI(TAG, "Debug window preference changed, emitting event.")
-                            loadDebugWindowSettings()
+                            EdifikanaSettingKey.OpenDebugWindow -> {
+                                logI(TAG, "Debug window preference changed, emitting event.")
+                                loadDebugWindowSettings()
+                            }
                         }
                     }
                 }

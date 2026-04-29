@@ -1,8 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.settings.general
 
 import app.cash.turbine.turbineScope
+import com.cramsan.architecture.client.manager.PreferencesEvent
 import com.cramsan.architecture.client.manager.PreferencesManager
-import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -102,22 +102,17 @@ class SettingsViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `modifiedKey emission triggers reload of selected theme`() = runCoroutineTest {
-        // Create a mutable flow to simulate modifiedKey emissions
-        val modifiedFlow = MutableSharedFlow<SettingKey<*>>()
-        every { preferencesManager.modifiedKey } returns modifiedFlow
+    fun `KeyModified event triggers reload of selected theme`() = runCoroutineTest {
+        val eventsFlow = MutableSharedFlow<PreferencesEvent>()
+        every { preferencesManager.events } returns eventsFlow
 
-        // Make getStringPreference return LIGHT first, then DARK on subsequent call
         coEvery { preferencesManager.getStringPreference(EdifikanaSettingKey.SelectedTheme) } returnsMany listOf(Result.success("LIGHT"), Result.success("DARK"))
 
-        // Act: initialize will load first value and start collector
         viewModel.initialize()
         assertEquals(SelectedTheme.LIGHT, viewModel.uiState.value.selectedTheme)
 
-        // Emit changed key to trigger reload
-        launch { modifiedFlow.emit(EdifikanaSettingKey.SelectedTheme) }
+        launch { eventsFlow.emit(PreferencesEvent.KeyModified(EdifikanaSettingKey.SelectedTheme)) }
 
-        // Assert the state was reloaded to DARK
         testCoroutineScope.advanceUntilIdle()
         assertEquals(SelectedTheme.DARK, viewModel.uiState.value.selectedTheme)
     }

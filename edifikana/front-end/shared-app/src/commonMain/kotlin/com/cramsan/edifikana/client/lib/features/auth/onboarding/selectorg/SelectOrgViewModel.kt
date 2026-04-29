@@ -32,7 +32,7 @@ class SelectOrgViewModel(
      */
     fun initialize() {
         logI(TAG, "Initializing SelectOrgViewModel")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             val notificationResult = notificationManager.getNotifications()
 
@@ -71,7 +71,7 @@ class SelectOrgViewModel(
      */
     fun createOrganization() {
         logI(TAG, "Create workspace clicked")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AuthDestination.CreateNewOrgDestination,
@@ -85,7 +85,7 @@ class SelectOrgViewModel(
      */
     fun requestSignOut() {
         logI(TAG, "Sign out requested")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(SelectOrgEvent.ShowSignOutConfirmation)
         }
     }
@@ -95,7 +95,7 @@ class SelectOrgViewModel(
      */
     fun confirmSignOut() {
         logI(TAG, "Sign out confirmed")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             authManager.signOut()
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
@@ -111,7 +111,7 @@ class SelectOrgViewModel(
      */
     fun requestJoinOrganization(inviteId: InviteId) {
         logI(TAG, "Join organization requested for inviteId: $inviteId")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(SelectOrgEvent.ShowJoinOrgConfirmation(inviteId))
         }
     }
@@ -121,7 +121,7 @@ class SelectOrgViewModel(
      */
     fun acceptInvite(inviteId: InviteId) {
         logI(TAG, "Accept invite clicked for inviteId: $inviteId")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             val acceptResult = authManager.acceptInvite(inviteId)
             if (acceptResult.isFailure) {

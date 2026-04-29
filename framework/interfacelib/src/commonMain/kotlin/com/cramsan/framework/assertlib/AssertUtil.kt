@@ -52,7 +52,7 @@ fun assert(condition: Boolean, tag: String, message: String) {
  * @see AssertUtil._singleton
  */
 fun assertFalse(condition: Boolean, tag: String, message: String) {
-    AssertUtil.singleton.assert(!condition, tag, message)
+    AssertUtil.singleton.assertFalse(condition, tag, message)
 }
 
 /**
@@ -62,7 +62,7 @@ fun assertFalse(condition: Boolean, tag: String, message: String) {
  * @see AssertUtil._singleton
  */
 fun assertNull(any: Any?, tag: String, message: String) {
-    AssertUtil.singleton.assert(any == null, tag, message)
+    AssertUtil.singleton.assertNull(any, tag, message)
 }
 
 /**
@@ -72,7 +72,7 @@ fun assertNull(any: Any?, tag: String, message: String) {
  * @see AssertUtil._singleton
  */
 fun assertNotNull(any: Any?, tag: String, message: String) {
-    AssertUtil.singleton.assert(any != null, tag, message)
+    AssertUtil.singleton.assertNotNull(any, tag, message)
 }
 
 /**
@@ -82,5 +82,5 @@ fun assertNotNull(any: Any?, tag: String, message: String) {
  * @see AssertUtil._singleton
  */
 fun assertFailure(tag: String, message: String) {
-    AssertUtil.singleton.assert(false, tag, message)
+    AssertUtil.singleton.assertFailure(tag, message)
 }

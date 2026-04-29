@@ -32,7 +32,7 @@ class PropertyHomeViewModel(
      */
     fun loadContent() {
         logI(TAG, "Loading properties.")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updatePropertyList()
         }
     }
@@ -42,7 +42,7 @@ class PropertyHomeViewModel(
      */
     fun selectProperty(propertyId: PropertyId) {
         logI(TAG, "Property selected: $propertyId")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(propertyId = propertyId) }
             preferencesManager.setLastSelectedPropertyId(propertyId)
             updatePropertyList()
@@ -88,7 +88,7 @@ class PropertyHomeViewModel(
      * Navigate back.
      */
     fun navigateBack() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logI(TAG, "Navigating back.")
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateBack,
@@ -101,7 +101,7 @@ class PropertyHomeViewModel(
      */
     fun navigateToAccount() {
         logI(TAG, "Navigating to account page.")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.AccountNavGraphDestination,
@@ -114,7 +114,7 @@ class PropertyHomeViewModel(
      * Set the selected tab.
      */
     fun selectTab(selectedTab: Tabs) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(selectedTab = selectedTab) }
         }
     }
@@ -124,7 +124,7 @@ class PropertyHomeViewModel(
      */
     fun navigateToNotifications() {
         logI(TAG, "Navigating to notifications page.")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(AccountDestination.NotificationsDestination),
             )
@@ -136,7 +136,7 @@ class PropertyHomeViewModel(
      */
     fun navigateToSettings() {
         logI(TAG, "Navigating to settings page.")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.SettingsNavGraphDestination,

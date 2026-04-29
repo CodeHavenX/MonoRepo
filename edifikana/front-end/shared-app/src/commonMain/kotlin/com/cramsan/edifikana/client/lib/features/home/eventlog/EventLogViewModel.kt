@@ -25,7 +25,7 @@ class EventLogViewModel(dependencies: ViewModelDependencies, private val eventLo
      */
     fun loadEvents(propertyId: PropertyId) {
         logI(TAG, "Loading events for property: $propertyId")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
 
             eventLogManager

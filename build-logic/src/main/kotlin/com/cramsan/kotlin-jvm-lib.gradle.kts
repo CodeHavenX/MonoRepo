@@ -34,6 +34,7 @@ tasks.register("releaseJvm") {
     description = "Run all the steps to build a release artifact"
     dependsOn("build")
     dependsOn("detektMain")
+    dependsOn("detektMainSourceSet")
     dependsOn("test")
 }
 

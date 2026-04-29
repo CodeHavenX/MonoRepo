@@ -74,8 +74,6 @@ object Log4J2Helpers {
         }
 
         builder.add(rootLogger)
-        builder.writeXmlConfiguration(System.out)
-        println()
         return builder.build()
     }
 

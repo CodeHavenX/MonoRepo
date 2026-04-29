@@ -14,9 +14,9 @@ import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.preferences.Preferences
-import com.cramsan.framework.preferences.implementation.PreferencesImpl
+import com.cramsan.framework.preferences.PreferencesDelegate
+import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.ThreadUtilInterface
-import com.cramsan.framework.thread.implementation.ThreadUtilImpl
 import org.koin.dsl.module
 
 /**
@@ -63,11 +63,7 @@ internal val FrameworkModule =
 
         single<HaltUtil> { HaltUtilImpl(get()) }
 
-        single<ThreadUtilInterface> {
-            ThreadUtilImpl(get())
-        }
+        single<ThreadUtilInterface> { get<ThreadUtilDelegate>() }
 
-        single<Preferences> {
-            PreferencesImpl(get())
-        }
+        single<Preferences> { get<PreferencesDelegate>() }
     }

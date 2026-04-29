@@ -48,7 +48,7 @@ class OrganizationHomeViewModel(
      */
     fun loadInitialData() {
         logI(TAG, "Loading initial data for HubViewModel.")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val organizations = organizationManager.getOrganizations().requireSuccess()
             val organizationsUIModels = organizations.map { it.toUIModel() }
 
@@ -77,7 +77,7 @@ class OrganizationHomeViewModel(
      */
     fun navigateToAccount() {
         logI(TAG, "Navigating to account page.")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.AccountNavGraphDestination),
             )
@@ -88,7 +88,7 @@ class OrganizationHomeViewModel(
      * Set the selected tab.
      */
     fun selectTab(selectedTab: Tabs) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(selectedTab = selectedTab) }
         }
     }
@@ -98,7 +98,7 @@ class OrganizationHomeViewModel(
      */
     fun navigateToNotifications() {
         logI(TAG, "Navigate to the notifications screen")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AccountDestination.NotificationsDestination,

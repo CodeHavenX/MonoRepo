@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.managers
 
 import app.cash.turbine.turbineScope
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
+import com.cramsan.architecture.client.manager.PreferencesEvent
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingsHolder
@@ -73,13 +74,13 @@ class PreferencesManagerTest : CoroutineTest() {
 
         turbineScope {
             // Arrange
-            val turbine = manager.modifiedKey.testIn(backgroundScope)
+            val turbine = manager.events.testIn(backgroundScope)
 
             // Act
             manager.updatePreference(key, value)
 
             // Assert
-            assertEquals(EdifikanaSettingKey.SupabaseOverrideUrl, turbine.awaitItem())
+            assertEquals(PreferencesEvent.KeyModified(EdifikanaSettingKey.SupabaseOverrideUrl), turbine.awaitItem())
             advanceUntilIdleAndAwaitComplete(turbine)
         }
 

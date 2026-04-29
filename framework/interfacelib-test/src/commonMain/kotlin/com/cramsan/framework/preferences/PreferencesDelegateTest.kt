@@ -1,6 +1,7 @@
 package com.cramsan.framework.preferences
 
 import com.cramsan.framework.test.CoroutineTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -10,7 +11,17 @@ import kotlin.test.assertNull
  * @created 1/16/2021
  */
 abstract class PreferencesDelegateTest : CoroutineTest() {
-    protected lateinit var preferencesDelegate: PreferencesDelegate
+    private lateinit var _preferencesDelegate: PreferencesDelegate
+    protected val preferencesDelegate: PreferencesDelegate get() = _preferencesDelegate
+
+    /** Returns the [PreferencesDelegate] instance to test. Called before each test. */
+    protected abstract fun createPreferencesDelegate(): PreferencesDelegate
+
+    /** Initializes [preferencesDelegate] before each test by calling [createPreferencesDelegate]. */
+    @BeforeTest
+    fun setUpPreferencesDelegate() {
+        _preferencesDelegate = createPreferencesDelegate()
+    }
 
     /**
      * Test fetching a value without having added a key first.

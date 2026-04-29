@@ -21,7 +21,7 @@ class FlyerListViewModel(dependencies: ViewModelDependencies, private val flyerM
      */
     fun loadFlyers() {
         logI(TAG, "loadFlyers")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
             flyerManager
                 .listFlyers()
@@ -56,7 +56,7 @@ class FlyerListViewModel(dependencies: ViewModelDependencies, private val flyerM
      */
     fun onFlyerSelected(flyerId: FlyerId) {
         logI(TAG, "onFlyerSelected: ${flyerId.flyerId}")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 FlyerBoardWindowsEvent.NavigateToScreen(
                     MainDestination.FlyerDetailDestination(flyerId.flyerId),

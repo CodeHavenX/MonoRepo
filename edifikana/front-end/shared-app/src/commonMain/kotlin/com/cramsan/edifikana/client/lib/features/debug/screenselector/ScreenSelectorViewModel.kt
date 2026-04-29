@@ -21,7 +21,7 @@ class ScreenSelectorViewModel(dependencies: ViewModelDependencies) :
      * Trigger the back event.
      */
     fun onBackSelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
@@ -32,7 +32,7 @@ class ScreenSelectorViewModel(dependencies: ViewModelDependencies) :
      * @param destination The destination to navigate to.
      */
     fun navigateToDestination(destination: Destination) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(destination),
             )

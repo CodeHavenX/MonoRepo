@@ -31,6 +31,7 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":framework:interfacelib"))
             implementation(project(":framework:core"))
+            implementation(project(":framework:annotations"))
 
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:_")

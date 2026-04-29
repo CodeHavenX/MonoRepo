@@ -27,7 +27,7 @@ class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val 
      */
     fun loadPendingFlyers() {
         logI(TAG, "loadPendingFlyers")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, errorMessage = null) }
             flyerManager
                 .listPendingFlyers()
@@ -62,7 +62,7 @@ class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val 
      */
     fun approveFlyer(flyerId: FlyerId) {
         logI(TAG, "approveFlyer: ${flyerId.flyerId}")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             flyerManager
                 .moderate(flyerId, ACTION_APPROVE)
                 .onSuccess {
@@ -85,7 +85,7 @@ class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val 
      */
     fun rejectFlyer(flyerId: FlyerId) {
         logI(TAG, "rejectFlyer: ${flyerId.flyerId}")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             flyerManager
                 .moderate(flyerId, ACTION_REJECT)
                 .onSuccess {
@@ -108,7 +108,7 @@ class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val 
      */
     fun navigateBack() {
         logI(TAG, "navigateBack")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
         }
     }

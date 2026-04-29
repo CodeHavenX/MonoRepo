@@ -11,7 +11,7 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.edifikana.server.service.OccupantService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.edifikana.server.service.models.UserRole
-import com.cramsan.framework.annotations.NetworkModel
+import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -34,7 +34,7 @@ import io.ktor.server.routing.Routing
  * RBAC for create and list resolves via the unitId in the request body / query params.
  * RBAC for get, update, and remove resolves via the occupantId (occupant → unit → org lookup).
  */
-@OptIn(NetworkModel::class)
+@BackendController
 class OccupantController(
     private val occupantService: OccupantService,
     private val rbacService: RBACService,

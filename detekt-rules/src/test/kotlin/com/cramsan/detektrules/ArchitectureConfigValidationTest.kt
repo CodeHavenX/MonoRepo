@@ -22,8 +22,32 @@ class ArchitectureConfigValidationTest {
               AnnotationCallerRestrictionRule:
                 active: true
                 layers: []
+              ArchitectureNamingRule:
+                active: true
+                namingSuffixes: []
             """.trimIndent().reader(),
         )
+
+    /*
+    @Test
+    fun `ArchitectureNamingRule reads namingSuffixes from production YAML config`() {
+        val configFile = File("../config/detekt-architecture-config.yml")
+        assertTrue(configFile.exists(), "Config file not found at ${configFile.absolutePath}")
+
+        val yamlConfig = YamlConfig.load(configFile.reader())
+        val ruleConfig = yamlConfig.subConfig("architecture").subConfig("ArchitectureNamingRule")
+        val rule = ArchitectureNamingRule(ruleConfig)
+        val env = createEnvironment()
+
+        val findings = rule.lintWithContext(env, "class MyController")
+        assertEquals(
+            1,
+            findings.size,
+            "Expected ArchitectureNamingRule to find 1 violation with production config, " +
+                "but found ${findings.size}. Check that namingSuffixes is loaded from the YAML.",
+        )
+    }
+     */
 
     @Test
     fun `detekt-architecture-config yml contains only valid keys`() {

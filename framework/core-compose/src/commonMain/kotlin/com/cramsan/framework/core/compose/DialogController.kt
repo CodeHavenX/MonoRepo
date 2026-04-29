@@ -15,6 +15,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
  * A controller for managing dialogs in a Compose application. Uses the [Dialog] class to
  * create and manage dialogs.
  */
+@Suppress("ArchitectureNamingRule")
 class DialogController {
     private val _dialogs = mutableStateListOf<Dialog>()
     val dialogs: SnapshotStateList<Dialog>

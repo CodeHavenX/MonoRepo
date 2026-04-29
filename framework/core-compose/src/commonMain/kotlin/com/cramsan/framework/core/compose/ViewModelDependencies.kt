@@ -13,4 +13,5 @@ data class ViewModelDependencies(
     val coroutineExceptionHandler: CoroutineExceptionHandler,
     val windowEventReceiver: EventReceiver<WindowEvent>,
     val applicationEventReceiver: EventReceiver<ApplicationEvent>,
+    val isDebugBuild: Boolean = false,
 )

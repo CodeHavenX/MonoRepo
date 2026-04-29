@@ -26,7 +26,7 @@ class FlyerBoardWindowViewModel(
     TAG,
 ) {
     init {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")
                 emitEvent(
@@ -36,7 +36,7 @@ class FlyerBoardWindowViewModel(
                 )
             }
         }
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             authManager.activeUser().collect { userId ->
                 logI(TAG, "Auth state changed: ${if (userId != null) "authenticated" else "unauthenticated"}")
                 updateUiState { it.copy(isAuthenticated = userId != null) }
@@ -48,7 +48,7 @@ class FlyerBoardWindowViewModel(
      * Sign out the current user and navigate to the main nav graph (public browse).
      */
     fun signOut() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logI(TAG, "signOut")
             authManager.signOut()
             emitEvent(
@@ -66,7 +66,7 @@ class FlyerBoardWindowViewModel(
      * Handle snackbar result and emits it as a delegated event. Any observer can then consume this event.
      */
     fun handleSnackbarResult(result: SnackbarResult) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logI(TAG, "Result from snackbar: $result")
             delegatedEvents.push(FlyerBoardWindowDelegatedEvent.HandleSnackbarResult(result))
         }

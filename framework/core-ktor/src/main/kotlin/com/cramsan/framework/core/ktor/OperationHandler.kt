@@ -159,17 +159,17 @@ object OperationHandler {
                 val queryParams = queryParamResult.getOrThrow()
 
                 val context = contextResult.getOrThrow()
-                val body =
-                    if (handler.requestBodyType == NoRequestBody::class) {
-                        NoRequestBody as RequestType
-                    } else if (handler.requestBodyType == BytesRequestBody::class) {
-                        BytesRequestBody(call.receive<ByteArray>()) as RequestType
-                    } else {
-                        call.receive(handler.requestBodyType)
-                    }
 
                 val responseResult =
                     runCatching {
+                        val body =
+                            if (handler.requestBodyType == NoRequestBody::class) {
+                                NoRequestBody as RequestType
+                            } else if (handler.requestBodyType == BytesRequestBody::class) {
+                                BytesRequestBody(call.receive<ByteArray>()) as RequestType
+                            } else {
+                                call.receive(handler.requestBodyType)
+                            }
                         call.run {
                             val operationRequest: OperationRequest<
                                 RequestType,
@@ -228,7 +228,11 @@ private fun <
             }
             decodeFromValue(handler.pathParamType.serializer(), resolvedParam) as PathParamType
         } else {
-            TODO()
+            error(
+                "Operation misconfiguration: pathParamType is ${handler.pathParamType} but param " +
+                    "name is $paramString. Either both must be set (non-NoPathParam type with a param name) " +
+                    "or neither (NoPathParam with no param name).",
+            )
         }
     }
 

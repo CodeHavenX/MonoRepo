@@ -21,7 +21,7 @@ class YupayViewModel(dependencies: ViewModelDependencies, private val quechuaMan
      */
     @Suppress("MagicNumber")
     fun generateNewNumber() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val numberOfDigits = (1..4).random()
             val content = quechuaManager.generateNumberTranslation(numberOfDigits)
             updateUiState {

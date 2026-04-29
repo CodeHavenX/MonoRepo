@@ -35,7 +35,7 @@ class OtpValidationViewModel(
      * Initialize the page.
      */
     fun initializeOTPValidationScreen(userEmail: String, accountCreationFlow: Boolean) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     email = userEmail,
@@ -61,7 +61,7 @@ class OtpValidationViewModel(
             return
         }
 
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             auth
                 .signInWithOtp(
                     email,
@@ -99,7 +99,7 @@ class OtpValidationViewModel(
     fun updateOtpCode(newText: String) {
         val sanitizedText = newText.filter { it.isDigit() }
 
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     otpCode = sanitizedText,
@@ -114,7 +114,7 @@ class OtpValidationViewModel(
      */
     fun navigateBack() {
         logD(TAG, "navigateBack called")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateBack,
             )

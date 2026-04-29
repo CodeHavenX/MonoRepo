@@ -29,7 +29,7 @@ suspend inline fun ApplicationCall.validateClientError(
         logE(tag, "Unexpected failure when handing request", originalException)
         respond(
             HttpStatusCode.InternalServerError,
-            originalException?.localizedMessage.orEmpty(),
+            "Internal server error",
         )
         return
     }

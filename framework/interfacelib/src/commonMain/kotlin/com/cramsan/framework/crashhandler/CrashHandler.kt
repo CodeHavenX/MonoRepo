@@ -1,4 +1,4 @@
-package com.cramsan.framework.crashehandler
+package com.cramsan.framework.crashhandler
 
 /**
  * This module will handle crashes and report them. By convention, the implementation will take on

@@ -8,11 +8,11 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class UserDatastoreImplTest : CoroutineTest() {
-    lateinit var userDatastore: UserDatastoreImpl
+    lateinit var userDatastore: ExampleUserDatastore
 
     @BeforeTest
     fun setUp() {
-        userDatastore = UserDatastoreImpl()
+        userDatastore = ExampleUserDatastore()
     }
 
     @Test

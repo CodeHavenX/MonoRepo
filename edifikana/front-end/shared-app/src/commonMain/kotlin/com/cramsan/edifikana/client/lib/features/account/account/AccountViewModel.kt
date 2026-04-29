@@ -19,7 +19,7 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
      * Sign out and navigate out of this screen.
      */
     fun signOut() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             auth.signOut()
             emitWindowEvent(
@@ -36,7 +36,7 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
      * If in edit mode, cancel edit and stay on screen instead.
      */
     fun navigateBack() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             if (uiState.value.isEditable) {
                 cancelEdit()
             } else {
@@ -49,7 +49,7 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
      * Load the user data.
      */
     fun loadUserData() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, isPasswordSet = null) }
             fetchAndApplyUser()
         }
@@ -63,7 +63,7 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
         if (uiState.value.isEditable) {
             saveChanges()
         } else {
-            viewModelScope.launch {
+            viewModelCoroutineScope.launch {
                 updateUiState { it.copy(isEditable = true) }
             }
         }
@@ -73,7 +73,7 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
      * Cancel edit mode and revert changes.
      */
     fun cancelEdit() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, isEditable = false, isPasswordSet = null) }
             fetchAndApplyUser()
         }
@@ -83,7 +83,7 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
      * Update the user's first name.
      */
     fun updateFirstName(firstName: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(firstName = firstName) }
         }
     }
@@ -92,7 +92,7 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
      * Update the user's last name.
      */
     fun updateLastName(lastName: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(lastName = lastName) }
         }
     }
@@ -101,7 +101,7 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
      * Update the user's email.
      */
     fun updateEmail(email: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(email = email) }
         }
     }
@@ -110,13 +110,13 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
      * Update the user's phone number.
      */
     fun updatePhoneNumber(phoneNumber: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(phoneNumber = phoneNumber) }
         }
     }
 
     private fun saveChanges() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             auth
                 .updateUser(
@@ -151,7 +151,7 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
      * Navigate to the change password screen.
      */
     fun editPassword() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AccountDestination.ChangePasswordDestination,

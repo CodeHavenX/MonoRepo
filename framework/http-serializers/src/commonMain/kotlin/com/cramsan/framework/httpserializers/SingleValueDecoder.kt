@@ -23,7 +23,7 @@ class SingleValueDecoder(private val value: String) : AbstractDecoder() {
         TODO("Invalid call to decodeElementIndex on SingleValueDecoder")
     }
 
-    override fun decodeString(): String = value ?: error("No value provided")
+    override fun decodeString(): String = value
 
     override fun decodeInt(): Int = decodeString().toInt()
 

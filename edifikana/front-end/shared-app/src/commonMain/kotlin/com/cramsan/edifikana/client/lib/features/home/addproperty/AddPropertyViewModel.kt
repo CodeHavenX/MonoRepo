@@ -37,7 +37,7 @@ class AddPropertyViewModel(
      * Initialize the ViewModel with the organization ID.
      */
     fun initialize(orgId: OrganizationId) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val defaultIcon =
                 PropertyIconOptions.getDefaultOptions().find { it.id == "S_DEPA" }
                     ?: PropertyIconOptions.getDefaultOptions().first()
@@ -55,7 +55,7 @@ class AddPropertyViewModel(
      * Navigate back to the previous screen.
      */
     fun navigateBack() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
@@ -73,7 +73,7 @@ class AddPropertyViewModel(
         address: String,
         selectedIcon: ImageOptionUIModel?,
     ) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val organizationId = requireNotNull(uiState.value.orgId)
 
             // Extract URI if user selected a custom local file
@@ -136,7 +136,7 @@ class AddPropertyViewModel(
      * Called by MainActivity when user selects images.
      */
     fun handleReceivedImages(uris: List<CoreUri>) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logI(TAG, "handleReceivedImages called with ${uris.size} URIs")
             if (uris.isEmpty()) return@launch
 
@@ -152,7 +152,7 @@ class AddPropertyViewModel(
      * Upload will happen later when user clicks "Add" button.
      */
     private fun validateAndPreviewImage(uri: CoreUri) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             storageManager
                 .validateAndPrepareImagePreview(uri)
                 .onSuccess { previewIcon ->
@@ -203,7 +203,7 @@ class AddPropertyViewModel(
      * Open the image selector bottom sheet.
      */
     fun openImageSelector() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(AddPropertyEvent.OpenImageSelector)
         }
     }
@@ -214,7 +214,7 @@ class AddPropertyViewModel(
      * Otherwise, update the selected icon in the UI state.
      */
     fun selectPhoto(option: ImageOptionUIModel) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             if (option.id == "custom_upload") {
                 triggerPhotoPicker()
             } else {

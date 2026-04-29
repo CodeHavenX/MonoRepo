@@ -5,15 +5,16 @@ import java.util.Properties
 
 /**
  * A simple configuration implementation that reads config properties from a file.
+ *
+ * @param configFile Absolute or relative path to the `.properties` file. The file must already
+ *   exist; if it does not, [IllegalArgumentException] is thrown.
  */
 class SimpleConfiguration(private val configFile: String) : Configuration {
-    // Properties object to store the config properties.
-    val properties = Properties()
+    private val properties = Properties()
 
-    // Initializes the configuration by loading the properties from the config file.
     init {
         val file = File(configFile)
-        file.createNewFile()
+        require(file.exists()) { "Configuration file not found: $configFile" }
         file.inputStream().use {
             properties.load(it)
         }

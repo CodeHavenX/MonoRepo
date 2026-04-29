@@ -14,7 +14,13 @@ class LoggerJS : EventLoggerDelegate {
         throwable: Throwable?,
         vararg args: Any?,
     ) {
-        val formattedString = "[${severity.name}][$tag]$message-${JSON.stringify(args)}"
+        val formattedMessage =
+            if (args.isNotEmpty()) {
+                args.fold(message) { acc, arg -> acc.replaceFirst(FORMAT_SPECIFIER_REGEX, arg?.toString() ?: "null") }
+            } else {
+                message
+            }
+        val formattedString = "[${severity.name}][$tag]$formattedMessage"
         when (severity) {
             Severity.VERBOSE, Severity.DEBUG -> console.log(formattedString)
             Severity.INFO -> console.info(formattedString)
@@ -26,5 +32,9 @@ class LoggerJS : EventLoggerDelegate {
             console.error(it.message)
             it.printStackTrace()
         }
+    }
+
+    companion object {
+        private val FORMAT_SPECIFIER_REGEX = Regex("%[sdifbh%]")
     }
 }

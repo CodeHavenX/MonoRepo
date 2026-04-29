@@ -14,7 +14,7 @@ class TestableViewModel(
 ) {
 
     fun setTitle(title: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     title = title,
@@ -24,7 +24,7 @@ class TestableViewModel(
     }
 
     fun emitNumbers() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(TestableEvent.EmitNumber(1))
             emitEvent(TestableEvent.EmitNumber(2))
             emitEvent(TestableEvent.EmitNumber(3))
@@ -32,13 +32,13 @@ class TestableViewModel(
     }
 
     fun emitApplicationEvent() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(TestableApplicationEvent.Signal)
         }
     }
 
     fun throwError(exception: Throwable = IllegalStateException()) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             throw exception
         }
     }

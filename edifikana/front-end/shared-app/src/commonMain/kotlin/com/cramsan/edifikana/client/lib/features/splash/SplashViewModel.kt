@@ -29,7 +29,7 @@ class SplashViewModel(
      * Trigger the back event.
      */
     fun onBackSelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
@@ -38,7 +38,7 @@ class SplashViewModel(
      * Enforce the authentication state and route the user to the right screen.
      */
     fun enforceAuth() =
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val result = authManager.isSignedIn()
             if (result.isFailure) {
                 logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())

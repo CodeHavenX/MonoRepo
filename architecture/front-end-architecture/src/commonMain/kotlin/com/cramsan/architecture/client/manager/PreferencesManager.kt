@@ -2,29 +2,41 @@ package com.cramsan.architecture.client.manager
 
 import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.architecture.client.settings.SettingsHolder
+import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.configuration.PropertyValueType
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
-import com.cramsan.framework.preferences.Preferences
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 /**
+ * Represents an event emitted by [PreferencesManager].
+ */
+sealed interface PreferencesEvent {
+    /** A single preference key was modified or removed. */
+    data class KeyModified(val key: SettingKey<*>) : PreferencesEvent
+
+    /** All preferences were cleared. */
+    data object PreferencesCleared : PreferencesEvent
+}
+
+/**
  * Manager for handling user preferences.
  *
- * This manager provides methods to set and load preferences, and emits events when a preference is modified.
- * This class will work as a high-level interface for managing user preferences in the application, while implemented
- * using a [Preferences] under the hood.
+ * This manager provides methods to set and load preferences, and emits [PreferencesEvent]s when
+ * preferences change. This class will work as a high-level interface for managing user preferences
+ * in the application, while implemented using a [Preferences] under the hood.
  *
  * @property settingsHolder The [SettingsHolder] instance for accessing application settings.
  * @property dependencies The [ManagerDependencies] instance providing necessary dependencies.
  */
+@FrontendManager
 class PreferencesManager(private val settingsHolder: SettingsHolder, private val dependencies: ManagerDependencies) {
-    private val _modifiedKey = MutableSharedFlow<SettingKey<*>>()
-    val modifiedKey: SharedFlow<SettingKey<*>>
-        get() = _modifiedKey.asSharedFlow()
+    private val _events = MutableSharedFlow<PreferencesEvent>()
+    val events: SharedFlow<PreferencesEvent>
+        get() = _events.asSharedFlow()
 
     /**
      * Update a preference with the given key and value.
@@ -34,7 +46,7 @@ class PreferencesManager(private val settingsHolder: SettingsHolder, private val
     suspend fun updatePreference(key: SettingKey<*>, value: PropertyValue) =
         dependencies.getOrCatch(TAG) {
             settingsHolder.saveValue(key, value)
-            _modifiedKey.emit(key)
+            _events.emit(PreferencesEvent.KeyModified(key))
         }
 
     /**
@@ -49,7 +61,7 @@ class PreferencesManager(private val settingsHolder: SettingsHolder, private val
         TAG,
     ) {
         settingsHolder.saveString(key, value)
-        _modifiedKey.emit(key)
+        _events.emit(PreferencesEvent.KeyModified(key))
     }
 
     /**
@@ -64,7 +76,7 @@ class PreferencesManager(private val settingsHolder: SettingsHolder, private val
         TAG,
     ) {
         settingsHolder.saveBoolean(key, value)
-        _modifiedKey.emit(key)
+        _events.emit(PreferencesEvent.KeyModified(key))
     }
 
     /**
@@ -77,7 +89,7 @@ class PreferencesManager(private val settingsHolder: SettingsHolder, private val
             TAG,
         ) {
             settingsHolder.saveInt(key, value)
-            _modifiedKey.emit(key)
+            _events.emit(PreferencesEvent.KeyModified(key))
         }
 
     /**
@@ -90,7 +102,7 @@ class PreferencesManager(private val settingsHolder: SettingsHolder, private val
             TAG,
         ) {
             settingsHolder.saveLong(key, value)
-            _modifiedKey.emit(key)
+            _events.emit(PreferencesEvent.KeyModified(key))
         }
 
     /**
@@ -162,15 +174,16 @@ class PreferencesManager(private val settingsHolder: SettingsHolder, private val
     suspend fun removePreference(key: SettingKey<*>) =
         dependencies.getOrCatch(TAG) {
             settingsHolder.cleanPreference(key)
-            _modifiedKey.emit(key)
+            _events.emit(PreferencesEvent.KeyModified(key))
         }
 
     /**
-     * Clear all preferences.
+     * Clear all preferences. Emits [PreferencesEvent.PreferencesCleared] to notify observers.
      */
     suspend fun clearPreferences() =
         dependencies.getOrCatch(TAG) {
             settingsHolder.clearAllPreferences()
+            _events.emit(PreferencesEvent.PreferencesCleared)
         }
 
     companion object {

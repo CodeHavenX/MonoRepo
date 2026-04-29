@@ -20,7 +20,7 @@ class DrawerViewModel(dependencies: ViewModelDependencies) :
      * Trigger the back event.
      */
     fun onBackSelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
@@ -29,15 +29,15 @@ class DrawerViewModel(dependencies: ViewModelDependencies) :
      * Select a drawer item.
      */
     fun selectDrawerItem(drawerItem: SelectableDrawerItem) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(selectedItem = drawerItem)
             }
         }
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(DrawerEvent.CloseDrawer)
         }
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(DrawerEvent.CloseDrawer)
         }
     }
@@ -46,7 +46,7 @@ class DrawerViewModel(dependencies: ViewModelDependencies) :
      * Toggle the navigation state of the drawer.
      */
     fun toggleNavigationState() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(DrawerEvent.ToggleDrawer)
         }
     }

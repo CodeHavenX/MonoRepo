@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtFunctionType
 import org.jetbrains.kotlin.psi.KtSuperTypeListEntry
 import org.jetbrains.kotlin.psi.KtTypeReference
 
@@ -82,6 +83,10 @@ class AnnotationCallerRestrictionRule(config: Config) :
 
     override fun visitTypeReference(typeReference: KtTypeReference) {
         super.visitTypeReference(typeReference)
+
+        // Function types (e.g. `() -> Unit`, `suspend Foo.() -> Bar`) cannot carry architecture
+        // annotations. Attempting to call typeReference.type on them throws in the alpha Analysis API.
+        if (typeReference.typeElement is KtFunctionType) return
 
         val (containingClass, callerAnnotations) = callerContext(typeReference) ?: return
 

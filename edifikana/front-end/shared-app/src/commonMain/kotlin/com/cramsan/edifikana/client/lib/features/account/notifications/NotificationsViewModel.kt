@@ -31,7 +31,7 @@ class NotificationsViewModel(
      * Initialize the ViewModel and load notifications.
      */
     fun initialize() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     title = "Notifications",
@@ -105,7 +105,7 @@ class NotificationsViewModel(
      * Accept an invitation.
      */
     fun acceptInvite(inviteId: InviteId) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
 
             authManager
@@ -130,7 +130,7 @@ class NotificationsViewModel(
      * Decline an invitation.
      */
     fun declineInvite(inviteId: InviteId) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
 
             authManager
@@ -155,7 +155,7 @@ class NotificationsViewModel(
      * Mark a notification as read.
      */
     fun markAsRead(notificationId: NotificationId) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             notificationManager
                 .markAsRead(notificationId)
                 .onFailure { throwable ->
@@ -174,7 +174,7 @@ class NotificationsViewModel(
      * Delete a notification.
      */
     fun deleteNotification(notificationId: NotificationId) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             notificationManager
                 .deleteNotification(notificationId)
                 .onFailure { throwable ->
@@ -193,7 +193,7 @@ class NotificationsViewModel(
      * Trigger the back event.
      */
     fun onBackSelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }

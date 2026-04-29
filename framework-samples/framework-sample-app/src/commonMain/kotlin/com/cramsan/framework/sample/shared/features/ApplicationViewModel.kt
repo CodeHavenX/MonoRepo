@@ -1,5 +1,6 @@
 package com.cramsan.framework.sample.shared.features
 
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -9,6 +10,7 @@ import kotlinx.coroutines.launch
 /**
  * View model for the entire application.
  */
+@FrontendViewModel
 class ApplicationViewModel(
     private val initHandler: Initializer,
     dependencies: ViewModelDependencies,
@@ -19,10 +21,10 @@ class ApplicationViewModel(
     TAG,
 ) {
     init {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             initHandler.startStep()
         }
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             eventEmitter.events.collect { event ->
                 emitEvent(SampleApplicationViewModelEvent.SampleApplicationEventWrapper(event))
             }
@@ -34,7 +36,7 @@ class ApplicationViewModel(
      * consumer of the view model's events.
      */
     fun executeEvent(event: SampleApplicationViewModelEvent) =
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(event)
         }
 

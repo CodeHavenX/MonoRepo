@@ -1,4 +1,4 @@
-package com.cramsan.framework.crashehandler.implementation
+package com.cramsan.framework.crashhandler.implementation
 
 import com.cramsan.framework.logging.EventLoggerErrorCallbackDelegate
 import com.cramsan.framework.logging.Severity

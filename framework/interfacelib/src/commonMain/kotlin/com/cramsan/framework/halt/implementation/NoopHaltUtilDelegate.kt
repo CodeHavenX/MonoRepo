@@ -5,7 +5,7 @@ import com.cramsan.framework.halt.HaltUtilDelegate
 /**
  * Noop implementation of [HaltUtilDelegate] that does nothing.
  */
-class HaltUtilDelegateImpl : HaltUtilDelegate {
+class NoopHaltUtilDelegate : HaltUtilDelegate {
     override fun resumeThread() = Unit
 
     override fun stopThread() = Unit

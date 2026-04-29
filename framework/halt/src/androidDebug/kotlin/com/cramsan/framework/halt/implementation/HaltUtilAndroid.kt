@@ -8,25 +8,26 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.cramsan.framework.halt.HaltUtilDelegate
 import com.cramsan.framework.halt.R
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * [HaltUtilDelegate] implementation for the debug target.
  */
 class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
-    private var shouldStop = true
+    private val shouldStop = AtomicBoolean(false)
 
     override fun stopThread() {
-        shouldStop = true
+        shouldStop.set(true)
 
         displayNotification()
 
-        while (shouldStop) {
+        while (shouldStop.get()) {
             Thread.sleep(SLEEP_TIME)
         }
     }
 
     override fun resumeThread() {
-        shouldStop = false
+        shouldStop.set(false)
     }
 
     override fun crashApp() {
@@ -80,7 +81,7 @@ class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
     }
 
     companion object {
-        private const val STACK_TRACE_HEAD_EXTRA_LINES = 90
+        private const val STACK_TRACE_HEAD_EXTRA_LINES = 5
         private const val SLEEP_TIME = 1000L
         private const val CHANNEL_ID = "com.cramsan.framework.halt.implementation"
     }

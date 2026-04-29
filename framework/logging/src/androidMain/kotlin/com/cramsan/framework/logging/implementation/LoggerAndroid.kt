@@ -17,7 +17,7 @@ class LoggerAndroid : EventLoggerDelegate {
         vararg args: Any?,
     ) {
         val formattedMessage = if (args.isNotEmpty()) {
-            message.format(args)
+            message.format(*args)
         } else {
             message
         }

@@ -1,6 +1,7 @@
 package com.cramsan.framework.core.compose
 
 import androidx.lifecycle.ViewModel
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.logging.logD
 import kotlinx.coroutines.CoroutineScope
@@ -15,15 +16,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
- * Base ViewModel class that provides a [viewModelScope] and logs when the ViewModel is created and cleared.
+ * Base ViewModel class that provides a [viewModelCoroutineScope] and logs when the ViewModel is created and cleared.
  */
 @Suppress("UNCHECKED_CAST")
+@FrontendViewModel
 open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState>(
     protected val dependencies: ViewModelDependencies,
     initialState: UI,
     private val tag: String,
 ) : ViewModel() {
-    protected val viewModelScope: CoroutineScope by lazy {
+    protected val viewModelCoroutineScope: CoroutineScope by lazy {
         CoroutineScope(
             SupervisorJob() + dependencies.coroutineExceptionHandler + dependencies.dispatcherProvider.uiDispatcher(),
         )
@@ -46,23 +48,27 @@ open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState>(
         get() = _events.asSharedFlow()
 
     init {
-        logD(tag, "ViewModel created: %s", this.hashCode())
-        viewModelScope.launch {
-            uiState.collect { value ->
-                logD(tag, "UI State: %s", value)
+        if (dependencies.isDebugBuild) {
+            logD(tag, "ViewModel created: %s", this.hashCode())
+            viewModelCoroutineScope.launch {
+                uiState.collect { value ->
+                    logD(tag, "UI State: %s", value)
+                }
             }
-        }
-        viewModelScope.launch {
-            events.collect { value ->
-                logD(tag, "Event: %s", value)
+            viewModelCoroutineScope.launch {
+                events.collect { value ->
+                    logD(tag, "Event: %s", value)
+                }
             }
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        logD(tag, "ViewModel cleared: %s", this.hashCode())
-        viewModelScope.cancel()
+        if (dependencies.isDebugBuild) {
+            logD(tag, "ViewModel cleared: %s", this.hashCode())
+        }
+        viewModelCoroutineScope.cancel()
     }
 
     protected suspend fun emitEvent(event: E) {
@@ -75,7 +81,9 @@ open class BaseViewModel<E : ViewModelEvent, UI : ViewModelUIState>(
     }
 
     protected suspend fun emitWindowEvent(event: WindowEvent) {
-        logD(tag, "Emitting window event: %s", event)
+        if (dependencies.isDebugBuild) {
+            logD(tag, "Emitting window event: %s", event)
+        }
         dependencies.windowEventReceiver.push(event)
     }
 

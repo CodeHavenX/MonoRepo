@@ -26,7 +26,7 @@ class CreateNewOrgViewModel(
      * Trigger the back event.
      */
     fun onBackSelected() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
@@ -35,7 +35,7 @@ class CreateNewOrgViewModel(
      * Update the organization name value.
      */
     fun onOrganizationNameChanged(name: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(organizationName = name) }
             validateInputs()
         }
@@ -45,7 +45,7 @@ class CreateNewOrgViewModel(
      * Update the organization description value.
      */
     fun onOrganizationDescriptionChanged(description: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(organizationDescription = description) }
             validateInputs()
         }
@@ -63,7 +63,7 @@ class CreateNewOrgViewModel(
      */
     fun onCreateOrganizationClicked() {
         logI(TAG, "Create organization clicked")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             try {
                 val currentState = uiState.value

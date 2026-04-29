@@ -6,7 +6,7 @@ import dev.detekt.api.RuleSetProvider
 
 /**
  * Provides the architecture rule set, which enforces layered architecture conventions
- * via the [AnnotationCallerRestrictionRule].
+ * via the [AnnotationCallerRestrictionRule] and [ArchitectureNamingRule].
  */
 class ArchitectureRuleSetProvider : RuleSetProvider {
     override val ruleSetId: RuleSetId = RuleSetId("architecture")
@@ -14,6 +14,6 @@ class ArchitectureRuleSetProvider : RuleSetProvider {
     override fun instance(): RuleSet =
         RuleSet(
             ruleSetId,
-            listOf(::AnnotationCallerRestrictionRule),
+            listOf(::AnnotationCallerRestrictionRule, ::ArchitectureNamingRule),
         )
 }

@@ -37,7 +37,7 @@ class PropertyDetailViewModel(
      * Initialize the ViewModel with the property ID.
      */
     fun initialize(propertyId: PropertyId) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, propertyId = propertyId) }
             propertyManager
                 .getProperty(propertyId)
@@ -65,7 +65,7 @@ class PropertyDetailViewModel(
      * Navigate back to the previous screen.
      */
     fun navigateBack() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }
@@ -74,7 +74,7 @@ class PropertyDetailViewModel(
      * Toggle edit mode.
      */
     fun toggleEditMode() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     isEditMode = !it.isEditMode,
@@ -88,7 +88,7 @@ class PropertyDetailViewModel(
      * Cancel edit mode and revert changes.
      */
     fun cancelEdit() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val propertyId = uiState.value.propertyId ?: return@launch
             updateUiState { it.copy(isLoading = true, isEditMode = false) }
             propertyManager
@@ -113,7 +113,7 @@ class PropertyDetailViewModel(
      * Update the property name.
      */
     fun onNameChanged(name: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(name = name) }
         }
     }
@@ -122,7 +122,7 @@ class PropertyDetailViewModel(
      * Update the property address.
      */
     fun onAddressChanged(address: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(address = address) }
         }
     }
@@ -131,7 +131,7 @@ class PropertyDetailViewModel(
      * Trigger the photo picker to select a custom image.
      */
     private fun triggerPhotoPicker() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.OpenPhotoPicker)
         }
     }
@@ -141,7 +141,7 @@ class PropertyDetailViewModel(
      * Called by platform when user selects images.
      */
     fun handleReceivedImages(uris: List<CoreUri>) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logI(TAG, "handleReceivedImages called with ${uris.size} URIs")
             if (uris.isEmpty()) return@launch
 
@@ -172,7 +172,7 @@ class PropertyDetailViewModel(
      * Open the image selector bottom sheet.
      */
     fun openImageSelector() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitEvent(PropertyDetailEvent.OpenImageSelector)
         }
     }
@@ -183,7 +183,7 @@ class PropertyDetailViewModel(
      * Otherwise, update the selected icon in the UI state.
      */
     fun selectPhoto(option: ImageOptionUIModel) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             if (option.id == "custom_upload") {
                 triggerPhotoPicker()
             } else {
@@ -202,7 +202,7 @@ class PropertyDetailViewModel(
      * Supports both default icons and custom image uploads.
      */
     fun saveProperty() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val state = uiState.value
             val propertyId = state.propertyId ?: return@launch
 
@@ -257,7 +257,7 @@ class PropertyDetailViewModel(
      * Delete the property.
      */
     fun deleteProperty() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val propertyId = uiState.value.propertyId ?: return@launch
 
             updateUiState { it.copy(isLoading = true) }

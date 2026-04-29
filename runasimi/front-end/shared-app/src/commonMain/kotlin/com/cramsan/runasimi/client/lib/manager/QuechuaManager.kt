@@ -1,10 +1,12 @@
 package com.cramsan.runasimi.client.lib.manager
 
+import com.cramsan.framework.annotations.FrontendManager
 import kotlin.math.pow
 
 /**
  * Manager that handles quechua related content generation.
  */
+@FrontendManager
 class QuechuaManager(private val verbTranslationRepository: VerbTranslationRepository) {
     /**
      * Generate a random verb conjugation content.

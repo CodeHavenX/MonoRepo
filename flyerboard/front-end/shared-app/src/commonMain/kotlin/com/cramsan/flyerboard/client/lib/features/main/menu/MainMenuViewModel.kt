@@ -19,7 +19,7 @@ class MainMenuViewModel(dependencies: ViewModelDependencies, private val userMan
      * Handle first name value change.
      */
     fun changeFirstNameValue(firstName: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logD(TAG, "First name changed to: $firstName")
             updateUiState {
                 it.copy(firstName = firstName)
@@ -31,7 +31,7 @@ class MainMenuViewModel(dependencies: ViewModelDependencies, private val userMan
      * Handle last name value change.
      */
     fun changeLastNameValue(lastName: String) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logD(TAG, "Last name changed to: $lastName")
             updateUiState {
                 it.copy(lastName = lastName)
@@ -44,7 +44,7 @@ class MainMenuViewModel(dependencies: ViewModelDependencies, private val userMan
      */
     fun createAccount() {
         logI(TAG, "create account called")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             val firstName = uiState.value.firstName
             val lastName = uiState.value.lastName

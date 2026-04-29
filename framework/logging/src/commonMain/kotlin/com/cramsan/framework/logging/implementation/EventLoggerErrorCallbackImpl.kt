@@ -13,11 +13,11 @@ class EventLoggerErrorCallbackImpl(
     private val delegate: EventLoggerErrorCallbackDelegate,
 ) : EventLoggerErrorCallback {
     override fun onWarning(tag: String, message: String, throwable: Throwable?) {
-        logEvent(tag, message, throwable ?: ExceptionNotProvided, Severity.WARNING)
+        logEvent(tag, message, throwable ?: Throwable("Exception not provided"), Severity.WARNING)
     }
 
     override fun onError(tag: String, message: String, throwable: Throwable?) {
-        logEvent(tag, message, throwable ?: ExceptionNotProvided, Severity.ERROR)
+        logEvent(tag, message, throwable ?: Throwable("Exception not provided"), Severity.ERROR)
     }
 
     private fun logEvent(tag: String, message: String, throwable: Throwable, severity: Severity) {
@@ -37,7 +37,7 @@ class EventLoggerErrorCallbackImpl(
                     Severity.ERROR,
                     TAG,
                     "Could not handle event with severity: $severity - message: $message",
-                    InvalidSeverityException,
+                    Throwable("EventLoggerErrorCallback called with the wrong severity level. Event not handled."),
                 )
             }
         }
@@ -45,10 +45,5 @@ class EventLoggerErrorCallbackImpl(
 
     companion object {
         private const val TAG = "EventLoggerErrorCallback"
-        private val ExceptionNotProvided = Throwable("Exception not provided")
-        private val InvalidSeverityException =
-            Throwable(
-                "EventLoggerErrorCallback called with the wrong severity level. Event not handled.",
-            )
     }
 }

@@ -17,7 +17,7 @@ class InMemoryPreferencesDelegate : PreferencesDelegate {
     }
 
     override fun loadString(key: String): String? {
-        return map[key] as String?
+        return map[key] as? String
     }
 
     override fun saveInt(key: String, value: Int) {

@@ -29,7 +29,7 @@ class EdifikanaWindowViewModel(
      */
     fun initialize() {
         // Observe and re-emit window events
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")
                 emitEvent(
@@ -45,7 +45,7 @@ class EdifikanaWindowViewModel(
      * Handle received image.
      */
     fun handleReceivedImage(uri: CoreUri?) =
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             if (uri == null) {
                 logI(TAG, "Uri was null.")
             } else {
@@ -58,7 +58,7 @@ class EdifikanaWindowViewModel(
      * Handle received images.
      */
     fun handleReceivedImages(uris: List<CoreUri>) =
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             if (uris.isEmpty()) {
                 logI(TAG, "Uri list is empty.")
             } else {
@@ -71,7 +71,7 @@ class EdifikanaWindowViewModel(
      * Handle snackbar result and emits it as a delegated event. Any observer can then consume this event.
      */
     fun handleSnackbarResult(result: SnackbarResult) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             logI(TAG, "Result from snackbar: $result")
             delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleSnackbarResult(result))
         }

@@ -134,21 +134,21 @@ class AssertUtilCommonTest : CoroutineTest() {
         verify { assertUtil.assert(false, tag, message) }
 
         assertFalse(true, tag, message)
-        verify { assertUtil.assert(false, tag, message) }
+        verify { assertUtil.assertFalse(true, tag, message) }
 
         assertNull(true, tag, message)
-        verify { assertUtil.assert(false, tag, message) }
+        verify { assertUtil.assertNull(true, tag, message) }
 
         assertNull(null, tag, message)
-        verify { assertUtil.assert(true, tag, message) }
+        verify { assertUtil.assertNull(null, tag, message) }
 
         assertNotNull(true, tag, message)
-        verify { assertUtil.assert(true, tag, message) }
+        verify { assertUtil.assertNotNull(true, tag, message) }
 
         assertNotNull(null, tag, message)
-        verify { assertUtil.assert(false, tag, message) }
+        verify { assertUtil.assertNotNull(null, tag, message) }
 
         assertFailure(tag, message)
-        verify { assertUtil.assert(false, tag, message) }
+        verify { assertUtil.assertFailure(tag, message) }
     }
 }

@@ -1,6 +1,6 @@
-package com.cramsan.framework.crashehandler.implementation
+package com.cramsan.framework.crashhandler.implementation
 
-import com.cramsan.framework.crashehandler.CrashHandlerDelegate
+import com.cramsan.framework.crashhandler.CrashHandlerDelegate
 import com.microsoft.appcenter.AppCenter
 import com.microsoft.appcenter.crashes.Crashes
 

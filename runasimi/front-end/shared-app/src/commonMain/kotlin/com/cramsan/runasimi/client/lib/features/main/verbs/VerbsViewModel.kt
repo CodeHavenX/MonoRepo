@@ -20,7 +20,7 @@ class VerbsViewModel(dependencies: ViewModelDependencies, private val quechuaMan
      * Update the UI with a new verb conjugation.
      */
     fun generateNewConjugation() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val content = quechuaManager.generateVerbConjugation()
             updateUiState {
                 it.copy(
@@ -34,7 +34,7 @@ class VerbsViewModel(dependencies: ViewModelDependencies, private val quechuaMan
      * Toggle between English and Spanish translations.
      */
     fun toggleLanguage() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(showSpanish = !it.showSpanish)
             }

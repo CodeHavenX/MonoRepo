@@ -28,6 +28,7 @@ import com.cramsan.edifikana.server.datastore.TimeCardDatastore
 import com.cramsan.edifikana.server.datastore.UnitDatastore
 import com.cramsan.edifikana.server.datastore.supabase.toUserRole
 import com.cramsan.edifikana.server.service.models.UserRole
+import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ForbiddenException
@@ -36,6 +37,7 @@ import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.InvalidReq
 /**
  * Service responsible for Role-Based Access Control (RBAC) checks.
  */
+@BackendService
 class RBACService(
     private val propertyDatastore: PropertyDatastore,
     private val orgDataStore: OrganizationDatastore,

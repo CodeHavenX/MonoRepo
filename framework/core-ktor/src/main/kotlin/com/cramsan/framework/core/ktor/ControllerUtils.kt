@@ -173,6 +173,7 @@ suspend inline fun <P, T : ClientContext<P>> ApplicationCall.handleCall(
             HttpStatusCode.Unauthorized,
             "Client is not authenticated",
         )
+        return
     }
 
     val result =

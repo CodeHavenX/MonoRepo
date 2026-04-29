@@ -20,7 +20,7 @@ class FlyerDetailViewModel(dependencies: ViewModelDependencies, private val flye
      */
     fun loadFlyer(flyerIdValue: String) {
         logI(TAG, "loadFlyer: $flyerIdValue")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
             flyerManager
                 .getFlyer(FlyerId(flyerIdValue))
@@ -49,7 +49,7 @@ class FlyerDetailViewModel(dependencies: ViewModelDependencies, private val flye
      */
     fun navigateBack() {
         logI(TAG, "navigateBack")
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
         }
     }

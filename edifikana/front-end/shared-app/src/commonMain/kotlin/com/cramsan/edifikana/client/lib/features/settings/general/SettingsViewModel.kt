@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.settings.general
 
+import com.cramsan.architecture.client.manager.PreferencesEvent
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.models.Theme
@@ -27,11 +28,11 @@ class SettingsViewModel(dependencies: ViewModelDependencies, private val prefere
      */
     fun initialize() {
         // Load initial value
-        viewModelScope.launch {
-            viewModelScope.launch {
+        viewModelCoroutineScope.launch {
+            viewModelCoroutineScope.launch {
                 // Listen for preference changes and react when the selected theme changes.
-                preferencesManager.modifiedKey.collect { changedKey ->
-                    if (changedKey == EdifikanaSettingKey.SelectedTheme) {
+                preferencesManager.events.collect { event ->
+                    if (event is PreferencesEvent.KeyModified && event.key == EdifikanaSettingKey.SelectedTheme) {
                         loadSelectedTheme()
                     }
                 }
@@ -54,7 +55,7 @@ class SettingsViewModel(dependencies: ViewModelDependencies, private val prefere
      * Change the selected theme preference.
      */
     fun changeSelectedTheme(theme: SelectedTheme) {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             val themeToSave =
                 when (theme) {
                     SelectedTheme.LIGHT -> Theme.LIGHT
@@ -76,7 +77,7 @@ class SettingsViewModel(dependencies: ViewModelDependencies, private val prefere
      * Navigate back to the previous screen by emitting a NavigateBack window event.
      */
     fun navigateBack() {
-        viewModelScope.launch {
+        viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
         }
     }

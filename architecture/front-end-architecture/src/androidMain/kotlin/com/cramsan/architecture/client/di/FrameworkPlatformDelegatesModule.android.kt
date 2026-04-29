@@ -13,6 +13,7 @@ import com.cramsan.framework.preferences.implementation.PreferencesAndroid
 import com.cramsan.framework.thread.ThreadUtilDelegate
 import com.cramsan.framework.thread.implementation.ThreadUtilAndroid
 import org.koin.android.ext.koin.androidApplication
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -36,5 +37,5 @@ internal actual val FrameworkPlatformDelegatesModule = module {
 
     single<DispatcherProvider> { DispatcherProviderImpl() }
 
-    single<PreferencesDelegate> { PreferencesAndroid(androidApplication()) }
+    single<PreferencesDelegate> { PreferencesAndroid(androidApplication(), get(named(NamedDependency.DOMAIN_KEY))) }
 }

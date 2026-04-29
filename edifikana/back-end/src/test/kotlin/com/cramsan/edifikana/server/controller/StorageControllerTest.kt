@@ -10,6 +10,7 @@ import com.cramsan.edifikana.server.dependencyinjection.TestServiceModule
 import com.cramsan.edifikana.server.dependencyinjection.testApplicationModule
 import com.cramsan.edifikana.server.service.StorageService
 import com.cramsan.edifikana.server.utils.ASSET_2
+import com.cramsan.edifikana.server.utils.BUCKET_ID
 import com.cramsan.edifikana.server.utils.readFileContent
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
@@ -74,7 +75,7 @@ class StorageControllerTest :
             val signedUrl = "https://storage.example.com/upload/signed/employee2.png"
             val path = "employee2.png"
             val storageService = get<StorageService>()
-            coEvery { storageService.getSignedUploadUrl(ASSET_2.fileName) } returns Pair(signedUrl, path)
+            coEvery { storageService.getSignedUploadUrl(ASSET_2.fileName, BUCKET_ID) } returns Pair(signedUrl, path)
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
             coEvery { contextRetriever.getContext(any()) }.answers { mockk() }
 

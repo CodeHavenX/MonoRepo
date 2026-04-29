@@ -29,7 +29,7 @@ class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore 
             val bucket = storage.from(bucketId)
             val signedUrl = bucket.createSignedUrl(fileName, expiresIn = 3.minutes)
 
-            Asset(id, fileName, signedUrl, byteArrayOf())
+            Asset(id, fileName, signedUrl)
         }
 
     /**

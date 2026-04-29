@@ -11,7 +11,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.OccupantEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.OccupantEntity.CreateOccupantEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UnitEntity
 import com.cramsan.edifikana.server.service.models.Occupant
-import com.cramsan.framework.annotations.SupabaseModel
+import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import io.github.jan.supabase.postgrest.Postgrest
@@ -21,7 +21,8 @@ import kotlin.time.ExperimentalTime
 /**
  * Supabase implementation of [OccupantDatastore].
  */
-@OptIn(ExperimentalTime::class, SupabaseModel::class)
+@OptIn(ExperimentalTime::class)
+@BackendDatastore
 class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantDatastore {
     /**
      * Inserts a new occupant row and returns the created [Occupant].

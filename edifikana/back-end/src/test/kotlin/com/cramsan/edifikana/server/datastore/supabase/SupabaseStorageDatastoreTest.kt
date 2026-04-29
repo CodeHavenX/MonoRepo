@@ -22,8 +22,8 @@ class SupabaseStorageDatastoreTest {
         // Act
         val (bucket, objectPath) =
             datastore.extractBucketAndObjectPath(
-            AssetId("images/timecard-images/employee.png"),
-        )
+                AssetId("images/timecard-images/employee.png"),
+            )
 
         // Assert
         assertEquals("images", bucket)
@@ -35,8 +35,8 @@ class SupabaseStorageDatastoreTest {
         // Act
         val (bucket, objectPath) =
             datastore.extractBucketAndObjectPath(
-            AssetId("images/private/properties/abc123/photo.jpg"),
-        )
+                AssetId("images/private/properties/abc123/photo.jpg"),
+            )
         // Assert
         assertEquals("images", bucket)
         assertEquals("private/properties/abc123/photo.jpg", objectPath)
@@ -47,8 +47,8 @@ class SupabaseStorageDatastoreTest {
         // Act
         val (bucket, objectPath) =
             datastore.extractBucketAndObjectPath(
-            AssetId("documents/report.pdf"),
-        )
+                AssetId("documents/report.pdf"),
+            )
         // Assert
         assertEquals("documents", bucket)
         assertEquals("report.pdf", objectPath)

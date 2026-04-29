@@ -24,12 +24,12 @@ import io.ktor.http.contentType
 @OptIn(NetworkModel::class)
 class StorageServiceImpl(private val http: HttpClient, private val downloadStrategy: DownloadStrategy) :
     StorageService {
-        override suspend fun uploadFile(data: ByteArray, targetRef: String, bucketId: String): Result<String> =
+    override suspend fun uploadFile(data: ByteArray, targetRef: String, bucketId: String): Result<String> =
         runSuspendCatching(TAG) {
             val response =
                 StorageApi.createSignedUpload
-                .buildRequest(queryParam = CreateSignedUploadQueryParams(filename = targetRef, bucketId = bucketId))
-                .execute(http)
+                    .buildRequest(queryParam = CreateSignedUploadQueryParams(filename = targetRef, bucketId = bucketId))
+                    .execute(http)
             // Get response and upload to that url
             http.put(response.signedUrl) {
                 setBody(data)
@@ -45,8 +45,8 @@ class StorageServiceImpl(private val http: HttpClient, private val downloadStrat
             }
             val response =
                 StorageApi.getSignedDownload
-                .buildRequest(queryParam = GetSignedDownloadQueryParams(assetId = targetRef))
-                .execute(http)
+                    .buildRequest(queryParam = GetSignedDownloadQueryParams(assetId = targetRef))
+                    .execute(http)
             val signedUrl = checkNotNull(response.signedUrl) { "No signed URL returned for $targetRef" }
             val bytes = http.get(signedUrl).body<ByteArray>()
             downloadStrategy.saveToFile(bytes, targetRef)

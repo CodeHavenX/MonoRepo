@@ -13,4 +13,5 @@ import kotlinx.serialization.Serializable
 data class SignedUploadUrlNetworkResponse(
     @SerialName("signed_url") val signedUrl: String,
     @SerialName("path") val path: String,
+    @SerialName("asset_id") val assetId: String,
 ) : ResponseBody

@@ -1,4 +1,5 @@
 {
-    "signed_url": "https://storage.example.com/upload/signed/employee2.png",
-    "path": "employee2.png"
+    "signed_url": "fakeSignedUrl.url.com",
+    "path": "employee2.png",
+    "asset_id": "images/timecard-images/employee2.png"
 }

@@ -72,15 +72,13 @@ class StorageControllerTest :
         testBackEndApplication {
             // Arrange
             val expectedResponse = readFileContent("requests/create_signed_upload_response.json")
-            val signedUrl = "https://storage.example.com/upload/signed/employee2.png"
-            val path = "employee2.png"
             val storageService = get<StorageService>()
-            coEvery { storageService.getSignedUploadUrl(ASSET_2.fileName, BUCKET_ID) } returns Pair(signedUrl, path)
+            coEvery { storageService.getSignedUploadUrl(ASSET_2.fileName, BUCKET_ID) } returns ASSET_2
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
             coEvery { contextRetriever.getContext(any()) }.answers { mockk() }
 
             // Act
-            val response = client.post("storage/signed-upload?filename=${ASSET_2.fileName}")
+            val response = client.post("storage/signed-upload?filename=${ASSET_2.fileName}&bucket_id=$BUCKET_ID")
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)

@@ -19,5 +19,5 @@ interface StorageDatastore {
     /**
      * Creates a signed upload URL for the given [fileName]. Returns the signed URL and storage path.
      */
-    suspend fun createSignedUploadUrl(fileName: String, bucketId: String): Result<Pair<String, String>>
+    suspend fun createSignedUploadUrl(fileName: String, bucketId: String): Result<Asset>
 }

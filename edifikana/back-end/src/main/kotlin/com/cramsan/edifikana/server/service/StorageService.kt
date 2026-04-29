@@ -30,7 +30,7 @@ class StorageService(private val storageDatastore: StorageDatastore) {
     /**
      * Returns a signed upload URL and storage path for [fileName].
      */
-    suspend fun getSignedUploadUrl(fileName: String, bucketId: String): Pair<String, String> {
+    suspend fun getSignedUploadUrl(fileName: String, bucketId: String): Asset {
         logD(TAG, "getSignedUploadUrl")
         return storageDatastore.createSignedUploadUrl(fileName, bucketId).getOrThrow()
     }

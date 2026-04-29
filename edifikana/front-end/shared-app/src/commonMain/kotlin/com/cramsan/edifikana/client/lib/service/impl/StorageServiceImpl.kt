@@ -37,7 +37,7 @@ class StorageServiceImpl(
                 setBody(data)
                 contentType(ContentType.Application.OctetStream)
             }
-            targetRef
+            response.assetId
         }
 
     override suspend fun downloadFile(targetRef: String): Result<CoreUri> =

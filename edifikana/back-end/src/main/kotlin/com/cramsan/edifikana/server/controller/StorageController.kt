@@ -41,7 +41,8 @@ class StorageController(
             >,
     ): AssetNetworkResponse {
         val assetId = AssetId(requireNotBlank(request.queryParam.assetId))
-        val asset = storageService.getSignedDownloadUrl(assetId)
+        val asset =
+            storageService.getSignedDownloadUrl(assetId)
             ?: throw NotFoundException("Asset not found: $assetId")
         return asset.toAssetNetworkResponse()
     }

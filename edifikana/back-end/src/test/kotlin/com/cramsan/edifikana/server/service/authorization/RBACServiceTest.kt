@@ -75,19 +75,19 @@ class RBACServiceTest {
         occupantDatastore = mockk()
         rbac =
             RBACService(
-                propertyDatastore,
-                orgDatastore,
-                employeeDatastore,
-                timeCardDatastore,
-                eventLogDatastore,
-                documentDatastore,
-                commonAreaDatastore,
-                taskDatastore,
-                unitDatastore,
-                paymentRecordDatastore,
-                rentConfigDatastore,
-                occupantDatastore,
-            )
+            propertyDatastore,
+            orgDatastore,
+            employeeDatastore,
+            timeCardDatastore,
+            eventLogDatastore,
+            documentDatastore,
+            commonAreaDatastore,
+            taskDatastore,
+            unitDatastore,
+            paymentRecordDatastore,
+            rentConfigDatastore,
+            occupantDatastore,
+        )
     }
 
     /**
@@ -143,23 +143,23 @@ class RBACServiceTest {
     @Test
     fun `hasRole for org action returns expected role for authorized user`() =
         runTest {
-            // Arrange
-            val userId = UserId("testUser")
-            val orgId = OrganizationId("testOrg")
-            val requiredRole = UserRole.ADMIN
+        // Arrange
+        val userId = UserId("testUser")
+        val orgId = OrganizationId("testOrg")
+        val requiredRole = UserRole.ADMIN
 
-            val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
 
-            coEvery {
-                orgDatastore.getUserRole(userId, orgId)
-            } returns Result.success(OrgRole.ADMIN)
+        coEvery {
+            orgDatastore.getUserRole(userId, orgId)
+        } returns Result.success(OrgRole.ADMIN)
 
-            // Act
-            val result = rbac.hasRole(context, orgId, requiredRole)
+        // Act
+        val result = rbac.hasRole(context, orgId, requiredRole)
 
-            // Assert
-            assertTrue(result)
-        }
+        // Assert
+        assertTrue(result)
+    }
 
     /**
      * Tests that hasRole returns false when the user does not have the required role for an organization action.
@@ -167,28 +167,28 @@ class RBACServiceTest {
     @Test
     fun `hasRole for org action returns false`() =
         runTest {
-            // Arrange
-            val userId = UserId("testUser")
-            val userRole = UserRole.EMPLOYEE
-            val orgId = OrganizationId("testOrg")
-            val requiredRole = UserRole.OWNER
+        // Arrange
+        val userId = UserId("testUser")
+        val userRole = UserRole.EMPLOYEE
+        val orgId = OrganizationId("testOrg")
+        val requiredRole = UserRole.OWNER
 
-            val user = mockk<User>()
-            every { user.id } returns userId
-            every { user.role } returns userRole
+        val user = mockk<User>()
+        every { user.id } returns userId
+        every { user.role } returns userRole
 
-            val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
+        val context = ClientContext.AuthenticatedClientContext(SupabaseContextPayload(mockk(), userId))
 
-            coEvery {
-                orgDatastore.getUserRole(userId, orgId)
-            } returns Result.success(OrgRole.EMPLOYEE)
+        coEvery {
+            orgDatastore.getUserRole(userId, orgId)
+        } returns Result.success(OrgRole.EMPLOYEE)
 
-            // Act
-            val result = rbac.hasRole(context, orgId, requiredRole)
+        // Act
+        val result = rbac.hasRole(context, orgId, requiredRole)
 
-            // Assert
-            assertFalse(result)
-        }
+        // Assert
+        assertFalse(result)
+    }
 
     /**
      * Tests hasRoleOrHigher for organization actions using parameterized inputs from a CSV file.

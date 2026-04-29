@@ -28,21 +28,21 @@ import org.koin.dsl.module
  */
 internal val ControllerModule =
     module {
-        singleOf(::UserController) { bind<Controller>() }
-        singleOf(::MembershipController) { bind<Controller>() }
-        singleOf(::EventLogController) { bind<Controller>() }
-        singleOf(::HealthCheckController) { bind<Controller>() }
-        singleOf(::PropertyController) { bind<Controller>() }
-        singleOf(::EmployeeController) { bind<Controller>() }
-        singleOf(::TimeCardController) { bind<Controller>() }
-        singleOf(::StorageController) { bind<Controller>() }
-        singleOf(::OrganizationController) { bind<Controller>() }
-        singleOf(::NotificationController) { bind<Controller>() }
-        singleOf(::DocumentController) { bind<Controller>() }
-        singleOf(::UnitController) { bind<Controller>() }
-        singleOf(::CommonAreaController) { bind<Controller>() }
-        singleOf(::TaskController) { bind<Controller>() }
-        singleOf(::PaymentRecordController) { bind<Controller>() }
-        singleOf(::RentConfigController) { bind<Controller>() }
-        singleOf(::OccupantController) { bind<Controller>() }
-    }
+    singleOf(::UserController) { bind<Controller>() }
+    singleOf(::MembershipController) { bind<Controller>() }
+    singleOf(::EventLogController) { bind<Controller>() }
+    singleOf(::HealthCheckController) { bind<Controller>() }
+    singleOf(::PropertyController) { bind<Controller>() }
+    singleOf(::EmployeeController) { bind<Controller>() }
+    singleOf(::TimeCardController) { bind<Controller>() }
+    singleOf(::StorageController) { bind<Controller>() }
+    singleOf(::OrganizationController) { bind<Controller>() }
+    singleOf(::NotificationController) { bind<Controller>() }
+    singleOf(::DocumentController) { bind<Controller>() }
+    singleOf(::UnitController) { bind<Controller>() }
+    singleOf(::CommonAreaController) { bind<Controller>() }
+    singleOf(::TaskController) { bind<Controller>() }
+    singleOf(::PaymentRecordController) { bind<Controller>() }
+    singleOf(::RentConfigController) { bind<Controller>() }
+    singleOf(::OccupantController) { bind<Controller>() }
+}

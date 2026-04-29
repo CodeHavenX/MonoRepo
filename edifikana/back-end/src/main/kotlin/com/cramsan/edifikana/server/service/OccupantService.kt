@@ -7,7 +7,6 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.service.models.Occupant
-import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ConflictException
 import kotlinx.datetime.LocalDate
@@ -19,7 +18,6 @@ import kotlin.time.ExperimentalTime
 /**
  * Service for managing unit occupants. Delegates persistence to [OccupantDatastore].
  */
-@BackendService
 @OptIn(ExperimentalTime::class)
 class OccupantService(private val occupantDatastore: OccupantDatastore, private val clock: Clock) {
     /**
@@ -94,17 +92,17 @@ class OccupantService(private val occupantDatastore: OccupantDatastore, private 
         logD(TAG, "updateOccupant")
         val existing =
             occupantDatastore.getOccupant(occupantId).getOrThrow()
-                ?: throw NoSuchElementException("Occupant not found: $occupantId")
+            ?: throw NoSuchElementException("Occupant not found: $occupantId")
 
         if (isPrimary == true) {
             occupantDatastore.clearPrimaryForUnit(existing.unitId).getOrThrow()
         } else if (isPrimary == false && existing.isPrimary) {
             val activeOccupants =
                 occupantDatastore
-                    .listOccupantsForUnit(
-                        unitId = existing.unitId,
-                        includeInactive = false,
-                    ).getOrThrow()
+                .listOccupantsForUnit(
+                    unitId = existing.unitId,
+                    includeInactive = false,
+                ).getOrThrow()
             if (activeOccupants.size == 1) {
                 throw ConflictException(
                     "Cannot unset primary on the only active occupant. Designate a new primary first.",
@@ -134,15 +132,15 @@ class OccupantService(private val occupantDatastore: OccupantDatastore, private 
         logD(TAG, "removeOccupant")
         val existing =
             occupantDatastore.getOccupant(occupantId).getOrThrow()
-                ?: throw NoSuchElementException("Occupant not found: $occupantId")
+            ?: throw NoSuchElementException("Occupant not found: $occupantId")
 
         if (existing.isPrimary) {
             val activeOccupants =
                 occupantDatastore
-                    .listOccupantsForUnit(
-                        unitId = existing.unitId,
-                        includeInactive = false,
-                    ).getOrThrow()
+                .listOccupantsForUnit(
+                    unitId = existing.unitId,
+                    includeInactive = false,
+                ).getOrThrow()
             val otherActive = activeOccupants.filter { it.id != occupantId }
             if (otherActive.isNotEmpty()) {
                 throw ConflictException(

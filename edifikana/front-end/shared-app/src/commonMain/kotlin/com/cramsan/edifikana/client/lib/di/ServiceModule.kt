@@ -33,8 +33,10 @@ import io.github.jan.supabase.compose.auth.appleNativeLogin
 import io.github.jan.supabase.compose.auth.composeAuth
 import io.github.jan.supabase.compose.auth.googleNativeLogin
 import io.github.jan.supabase.createSupabaseClient
+import io.ktor.client.HttpClient
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 @OptIn(SupabaseExperimental::class)
@@ -88,8 +90,14 @@ internal val ServiceModule =
         singleOf(::PropertyServiceImpl) {
             bind<PropertyService>()
         }
-        singleOf(::StorageServiceImpl) {
-            bind<StorageService>()
+        // Plain HttpClient with no auth headers, used by StorageServiceImpl exclusively
+        // for direct PUT/GET calls to Supabase signed URLs (which embed their own token).
+        single<HttpClient>(named("raw")) {
+            HttpClient { expectSuccess = true }
+        }
+
+        single<StorageService> {
+            StorageServiceImpl(get(), get(named("raw")), get())
         }
         singleOf(::TimeCardServiceImpl) {
             bind<TimeCardService>()

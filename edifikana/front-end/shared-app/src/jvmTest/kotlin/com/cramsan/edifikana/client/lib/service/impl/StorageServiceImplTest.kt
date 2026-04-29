@@ -42,6 +42,8 @@ class StorageServiceImplTest : CoroutineTest() {
             defaultRequest { url("http://localhost/") }
         }
 
+    private fun buildRawHttpClient(mockEngine: MockEngine): HttpClient = HttpClient(mockEngine) { expectSuccess = true }
+
     @Test
     fun `uploadFile returns assetId on success`() = runTest {
         // Arrange
@@ -65,7 +67,7 @@ class StorageServiceImplTest : CoroutineTest() {
         }
 
         val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
-        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), downloadStrategy)
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
         val result = storageService.uploadFile(testData, targetRef, bucketId)
@@ -80,7 +82,7 @@ class StorageServiceImplTest : CoroutineTest() {
         // Arrange
         val mockEngine = MockEngine { _ -> throw Exception("Network error") }
         val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
-        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), downloadStrategy)
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
         val result = storageService.uploadFile("test".toByteArray(), "file.png", "images")
@@ -99,7 +101,7 @@ class StorageServiceImplTest : CoroutineTest() {
             coEvery { getCachedFile(targetRef) } returns cachedUri
         }
         val mockEngine = MockEngine { _ -> error("Should not make HTTP calls for cached files") }
-        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), downloadStrategy)
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
         val result = storageService.downloadFile(targetRef)
@@ -134,7 +136,7 @@ class StorageServiceImplTest : CoroutineTest() {
             coEvery { isFileCached(targetRef) } returns false
             coEvery { saveToFile(any(), targetRef) } returns savedUri
         }
-        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), downloadStrategy)
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
         val result = storageService.downloadFile(targetRef)
@@ -152,7 +154,7 @@ class StorageServiceImplTest : CoroutineTest() {
         val downloadStrategy = mockk<DownloadStrategy> {
             coEvery { isFileCached(targetRef) } returns false
         }
-        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), downloadStrategy)
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
         val result = storageService.downloadFile(targetRef)

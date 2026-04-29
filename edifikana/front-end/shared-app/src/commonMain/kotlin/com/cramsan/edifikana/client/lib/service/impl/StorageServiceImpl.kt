@@ -20,18 +20,25 @@ import io.ktor.http.contentType
 /**
  * Backend-routed implementation of [StorageService]. All storage access goes through the Ktor
  * backend, which holds the service-role key and enforces org-scoped auth.
+ *
+ * [http] is the authenticated client (carries the user JWT) used only for calls to the Ktor
+ * backend. [rawHttp] is a plain client with no auth headers; it is used for the direct PUT/GET
+ * to Supabase signed URLs, which embed their own auth token in the query string and must not
+ * receive the user JWT (leakage risk; can also conflict with the signed token).
  */
 @OptIn(NetworkModel::class)
-class StorageServiceImpl(private val http: HttpClient, private val downloadStrategy: DownloadStrategy) :
-    StorageService {
+class StorageServiceImpl(
+    private val http: HttpClient,
+    private val rawHttp: HttpClient,
+    private val downloadStrategy: DownloadStrategy,
+) : StorageService {
     override suspend fun uploadFile(data: ByteArray, targetRef: String, bucketId: String): Result<String> =
         runSuspendCatching(TAG) {
             val response =
                 StorageApi.createSignedUpload
                     .buildRequest(queryParam = CreateSignedUploadQueryParams(filename = targetRef, bucketId = bucketId))
                     .execute(http)
-            // Get response and upload to that url
-            http.put(response.signedUrl) {
+            rawHttp.put(response.signedUrl) {
                 setBody(data)
                 contentType(ContentType.Application.OctetStream)
             }
@@ -48,7 +55,7 @@ class StorageServiceImpl(private val http: HttpClient, private val downloadStrat
                     .buildRequest(queryParam = GetSignedDownloadQueryParams(assetId = targetRef))
                     .execute(http)
             val signedUrl = checkNotNull(response.signedUrl) { "No signed URL returned for $targetRef" }
-            val bytes = http.get(signedUrl).body<ByteArray>()
+            val bytes = rawHttp.get(signedUrl).body<ByteArray>()
             downloadStrategy.saveToFile(bytes, targetRef)
         }
 

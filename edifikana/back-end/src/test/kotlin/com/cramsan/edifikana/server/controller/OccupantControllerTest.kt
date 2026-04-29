@@ -48,7 +48,7 @@ import kotlin.time.Instant
 class OccupantControllerTest :
     CoroutineTest(),
     KoinTest {
-        @BeforeTest
+    @BeforeTest
     fun setupTest() {
         startTestKoin(
             testApplicationModule(createJson()),
@@ -69,70 +69,70 @@ class OccupantControllerTest :
     @Test
     fun `createOccupant persists name and email on the response`() =
         testBackEndApplication {
-        val unitId = UnitId("unit123")
-        val callerId = UserId("user123")
-        val occupantService = get<OccupantService>()
-        val rbacService = get<RBACService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context =
-            ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = callerId),
-        )
-        val requestBody = readFileContent("requests/create_occupant_request.json")
-        val expectedResponse = readFileContent("requests/get_occupant_response.json")
+            val unitId = UnitId("unit123")
+            val callerId = UserId("user123")
+            val occupantService = get<OccupantService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = callerId),
+                )
+            val requestBody = readFileContent("requests/create_occupant_request.json")
+            val expectedResponse = readFileContent("requests/get_occupant_response.json")
 
-        coEvery { contextRetriever.getContext(any()) } returns context
-        coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.ADMIN) } returns true
-        coEvery {
-            occupantService.addOccupant(
-                unitId = unitId,
-                userId = callerId,
-                addedBy = callerId,
-                name = "Jane Doe",
-                email = "jane@example.com",
-                occupantType = OccupantType.TENANT,
-                isPrimary = true,
-                startDate = LocalDate(2026, 1, 1),
-                endDate = null,
-            )
-        } returns
-            Occupant(
-            id = OccupantId("occupant123"),
-            unitId = unitId,
-            userId = callerId,
-            addedBy = callerId,
-            name = "Jane Doe",
-            email = "jane@example.com",
-            occupantType = OccupantType.TENANT,
-            isPrimary = true,
-            startDate = LocalDate(2026, 1, 1),
-            endDate = null,
-            status = OccupancyStatus.ACTIVE,
-            addedAt = Instant.fromEpochSeconds(0),
-        )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { rbacService.hasRoleOrHigher(context, unitId, UserRole.ADMIN) } returns true
+            coEvery {
+                occupantService.addOccupant(
+                    unitId = unitId,
+                    userId = callerId,
+                    addedBy = callerId,
+                    name = "Jane Doe",
+                    email = "jane@example.com",
+                    occupantType = OccupantType.TENANT,
+                    isPrimary = true,
+                    startDate = LocalDate(2026, 1, 1),
+                    endDate = null,
+                )
+            } returns
+                Occupant(
+                    id = OccupantId("occupant123"),
+                    unitId = unitId,
+                    userId = callerId,
+                    addedBy = callerId,
+                    name = "Jane Doe",
+                    email = "jane@example.com",
+                    occupantType = OccupantType.TENANT,
+                    isPrimary = true,
+                    startDate = LocalDate(2026, 1, 1),
+                    endDate = null,
+                    status = OccupancyStatus.ACTIVE,
+                    addedAt = Instant.fromEpochSeconds(0),
+                )
 
-        val response =
-            client.post("occupants") {
-            setBody(requestBody)
-            contentType(ContentType.Application.Json)
+            val response =
+                client.post("occupants") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
+
+            coVerify {
+                occupantService.addOccupant(
+                    unitId = unitId,
+                    userId = callerId,
+                    addedBy = callerId,
+                    name = "Jane Doe",
+                    email = "jane@example.com",
+                    occupantType = OccupantType.TENANT,
+                    isPrimary = true,
+                    startDate = LocalDate(2026, 1, 1),
+                    endDate = null,
+                )
+            }
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
-
-        coVerify {
-            occupantService.addOccupant(
-                unitId = unitId,
-                userId = callerId,
-                addedBy = callerId,
-                name = "Jane Doe",
-                email = "jane@example.com",
-                occupantType = OccupantType.TENANT,
-                isPrimary = true,
-                startDate = LocalDate(2026, 1, 1),
-                endDate = null,
-            )
-        }
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
 
     // -------------------------------------------------------------------------
     // Resident RBAC — getOccupant
@@ -141,115 +141,115 @@ class OccupantControllerTest :
     @Test
     fun `getOccupant returns occupant when Resident is reading their own record`() =
         testBackEndApplication {
-        val occupantId = OccupantId("occupant123")
-        val callerId = UserId("user123")
-        val occupantService = get<OccupantService>()
-        val rbacService = get<RBACService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context =
-            ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = callerId),
-        )
-        val expectedResponse = readFileContent("requests/get_occupant_response.json")
+            val occupantId = OccupantId("occupant123")
+            val callerId = UserId("user123")
+            val occupantService = get<OccupantService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = callerId),
+                )
+            val expectedResponse = readFileContent("requests/get_occupant_response.json")
 
-        coEvery { contextRetriever.getContext(any()) }.answers { context }
-        coEvery { rbacService.hasRoleOrHigher(context, occupantId, UserRole.EMPLOYEE) }.answers { false }
-        coEvery { occupantService.getOccupant(occupantId) }.answers {
-            Occupant(
-                id = occupantId,
-                unitId = UnitId("unit123"),
-                userId = callerId,
-                addedBy = callerId,
-                name = "Jane Doe",
-                email = "jane@example.com",
-                occupantType = OccupantType.TENANT,
-                isPrimary = true,
-                startDate = LocalDate(2026, 1, 1),
-                endDate = null,
-                status = OccupancyStatus.ACTIVE,
-                addedAt = Instant.fromEpochSeconds(0),
-            )
+            coEvery { contextRetriever.getContext(any()) }.answers { context }
+            coEvery { rbacService.hasRoleOrHigher(context, occupantId, UserRole.EMPLOYEE) }.answers { false }
+            coEvery { occupantService.getOccupant(occupantId) }.answers {
+                Occupant(
+                    id = occupantId,
+                    unitId = UnitId("unit123"),
+                    userId = callerId,
+                    addedBy = callerId,
+                    name = "Jane Doe",
+                    email = "jane@example.com",
+                    occupantType = OccupantType.TENANT,
+                    isPrimary = true,
+                    startDate = LocalDate(2026, 1, 1),
+                    endDate = null,
+                    status = OccupancyStatus.ACTIVE,
+                    addedAt = Instant.fromEpochSeconds(0),
+                )
+            }
+
+            val response = client.get("occupants/occupant123")
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
-
-        val response = client.get("occupants/occupant123")
-
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(expectedResponse, response.bodyAsText())
-    }
 
     @Test
     fun `getOccupant returns 404 when Resident tries to read another user's record`() =
         testBackEndApplication {
-        val occupantId = OccupantId("occupant123")
-        val callerId = UserId("user123")
-        val occupantService = get<OccupantService>()
-        val rbacService = get<RBACService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context =
-            ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = callerId),
-        )
+            val occupantId = OccupantId("occupant123")
+            val callerId = UserId("user123")
+            val occupantService = get<OccupantService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = callerId),
+                )
 
-        coEvery { contextRetriever.getContext(any()) }.answers { context }
-        coEvery { rbacService.hasRoleOrHigher(context, occupantId, UserRole.EMPLOYEE) }.answers { false }
-        coEvery { occupantService.getOccupant(occupantId) }.answers {
-            Occupant(
-                id = occupantId,
-                unitId = UnitId("unit123"),
-                userId = UserId("different-user"),
-                addedBy = callerId,
-                name = "Other Person",
-                email = null,
-                occupantType = OccupantType.TENANT,
-                isPrimary = true,
-                startDate = LocalDate(2026, 1, 1),
-                endDate = null,
-                status = OccupancyStatus.ACTIVE,
-                addedAt = Instant.fromEpochSeconds(0),
-            )
+            coEvery { contextRetriever.getContext(any()) }.answers { context }
+            coEvery { rbacService.hasRoleOrHigher(context, occupantId, UserRole.EMPLOYEE) }.answers { false }
+            coEvery { occupantService.getOccupant(occupantId) }.answers {
+                Occupant(
+                    id = occupantId,
+                    unitId = UnitId("unit123"),
+                    userId = UserId("different-user"),
+                    addedBy = callerId,
+                    name = "Other Person",
+                    email = null,
+                    occupantType = OccupantType.TENANT,
+                    isPrimary = true,
+                    startDate = LocalDate(2026, 1, 1),
+                    endDate = null,
+                    status = OccupancyStatus.ACTIVE,
+                    addedAt = Instant.fromEpochSeconds(0),
+                )
+            }
+
+            val response = client.get("occupants/occupant123")
+
+            assertEquals(HttpStatusCode.NotFound, response.status)
         }
-
-        val response = client.get("occupants/occupant123")
-
-        assertEquals(HttpStatusCode.NotFound, response.status)
-    }
 
     @Test
     fun `getOccupant returns 404 when Resident tries to read an occupant with no linked user`() =
         testBackEndApplication {
-        val occupantId = OccupantId("occupant123")
-        val callerId = UserId("user123")
-        val occupantService = get<OccupantService>()
-        val rbacService = get<RBACService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context =
-            ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = callerId),
-        )
+            val occupantId = OccupantId("occupant123")
+            val callerId = UserId("user123")
+            val occupantService = get<OccupantService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = callerId),
+                )
 
-        coEvery { contextRetriever.getContext(any()) }.answers { context }
-        coEvery { rbacService.hasRoleOrHigher(context, occupantId, UserRole.EMPLOYEE) }.answers { false }
-        coEvery { occupantService.getOccupant(occupantId) }.answers {
-            Occupant(
-                id = occupantId,
-                unitId = UnitId("unit123"),
-                userId = null,
-                addedBy = callerId,
-                name = "Name Only",
-                email = null,
-                occupantType = OccupantType.TENANT,
-                isPrimary = true,
-                startDate = LocalDate(2026, 1, 1),
-                endDate = null,
-                status = OccupancyStatus.ACTIVE,
-                addedAt = Instant.fromEpochSeconds(0),
-            )
+            coEvery { contextRetriever.getContext(any()) }.answers { context }
+            coEvery { rbacService.hasRoleOrHigher(context, occupantId, UserRole.EMPLOYEE) }.answers { false }
+            coEvery { occupantService.getOccupant(occupantId) }.answers {
+                Occupant(
+                    id = occupantId,
+                    unitId = UnitId("unit123"),
+                    userId = null,
+                    addedBy = callerId,
+                    name = "Name Only",
+                    email = null,
+                    occupantType = OccupantType.TENANT,
+                    isPrimary = true,
+                    startDate = LocalDate(2026, 1, 1),
+                    endDate = null,
+                    status = OccupancyStatus.ACTIVE,
+                    addedAt = Instant.fromEpochSeconds(0),
+                )
+            }
+
+            val response = client.get("occupants/occupant123")
+
+            assertEquals(HttpStatusCode.NotFound, response.status)
         }
-
-        val response = client.get("occupants/occupant123")
-
-        assertEquals(HttpStatusCode.NotFound, response.status)
-    }
 
     // -------------------------------------------------------------------------
     // removeOccupant — 409 soft-remove guard
@@ -258,24 +258,24 @@ class OccupantControllerTest :
     @Test
     fun `removeOccupant returns 409 when primary occupant has other active occupants`() =
         testBackEndApplication {
-        val occupantId = OccupantId("occupant123")
-        val callerId = UserId("user123")
-        val occupantService = get<OccupantService>()
-        val rbacService = get<RBACService>()
-        val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-        val context =
-            ClientContext.AuthenticatedClientContext(
-            SupabaseContextPayload(userInfo = mockk(), userId = callerId),
-        )
+            val occupantId = OccupantId("occupant123")
+            val callerId = UserId("user123")
+            val occupantService = get<OccupantService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(userInfo = mockk(), userId = callerId),
+                )
 
-        coEvery { contextRetriever.getContext(any()) }.answers { context }
-        coEvery { rbacService.hasRoleOrHigher(context, occupantId, UserRole.ADMIN) }.answers { true }
-        coEvery { occupantService.removeOccupant(occupantId) }.throws(
-            ConflictException("Cannot remove the primary occupant while other active occupants exist."),
-        )
+            coEvery { contextRetriever.getContext(any()) }.answers { context }
+            coEvery { rbacService.hasRoleOrHigher(context, occupantId, UserRole.ADMIN) }.answers { true }
+            coEvery { occupantService.removeOccupant(occupantId) }.throws(
+                ConflictException("Cannot remove the primary occupant while other active occupants exist."),
+            )
 
-        val response = client.delete("occupants/occupant123")
+            val response = client.delete("occupants/occupant123")
 
-        assertEquals(HttpStatusCode.Conflict, response.status)
-    }
+            assertEquals(HttpStatusCode.Conflict, response.status)
+        }
 }

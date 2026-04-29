@@ -90,7 +90,7 @@ class OccupantController(
         // Residents can read their own occupant record (where userId matches the caller).
         val occupant =
             occupantService.getOccupant(request.pathParam)
-            ?: throw NotFoundException("Occupant not found.")
+                ?: throw NotFoundException("Occupant not found.")
         if (occupant.userId == request.context.payload.userId) {
             return occupant.toOccupantNetworkResponse()
         }
@@ -113,10 +113,10 @@ class OccupantController(
         }
         val occupants =
             occupantService
-            .listOccupantsForUnit(
-                unitId = request.queryParam.unitId,
-                includeInactive = request.queryParam.includeInactive,
-            ).map { it.toOccupantNetworkResponse() }
+                .listOccupantsForUnit(
+                    unitId = request.queryParam.unitId,
+                    includeInactive = request.queryParam.includeInactive,
+                ).map { it.toOccupantNetworkResponse() }
         return OccupantListNetworkResponse(occupants)
     }
 

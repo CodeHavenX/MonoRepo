@@ -66,10 +66,7 @@ val DatastoreModule =
 
             if (supabaseKey.isBlank()) {
                 val supabaseKeySettingKeyName =
-                    settingsHolder
-                        .getKeyNames(
-                            EdifikanaSettingKey.SupabaseKey,
-                        ).joinToString()
+                    settingsHolder.getKeyNames(EdifikanaSettingKey.SupabaseKey).joinToString()
                 error("Value needs to be provided in one of the following settings: $supabaseKeySettingKeyName")
             }
 

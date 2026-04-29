@@ -38,26 +38,26 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
         endDate: LocalDate?,
     ): Result<Occupant> =
         runSuspendCatching(TAG) {
-        logD(TAG, "Creating occupant for unit: %s", unitId)
-        val entity =
-            CreateOccupantEntity(
-            unitId = unitId,
-            userId = userId,
-            addedBy = addedBy,
-            name = name,
-            email = email,
-            occupantType = occupantType.name,
-            isPrimary = isPrimary,
-            startDate = startDate,
-            endDate = endDate,
-        )
-        postgrest
-            .from(OccupantEntity.COLLECTION)
-            .insert(entity) {
-                select()
-            }.decodeSingle<OccupantEntity>()
-            .toOccupant()
-    }
+            logD(TAG, "Creating occupant for unit: %s", unitId)
+            val entity =
+                CreateOccupantEntity(
+                    unitId = unitId,
+                    userId = userId,
+                    addedBy = addedBy,
+                    name = name,
+                    email = email,
+                    occupantType = occupantType.name,
+                    isPrimary = isPrimary,
+                    startDate = startDate,
+                    endDate = endDate,
+                )
+            postgrest
+                .from(OccupantEntity.COLLECTION)
+                .insert(entity) {
+                    select()
+                }.decodeSingle<OccupantEntity>()
+                .toOccupant()
+        }
 
     /**
      * Retrieves a single occupant by [occupantId]. Returns null if not found or soft-deleted.
@@ -84,20 +84,20 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
         includeInactive: Boolean,
     ): Result<List<Occupant>> =
         runSuspendCatching(TAG) {
-        logD(TAG, "Listing occupants for unit: %s, includeInactive: %s", unitId, includeInactive)
-        postgrest
-            .from(OccupantEntity.COLLECTION)
-            .select {
-                filter {
-                    OccupantEntity::unitId eq unitId.unitId
-                    OccupantEntity::deletedAt isExact null
-                    if (!includeInactive) {
-                        OccupantEntity::status eq OccupancyStatus.ACTIVE.name
+            logD(TAG, "Listing occupants for unit: %s, includeInactive: %s", unitId, includeInactive)
+            postgrest
+                .from(OccupantEntity.COLLECTION)
+                .select {
+                    filter {
+                        OccupantEntity::unitId eq unitId.unitId
+                        OccupantEntity::deletedAt isExact null
+                        if (!includeInactive) {
+                            OccupantEntity::status eq OccupancyStatus.ACTIVE.name
+                        }
                     }
-                }
-            }.decodeList<OccupantEntity>()
-            .map { it.toOccupant() }
-    }
+                }.decodeList<OccupantEntity>()
+                .map { it.toOccupant() }
+        }
 
     /**
      * Lists occupants across every non-deleted unit in [propertyId].
@@ -108,33 +108,33 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
         includeInactive: Boolean,
     ): Result<List<Occupant>> =
         runSuspendCatching(TAG) {
-        logD(TAG, "Listing occupants for property: %s, includeInactive: %s", propertyId, includeInactive)
-        val unitIds =
+            logD(TAG, "Listing occupants for property: %s, includeInactive: %s", propertyId, includeInactive)
+            val unitIds =
+                postgrest
+                    .from(UnitEntity.COLLECTION)
+                    .select {
+                        filter {
+                            UnitEntity::propertyId eq propertyId.propertyId
+                            UnitEntity::deletedAt isExact null
+                        }
+                    }.decodeList<UnitEntity>()
+                    .map { it.unitId.unitId }
+
+            if (unitIds.isEmpty()) return@runSuspendCatching emptyList()
+
             postgrest
-            .from(UnitEntity.COLLECTION)
-            .select {
-                filter {
-                    UnitEntity::propertyId eq propertyId.propertyId
-                    UnitEntity::deletedAt isExact null
-                }
-            }.decodeList<UnitEntity>()
-            .map { it.unitId.unitId }
-
-        if (unitIds.isEmpty()) return@runSuspendCatching emptyList()
-
-        postgrest
-            .from(OccupantEntity.COLLECTION)
-            .select {
-                filter {
-                    isIn("unit_id", unitIds)
-                    OccupantEntity::deletedAt isExact null
-                    if (!includeInactive) {
-                        OccupantEntity::status eq OccupancyStatus.ACTIVE.name
+                .from(OccupantEntity.COLLECTION)
+                .select {
+                    filter {
+                        isIn("unit_id", unitIds)
+                        OccupantEntity::deletedAt isExact null
+                        if (!includeInactive) {
+                            OccupantEntity::status eq OccupancyStatus.ACTIVE.name
+                        }
                     }
-                }
-            }.decodeList<OccupantEntity>()
-            .map { it.toOccupant() }
-    }
+                }.decodeList<OccupantEntity>()
+                .map { it.toOccupant() }
+        }
 
     /**
      * Sets [is_primary]=false on all active, non-deleted occupants for [unitId].
@@ -167,25 +167,25 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
         status: OccupancyStatus?,
     ): Result<Occupant> =
         runSuspendCatching(TAG) {
-        logD(TAG, "Updating occupant: %s", occupantId)
-        postgrest
-            .from(OccupantEntity.COLLECTION)
-            .update({
-                name?.let { value -> OccupantEntity::name setTo value }
-                email?.let { value -> OccupantEntity::email setTo value }
-                occupantType?.let { value -> OccupantEntity::occupantType setTo value.name }
-                isPrimary?.let { value -> OccupantEntity::isPrimary setTo value }
-                endDate?.let { value -> OccupantEntity::endDate setTo value }
-                status?.let { value -> OccupantEntity::status setTo value.name }
-            }) {
-                select()
-                filter {
-                    OccupantEntity::occupantId eq occupantId.occupantId
-                    OccupantEntity::deletedAt isExact null
-                }
-            }.decodeSingle<OccupantEntity>()
-            .toOccupant()
-    }
+            logD(TAG, "Updating occupant: %s", occupantId)
+            postgrest
+                .from(OccupantEntity.COLLECTION)
+                .update({
+                    name?.let { value -> OccupantEntity::name setTo value }
+                    email?.let { value -> OccupantEntity::email setTo value }
+                    occupantType?.let { value -> OccupantEntity::occupantType setTo value.name }
+                    isPrimary?.let { value -> OccupantEntity::isPrimary setTo value }
+                    endDate?.let { value -> OccupantEntity::endDate setTo value }
+                    status?.let { value -> OccupantEntity::status setTo value.name }
+                }) {
+                    select()
+                    filter {
+                        OccupantEntity::occupantId eq occupantId.occupantId
+                        OccupantEntity::deletedAt isExact null
+                    }
+                }.decodeSingle<OccupantEntity>()
+                .toOccupant()
+        }
 
     /**
      * Soft-removes an occupant: sets [status]=INACTIVE and [end_date]=[today].
@@ -196,21 +196,21 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
         today: LocalDate,
     ): Result<Occupant> =
         runSuspendCatching(TAG) {
-        logD(TAG, "Soft removing occupant: %s", occupantId)
-        postgrest
-            .from(OccupantEntity.COLLECTION)
-            .update({
-                OccupantEntity::status setTo OccupancyStatus.INACTIVE.name
-                OccupantEntity::endDate setTo today
-            }) {
-                select()
-                filter {
-                    OccupantEntity::occupantId eq occupantId.occupantId
-                    OccupantEntity::deletedAt isExact null
-                }
-            }.decodeSingle<OccupantEntity>()
-            .toOccupant()
-    }
+            logD(TAG, "Soft removing occupant: %s", occupantId)
+            postgrest
+                .from(OccupantEntity.COLLECTION)
+                .update({
+                    OccupantEntity::status setTo OccupancyStatus.INACTIVE.name
+                    OccupantEntity::endDate setTo today
+                }) {
+                    select()
+                    filter {
+                        OccupantEntity::occupantId eq occupantId.occupantId
+                        OccupantEntity::deletedAt isExact null
+                    }
+                }.decodeSingle<OccupantEntity>()
+                .toOccupant()
+        }
 
     /**
      * Hard-deletes an occupant row. For integration test cleanup only.

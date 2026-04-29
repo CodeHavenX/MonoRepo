@@ -92,17 +92,17 @@ class OccupantService(private val occupantDatastore: OccupantDatastore, private 
         logD(TAG, "updateOccupant")
         val existing =
             occupantDatastore.getOccupant(occupantId).getOrThrow()
-            ?: throw NoSuchElementException("Occupant not found: $occupantId")
+                ?: throw NoSuchElementException("Occupant not found: $occupantId")
 
         if (isPrimary == true) {
             occupantDatastore.clearPrimaryForUnit(existing.unitId).getOrThrow()
         } else if (isPrimary == false && existing.isPrimary) {
             val activeOccupants =
                 occupantDatastore
-                .listOccupantsForUnit(
-                    unitId = existing.unitId,
-                    includeInactive = false,
-                ).getOrThrow()
+                    .listOccupantsForUnit(
+                        unitId = existing.unitId,
+                        includeInactive = false,
+                    ).getOrThrow()
             if (activeOccupants.size == 1) {
                 throw ConflictException(
                     "Cannot unset primary on the only active occupant. Designate a new primary first.",
@@ -132,15 +132,15 @@ class OccupantService(private val occupantDatastore: OccupantDatastore, private 
         logD(TAG, "removeOccupant")
         val existing =
             occupantDatastore.getOccupant(occupantId).getOrThrow()
-            ?: throw NoSuchElementException("Occupant not found: $occupantId")
+                ?: throw NoSuchElementException("Occupant not found: $occupantId")
 
         if (existing.isPrimary) {
             val activeOccupants =
                 occupantDatastore
-                .listOccupantsForUnit(
-                    unitId = existing.unitId,
-                    includeInactive = false,
-                ).getOrThrow()
+                    .listOccupantsForUnit(
+                        unitId = existing.unitId,
+                        includeInactive = false,
+                    ).getOrThrow()
             val otherActive = activeOccupants.filter { it.id != occupantId }
             if (otherActive.isNotEmpty()) {
                 throw ConflictException(

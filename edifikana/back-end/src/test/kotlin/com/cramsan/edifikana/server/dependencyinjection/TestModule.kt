@@ -45,50 +45,50 @@ import org.koin.dsl.module
  */
 internal val TestControllerModule =
     module {
-    singleOf(::UserController) { bind<Controller>() }
-    singleOf(::EventLogController) { bind<Controller>() }
-    singleOf(::HealthCheckController) { bind<Controller>() }
-    singleOf(::PropertyController) { bind<Controller>() }
-    singleOf(::EmployeeController) { bind<Controller>() }
-    singleOf(::TimeCardController) { bind<Controller>() }
-    singleOf(::StorageController) { bind<Controller>() }
-    singleOf(::OrganizationController) { bind<Controller>() }
-    singleOf(::NotificationController) { bind<Controller>() }
-    singleOf(::MembershipController) { bind<Controller>() }
-    singleOf(::CommonAreaController) { bind<Controller>() }
-    singleOf(::TaskController) { bind<Controller>() }
-    singleOf(::UnitController) { bind<Controller>() }
-    singleOf(::PaymentRecordController) { bind<Controller>() }
-    singleOf(::RentConfigController) { bind<Controller>() }
-    singleOf(::OccupantController) { bind<Controller>() }
-}
+        singleOf(::UserController) { bind<Controller>() }
+        singleOf(::EventLogController) { bind<Controller>() }
+        singleOf(::HealthCheckController) { bind<Controller>() }
+        singleOf(::PropertyController) { bind<Controller>() }
+        singleOf(::EmployeeController) { bind<Controller>() }
+        singleOf(::TimeCardController) { bind<Controller>() }
+        singleOf(::StorageController) { bind<Controller>() }
+        singleOf(::OrganizationController) { bind<Controller>() }
+        singleOf(::NotificationController) { bind<Controller>() }
+        singleOf(::MembershipController) { bind<Controller>() }
+        singleOf(::CommonAreaController) { bind<Controller>() }
+        singleOf(::TaskController) { bind<Controller>() }
+        singleOf(::UnitController) { bind<Controller>() }
+        singleOf(::PaymentRecordController) { bind<Controller>() }
+        singleOf(::RentConfigController) { bind<Controller>() }
+        singleOf(::OccupantController) { bind<Controller>() }
+    }
 
 /**
  * A test module for the services.
  */
 internal val TestServiceModule =
     module {
-    single<UserService> { mockk() }
-    single<EventLogService> { mockk() }
-    single<PropertyService> { mockk() }
-    single<EmployeeService> { mockk() }
-    single<TimeCardService> { mockk() }
-    single<StorageService> { mockk() }
-    single<OrganizationService> { mockk() }
-    single<RBACService> { mockk() }
-    single<NotificationService> { mockk() }
-    single<MembershipService> { mockk() }
-    single<UnitService> { mockk() }
-    single<CommonAreaService> { mockk() }
-    single<TaskService> { mockk() }
-    single<PaymentRecordService> { mockk() }
-    single<RentConfigService> { mockk() }
-    single<OccupantService> { mockk() }
-}
+        single<UserService> { mockk() }
+        single<EventLogService> { mockk() }
+        single<PropertyService> { mockk() }
+        single<EmployeeService> { mockk() }
+        single<TimeCardService> { mockk() }
+        single<StorageService> { mockk() }
+        single<OrganizationService> { mockk() }
+        single<RBACService> { mockk() }
+        single<NotificationService> { mockk() }
+        single<MembershipService> { mockk() }
+        single<UnitService> { mockk() }
+        single<CommonAreaService> { mockk() }
+        single<TaskService> { mockk() }
+        single<PaymentRecordService> { mockk() }
+        single<RentConfigService> { mockk() }
+        single<OccupantService> { mockk() }
+    }
 
 internal fun testApplicationModule(json: Json) =
     module {
-    single<Json> { json }
+        single<Json> { json }
 
-    single<ContextRetriever<*>> { mockk() }
-}
+        single<ContextRetriever<*>> { mockk() }
+    }

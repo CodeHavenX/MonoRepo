@@ -693,7 +693,7 @@ class RBACService(
     ): UserRole {
         val occupant =
             occupantDatastore.getOccupant(targetOccupantId).getOrThrow()
-            ?: return UserRole.UNAUTHORIZED
+                ?: return UserRole.UNAUTHORIZED
         return getUserRoleForUnitAction(context, occupant.unitId)
     }
 

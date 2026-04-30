@@ -7,7 +7,6 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.service.models.Occupant
-import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.ConflictException
 import kotlinx.datetime.LocalDate
@@ -19,7 +18,6 @@ import kotlin.time.ExperimentalTime
 /**
  * Service for managing unit occupants. Delegates persistence to [OccupantDatastore].
  */
-@BackendService
 @OptIn(ExperimentalTime::class)
 class OccupantService(private val occupantDatastore: OccupantDatastore, private val clock: Clock) {
     /**

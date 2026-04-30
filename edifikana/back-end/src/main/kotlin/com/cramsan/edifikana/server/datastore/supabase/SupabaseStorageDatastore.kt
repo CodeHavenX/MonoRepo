@@ -15,42 +15,32 @@ import kotlin.time.Duration.Companion.minutes
 @BackendDatastore
 class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore {
     /**
-     * Uploads a new asset to storage with the given [fileName] and [content].
+     * Retrieves an asset by [id], returning a short-lived signed download URL.
      */
-    override suspend fun createAsset(
-        fileName: String,
-        content: ByteArray,
-    ): Result<Asset> =
-        runSuspendCatching(TAG) {
-            logD(TAG, "Creating a new asset: %s", fileName)
-            val bucket = storage.from("images/timecard-images")
-            bucket.upload(fileName, content) {
-                upsert = false
-            }
-            val assetId = generateAssetId(bucket.bucketId, fileName)
-            Asset(assetId, fileName, null, content)
-        }
-
-    /**
-     * Retrieves an asset by [id], including its signed download URL and content bytes.
-     */
-    override suspend fun getAsset(
+    override suspend fun getSignedDownloadUrl(
         id: AssetId,
     ): Result<Asset?> =
         runSuspendCatching(TAG) {
             logD(TAG, "Getting assetId: %s", id)
-            // Extract the file's bucketId and file name from the assetId
-            val fileIdParts = extractFileIdPartsFromAssetId(id)
-            val bucketId = fileIdParts.dropLast(1).joinToString("/")
-            val fileName = fileIdParts.last()
-
-            // Download the file from the storage bucket
+            val (bucketId, objectPath) = extractBucketAndObjectPath(id)
             val bucket = storage.from(bucketId)
-            val signedUrl = bucket.createSignedUrl(fileName, expiresIn = 3.minutes)
-            val bytes = bucket.downloadAuthenticated(fileName)
+            val signedUrl = bucket.createSignedUrl(objectPath, expiresIn = 3.minutes)
+            Asset(id, objectPath, signedUrl)
+        }
 
-            // Create and return the Asset object
-            Asset(id, fileName, signedUrl, bytes)
+    /**
+     * Creates a signed upload URL for [fileName] in the timecard-images bucket.
+     */
+    override suspend fun createSignedUploadUrl(
+        fileName: String,
+        bucketId: String,
+    ): Result<Asset> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Creating signed upload URL for: %s in bucket: %s", fileName, bucketId)
+            val bucket = storage.from(bucketId)
+            val signedUpload = bucket.createSignedUploadUrl(fileName)
+            val assetId = generateAssetId(bucketId, fileName)
+            Asset(assetId, fileName, signedUpload.url)
         }
 
     /**
@@ -65,13 +55,18 @@ class SupabaseStorageDatastore(private val storage: Storage) : StorageDatastore 
     }
 
     /**
-     * Extracts the file name from the asset ID.
+     * Splits an [AssetId] into its bucket name and full object path.
+     *
+     * Contract: AssetId format is `<bucket>/<objectPath>` where the first `/`-delimited
+     * segment is the Supabase bucket name and the remainder is the full object path
+     * within that bucket (which may itself contain slashes for nested objects).
      */
-    private fun extractFileIdPartsFromAssetId(
-        assetId: AssetId,
-    ): List<String> {
-        val parts = assetId.assetId.split("/")
-        return parts
+    internal fun extractBucketAndObjectPath(assetId: AssetId): Pair<String, String> {
+        val parts = assetId.assetId.split("/", limit = 2)
+        require(parts.size == 2 && parts[0].isNotBlank() && parts[1].isNotBlank()) {
+            "AssetId must be in '<bucket>/<objectPath>' format, got: ${assetId.assetId}"
+        }
+        return parts[0] to parts[1]
     }
 
     companion object {

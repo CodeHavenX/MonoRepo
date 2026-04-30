@@ -26,16 +26,17 @@ class StorageManager(
     private val dependencies: ManagerDependencies,
 ) {
     /**
-     * Upload a file to storage.
+     * Upload a file to [bucketId] at the path [targetRef].
      *
      * @param data The file data as bytes
-     * @param targetRef The target storage path/reference
+     * @param targetRef The target storage path/reference within the bucket
+     * @param bucketId The storage bucket to upload to
      * @return Result containing the storage reference on success, or error on failure
      */
-    suspend fun uploadFile(data: ByteArray, targetRef: String): Result<String> =
+    suspend fun uploadFile(data: ByteArray, targetRef: String, bucketId: String): Result<String> =
         dependencies.getOrCatch(TAG) {
-            logI(TAG, "uploadFile: targetRef=$targetRef, size=${data.size} bytes")
-            storageService.uploadFile(data, targetRef).getOrThrow()
+            logI(TAG, "uploadFile: targetRef=$targetRef, bucketId=$bucketId, size=${data.size} bytes")
+            storageService.uploadFile(data, targetRef, bucketId).getOrThrow()
         }
 
     /**
@@ -87,16 +88,17 @@ class StorageManager(
         }
 
     /**
-     * Upload an image file from URI to storage.
+     * Upload an image file from URI to [bucketId] at the path [targetRef].
      * Handles reading, processing (EXIF rotation + compression), and uploading.
      *
      * @param uri The local file URI to upload
-     * @param targetRef The target storage path/reference (e.g., "private/properties/id_filename.jpg")
+     * @param targetRef The target storage path/reference within the bucket
+     * @param bucketId The storage bucket to upload to
      * @return Result containing the storage reference on success, or error on failure
      */
-    suspend fun uploadImage(uri: CoreUri, targetRef: String): Result<String> =
+    suspend fun uploadImage(uri: CoreUri, targetRef: String, bucketId: String): Result<String> =
         dependencies.getOrCatch(TAG) {
-            logI(TAG, "uploadImage: uri=$uri, targetRef=$targetRef")
+            logI(TAG, "uploadImage: uri=$uri, targetRef=$targetRef, bucketId=$bucketId")
 
             // Read bytes from URI
             val bytes = fileService.readFileBytes(uri).getOrThrow()
@@ -107,7 +109,7 @@ class StorageManager(
             logI(TAG, "Processed image, final size: ${processedBytes.size} bytes")
 
             // Upload to storage
-            val storageRef = storageService.uploadFile(processedBytes, targetRef).getOrThrow()
+            val storageRef = storageService.uploadFile(processedBytes, targetRef, bucketId).getOrThrow()
             logI(TAG, "Upload successful: $storageRef")
 
             storageRef

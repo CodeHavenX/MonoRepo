@@ -12,34 +12,27 @@ import com.cramsan.framework.logging.logD
 @BackendService
 class StorageService(private val storageDatastore: StorageDatastore) {
     /**
-     * Creates a file with the provided [fileName] and [content].
-     */
-    suspend fun createAsset(
-        fileName: String,
-        content: ByteArray,
-    ): Asset {
-        logD(TAG, "createFile")
-        return storageDatastore
-            .createAsset(
-                fileName = fileName,
-                content = content,
-            ).getOrThrow()
-    }
-
-    /**
      * Retrieves a file with the provided [id] if it exists.
      */
-    suspend fun getAsset(
+    suspend fun getSignedDownloadUrl(
         id: AssetId,
     ): Asset? {
         logD(TAG, "getFile")
         val file =
             storageDatastore
-                .getAsset(
+                .getSignedDownloadUrl(
                     id = id,
                 ).getOrNull()
 
         return file
+    }
+
+    /**
+     * Returns a signed upload URL and storage path for [fileName].
+     */
+    suspend fun getSignedUploadUrl(fileName: String, bucketId: String): Asset {
+        logD(TAG, "getSignedUploadUrl")
+        return storageDatastore.createSignedUploadUrl(fileName, bucketId).getOrThrow()
     }
 
     /**

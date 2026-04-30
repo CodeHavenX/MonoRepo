@@ -9,9 +9,9 @@ import com.cramsan.framework.core.CoreUri
 @FrontendService
 interface StorageService {
     /**
-     * Upload a file.
+     * Upload a file to [bucketId] at the path [targetRef].
      */
-    suspend fun uploadFile(data: ByteArray, targetRef: String): Result<String>
+    suspend fun uploadFile(data: ByteArray, targetRef: String, bucketId: String): Result<String>
 
     /**
      * Download a file.

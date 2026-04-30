@@ -104,11 +104,11 @@ class TimeCardManager(
 
                         val fileName = localImageUri.getFilename(ioDependencies)
 
-                        // Upload to private/time_cards/ folder per RLS policies
                         storageManager
                             .uploadFile(
                                 processedImage,
                                 "private/time_cards/$fileName",
+                                TIMECARD_IMAGE_BUCKET,
                             ).getOrThrow()
                     }
 
@@ -145,5 +145,6 @@ class TimeCardManager(
 
     companion object {
         private const val TAG = "TimeCardManager"
+        private const val TIMECARD_IMAGE_BUCKET = "images/timecard-images"
     }
 }

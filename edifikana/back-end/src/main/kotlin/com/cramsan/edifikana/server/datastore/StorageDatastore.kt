@@ -10,17 +10,14 @@ import com.cramsan.framework.annotations.BackendDatastore
 @BackendDatastore
 interface StorageDatastore {
     /**
-     * Creates a new file with the given [fileName] and [content]. Returns the [Result] of the operation with the created [Asset].
-     */
-    suspend fun createAsset(
-        fileName: String,
-        content: ByteArray,
-    ): Result<Asset>
-
-    /**
      * Retrieves a file with the given [id]. Returns the [Result] of the operation with the fetched [Asset] if found.
      */
-    suspend fun getAsset(
+    suspend fun getSignedDownloadUrl(
         id: AssetId,
     ): Result<Asset?>
+
+    /**
+     * Creates a signed upload URL for the given [fileName]. Returns the signed URL and storage path.
+     */
+    suspend fun createSignedUploadUrl(fileName: String, bucketId: String): Result<Asset>
 }

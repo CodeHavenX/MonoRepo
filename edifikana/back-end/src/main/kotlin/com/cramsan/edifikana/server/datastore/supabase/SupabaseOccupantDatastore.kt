@@ -21,8 +21,8 @@ import kotlin.time.ExperimentalTime
 /**
  * Supabase implementation of [OccupantDatastore].
  */
-@BackendDatastore
 @OptIn(ExperimentalTime::class)
+@BackendDatastore
 class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantDatastore {
     /**
      * Inserts a new occupant row and returns the created [Occupant].

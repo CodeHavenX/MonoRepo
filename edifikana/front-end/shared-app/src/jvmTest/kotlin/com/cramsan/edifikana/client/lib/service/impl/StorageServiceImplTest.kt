@@ -2,27 +2,29 @@ package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.StorageService
-import com.cramsan.framework.test.CoroutineTest
-import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
-import io.github.jan.supabase.storage.Storage
-import io.github.jan.supabase.storage.BucketApi
-import io.github.jan.supabase.storage.FileUploadResponse
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import kotlinx.coroutines.test.runTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
-import io.github.jan.supabase.exceptions.RestException
+import com.cramsan.edifikana.lib.serialization.createJson
+import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import com.cramsan.framework.test.CoroutineTest
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
+import io.ktor.serialization.kotlinx.json.json
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * Unit tests for [StorageServiceImpl].
@@ -34,186 +36,130 @@ class StorageServiceImplTest : CoroutineTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
     }
 
-    /**
-     * Test that uploadFile with valid data returns success with storage reference.
-     */
-    @Test
-    fun `uploadFile with valid data returns storage reference`() = runTest {
-        // Arrange
-        val storage = mockk<Storage>()
-        val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
-        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
-        val testData = "test content".toByteArray()
-        val targetRef = "private/properties/test.jpg"
+    private fun buildHttpClient(mockEngine: MockEngine): HttpClient =
+        HttpClient(mockEngine) {
+            install(ContentNegotiation) { json(createJson()) }
+            defaultRequest { url("http://localhost/") }
+        }
 
-        val mockUploadResponse = mockk<FileUploadResponse>(relaxed = true)
-        coEvery { storage.from(any<String>()) } returns bucket
-        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } returns mockUploadResponse
+    private fun buildRawHttpClient(mockEngine: MockEngine): HttpClient = HttpClient(mockEngine) { expectSuccess = true }
+
+    @Test
+    fun `uploadFile returns assetId on success`() = runTest {
+        // Arrange
+        val targetRef = "timecard-images/employee.png"
+        val bucketId = "images"
+        val testData = "test content".toByteArray()
+        val signedUploadUrl = "https://storage.example.com/upload/signed/employee.png"
+        val expectedAssetId = "images/timecard-images/employee.png"
+        val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+
+        val mockEngine = MockEngine { request ->
+            when {
+                request.url.encodedPath.contains("signed-upload") ->
+                    respond(
+                        """{"signed_url":"$signedUploadUrl","path":"$targetRef","asset_id":"$expectedAssetId"}""",
+                        HttpStatusCode.OK,
+                        jsonHeaders,
+                    )
+                else -> respond("", HttpStatusCode.OK)
+            }
+        }
+
+        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.uploadFile(testData, targetRef)
+        val result = storageService.uploadFile(testData, targetRef, bucketId)
 
         // Assert
         assertTrue(result.isSuccess)
-        assertEquals(targetRef, result.getOrNull())
+        assertEquals(expectedAssetId, result.getOrNull())
     }
 
-    /**
-     * Test that uploadFile with 400 error throws InvalidRequestException.
-     */
     @Test
-    fun `uploadFile with 400 error throws InvalidRequestException`() = runTest {
+    fun `uploadFile returns failure on network error`() = runTest {
         // Arrange
-        val storage = mockk<Storage>()
-        val bucket = mockk<BucketApi>()
+        val mockEngine = MockEngine { _ -> throw Exception("Network error") }
         val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
-        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
-        val testData = "test content".toByteArray()
-        val targetRef = "private/properties/test.jpg"
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
-        val mockResponse = mockk<HttpResponse>(relaxed = true) {
-            every { status } returns HttpStatusCode.BadRequest
+        // Act
+        val result = storageService.uploadFile("test".toByteArray(), "file.png", "images")
+
+        // Assert
+        assertTrue(result.isFailure)
+    }
+
+    @Test
+    fun `downloadFile returns cached file without making HTTP calls`() = runTest {
+        // Arrange
+        val targetRef = "images/timecard-images/employee.png"
+        val cachedUri = mockk<CoreUri>()
+        val downloadStrategy = mockk<DownloadStrategy> {
+            coEvery { isFileCached(targetRef) } returns true
+            coEvery { getCachedFile(targetRef) } returns cachedUri
         }
-        coEvery { storage.from(any<String>()) } returns bucket
-        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws RestException(
-            "Bad Request",
-            "400 Error",
-            mockResponse
-        )
+        val mockEngine = MockEngine { _ -> error("Should not make HTTP calls for cached files") }
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.uploadFile(testData, targetRef)
+        val result = storageService.downloadFile(targetRef)
 
         // Assert
-        assertTrue(result.isFailure)
-        val exception = result.exceptionOrNull()
-        assertTrue(exception is ClientRequestExceptions.InvalidRequestException)
-        assertTrue(exception.message?.contains("Invalid file format") == true)
+        assertTrue(result.isSuccess)
+        assertEquals(cachedUri, result.getOrNull())
     }
 
-    /**
-     * Test that uploadFile with 401 error throws UnauthorizedException.
-     */
     @Test
-    fun `uploadFile with 401 error throws UnauthorizedException`() = runTest {
+    fun `downloadFile fetches signed URL then downloads bytes`() = runTest {
         // Arrange
-        val storage = mockk<Storage>()
-        val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
-        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
-        val testData = "test content".toByteArray()
-        val targetRef = "private/properties/test.jpg"
+        val targetRef = "images/timecard-images/employee.png"
+        val signedDownloadUrl = "https://storage.example.com/download/signed/employee.png"
+        val fileBytes = "file content".toByteArray()
+        val savedUri = mockk<CoreUri>()
+        val jsonHeaders = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
 
-        val mockResponse = mockk<HttpResponse>(relaxed = true) {
-            every { status } returns HttpStatusCode.Unauthorized
+        val mockEngine = MockEngine { request ->
+            when {
+                request.url.encodedPath.contains("signed-download") ->
+                    respond(
+                        """{"id":"$targetRef","file_name":"employee.png","signed_url":"$signedDownloadUrl"}""",
+                        HttpStatusCode.OK,
+                        jsonHeaders,
+                    )
+                else -> respond(fileBytes, HttpStatusCode.OK)
+            }
         }
-        coEvery { storage.from(any<String>()) } returns bucket
-        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws RestException(
-            "Unauthorized",
-            "401 Error",
-            mockResponse
-        )
 
-        // Act
-        val result = storageService.uploadFile(testData, targetRef)
-
-        // Assert
-        assertTrue(result.isFailure)
-        val exception = result.exceptionOrNull()
-        assertTrue(exception is ClientRequestExceptions.UnauthorizedException)
-        assertTrue(exception.message?.contains("Authentication required") == true)
-    }
-
-    /**
-     * Test that uploadFile with 403 error throws ForbiddenException.
-     */
-    @Test
-    fun `uploadFile with 403 error throws ForbiddenException`() = runTest {
-        // Arrange
-        val storage = mockk<Storage>()
-        val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
-        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
-        val testData = "test content".toByteArray()
-        val targetRef = "private/properties/test.jpg"
-
-        val mockResponse = mockk<HttpResponse>(relaxed = true) {
-            every { status } returns HttpStatusCode.Forbidden
+        val downloadStrategy = mockk<DownloadStrategy> {
+            coEvery { isFileCached(targetRef) } returns false
+            coEvery { saveToFile(any(), targetRef) } returns savedUri
         }
-        coEvery { storage.from(any<String>()) } returns bucket
-        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws RestException(
-            "Forbidden",
-            "403 Error",
-            mockResponse
-        )
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.uploadFile(testData, targetRef)
+        val result = storageService.downloadFile(targetRef)
 
         // Assert
-        assertTrue(result.isFailure)
-        val exception = result.exceptionOrNull()
-        assertTrue(exception is ClientRequestExceptions.ForbiddenException)
-        assertTrue(exception.message?.contains("Permission denied") == true)
+        assertTrue(result.isSuccess)
+        assertEquals(savedUri, result.getOrNull())
     }
 
-    /**
-     * Test that uploadFile with 409 error throws ConflictException.
-     */
     @Test
-    fun `uploadFile with 409 error throws ConflictException`() = runTest {
+    fun `downloadFile returns failure on network error`() = runTest {
         // Arrange
-        val storage = mockk<Storage>()
-        val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
-        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
-        val testData = "test content".toByteArray()
-        val targetRef = "private/properties/test.jpg"
-
-        val mockResponse = mockk<HttpResponse>(relaxed = true) {
-            every { status } returns HttpStatusCode.Conflict
+        val targetRef = "images/timecard-images/employee.png"
+        val mockEngine = MockEngine { _ -> throw Exception("Network error") }
+        val downloadStrategy = mockk<DownloadStrategy> {
+            coEvery { isFileCached(targetRef) } returns false
         }
-        coEvery { storage.from(any<String>()) } returns bucket
-        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws RestException(
-            "Conflict",
-            "409 Error",
-            mockResponse
-        )
+        val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.uploadFile(testData, targetRef)
+        val result = storageService.downloadFile(targetRef)
 
         // Assert
         assertTrue(result.isFailure)
-        val exception = result.exceptionOrNull()
-        assertTrue(exception is ClientRequestExceptions.ConflictException)
-        assertTrue(exception.message?.contains("File already exists") == true)
-    }
-
-    /**
-     * Test that uploadFile with unexpected error throws InvalidRequestException with generic message.
-     */
-    @Test
-    fun `uploadFile with unexpected error throws InvalidRequestException`() = runTest {
-        // Arrange
-        val storage = mockk<Storage>()
-        val bucket = mockk<BucketApi>()
-        val downloadStrategy = mockk<DownloadStrategy>(relaxed = true)
-        val storageService: StorageService = StorageServiceImpl(storage, downloadStrategy)
-        val testData = "test content".toByteArray()
-        val targetRef = "private/properties/test.jpg"
-
-        coEvery { storage.from(any<String>()) } returns bucket
-        coEvery { bucket.upload(any<String>(), any<ByteArray>(), any()) } throws Exception("Unexpected error")
-
-        // Act
-        val result = storageService.uploadFile(testData, targetRef)
-
-        // Assert
-        assertTrue(result.isFailure)
-        val exception = result.exceptionOrNull()
-        assertTrue(exception is ClientRequestExceptions.InvalidRequestException)
-        assertTrue(exception.message?.contains("Upload failed") == true)
     }
 }

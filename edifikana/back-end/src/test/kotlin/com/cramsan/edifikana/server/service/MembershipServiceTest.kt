@@ -615,6 +615,60 @@ class MembershipServiceTest {
         }
 
     /**
+     * Tests that joinViaCode fails when the invite code is not found because it was already accepted.
+     */
+    @Test
+    fun `joinViaCode should fail when invite is already accepted and no longer retrievable`() =
+        runTest {
+            // Arrange — getInviteByCode filters acceptedAt=null, so accepted invites return null
+            val callerId = UserId("user123")
+            val inviteCode = "ALREADY_USED"
+            coEvery { membershipDatastore.getInviteByCode(inviteCode) } returns Result.success(null)
+
+            // Act
+            val result = membershipService.joinViaCode(callerId, inviteCode)
+
+            // Assert
+            assertTrue(result.isFailure)
+        }
+
+    /**
+     * Tests that joinViaCode succeeds for a previously-inactive member; the service delegates
+     * reactivation entirely to the datastore and requires no extra logic.
+     */
+    @Test
+    fun `joinViaCode should succeed and propagate datastore success for already-inactive member`() =
+        runTest {
+            // Arrange
+            val callerId = UserId("user123")
+            val inviteCode = "ABC123"
+            val email = "user@example.com"
+            val orgId = OrganizationId("org123")
+            val inviteId = InviteId("invite123")
+            val invite = Invite(
+                id = inviteId,
+                email = email,
+                organizationId = orgId,
+                role = InviteRole.ADMIN,
+                expiration = clock.now() + 14.days,
+                inviteCode = inviteCode,
+            )
+            val user = mockk<User>()
+            every { user.email } returns email
+            coEvery { membershipDatastore.getInviteByCode(inviteCode) } returns Result.success(invite)
+            coEvery { userDatastore.getUser(callerId) } returns Result.success(user)
+            // Datastore handles the inactive→active transition; service just propagates success
+            coEvery { membershipDatastore.acceptInviteByCode(inviteId, callerId) } returns Result.success(Unit)
+
+            // Act
+            val result = membershipService.joinViaCode(callerId, inviteCode)
+
+            // Assert
+            assertTrue(result.isSuccess)
+            coVerify { membershipDatastore.acceptInviteByCode(inviteId, callerId) }
+        }
+
+    /**
      * Tests that joinViaCode fails when the caller's email does not match the invite's email.
      */
     @Test

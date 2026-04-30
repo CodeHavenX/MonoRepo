@@ -544,6 +544,78 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertTrue(result.isSuccess)
     }
 
+    // -------------------------------------------------------------------------
+    // acceptInviteByCode
+    // -------------------------------------------------------------------------
+
+    @Test
+    fun `acceptInviteByCode creates ACTIVE membership with role from invite`() = runCoroutineTest {
+        // Arrange
+        val email = "acceptinvite-${testPrefix}@example.com"
+        val userId = createTestUser(email)
+        val inviteId = createTestInvite(
+            email = email,
+            organizationId = orgId!!,
+            expiration = clock.now().plus(kotlin.time.Duration.parse("7d")),
+            role = InviteRole.EMPLOYEE,
+        )
+
+        // Act
+        val result = membershipDatastore.acceptInviteByCode(inviteId, userId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        val member = membershipDatastore.getMember(orgId!!, userId).getOrThrow()
+        assertNotNull(member)
+        assertEquals(OrgRole.EMPLOYEE, member.role)
+    }
+
+    @Test
+    fun `acceptInviteByCode reactivates previously-inactive member with new role from invite`() = runCoroutineTest {
+        // Arrange
+        val email = "reactivate-${testPrefix}@example.com"
+        val userId = createTestUser(email)
+        organizationDatastore.addUserToOrganization(userId, orgId!!, OrgRole.EMPLOYEE)
+        membershipDatastore.removeMember(orgId!!, userId)
+        val inviteId = createTestInvite(
+            email = email,
+            organizationId = orgId!!,
+            expiration = clock.now().plus(kotlin.time.Duration.parse("7d")),
+            role = InviteRole.ADMIN,
+        )
+
+        // Act
+        val result = membershipDatastore.acceptInviteByCode(inviteId, userId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        val member = membershipDatastore.getMember(orgId!!, userId).getOrThrow()
+        assertNotNull(member)
+        assertEquals(OrgRole.ADMIN, member.role)
+    }
+
+    @Test
+    fun `acceptInviteByCode second call on same invite fails because invite is already accepted`() = runCoroutineTest {
+        // Arrange
+        val email = "doubleclaim-${testPrefix}@example.com"
+        val userId = createTestUser(email)
+        val inviteId = createTestInvite(
+            email = email,
+            organizationId = orgId!!,
+            expiration = clock.now().plus(kotlin.time.Duration.parse("7d")),
+            role = InviteRole.EMPLOYEE,
+        )
+        val firstResult = membershipDatastore.acceptInviteByCode(inviteId, userId)
+        assertTrue(firstResult.isSuccess)
+
+        // Act
+        val secondResult = membershipDatastore.acceptInviteByCode(inviteId, userId)
+
+        // Assert — acceptedAt is already set; filter returns 0 rows and decodeSingle() throws
+        assertTrue(secondResult.isFailure)
+        assertNotNull(membershipDatastore.getMember(orgId!!, userId).getOrThrow())
+    }
+
     /**
      * Purges all tasks created during the test before the base class tearDown runs.
      * Required because purgeProperty triggers ON DELETE SET NULL on tasks.property_id,

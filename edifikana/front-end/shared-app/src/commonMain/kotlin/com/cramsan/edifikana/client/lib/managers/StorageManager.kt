@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.utils.FileValidationUtils
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
+import com.cramsan.edifikana.lib.model.network.asset.StorageResourceType
 import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.ManagerDependencies
@@ -31,24 +32,38 @@ class StorageManager(
      * @param data The file data as bytes
      * @param targetRef The target storage path/reference within the bucket
      * @param bucketId The storage bucket to upload to
+     * @param resourceType The domain resource type this asset belongs to
+     * @param resourceId The ID of the domain resource (e.g. propertyId, taskId)
      * @return Result containing the storage reference on success, or error on failure
      */
-    suspend fun uploadFile(data: ByteArray, targetRef: String, bucketId: String): Result<String> =
+    suspend fun uploadFile(
+        data: ByteArray,
+        targetRef: String,
+        bucketId: String,
+        resourceType: StorageResourceType,
+        resourceId: String,
+    ): Result<String> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "uploadFile: targetRef=$targetRef, bucketId=$bucketId, size=${data.size} bytes")
-            storageService.uploadFile(data, targetRef, bucketId).getOrThrow()
+            storageService.uploadFile(data, targetRef, bucketId, resourceType, resourceId).getOrThrow()
         }
 
     /**
      * Download a file from storage.
      *
      * @param targetRef The storage path/reference to download
+     * @param resourceType The domain resource type this asset belongs to
+     * @param resourceId The ID of the domain resource
      * @return Result containing the local file URI on success, or error on failure
      */
-    suspend fun downloadFile(targetRef: String): Result<CoreUri> =
+    suspend fun downloadFile(
+        targetRef: String,
+        resourceType: StorageResourceType,
+        resourceId: String,
+    ): Result<CoreUri> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "downloadFile: targetRef=$targetRef")
-            storageService.downloadFile(targetRef).getOrThrow()
+            storageService.downloadFile(targetRef, resourceType, resourceId).getOrThrow()
         }
 
     /**
@@ -94,9 +109,17 @@ class StorageManager(
      * @param uri The local file URI to upload
      * @param targetRef The target storage path/reference within the bucket
      * @param bucketId The storage bucket to upload to
+     * @param resourceType The domain resource type this asset belongs to
+     * @param resourceId The ID of the domain resource (e.g. propertyId, taskId)
      * @return Result containing the storage reference on success, or error on failure
      */
-    suspend fun uploadImage(uri: CoreUri, targetRef: String, bucketId: String): Result<String> =
+    suspend fun uploadImage(
+        uri: CoreUri,
+        targetRef: String,
+        bucketId: String,
+        resourceType: StorageResourceType,
+        resourceId: String,
+    ): Result<String> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "uploadImage: uri=$uri, targetRef=$targetRef, bucketId=$bucketId")
 
@@ -109,7 +132,7 @@ class StorageManager(
             logI(TAG, "Processed image, final size: ${processedBytes.size} bytes")
 
             // Upload to storage
-            val storageRef = storageService.uploadFile(processedBytes, targetRef, bucketId).getOrThrow()
+            val storageRef = storageService.uploadFile(processedBytes, targetRef, bucketId, resourceType, resourceId).getOrThrow()
             logI(TAG, "Upload successful: $storageRef")
 
             storageRef

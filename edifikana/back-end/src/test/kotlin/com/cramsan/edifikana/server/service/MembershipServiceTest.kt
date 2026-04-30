@@ -645,7 +645,8 @@ class MembershipServiceTest {
             val email = "user@example.com"
             val orgId = OrganizationId("org123")
             val inviteId = InviteId("invite123")
-            val invite = Invite(
+            val invite =
+                Invite(
                 id = inviteId,
                 email = email,
                 organizationId = orgId,

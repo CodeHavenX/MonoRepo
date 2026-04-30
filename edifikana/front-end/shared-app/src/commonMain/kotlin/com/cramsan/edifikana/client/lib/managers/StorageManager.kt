@@ -132,7 +132,15 @@ class StorageManager(
             logI(TAG, "Processed image, final size: ${processedBytes.size} bytes")
 
             // Upload to storage
-            val storageRef = storageService.uploadFile(processedBytes, targetRef, bucketId, resourceType, resourceId).getOrThrow()
+            val storageRef =
+                storageService
+                .uploadFile(
+                    processedBytes,
+                    targetRef,
+                    bucketId,
+                    resourceType,
+                    resourceId,
+                ).getOrThrow()
             logI(TAG, "Upload successful: $storageRef")
 
             storageRef

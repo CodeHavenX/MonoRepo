@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.network.asset.StorageResourceType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
@@ -147,6 +148,15 @@ class TimeCardManagerTest : CoroutineTest() {
         val record = timeCardRecordTest3
         val uri = mockk<CoreUri>()
         coEvery { timeCardCache.addRecord(record, uri) } returns Unit
+        coEvery {
+            storageManager.uploadFile(
+                any(),
+                any(),
+                any(),
+                StorageResourceType.TIME_CARD,
+                record.propertyId.propertyId,
+            )
+        } returns Result.success("storage-ref")
 
         // Act
         val result = manager.addRecord(record, uri)
@@ -154,6 +164,15 @@ class TimeCardManagerTest : CoroutineTest() {
         // Assert
         assertTrue(result.isSuccess)
         coVerify { timeCardCache.addRecord(record, uri) }
+        coVerify {
+            storageManager.uploadFile(
+                any(),
+                any(),
+                any(),
+                StorageResourceType.TIME_CARD,
+                record.propertyId.propertyId,
+            )
+        }
     }
 
     // Test data for time card records

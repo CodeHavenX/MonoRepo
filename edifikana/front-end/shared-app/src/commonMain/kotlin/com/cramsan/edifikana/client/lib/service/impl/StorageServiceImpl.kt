@@ -44,14 +44,14 @@ class StorageServiceImpl(
             val response =
                 StorageApi.createSignedUpload
                     .buildRequest(
-                        queryParam = CreateSignedUploadQueryParams(
+                        queryParam =
+                            CreateSignedUploadQueryParams(
                             filename = targetRef,
                             bucketId = bucketId,
                             resourceType = resourceType,
                             resourceId = resourceId,
                         ),
-                    )
-                    .execute(http)
+                            ).execute(http)
             rawHttp.put(response.signedUrl) {
                 setBody(data)
                 contentType(ContentType.Application.OctetStream)
@@ -71,13 +71,13 @@ class StorageServiceImpl(
             val response =
                 StorageApi.getSignedDownload
                     .buildRequest(
-                        queryParam = GetSignedDownloadQueryParams(
+                        queryParam =
+                            GetSignedDownloadQueryParams(
                             assetId = targetRef,
                             resourceType = resourceType,
                             resourceId = resourceId,
                         ),
-                    )
-                    .execute(http)
+                            ).execute(http)
             val signedUrl = checkNotNull(response.signedUrl) { "No signed URL returned for $targetRef" }
             val bytes = rawHttp.get(signedUrl).body<ByteArray>()
             downloadStrategy.saveToFile(bytes, targetRef)

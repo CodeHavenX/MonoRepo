@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.StorageService
+import com.cramsan.edifikana.lib.model.network.asset.StorageResourceType
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.EventLogger
@@ -70,7 +71,13 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.uploadFile(testData, targetRef, bucketId)
+        val result = storageService.uploadFile(
+            testData,
+            targetRef,
+            bucketId,
+            StorageResourceType.TIME_CARD,
+            "property_id_1",
+        )
 
         // Assert
         assertTrue(result.isSuccess)
@@ -85,7 +92,13 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.uploadFile("test".toByteArray(), "file.png", "images")
+        val result = storageService.uploadFile(
+            "test".toByteArray(),
+            "file.png",
+            "images",
+            StorageResourceType.TIME_CARD,
+            "property_id_1",
+        )
 
         // Assert
         assertTrue(result.isFailure)
@@ -104,7 +117,11 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.downloadFile(targetRef)
+        val result = storageService.downloadFile(
+            targetRef,
+            StorageResourceType.TIME_CARD,
+            "property_id_1",
+        )
 
         // Assert
         assertTrue(result.isSuccess)
@@ -139,7 +156,11 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.downloadFile(targetRef)
+        val result = storageService.downloadFile(
+            targetRef,
+            StorageResourceType.TIME_CARD,
+            "property_id_1",
+        )
 
         // Assert
         assertTrue(result.isSuccess)
@@ -157,7 +178,11 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.downloadFile(targetRef)
+        val result = storageService.downloadFile(
+            targetRef,
+            StorageResourceType.TIME_CARD,
+            "property_id_1",
+        )
 
         // Assert
         assertTrue(result.isFailure)

@@ -109,24 +109,31 @@ class StorageController(
         resourceType: StorageResourceType,
         resourceId: String,
     ) {
-        val authorized = when (resourceType) {
-            StorageResourceType.PROFILE ->
+        val authorized =
+            when (resourceType) {
+            StorageResourceType.PROFILE -> {
                 context.payload.userId == UserId(resourceId)
+            }
 
-            StorageResourceType.TIME_CARD ->
+            StorageResourceType.TIME_CARD -> {
                 rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
+            }
 
-            StorageResourceType.TASK ->
+            StorageResourceType.TASK -> {
                 rbacService.hasRoleOrHigher(context, TaskId(resourceId), UserRole.EMPLOYEE)
+            }
 
-            StorageResourceType.EVENT_LOG ->
+            StorageResourceType.EVENT_LOG -> {
                 rbacService.hasRoleOrHigher(context, EventLogEntryId(resourceId), UserRole.EMPLOYEE)
+            }
 
-            StorageResourceType.PROPERTY ->
+            StorageResourceType.PROPERTY -> {
                 rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.MANAGER)
+            }
 
-            StorageResourceType.ORGANIZATION ->
+            StorageResourceType.ORGANIZATION -> {
                 rbacService.hasRoleOrHigher(context, OrganizationId(resourceId), UserRole.ADMIN)
+            }
         }
         if (!authorized) throw UnauthorizedException(unauthorizedMsg)
     }
@@ -136,24 +143,31 @@ class StorageController(
         resourceType: StorageResourceType,
         resourceId: String,
     ) {
-        val authorized = when (resourceType) {
-            StorageResourceType.PROFILE ->
+        val authorized =
+            when (resourceType) {
+            StorageResourceType.PROFILE -> {
                 rbacService.hasRoleOrHigher(context, OrganizationId(resourceId), UserRole.USER)
+            }
 
-            StorageResourceType.TIME_CARD ->
+            StorageResourceType.TIME_CARD -> {
                 rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
+            }
 
-            StorageResourceType.TASK ->
+            StorageResourceType.TASK -> {
                 rbacService.hasRoleOrHigher(context, TaskId(resourceId), UserRole.EMPLOYEE)
+            }
 
-            StorageResourceType.EVENT_LOG ->
+            StorageResourceType.EVENT_LOG -> {
                 rbacService.hasRoleOrHigher(context, EventLogEntryId(resourceId), UserRole.EMPLOYEE)
+            }
 
-            StorageResourceType.PROPERTY ->
+            StorageResourceType.PROPERTY -> {
                 rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.MANAGER)
+            }
 
-            StorageResourceType.ORGANIZATION ->
+            StorageResourceType.ORGANIZATION -> {
                 rbacService.hasRoleOrHigher(context, OrganizationId(resourceId), UserRole.ADMIN)
+            }
         }
         if (!authorized) throw UnauthorizedException(unauthorizedMsg)
     }

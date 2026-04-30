@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.FileService
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.lib.model.network.asset.StorageResourceType
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.utils.requireSuccess
@@ -152,7 +153,13 @@ class PropertyManager(
         logI(TAG, "Filename: $filename")
         val targetRef = "private/properties/${propertyId}_$filename"
         logI(TAG, "Uploading image to: $targetRef")
-        val storageRef = storageManager.uploadImage(imageUri, targetRef, PROPERTY_IMAGE_BUCKET).getOrThrow()
+        val storageRef = storageManager.uploadImage(
+            imageUri,
+            targetRef,
+            PROPERTY_IMAGE_BUCKET,
+            StorageResourceType.PROPERTY,
+            propertyId.propertyId,
+        ).getOrThrow()
         logI(TAG, "Upload successful: $storageRef")
         return "storage:$storageRef"
     }

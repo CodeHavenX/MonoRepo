@@ -10,4 +10,8 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class GetSignedDownloadQueryParams(@SerialName("asset_id") val assetId: String) : QueryParam
+data class GetSignedDownloadQueryParams(
+    @SerialName("asset_id") val assetId: String,
+    @SerialName("resource_type") val resourceType: StorageResourceType,
+    @SerialName("resource_id") val resourceId: String,
+) : QueryParam

@@ -48,7 +48,8 @@ class SupabasePropertyDatastore(private val postgrest: Postgrest, private val cl
                         select()
                     }.decodeSingle<PropertyEntity>()
 
-            // Now associate this entry with the user that created it
+            // Plain insert is safe: createdProperty.id is a freshly generated UUID, so no
+            // concurrent call can produce the same (userId, propertyId) pair.
             postgrest
                 .from(UserPropertyMappingEntity.COLLECTION)
                 .insert(

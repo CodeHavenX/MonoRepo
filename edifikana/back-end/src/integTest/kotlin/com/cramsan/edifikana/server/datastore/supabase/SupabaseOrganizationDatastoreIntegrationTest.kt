@@ -10,6 +10,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     private lateinit var test_prefix: String
@@ -170,15 +173,50 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val firstAdd = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)
         val secondAdd = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)
 
-        // Assert
+        // Assert — upsert with ignoreDuplicates=true makes both calls succeed idempotently
         assertTrue(firstAdd.isSuccess)
-        // Depending on DB constraints, secondAdd may succeed or fail gracefully
-        assertTrue(secondAdd.isSuccess || secondAdd.isFailure)
-        val orgsResult = organizationDatastore.getOrganizationsForUser(newUser)
-        assertTrue(orgsResult.isSuccess)
-        val orgs = orgsResult.getOrNull()
-        assertNotNull(orgs)
-        assertTrue(orgs.any { it.id == orgId })
+        assertTrue(secondAdd.isSuccess)
+        val roleResult = organizationDatastore.getUserRole(newUser, orgId)
+        assertTrue(roleResult.isSuccess)
+        assertEquals(OrgRole.EMPLOYEE, roleResult.getOrNull())
+    }
+
+    @Test
+    fun `addUserToOrganization preserves original role when called with a different role`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
+        val newUser = createTestUser("rolepreserve-${test_prefix}@example.com")
+
+        // Act
+        val firstAdd = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE)
+        val secondAdd = organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.OWNER)
+
+        // Assert — DO NOTHING preserves the original role; a duplicate call cannot escalate privileges
+        assertTrue(firstAdd.isSuccess)
+        assertTrue(secondAdd.isSuccess)
+        val roleResult = organizationDatastore.getUserRole(newUser, orgId)
+        assertTrue(roleResult.isSuccess)
+        assertEquals(OrgRole.EMPLOYEE, roleResult.getOrNull())
+    }
+
+    @Test
+    fun `addUserToOrganization concurrent calls all succeed and produce exactly one membership row`() = runCoroutineTest {
+        // Arrange
+        val orgId = createTestOrganization("test_org_$test_prefix", "")
+        val newUser = createTestUser("concurrent-${test_prefix}@example.com")
+
+        // Act — 5 concurrent upsert requests
+        val results = coroutineScope {
+            (1..5).map {
+                async { organizationDatastore.addUserToOrganization(newUser, orgId, OrgRole.EMPLOYEE) }
+            }.awaitAll()
+        }
+
+        // Assert — all calls succeed; exactly one row with the expected role
+        results.forEach { assertTrue(it.isSuccess) }
+        val roleResult = organizationDatastore.getUserRole(newUser, orgId)
+        assertTrue(roleResult.isSuccess)
+        assertEquals(OrgRole.EMPLOYEE, roleResult.getOrNull())
     }
 
     @Test

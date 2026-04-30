@@ -240,7 +240,8 @@ class SupabaseMembershipDatastore(private val postgrest: Postgrest, private val 
         runSuspendCatching(TAG) {
             logD(TAG, "Accepting invite %s for user %s", inviteId, userId)
 
-            // Mark invite as accepted
+            // LAYER 1: `acceptedAt isExact null` filter serializes concurrent accepts — only one
+            // call wins the update; the second gets 0 rows and decodeSingle() throws.
             val invite =
                 postgrest
                     .from(InviteEntity.COLLECTION)
@@ -256,8 +257,8 @@ class SupabaseMembershipDatastore(private val postgrest: Postgrest, private val 
                     }.decodeSingle<InviteEntity>()
                     .toInvite()
 
-            // Upsert the org membership row; sets status=ACTIVE and joined_at=now()
-            // so a previously-inactive member is reactivated with the new role.
+            // LAYER 2: DO UPDATE reactivates previously-inactive members with the invite's
+            // role. Intentional — re-joining via invite is explicit user action.
             val mapping =
                 UserOrganizationMappingEntity.AcceptInviteEntity(
                     userId = userId.userId,

@@ -159,10 +159,14 @@ class SupabaseOrganizationDatastore(private val postgrest: Postgrest, private va
                     organizationId = organizationId,
                     role = role,
                 )
+            // ON CONFLICT DO NOTHING: idempotent against concurrent inserts; preserves existing
+            // role so a duplicate call cannot downgrade an OWNER via privilege manipulation.
             postgrest
                 .from(UserOrganizationMappingEntity.COLLECTION)
-                .insert(userOrgMapping) { select() }
-                .decodeSingle<UserOrganizationMappingEntity>()
+                .upsert(userOrgMapping) {
+                    onConflict = "user_id, organization_id"
+                    ignoreDuplicates = true
+                }
         }
     }
 

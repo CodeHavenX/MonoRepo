@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.task.TaskPriority
@@ -34,7 +35,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
         propertyId: PropertyId,
         unitId: UnitId?,
         commonAreaId: CommonAreaId?,
-        assigneeId: UserId?,
+        assigneeId: EmployeeId?,
         createdBy: UserId,
         title: String,
         description: String?,
@@ -89,7 +90,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
         propertyId: PropertyId,
         unitId: UnitId?,
         status: TaskStatus?,
-        assigneeId: UserId?,
+        assigneeId: EmployeeId?,
         priority: TaskPriority?,
     ): Result<List<Task>> =
         runSuspendCatching(TAG) {
@@ -102,7 +103,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
                         TaskEntity::deletedAt isExact null
                         unitId?.let { TaskEntity::unitId eq it.unitId }
                         status?.let { TaskEntity::status eq it.name }
-                        assigneeId?.let { TaskEntity::assigneeId eq it.userId }
+                        assigneeId?.let { TaskEntity::assigneeId eq it.empId }
                         priority?.let { TaskEntity::priority eq it.name }
                     }
                 }.decodeList<TaskEntity>()
@@ -119,7 +120,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
         description: String?,
         priority: TaskPriority?,
         status: TaskStatus?,
-        assigneeId: UserId?,
+        assigneeId: EmployeeId?,
         dueDate: LocalDate?,
         statusChangedBy: UserId?,
         completedAt: Instant?,

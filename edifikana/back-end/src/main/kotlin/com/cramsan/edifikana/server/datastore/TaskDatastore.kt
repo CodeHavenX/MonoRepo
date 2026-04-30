@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.datastore
 
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.task.TaskPriority
@@ -26,7 +27,7 @@ interface TaskDatastore {
         propertyId: PropertyId,
         unitId: UnitId?,
         commonAreaId: CommonAreaId?,
-        assigneeId: UserId?,
+        assigneeId: EmployeeId?,
         createdBy: UserId,
         title: String,
         description: String?,
@@ -61,7 +62,7 @@ interface TaskDatastore {
         description: String?,
         priority: TaskPriority?,
         status: TaskStatus?,
-        assigneeId: UserId?,
+        assigneeId: EmployeeId?,
         dueDate: LocalDate?,
         statusChangedBy: UserId?,
         completedAt: Instant?,

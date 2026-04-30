@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.task
 
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.task.TaskPriority
 import com.cramsan.edifikana.lib.model.task.TaskStatus
@@ -22,6 +23,6 @@ data class GetTasksQueryParams(
     @SerialName("property_id") val propertyId: PropertyId,
     @SerialName("unit_id") val unitId: UnitId? = null,
     val status: TaskStatus? = null,
-    @SerialName("assignee_id") val assigneeId: UserId? = null,
+    @SerialName("assignee_id") val assigneeId: EmployeeId? = null,
     val priority: TaskPriority? = null,
 ) : QueryParam

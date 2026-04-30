@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
@@ -644,7 +645,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     private suspend fun createTestTask(
         createdBy: UserId,
         propertyId: PropertyId,
-        assigneeId: UserId? = null,
+        assigneeId: EmployeeId? = null,
         status: TaskStatus = TaskStatus.OPEN,
     ): String {
         val taskId = postgrest.from(TASKS_COLLECTION).insert(
@@ -653,7 +654,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
                 createdBy = createdBy.userId,
                 title = "Test Task $testPrefix",
                 status = status.name,
-                assigneeId = assigneeId?.userId,
+                assigneeId = assigneeId?.empId,
             )
         ) { select() }.decodeSingle<TaskRowEntity>().id
         taskIds.add(taskId)

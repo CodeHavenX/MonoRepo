@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
+
 import com.cramsan.edifikana.server.service.models.Invite
 import com.cramsan.edifikana.server.service.models.OrgMemberView
 import com.cramsan.framework.annotations.BackendDatastore
@@ -48,11 +49,6 @@ interface MembershipDatastore {
         newOwnerId: UserId,
         callerId: UserId,
     ): Result<Unit>
-
-    /**
-     * Sets assignee_id = NULL on all open tasks in [orgId] assigned to [userId].
-     */
-    suspend fun unassignTasksForMember(orgId: OrganizationId, userId: UserId): Result<Unit>
 
     /**
      * Returns pending invites for [orgId]: not expired, not cancelled, not accepted.

@@ -16,10 +16,7 @@ import com.cramsan.framework.logging.logD
  * Service for employee operations.
  */
 @BackendService
-class EmployeeService(
-    private val employeeDatastore: EmployeeDatastore,
-    private val taskDatastore: TaskDatastore,
-) {
+class EmployeeService(private val employeeDatastore: EmployeeDatastore, private val taskDatastore: TaskDatastore) {
     /**
      * Creates an employee with the provided [name].
      */

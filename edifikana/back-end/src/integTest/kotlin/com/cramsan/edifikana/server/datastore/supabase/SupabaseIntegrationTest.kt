@@ -440,6 +440,7 @@ abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
                 supabaseUsers.forEach { userId ->
                     supabase.auth.admin.deleteUser(userId)
                 }
+                supabase.close()
             }
         } finally {
             notificationResources.clear()

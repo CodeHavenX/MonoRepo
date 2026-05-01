@@ -267,6 +267,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Supabase will silently trigger the reset flow without throwing.
      */
     @Test
+    @Ignore("We have to ignore this test because it causes emails to be sent, which cases rate limit issues on supabase")
     fun `requestPasswordReset should succeed for registered email`() = runCoroutineTest {
         // Arrange
         val email = "${test_prefix}_pwreset@mailinator.org"

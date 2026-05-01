@@ -5,18 +5,22 @@ import java.util.Properties
 
 /**
  * A simple configuration implementation that reads config properties from a file.
+ * If the file does not exist, the configuration is empty and all reads return null.
  *
- * @param configFile Absolute or relative path to the `.properties` file. The file must already
- *   exist; if it does not, [IllegalArgumentException] is thrown.
+ * @param configFile Absolute or relative path to the `.properties` file.
  */
 class SimpleConfiguration(private val configFile: String) : Configuration {
     private val properties = Properties()
 
     init {
         val file = File(configFile)
-        require(file.exists()) { "Configuration file not found: $configFile" }
-        file.inputStream().use {
-            properties.load(it)
+        if (file.exists()) {
+            file.inputStream().use {
+                properties.load(it)
+            }
+        } else {
+            file.parentFile?.mkdirs()
+            file.createNewFile()
         }
     }
 

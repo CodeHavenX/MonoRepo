@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.task.TaskId
@@ -393,5 +394,34 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
         val getResult = taskDatastore.getTask(task.id)
         assertTrue(getResult.isSuccess)
         assertNull(getResult.getOrNull())
+    }
+
+    @Test
+    fun `unassignTasksForEmployee should set assignee_id to null on non-deleted tasks`() = runCoroutineTest {
+        // Arrange
+        val employeeId = createTestEmployee(propertyId!!, "Test", "${testPrefix}_Employee")
+        val taskResult = taskDatastore.createTask(
+            propertyId = propertyId!!,
+            unitId = null,
+            commonAreaId = null,
+            assigneeId = employeeId,
+            createdBy = testUserId!!,
+            title = "${testPrefix}_AssignedTask",
+            description = null,
+            priority = TaskPriority.MEDIUM,
+            dueDate = null,
+        ).registerTaskForDeletion()
+        assertTrue(taskResult.isSuccess)
+        val task = taskResult.getOrNull()!!
+        assertEquals(employeeId, task.assigneeId)
+
+        // Act
+        val result = taskDatastore.unassignTasksForEmployee(employeeId)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        val updated = taskDatastore.getTask(task.id).getOrNull()
+        assertNotNull(updated)
+        assertNull(updated.assigneeId)
     }
 }

@@ -187,6 +187,25 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
                 }.decodeSingleOrNull<TaskEntity>() != null
         }
 
+    /**
+     * Sets assignee_id = NULL on all non-deleted tasks assigned to [employeeId].
+     */
+
+    override suspend fun unassignTasksForEmployee(employeeId: EmployeeId): Result<Unit> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Unassigning tasks for employee: %s", employeeId)
+            postgrest
+                .from(TaskEntity.COLLECTION)
+                .update({
+                    set("assignee_id", null as String?)
+                }) {
+                    filter {
+                        eq("assignee_id", employeeId.empId)
+                        exact("deleted_at", null)
+                    }
+                }
+        }
+
     companion object {
         const val TAG = "SupabaseTaskDatastore"
     }

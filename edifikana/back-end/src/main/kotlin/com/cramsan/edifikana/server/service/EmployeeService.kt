@@ -6,6 +6,7 @@ import com.cramsan.edifikana.lib.model.identification.IdType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
+import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.framework.annotations.BackendService
 import com.cramsan.framework.core.ktor.auth.ClientContext
@@ -15,7 +16,10 @@ import com.cramsan.framework.logging.logD
  * Service for employee operations.
  */
 @BackendService
-class EmployeeService(private val employeeDatastore: EmployeeDatastore) {
+class EmployeeService(
+    private val employeeDatastore: EmployeeDatastore,
+    private val taskDatastore: TaskDatastore,
+) {
     /**
      * Creates an employee with the provided [name].
      */
@@ -91,11 +95,13 @@ class EmployeeService(private val employeeDatastore: EmployeeDatastore) {
 
     /**
      * Deletes an employee with the provided [id].
+     * Unassigns any open tasks assigned to the employee before soft-deleting the record.
      */
     suspend fun deleteEmployee(
         id: EmployeeId,
     ): Boolean {
         logD(TAG, "deleteEmployee")
+        taskDatastore.unassignTasksForEmployee(id).getOrThrow()
         return employeeDatastore
             .deleteEmployee(
                 id = id,

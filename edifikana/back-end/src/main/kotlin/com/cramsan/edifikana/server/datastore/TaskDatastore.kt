@@ -82,4 +82,10 @@ interface TaskDatastore {
      * - `Result.success(false)` if no matching record exists.
      */
     suspend fun purgeTask(taskId: TaskId): Result<Boolean>
+
+    /**
+     * Sets assignee_id = NULL on all non-deleted tasks assigned to [employeeId].
+     * Called when an employee record is deleted.
+     */
+    suspend fun unassignTasksForEmployee(employeeId: EmployeeId): Result<Unit>
 }

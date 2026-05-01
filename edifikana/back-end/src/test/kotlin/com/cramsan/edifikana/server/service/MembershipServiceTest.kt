@@ -168,7 +168,6 @@ class MembershipServiceTest {
             val ownerMember = orgMemberView(UserId("owner456"), orgId, OrgRole.OWNER)
             val targetMember = orgMemberView(targetUserId, orgId, OrgRole.EMPLOYEE)
             coEvery { membershipDatastore.getMembers(orgId) } returns Result.success(listOf(ownerMember, targetMember))
-            coEvery { membershipDatastore.unassignTasksForMember(orgId, targetUserId) } returns Result.success(Unit)
             coEvery { membershipDatastore.removeMember(orgId, targetUserId) } returns Result.success(Unit)
 
             // Act
@@ -176,7 +175,6 @@ class MembershipServiceTest {
 
             // Assert
             assertTrue(result.isSuccess)
-            coVerify { membershipDatastore.unassignTasksForMember(orgId, targetUserId) }
             coVerify { membershipDatastore.removeMember(orgId, targetUserId) }
         }
 
@@ -215,7 +213,6 @@ class MembershipServiceTest {
             val orgId = OrganizationId("org123")
             val ownerMember = orgMemberView(UserId("owner456"), orgId, OrgRole.OWNER)
             coEvery { membershipDatastore.getMembers(orgId) } returns Result.success(listOf(ownerMember))
-            coEvery { membershipDatastore.unassignTasksForMember(orgId, callerId) } returns Result.success(Unit)
             coEvery { membershipDatastore.removeMember(orgId, callerId) } returns Result.success(Unit)
 
             // Act

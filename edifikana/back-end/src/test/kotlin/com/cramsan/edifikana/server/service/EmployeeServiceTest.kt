@@ -7,6 +7,7 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.EmployeeDatastore
+import com.cramsan.edifikana.server.datastore.TaskDatastore
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.EventLogger
@@ -28,6 +29,7 @@ import kotlin.test.AfterTest
  */
 class EmployeeServiceTest {
     private lateinit var employeeDatastore: EmployeeDatastore
+    private lateinit var taskDatastore: TaskDatastore
     private lateinit var employeeService: EmployeeService
 
     /**
@@ -37,7 +39,8 @@ class EmployeeServiceTest {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         employeeDatastore = mockk()
-        employeeService = EmployeeService(employeeDatastore)
+        taskDatastore = mockk()
+        employeeService = EmployeeService(employeeDatastore, taskDatastore)
     }
 
     /**
@@ -190,13 +193,14 @@ class EmployeeServiceTest {
         }
 
     /**
-     * Tests that deleteEmployee deletes a employee and returns true.
+     * Tests that deleteEmployee unassigns tasks then soft-deletes the employee record.
      */
     @Test
-    fun `deleteEmployee should call employeeDatastore and return true`() =
+    fun `deleteEmployee should unassign tasks then call employeeDatastore and return true`() =
         runTest {
             // Arrange
             val employeeId = EmployeeId("employee-4")
+            coEvery { taskDatastore.unassignTasksForEmployee(employeeId) } returns Result.success(Unit)
             coEvery { employeeDatastore.deleteEmployee(any()) } returns Result.success(true)
 
             // Act
@@ -204,6 +208,7 @@ class EmployeeServiceTest {
 
             // Assert
             assertEquals(true, result)
+            coVerify { taskDatastore.unassignTasksForEmployee(employeeId) }
             coVerify { employeeDatastore.deleteEmployee(employeeId) }
         }
 }

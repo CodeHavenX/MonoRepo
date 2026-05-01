@@ -47,7 +47,7 @@ interface TaskDatastore {
         propertyId: PropertyId,
         unitId: UnitId? = null,
         status: TaskStatus? = null,
-        assigneeId: UserId? = null,
+        assigneeId: EmployeeId? = null,
         priority: TaskPriority? = null,
     ): Result<List<Task>>
 

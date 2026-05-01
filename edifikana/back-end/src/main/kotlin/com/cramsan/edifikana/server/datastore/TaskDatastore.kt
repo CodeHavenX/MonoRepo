@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.datastore
 
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.task.TaskPriority
@@ -26,7 +27,7 @@ interface TaskDatastore {
         propertyId: PropertyId,
         unitId: UnitId?,
         commonAreaId: CommonAreaId?,
-        assigneeId: UserId?,
+        assigneeId: EmployeeId?,
         createdBy: UserId,
         title: String,
         description: String?,
@@ -46,7 +47,7 @@ interface TaskDatastore {
         propertyId: PropertyId,
         unitId: UnitId? = null,
         status: TaskStatus? = null,
-        assigneeId: UserId? = null,
+        assigneeId: EmployeeId? = null,
         priority: TaskPriority? = null,
     ): Result<List<Task>>
 
@@ -61,7 +62,7 @@ interface TaskDatastore {
         description: String?,
         priority: TaskPriority?,
         status: TaskStatus?,
-        assigneeId: UserId?,
+        assigneeId: EmployeeId?,
         dueDate: LocalDate?,
         statusChangedBy: UserId?,
         completedAt: Instant?,
@@ -81,4 +82,10 @@ interface TaskDatastore {
      * - `Result.success(false)` if no matching record exists.
      */
     suspend fun purgeTask(taskId: TaskId): Result<Boolean>
+
+    /**
+     * Sets assignee_id = NULL on all non-deleted tasks assigned to [employeeId].
+     * Called when an employee record is deleted.
+     */
+    suspend fun unassignTasksForEmployee(employeeId: EmployeeId): Result<Unit>
 }

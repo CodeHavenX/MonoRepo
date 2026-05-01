@@ -1,18 +1,11 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.edifikana.lib.model.property.PropertyId
-import com.cramsan.edifikana.lib.model.task.TaskStatus
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.invite.InviteId
-import com.cramsan.framework.annotations.DatabaseModel
 import com.cramsan.framework.utils.uuid.UUID
-import io.github.jan.supabase.postgrest.Postgrest
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,20 +21,16 @@ import org.koin.test.inject
 class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     private val clock: Clock by inject()
-    private val postgrest: Postgrest by inject()
 
     private lateinit var testPrefix: String
     private var ownerUserId: UserId? = null
     private var orgId: OrganizationId? = null
-    private var propertyId: PropertyId? = null
-    private val taskIds = mutableListOf<String>()
 
     @BeforeTest
     fun setUp() {
         testPrefix = UUID.random()
         ownerUserId = createTestUser("owner-${testPrefix}@example.com")
         orgId = createTestOrganization("test-org-$testPrefix", "")
-        propertyId = createTestProperty("test-prop-$testPrefix", ownerUserId!!, orgId!!)
         runBlocking {
             organizationDatastore.addUserToOrganization(ownerUserId!!, orgId!!, OrgRole.OWNER)
         }
@@ -162,7 +151,6 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Arrange
         val email = "create-${testPrefix}@example.com"
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
-
         val inviteCode = UUID.random().replace("-", "").take(12).uppercase()
 
         // Act
@@ -429,122 +417,6 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     // -------------------------------------------------------------------------
-    // unassignTasksForMember
-    // -------------------------------------------------------------------------
-
-    @Test
-    fun `unassignTasksForMember unassigns OPEN task for member`() = runCoroutineTest {
-        // Arrange
-        val memberId = createTestUser("unassign-open-${testPrefix}@example.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-        val taskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.OPEN)
-
-        // Act
-        val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertNull(getTaskAssignee(taskId))
-    }
-
-    @Test
-    fun `unassignTasksForMember unassigns IN_PROGRESS task for member`() = runCoroutineTest {
-        // Arrange
-        val memberId = createTestUser("unassign-ip-${testPrefix}@example.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-        val taskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.IN_PROGRESS)
-
-        // Act
-        val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertNull(getTaskAssignee(taskId))
-    }
-
-    @Test
-    fun `unassignTasksForMember does not affect COMPLETED tasks`() = runCoroutineTest {
-        // Arrange
-        val memberId = createTestUser("unassign-completed-${testPrefix}@example.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-        val taskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.COMPLETED)
-
-        // Act
-        val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(memberId.userId, getTaskAssignee(taskId))
-    }
-
-    @Test
-    fun `unassignTasksForMember does not affect CANCELLED tasks`() = runCoroutineTest {
-        // Arrange
-        val memberId = createTestUser("unassign-cancelled-${testPrefix}@example.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-        val taskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = memberId, status = TaskStatus.CANCELLED)
-
-        // Act
-        val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(memberId.userId, getTaskAssignee(taskId))
-    }
-
-    @Test
-    fun `unassignTasksForMember does not affect tasks assigned to a different member`() = runCoroutineTest {
-        // Arrange
-        val targetMember = createTestUser("unassign-target-${testPrefix}@example.com")
-        val otherMember = createTestUser("unassign-other-${testPrefix}@example.com")
-        organizationDatastore.addUserToOrganization(targetMember, orgId!!, OrgRole.EMPLOYEE)
-        organizationDatastore.addUserToOrganization(otherMember, orgId!!, OrgRole.EMPLOYEE)
-        val otherTaskId = createTestTask(ownerUserId!!, propertyId!!, assigneeId = otherMember, status = TaskStatus.OPEN)
-
-        // Act — unassign targetMember who has no tasks; otherMember's task should be unchanged
-        val result = membershipDatastore.unassignTasksForMember(orgId!!, targetMember)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(otherMember.userId, getTaskAssignee(otherTaskId))
-    }
-
-    @Test
-    fun `unassignTasksForMember does not affect tasks belonging to a different org`() = runCoroutineTest {
-        // Arrange
-        val otherOrgId = createTestOrganization("other-org-$testPrefix", "")
-        val otherPropertyId = createTestProperty("other-prop-$testPrefix", ownerUserId!!, otherOrgId)
-        runBlocking { organizationDatastore.addUserToOrganization(ownerUserId!!, otherOrgId, OrgRole.OWNER) }
-
-        val memberId = createTestUser("unassign-difforg-${testPrefix}@example.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-        organizationDatastore.addUserToOrganization(memberId, otherOrgId, OrgRole.EMPLOYEE)
-
-        // Task lives in otherOrg
-        val taskId = createTestTask(ownerUserId!!, otherPropertyId, assigneeId = memberId, status = TaskStatus.OPEN)
-
-        // Act — unassign for orgId, not otherOrgId
-        val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
-
-        // Assert
-        assertTrue(result.isSuccess)
-        assertEquals(memberId.userId, getTaskAssignee(taskId))
-    }
-
-    @Test
-    fun `unassignTasksForMember succeeds when member has no tasks`() = runCoroutineTest {
-        // Arrange
-        val memberId = createTestUser("unassign-notasks-${testPrefix}@example.com")
-        organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
-
-        // Act
-        val result = membershipDatastore.unassignTasksForMember(orgId!!, memberId)
-
-        // Assert
-        assertTrue(result.isSuccess)
-    }
-
-    // -------------------------------------------------------------------------
     // acceptInviteByCode
     // -------------------------------------------------------------------------
 
@@ -614,86 +486,5 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Assert — acceptedAt is already set; filter returns 0 rows and decodeSingle() throws
         assertTrue(secondResult.isFailure)
         assertNotNull(membershipDatastore.getMember(orgId!!, userId).getOrThrow())
-    }
-
-    /**
-     * Purges all tasks created during the test before the base class tearDown runs.
-     * Required because purgeProperty triggers ON DELETE SET NULL on tasks.property_id,
-     * which would violate the at_least_one_location check constraint if tasks still exist.
-     * JUnit 5 runs subclass @AfterTest before superclass @AfterTest.
-     */
-    @AfterTest
-    fun tearDownMembership() {
-        if (taskIds.isEmpty()) return
-        runBlocking {
-            postgrest.from(TASKS_COLLECTION).delete {
-                filter { isIn("id", taskIds) }
-            }
-        }
-        taskIds.clear()
-    }
-
-    // -------------------------------------------------------------------------
-    // Private helpers
-    // -------------------------------------------------------------------------
-
-    /**
-     * Created task IDs are tracked in `taskIds` and explicitly deleted by
-     * `tearDownMembership()` before superclass teardown runs.
-     */
-    private suspend fun createTestTask(
-        createdBy: UserId,
-        propertyId: PropertyId,
-        assigneeId: UserId? = null,
-        status: TaskStatus = TaskStatus.OPEN,
-    ): String {
-        val taskId = postgrest.from(TASKS_COLLECTION).insert(
-            TaskInsertEntity(
-                propertyId = propertyId.propertyId,
-                createdBy = createdBy.userId,
-                title = "Test Task $testPrefix",
-                status = status.name,
-                assigneeId = assigneeId?.userId,
-            )
-        ) { select() }.decodeSingle<TaskRowEntity>().id
-        taskIds.add(taskId)
-        return taskId
-    }
-
-    /**
-     * Reads back the assignee_id for the given task ID.
-     */
-    private suspend fun getTaskAssignee(taskId: String): String? {
-        return postgrest.from(TASKS_COLLECTION).select {
-            filter { eq("id", taskId) }
-        }.decodeSingle<TaskRowEntity>().assigneeId
-    }
-
-    /**
-     * Minimal entity for inserting a task row directly in tests.
-     */
-    @Serializable
-    @DatabaseModel
-    private data class TaskInsertEntity(
-        @SerialName("property_id") val propertyId: String,
-        @SerialName("created_by") val createdBy: String,
-        val title: String,
-        val priority: String = "MEDIUM",
-        val status: String = "OPEN",
-        @SerialName("assignee_id") val assigneeId: String? = null,
-    )
-
-    /**
-     * Minimal entity for reading a task row directly in tests.
-     */
-    @Serializable
-    @DatabaseModel
-    private data class TaskRowEntity(
-        val id: String,
-        @SerialName("assignee_id") val assigneeId: String?,
-    )
-
-    companion object {
-        private const val TASKS_COLLECTION = "tasks"
     }
 }

@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.lib.model.network.task
 
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.task.TaskPriority
 import com.cramsan.edifikana.lib.model.unit.UnitId
-import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
 import kotlinx.datetime.LocalDate
@@ -23,7 +23,7 @@ data class CreateTaskNetworkRequest(
     @SerialName("property_id") val propertyId: PropertyId,
     @SerialName("unit_id") val unitId: UnitId?,
     @SerialName("common_area_id") val commonAreaId: CommonAreaId?,
-    @SerialName("assignee_id") val assigneeId: UserId?,
+    @SerialName("assignee_id") val assigneeId: EmployeeId?,
     val title: String,
     val description: String?,
     val priority: TaskPriority,

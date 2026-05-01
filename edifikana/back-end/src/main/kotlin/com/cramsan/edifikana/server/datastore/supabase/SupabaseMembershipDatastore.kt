@@ -5,7 +5,6 @@ import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.edifikana.lib.model.task.TaskStatus
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.MembershipDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.InviteEntity
@@ -143,39 +142,6 @@ class SupabaseMembershipDatastore(private val postgrest: Postgrest, private val 
                 )
             val jsonParams = Json.encodeToJsonElement(TransferOwnershipParams.serializer(), params).jsonObject
             postgrest.rpc("transfer_ownership", jsonParams)
-        }
-
-    /**
-     * Sets assignee_id = NULL on all non-terminal tasks in [orgId] assigned to [userId].
-     * Tasks are property-scoped; we resolve the org by fetching all property IDs for [orgId]
-     * first, then filtering tasks by those property IDs.
-     */
-    override suspend fun unassignTasksForMember(orgId: OrganizationId, userId: UserId): Result<Unit> =
-        runSuspendCatching(TAG) {
-            logD(TAG, "Unassigning tasks for member %s in org %s", userId, orgId)
-            val propertyIds =
-                postgrest
-                    .from(PROPERTIES_COLLECTION)
-                    .select {
-                        filter {
-                            eq("organization_id", orgId.id)
-                            exact("deleted_at", null)
-                        }
-                    }.decodeList<PropertyIdEntity>()
-                    .map { it.id }
-
-            if (propertyIds.isEmpty()) return@runSuspendCatching
-
-            postgrest.from(TASKS_COLLECTION).update({
-                set("assignee_id", null as String?)
-            }) {
-                filter {
-                    isIn("property_id", propertyIds)
-                    eq("assignee_id", userId.userId)
-                    exact("deleted_at", null)
-                    isIn("status", listOf(TaskStatus.OPEN.name, TaskStatus.IN_PROGRESS.name))
-                }
-            }
         }
 
     /**
@@ -380,12 +346,7 @@ class SupabaseMembershipDatastore(private val postgrest: Postgrest, private val 
         @SerialName("p_caller_id") val pCallerId: String,
     )
 
-    @Serializable
-    private data class PropertyIdEntity(val id: String)
-
     companion object {
         private const val TAG = "SupabaseMembershipDatastore"
-        private const val TASKS_COLLECTION = "tasks"
-        private const val PROPERTIES_COLLECTION = "properties"
     }
 }

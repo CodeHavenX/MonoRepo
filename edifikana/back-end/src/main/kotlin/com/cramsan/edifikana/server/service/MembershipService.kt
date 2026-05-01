@@ -72,7 +72,6 @@ class MembershipService(
 
     /**
      * Removes [targetUserId] from [orgId].
-     * Unassigns their tasks and soft-deletes the membership row.
      * The sole OWNER of an org cannot be removed.
      */
     suspend fun removeMember(
@@ -86,7 +85,6 @@ class MembershipService(
                     "Cannot remove the sole owner of an organization",
                 )
             }
-            membershipDatastore.unassignTasksForMember(orgId, targetUserId).getOrThrow()
             membershipDatastore.removeMember(orgId, targetUserId).getOrThrow()
         }
 
@@ -105,7 +103,6 @@ class MembershipService(
                     "Cannot leave an organization you are the sole owner of. Transfer ownership first.",
                 )
             }
-            membershipDatastore.unassignTasksForMember(orgId, callerId).getOrThrow()
             membershipDatastore.removeMember(orgId, callerId).getOrThrow()
         }
 

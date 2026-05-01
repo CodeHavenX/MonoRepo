@@ -50,11 +50,6 @@ interface MembershipDatastore {
     ): Result<Unit>
 
     /**
-     * Sets assignee_id = NULL on all open tasks in [orgId] assigned to [userId].
-     */
-    suspend fun unassignTasksForMember(orgId: OrganizationId, userId: UserId): Result<Unit>
-
-    /**
      * Returns pending invites for [orgId]: not expired, not cancelled, not accepted.
      */
     suspend fun listPendingInvites(orgId: OrganizationId): Result<List<Invite>>

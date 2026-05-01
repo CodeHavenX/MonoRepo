@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
@@ -29,7 +30,7 @@ data class TaskEntity(
     @SerialName("common_area_id")
     val commonAreaId: CommonAreaId?,
     @SerialName("assignee_id")
-    val assigneeId: UserId?,
+    val assigneeId: EmployeeId?,
     @SerialName("created_by")
     val createdBy: UserId,
     @SerialName("status_changed_by")
@@ -68,7 +69,7 @@ data class TaskEntity(
         @SerialName("common_area_id")
         val commonAreaId: CommonAreaId?,
         @SerialName("assignee_id")
-        val assigneeId: UserId?,
+        val assigneeId: EmployeeId?,
         @SerialName("created_by")
         val createdBy: UserId,
         val title: String,

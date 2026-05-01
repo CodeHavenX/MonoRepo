@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.lib.model.network.task
 
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.task.TaskId
 import com.cramsan.edifikana.lib.model.task.TaskPriority
@@ -29,7 +30,7 @@ data class TaskNetworkResponse(
     @SerialName("property_id") val propertyId: PropertyId,
     @SerialName("unit_id") val unitId: UnitId?,
     @SerialName("common_area_id") val commonAreaId: CommonAreaId?,
-    @SerialName("assignee_id") val assigneeId: UserId?,
+    @SerialName("assignee_id") val assigneeId: EmployeeId?,
     @SerialName("created_by") val createdBy: UserId,
     @SerialName("status_changed_by") val statusChangedBy: UserId?,
     val title: String,

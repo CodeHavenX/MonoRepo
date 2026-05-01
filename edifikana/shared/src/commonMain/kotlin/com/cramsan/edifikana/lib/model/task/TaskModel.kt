@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.lib.model.task
 
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
@@ -20,7 +21,7 @@ data class TaskModel(
     val propertyId: PropertyId,
     val unitId: UnitId?,
     val commonAreaId: CommonAreaId?,
-    val assigneeId: UserId?,
+    val assigneeId: EmployeeId?,
     val createdBy: UserId,
     val statusChangedBy: UserId?,
     val title: String,

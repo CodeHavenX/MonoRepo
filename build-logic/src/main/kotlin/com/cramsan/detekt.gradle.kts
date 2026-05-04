@@ -1,5 +1,6 @@
 package com.cramsan
 
+import dev.detekt.gradle.Detekt
 import dev.detekt.gradle.extensions.DetektExtension
 
 plugins {
@@ -29,6 +30,13 @@ extensions.configure<DetektExtension> {
     if (baselineFile.exists()) {
         baseline.set(baselineFile)
     }
+}
+
+// detekt-kotlin-analysis-api bundles Kotlin 2.1.x; skip the metadata version check so
+// it doesn't print "e: ... expected version is 2.1.0" when analyzing code compiled with 2.3.x.
+// Remove once detekt ships with a Kotlin 2.3.x Analysis API: https://github.com/CodeHavenX/MonoRepo/issues/478
+tasks.withType<Detekt>().configureEach {
+    freeCompilerArgs.add("-Xskip-metadata-version-check")
 }
 
 dependencies {

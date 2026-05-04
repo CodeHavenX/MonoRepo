@@ -24,6 +24,7 @@ dependencies {
 // The Gradle-embedded Kotlin (2.0.21) cannot read metadata from Kotlin 2.3.x artifacts
 // on the classpath. This flag tells the compiler to skip the version check and fall back
 // to reading types from JVM bytecode instead.
+// Remove once detekt ships with a Kotlin 2.3.x Analysis API: https://github.com/CodeHavenX/MonoRepo/issues/478
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.add("-Xskip-metadata-version-check")

@@ -42,19 +42,19 @@ class StorageServiceImpl(
         runSuspendCatching(TAG) {
             val apiOperation =
                 when (resourceType) {
-                StorageService.RESOURCE_TYPE_PROFILE -> StorageApi.createProfileSignedUpload
-                StorageService.RESOURCE_TYPE_TIME_CARD -> StorageApi.createTimeCardSignedUpload
-                StorageService.RESOURCE_TYPE_TASK -> StorageApi.createTaskSignedUpload
-                StorageService.RESOURCE_TYPE_EVENT_LOG -> StorageApi.createEventLogSignedUpload
-                StorageService.RESOURCE_TYPE_PROPERTY -> StorageApi.createPropertySignedUpload
-                StorageService.RESOURCE_TYPE_ORGANIZATION -> StorageApi.createOrganizationSignedUpload
-                else -> error("Unknown resource type: $resourceType")
-            }
+                    StorageService.RESOURCE_TYPE_PROFILE -> StorageApi.createProfileSignedUpload
+                    StorageService.RESOURCE_TYPE_TIME_CARD -> StorageApi.createTimeCardSignedUpload
+                    StorageService.RESOURCE_TYPE_TASK -> StorageApi.createTaskSignedUpload
+                    StorageService.RESOURCE_TYPE_EVENT_LOG -> StorageApi.createEventLogSignedUpload
+                    StorageService.RESOURCE_TYPE_PROPERTY -> StorageApi.createPropertySignedUpload
+                    StorageService.RESOURCE_TYPE_ORGANIZATION -> StorageApi.createOrganizationSignedUpload
+                    else -> error("Unknown resource type: $resourceType")
+                }
             val response =
                 apiOperation
                     .buildRequest(
                         queryParam =
-                            CreateSignedUploadQueryParams(
+                        CreateSignedUploadQueryParams(
                             filename = filename,
                             bucketId = bucketId,
                             resourceId = resourceId,

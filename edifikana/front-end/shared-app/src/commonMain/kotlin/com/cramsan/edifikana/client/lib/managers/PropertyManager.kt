@@ -153,13 +153,13 @@ class PropertyManager(
         logI(TAG, "Uploading image: filename=$filename, propertyId=$propertyId")
         val storageRef =
             storageManager
-            .uploadImage(
-                imageUri,
-                filename,
-                PROPERTY_IMAGE_BUCKET,
-                StorageService.RESOURCE_TYPE_PROPERTY,
-                propertyId.propertyId,
-            ).getOrThrow()
+                .uploadImage(
+                    imageUri,
+                    filename,
+                    PROPERTY_IMAGE_BUCKET,
+                    StorageService.RESOURCE_TYPE_PROPERTY,
+                    propertyId.propertyId,
+                ).getOrThrow()
         logI(TAG, "Upload successful: $storageRef")
         return "storage:$storageRef"
     }

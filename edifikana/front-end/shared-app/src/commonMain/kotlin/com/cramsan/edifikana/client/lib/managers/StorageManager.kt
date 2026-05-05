@@ -122,13 +122,13 @@ class StorageManager(
             // Upload to storage
             val storageRef =
                 storageService
-                .uploadFile(
-                    processedBytes,
-                    filename,
-                    bucketId,
-                    resourceType,
-                    resourceId,
-                ).getOrThrow()
+                    .uploadFile(
+                        processedBytes,
+                        filename,
+                        bucketId,
+                        resourceType,
+                        resourceId,
+                    ).getOrThrow()
             logI(TAG, "Upload successful: $storageRef")
 
             storageRef

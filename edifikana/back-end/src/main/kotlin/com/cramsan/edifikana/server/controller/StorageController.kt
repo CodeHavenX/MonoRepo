@@ -40,7 +40,6 @@ class StorageController(
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
 ) : Controller {
-
     /**
      * Returns a signed download URL. Resource type and resource ID are derived from
      * the asset path — the client cannot supply or override them.
@@ -54,8 +53,9 @@ class StorageController(
             >,
     ): AssetNetworkResponse {
         val rawAssetId = requireNotBlank(request.queryParam.assetId)
-        val (resourceType, resourceId) = StorageResourceType.fromPath(rawAssetId)
-            ?: throw NotFoundException("Unrecognized asset path format: $rawAssetId")
+        val (resourceType, resourceId) =
+            StorageResourceType.fromPath(rawAssetId)
+                ?: throw NotFoundException("Unrecognized asset path format: $rawAssetId")
         checkDownloadAuthorization(request.context, resourceType, resourceId)
         val asset =
             storageService.getSignedDownloadUrl(AssetId(rawAssetId))
@@ -63,6 +63,10 @@ class StorageController(
         return asset.toAssetNetworkResponse()
     }
 
+    /**
+     * Handles creation of a signed upload URL for a user profile asset.
+     * Upload is restricted to self: the requesting user must own the profile identified by [resourceId].
+     */
     suspend fun createProfileSignedUpload(
         request: OperationRequest<
             NoRequestBody,
@@ -72,6 +76,10 @@ class StorageController(
             >,
     ): SignedUploadUrlNetworkResponse = createSignedUpload(request, StorageResourceType.PROFILE)
 
+    /**
+     * Handles creation of a signed upload URL for a time card photo.
+     * Requires EMPLOYEE+ role in the property's org. [resourceId] must be a PropertyId.
+     */
     suspend fun createTimeCardSignedUpload(
         request: OperationRequest<
             NoRequestBody,
@@ -81,6 +89,10 @@ class StorageController(
             >,
     ): SignedUploadUrlNetworkResponse = createSignedUpload(request, StorageResourceType.TIME_CARD)
 
+    /**
+     * Handles creation of a signed upload URL for a task attachment.
+     * Requires EMPLOYEE+ role in the property's org. [resourceId] must be a PropertyId.
+     */
     suspend fun createTaskSignedUpload(
         request: OperationRequest<
             NoRequestBody,
@@ -90,6 +102,10 @@ class StorageController(
             >,
     ): SignedUploadUrlNetworkResponse = createSignedUpload(request, StorageResourceType.TASK)
 
+    /**
+     * Handles creation of a signed upload URL for an event log attachment.
+     * Requires EMPLOYEE+ role in the property's org. [resourceId] must be a PropertyId.
+     */
     suspend fun createEventLogSignedUpload(
         request: OperationRequest<
             NoRequestBody,
@@ -99,6 +115,10 @@ class StorageController(
             >,
     ): SignedUploadUrlNetworkResponse = createSignedUpload(request, StorageResourceType.EVENT_LOG)
 
+    /**
+     * Handles creation of a signed upload URL for a property image.
+     * Requires MANAGER+ role in the property's org. [resourceId] must be a PropertyId.
+     */
     suspend fun createPropertySignedUpload(
         request: OperationRequest<
             NoRequestBody,
@@ -108,6 +128,10 @@ class StorageController(
             >,
     ): SignedUploadUrlNetworkResponse = createSignedUpload(request, StorageResourceType.PROPERTY)
 
+    /**
+     * Handles creation of a signed upload URL for an org-level asset.
+     * Requires ADMIN+ role in the organization. [resourceId] must be an OrganizationId.
+     */
     suspend fun createOrganizationSignedUpload(
         request: OperationRequest<
             NoRequestBody,
@@ -179,14 +203,47 @@ class StorageController(
     ) {
         val authorized =
             when (resourceType) {
-            StorageResourceType.PROFILE -> context.payload.userId == UserId(resourceId)
-            StorageResourceType.TIME_CARD -> rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
-            StorageResourceType.TASK -> rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
-            StorageResourceType.EVENT_LOG -> rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
-            StorageResourceType.PROPERTY -> rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.MANAGER)
-            StorageResourceType.ORGANIZATION -> rbacService.hasRoleOrHigher(context, OrganizationId(resourceId), UserRole.ADMIN)
-        }
-        if (!authorized) throw UnauthorizedException(unauthorizedMsg)
+                StorageResourceType.PROFILE -> {
+                    context.payload.userId == UserId(resourceId)
+                }
+
+                StorageResourceType.TIME_CARD -> {
+                    rbacService.hasRoleOrHigher(
+                        context,
+                        PropertyId(resourceId),
+                        UserRole.EMPLOYEE,
+                    )
+                }
+
+                StorageResourceType.TASK -> {
+                    rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
+                }
+
+                StorageResourceType.EVENT_LOG -> {
+                    rbacService.hasRoleOrHigher(
+                        context,
+                        PropertyId(resourceId),
+                        UserRole.EMPLOYEE,
+                    )
+                }
+
+                StorageResourceType.PROPERTY -> {
+                    rbacService.hasRoleOrHigher(
+                        context,
+                        PropertyId(resourceId),
+                        UserRole.MANAGER,
+                    )
+                }
+
+                StorageResourceType.ORGANIZATION -> {
+                    rbacService.hasRoleOrHigher(
+                        context,
+                        OrganizationId(resourceId),
+                        UserRole.ADMIN,
+                    )
+                }
+            }
+        if (!authorized) throw UnauthorizedException(UNAUTHORIZED_MSG)
     }
 
     private suspend fun checkDownloadAuthorization(
@@ -196,17 +253,50 @@ class StorageController(
     ) {
         val authorized =
             when (resourceType) {
-            StorageResourceType.PROFILE -> true
-            StorageResourceType.TIME_CARD -> rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
-            StorageResourceType.TASK -> rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
-            StorageResourceType.EVENT_LOG -> rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
-            StorageResourceType.PROPERTY -> rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.MANAGER)
-            StorageResourceType.ORGANIZATION -> rbacService.hasRoleOrHigher(context, OrganizationId(resourceId), UserRole.ADMIN)
-        }
-        if (!authorized) throw UnauthorizedException(unauthorizedMsg)
+                StorageResourceType.PROFILE -> {
+                    true
+                }
+
+                StorageResourceType.TIME_CARD -> {
+                    rbacService.hasRoleOrHigher(
+                        context,
+                        PropertyId(resourceId),
+                        UserRole.EMPLOYEE,
+                    )
+                }
+
+                StorageResourceType.TASK -> {
+                    rbacService.hasRoleOrHigher(context, PropertyId(resourceId), UserRole.EMPLOYEE)
+                }
+
+                StorageResourceType.EVENT_LOG -> {
+                    rbacService.hasRoleOrHigher(
+                        context,
+                        PropertyId(resourceId),
+                        UserRole.EMPLOYEE,
+                    )
+                }
+
+                StorageResourceType.PROPERTY -> {
+                    rbacService.hasRoleOrHigher(
+                        context,
+                        PropertyId(resourceId),
+                        UserRole.MANAGER,
+                    )
+                }
+
+                StorageResourceType.ORGANIZATION -> {
+                    rbacService.hasRoleOrHigher(
+                        context,
+                        OrganizationId(resourceId),
+                        UserRole.ADMIN,
+                    )
+                }
+            }
+        if (!authorized) throw UnauthorizedException(UNAUTHORIZED_MSG)
     }
 
     companion object {
-        private const val unauthorizedMsg = "You are not authorized to perform this action."
+        private const val UNAUTHORIZED_MSG = "You are not authorized to perform this action."
     }
 }

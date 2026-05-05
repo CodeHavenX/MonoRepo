@@ -171,12 +171,13 @@ class StorageControllerTest :
             coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.MANAGER) } returns true
 
             // Act
-            val response = client.post(
-                "storage/property/signed-upload" +
-                    "?filename=$filename" +
-                    "&bucket_id=$BUCKET_ID" +
-                    "&resource_id=${PROPERTY_1.id.propertyId}",
-            )
+            val response =
+                client.post(
+                    "storage/property/signed-upload" +
+                        "?filename=$filename" +
+                        "&bucket_id=$BUCKET_ID" +
+                        "&resource_id=${PROPERTY_1.id.propertyId}",
+                )
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
@@ -197,12 +198,13 @@ class StorageControllerTest :
             coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.MANAGER) } returns false
 
             // Act
-            val response = client.post(
-                "storage/property/signed-upload" +
-                    "?filename=photo.jpg" +
-                    "&bucket_id=$BUCKET_ID" +
-                    "&resource_id=${PROPERTY_1.id.propertyId}",
-            )
+            val response =
+                client.post(
+                    "storage/property/signed-upload" +
+                        "?filename=photo.jpg" +
+                        "&bucket_id=$BUCKET_ID" +
+                        "&resource_id=${PROPERTY_1.id.propertyId}",
+                )
 
             // Assert
             assertEquals(HttpStatusCode.Unauthorized, response.status)
@@ -227,12 +229,13 @@ class StorageControllerTest :
             coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.EMPLOYEE) } returns true
 
             // Act
-            val response = client.post(
-                "storage/time-card/signed-upload" +
-                    "?filename=$filename" +
-                    "&bucket_id=$BUCKET_ID" +
-                    "&resource_id=${PROPERTY_1.id.propertyId}",
-            )
+            val response =
+                client.post(
+                    "storage/time-card/signed-upload" +
+                        "?filename=$filename" +
+                        "&bucket_id=$BUCKET_ID" +
+                        "&resource_id=${PROPERTY_1.id.propertyId}",
+                )
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
@@ -253,12 +256,13 @@ class StorageControllerTest :
             coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.EMPLOYEE) } returns false
 
             // Act
-            val response = client.post(
-                "storage/time-card/signed-upload" +
-                    "?filename=photo.jpg" +
-                    "&bucket_id=$BUCKET_ID" +
-                    "&resource_id=${PROPERTY_1.id.propertyId}",
-            )
+            val response =
+                client.post(
+                    "storage/time-card/signed-upload" +
+                        "?filename=photo.jpg" +
+                        "&bucket_id=$BUCKET_ID" +
+                        "&resource_id=${PROPERTY_1.id.propertyId}",
+                )
 
             // Assert
             assertEquals(HttpStatusCode.Unauthorized, response.status)

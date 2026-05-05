@@ -23,8 +23,13 @@ enum class StorageResourceType(val pathPrefix: String) {
     PROPERTY("private/properties"),
 
     /** Org-level asset. Resource ID is an OrganizationId. Upload: ADMIN+. Download: ADMIN+ in the organization. */
-    ORGANIZATION("private/organizations");
+    ORGANIZATION("private/organizations"),
+    ;
 
+    /**
+     * Constructs the canonical storage path for an asset of this type.
+     * The resulting path follows the convention: [pathPrefix]/[resourceId]/[filename].
+     */
     fun buildPath(resourceId: String, filename: String): String = "$pathPrefix/$resourceId/$filename"
 
     companion object {

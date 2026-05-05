@@ -39,7 +39,7 @@ Record:
 Always read this file first — it is the source of truth for structure and conventions:
 
 ```
-Read: <project-root>/MonoRepo/.ai/instructions.md
+Read: <project-root>/.ai/instructions.md
 ```
 
 Key things to note:
@@ -59,7 +59,9 @@ Always read these wiki files. They live at `<project-root>/../wiki/`.
 - `Projects/Architecture/front-end.md`
 - `Projects/Architecture/overview.md`
 - `Projects/Edifikana/Design/application-design.md`
-- `Projects/Edifikana/Development/tasks/issues/` — list all files, then read the 2–3 most relevant to the current issue (same feature area, same phase, or referenced in the issue body)
+- `Projects/Edifikana/Development/mvp-project-plan.me`
+- `Projects/Edifikana/Development/tasks/phase-*.md`
+- `Projects/Edifikana/Development/tasks/issues/` — list all files, then read the 2–3 most relevant to the current issue (same feature area, same phase, or referenced in the issue body). Some of these may be out of date, so always verify the information and compare to the github PR.
 
 ### Read if Roles/Permissions are involved
 - `Projects/Edifikana/Architecture/roles-permissions.html` (first 150 lines)

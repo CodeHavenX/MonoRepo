@@ -3,7 +3,6 @@ package com.cramsan.edifikana.server.controller
 import com.cramsan.architecture.server.test.startTestKoin
 import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.edifikana.lib.model.asset.AssetId
-import com.cramsan.edifikana.lib.model.network.asset.StorageResourceType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
@@ -59,30 +58,23 @@ class StorageControllerTest :
     // region getSignedDownload
 
     @Test
-    fun `getSignedDownload should return OK and signed URL when user is authorized`() =
+    fun `getSignedDownload should return OK and signed URL when PROPERTY asset is authorized`() =
         testBackEndApplication {
             // Arrange
+            val assetId = "private/properties/${PROPERTY_1.id.propertyId}/photo.jpg"
             val expectedResponse = readFileContent("requests/get_signed_download_response.json")
             val storageService = get<StorageService>()
             val rbacService = get<RBACService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-            coEvery { storageService.getSignedDownloadUrl(AssetId(ASSET_2.id.assetId)) } returns ASSET_2
-            coEvery {
-                contextRetriever.getContext(
-                    any(),
-                )
-            }.answers { mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>() }
-            coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), any()) } returns true
+            coEvery { storageService.getSignedDownloadUrl(AssetId(assetId)) } returns ASSET_2
+            coEvery { contextRetriever.getContext(any()) }.answers {
+                mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>()
+            }
+            coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.MANAGER) } returns true
 
             // Act
-            val response =
-                client.get(
-                "storage/signed-download" +
-                    "?asset_id=${ASSET_2.id.assetId}" +
-                    "&resource_type=${StorageResourceType.PROPERTY}" +
-                    "&resource_id=${PROPERTY_1.id.propertyId}",
-            )
+            val response = client.get("storage/signed-download?asset_id=$assetId")
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
@@ -90,28 +82,67 @@ class StorageControllerTest :
         }
 
     @Test
-    fun `getSignedDownload should return 401 when user is not authorized`() =
+    fun `getSignedDownload should return 401 when PROPERTY asset is not authorized`() =
         testBackEndApplication {
             // Arrange
+            val assetId = "private/properties/${PROPERTY_1.id.propertyId}/photo.jpg"
             val storageService = get<StorageService>()
             val rbacService = get<RBACService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-            coEvery {
-                contextRetriever.getContext(
-                    any(),
-                )
-            }.answers { mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>() }
-            coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), any()) } returns false
+            coEvery { contextRetriever.getContext(any()) }.answers {
+                mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>()
+            }
+            coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.MANAGER) } returns false
 
             // Act
-            val response =
-                client.get(
-                "storage/signed-download" +
-                    "?asset_id=${ASSET_2.id.assetId}" +
-                    "&resource_type=${StorageResourceType.PROPERTY}" +
-                    "&resource_id=${PROPERTY_1.id.propertyId}",
-            )
+            val response = client.get("storage/signed-download?asset_id=$assetId")
+
+            // Assert
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            coVerify { storageService wasNot Called }
+        }
+
+    @Test
+    fun `getSignedDownload should return OK and signed URL when TIME_CARD asset is authorized`() =
+        testBackEndApplication {
+            // Arrange
+            val assetId = "private/time_cards/${PROPERTY_1.id.propertyId}/photo.jpg"
+            val expectedResponse = readFileContent("requests/get_signed_download_response.json")
+            val storageService = get<StorageService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+            coEvery { storageService.getSignedDownloadUrl(AssetId(assetId)) } returns ASSET_2
+            coEvery { contextRetriever.getContext(any()) }.answers {
+                mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>()
+            }
+            coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.EMPLOYEE) } returns true
+
+            // Act
+            val response = client.get("storage/signed-download?asset_id=$assetId")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `getSignedDownload should return 401 when TIME_CARD asset is not authorized`() =
+        testBackEndApplication {
+            // Arrange
+            val assetId = "private/time_cards/${PROPERTY_1.id.propertyId}/photo.jpg"
+            val storageService = get<StorageService>()
+            val rbacService = get<RBACService>()
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+
+            coEvery { contextRetriever.getContext(any()) }.answers {
+                mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>()
+            }
+            coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.EMPLOYEE) } returns false
+
+            // Act
+            val response = client.get("storage/signed-download?asset_id=$assetId")
 
             // Assert
             assertEquals(HttpStatusCode.Unauthorized, response.status)
@@ -123,29 +154,27 @@ class StorageControllerTest :
     // region createSignedUpload
 
     @Test
-    fun `createSignedUpload should return OK and signed upload URL when user is authorized`() =
+    fun `createPropertySignedUpload should return OK when user has MANAGER role`() =
         testBackEndApplication {
             // Arrange
+            val filename = "photo.jpg"
+            val canonicalPath = "private/properties/${PROPERTY_1.id.propertyId}/$filename"
             val expectedResponse = readFileContent("requests/create_signed_upload_response.json")
             val storageService = get<StorageService>()
             val rbacService = get<RBACService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-            coEvery { storageService.getSignedUploadUrl(ASSET_2.fileName, BUCKET_ID) } returns ASSET_2
-            coEvery {
-                contextRetriever.getContext(
-                    any(),
-                )
-            }.answers { mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>() }
+            coEvery { storageService.getSignedUploadUrl(canonicalPath, BUCKET_ID) } returns ASSET_2
+            coEvery { contextRetriever.getContext(any()) }.answers {
+                mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>()
+            }
             coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.MANAGER) } returns true
 
             // Act
-            val response =
-                client.post(
-                "storage/signed-upload" +
-                    "?filename=${ASSET_2.fileName}" +
+            val response = client.post(
+                "storage/property/signed-upload" +
+                    "?filename=$filename" +
                     "&bucket_id=$BUCKET_ID" +
-                    "&resource_type=${StorageResourceType.PROPERTY}" +
                     "&resource_id=${PROPERTY_1.id.propertyId}",
             )
 
@@ -155,27 +184,23 @@ class StorageControllerTest :
         }
 
     @Test
-    fun `createSignedUpload should return 401 when user lacks required role`() =
+    fun `createPropertySignedUpload should return 401 when user lacks MANAGER role`() =
         testBackEndApplication {
             // Arrange
             val storageService = get<StorageService>()
             val rbacService = get<RBACService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-            coEvery {
-                contextRetriever.getContext(
-                    any(),
-                )
-            }.answers { mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>() }
+            coEvery { contextRetriever.getContext(any()) }.answers {
+                mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>()
+            }
             coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.MANAGER) } returns false
 
             // Act
-            val response =
-                client.post(
-                "storage/signed-upload" +
-                    "?filename=${ASSET_2.fileName}" +
+            val response = client.post(
+                "storage/property/signed-upload" +
+                    "?filename=photo.jpg" +
                     "&bucket_id=$BUCKET_ID" +
-                    "&resource_type=${StorageResourceType.PROPERTY}" +
                     "&resource_id=${PROPERTY_1.id.propertyId}",
             )
 
@@ -185,57 +210,53 @@ class StorageControllerTest :
         }
 
     @Test
-    fun `createSignedUpload should return OK for TIME_CARD when building account has EMPLOYEE role`() =
+    fun `createTimeCardSignedUpload should return OK when user has EMPLOYEE role`() =
         testBackEndApplication {
             // Arrange
+            val filename = "photo.jpg"
+            val canonicalPath = "private/time_cards/${PROPERTY_1.id.propertyId}/$filename"
+            val expectedResponse = readFileContent("requests/create_signed_upload_response.json")
             val storageService = get<StorageService>()
             val rbacService = get<RBACService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-            coEvery { storageService.getSignedUploadUrl(ASSET_2.fileName, BUCKET_ID) } returns ASSET_2
-            coEvery {
-                contextRetriever.getContext(
-                    any(),
-                )
-            }.answers { mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>() }
+            coEvery { storageService.getSignedUploadUrl(canonicalPath, BUCKET_ID) } returns ASSET_2
+            coEvery { contextRetriever.getContext(any()) }.answers {
+                mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>()
+            }
             coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.EMPLOYEE) } returns true
 
             // Act
-            val response =
-                client.post(
-                "storage/signed-upload" +
-                    "?filename=${ASSET_2.fileName}" +
+            val response = client.post(
+                "storage/time-card/signed-upload" +
+                    "?filename=$filename" +
                     "&bucket_id=$BUCKET_ID" +
-                    "&resource_type=${StorageResourceType.TIME_CARD}" +
                     "&resource_id=${PROPERTY_1.id.propertyId}",
             )
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
         }
 
     @Test
-    fun `createSignedUpload should return 401 for TIME_CARD when building account is not in org`() =
+    fun `createTimeCardSignedUpload should return 401 when user is not in org`() =
         testBackEndApplication {
             // Arrange
             val storageService = get<StorageService>()
             val rbacService = get<RBACService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
 
-            coEvery {
-                contextRetriever.getContext(
-                    any(),
-                )
-            }.answers { mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>() }
+            coEvery { contextRetriever.getContext(any()) }.answers {
+                mockk<ClientContext.AuthenticatedClientContext<SupabaseContextPayload>>()
+            }
             coEvery { rbacService.hasRoleOrHigher(any(), any<PropertyId>(), UserRole.EMPLOYEE) } returns false
 
             // Act
-            val response =
-                client.post(
-                "storage/signed-upload" +
-                    "?filename=${ASSET_2.fileName}" +
+            val response = client.post(
+                "storage/time-card/signed-upload" +
+                    "?filename=photo.jpg" +
                     "&bucket_id=$BUCKET_ID" +
-                    "&resource_type=${StorageResourceType.TIME_CARD}" +
                     "&resource_id=${PROPERTY_1.id.propertyId}",
             )
 

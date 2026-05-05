@@ -6,7 +6,7 @@ import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.client.lib.service.TimeCardService
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
-import com.cramsan.edifikana.lib.model.network.asset.StorageResourceType
+import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
@@ -153,7 +153,7 @@ class TimeCardManagerTest : CoroutineTest() {
                 any(),
                 any(),
                 any(),
-                StorageResourceType.TIME_CARD,
+                StorageService.RESOURCE_TYPE_TIME_CARD,
                 record.propertyId.propertyId,
             )
         } returns Result.success("storage-ref")
@@ -169,7 +169,7 @@ class TimeCardManagerTest : CoroutineTest() {
                 any(),
                 any(),
                 any(),
-                StorageResourceType.TIME_CARD,
+                StorageService.RESOURCE_TYPE_TIME_CARD,
                 record.propertyId.propertyId,
             )
         }

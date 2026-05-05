@@ -2,7 +2,6 @@ package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.StorageService
-import com.cramsan.edifikana.lib.model.network.asset.StorageResourceType
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.logging.EventLogger
@@ -75,7 +74,7 @@ class StorageServiceImplTest : CoroutineTest() {
             testData,
             targetRef,
             bucketId,
-            StorageResourceType.TIME_CARD,
+            StorageService.RESOURCE_TYPE_TIME_CARD,
             "property_id_1",
         )
 
@@ -96,7 +95,7 @@ class StorageServiceImplTest : CoroutineTest() {
             "test".toByteArray(),
             "file.png",
             "images",
-            StorageResourceType.TIME_CARD,
+            StorageService.RESOURCE_TYPE_TIME_CARD,
             "property_id_1",
         )
 
@@ -117,11 +116,7 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.downloadFile(
-            targetRef,
-            StorageResourceType.TIME_CARD,
-            "property_id_1",
-        )
+        val result = storageService.downloadFile(targetRef)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -156,11 +151,7 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.downloadFile(
-            targetRef,
-            StorageResourceType.TIME_CARD,
-            "property_id_1",
-        )
+        val result = storageService.downloadFile(targetRef)
 
         // Assert
         assertTrue(result.isSuccess)
@@ -178,11 +169,7 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.downloadFile(
-            targetRef,
-            StorageResourceType.TIME_CARD,
-            "property_id_1",
-        )
+        val result = storageService.downloadFile(targetRef)
 
         // Assert
         assertTrue(result.isFailure)

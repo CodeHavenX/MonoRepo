@@ -140,7 +140,7 @@ class PropertyManagerTest : CoroutineTest() {
         val result = manager.addProperty(propertyName, address, organizationId, imageUri = imageUri)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { storageManager.uploadImage(imageUri, "private/properties/property-1_photo.jpg", any(), any(), any()) }
+        coVerify { storageManager.uploadImage(imageUri, "photo.jpg", any(), any(), any()) }
     }
 
     /**
@@ -163,7 +163,7 @@ class PropertyManagerTest : CoroutineTest() {
         val result = manager.addProperty(propertyName, address, organizationId, imageUri = imageUri)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { storageManager.uploadImage(imageUri, "private/properties/property-1_evil.jpg", any(), any(), any()) }
+        coVerify { storageManager.uploadImage(imageUri, "evil.jpg", any(), any(), any()) }
     }
 
     /**
@@ -183,7 +183,7 @@ class PropertyManagerTest : CoroutineTest() {
         val result = manager.updateProperty(propertyId, name, address, imageUri = imageUri)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { storageManager.uploadImage(imageUri, "private/properties/property-1_photo.jpg", any(), any(), any()) }
+        coVerify { storageManager.uploadImage(imageUri, "photo.jpg", any(), any(), any()) }
     }
 
     /**
@@ -203,7 +203,7 @@ class PropertyManagerTest : CoroutineTest() {
         val result = manager.updateProperty(propertyId, name, address, imageUri = imageUri)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { storageManager.uploadImage(imageUri, "private/properties/property-1_evil.jpg", any(), any(), any()) }
+        coVerify { storageManager.uploadImage(imageUri, "evil.jpg", any(), any(), any()) }
     }
 
     /**

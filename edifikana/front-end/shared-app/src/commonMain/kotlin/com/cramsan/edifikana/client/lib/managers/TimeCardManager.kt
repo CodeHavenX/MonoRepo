@@ -8,7 +8,7 @@ import com.cramsan.edifikana.client.lib.utils.getFilename
 import com.cramsan.edifikana.client.lib.utils.processImageData
 import com.cramsan.edifikana.client.lib.utils.readBytes
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
-import com.cramsan.edifikana.lib.model.network.asset.StorageResourceType
+import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.framework.annotations.FrontendManager
@@ -108,9 +108,9 @@ class TimeCardManager(
                         storageManager
                             .uploadFile(
                                 processedImage,
-                                "private/time_cards/$fileName",
+                                fileName,
                                 TIMECARD_IMAGE_BUCKET,
-                                StorageResourceType.TIME_CARD,
+                                StorageService.RESOURCE_TYPE_TIME_CARD,
                                 model.propertyId.propertyId,
                             ).getOrThrow()
                     }

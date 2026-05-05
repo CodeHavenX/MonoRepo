@@ -22,11 +22,51 @@ object StorageApi : Api("storage") {
             AssetNetworkResponse,
             >(HttpMethod.Get, "signed-download")
 
-    val createSignedUpload =
+    val createProfileSignedUpload =
         operation<
             NoRequestBody,
             CreateSignedUploadQueryParams,
             NoPathParam,
             SignedUploadUrlNetworkResponse,
-            >(HttpMethod.Post, "signed-upload")
+            >(HttpMethod.Post, "profile/signed-upload")
+
+    val createTimeCardSignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "time-card/signed-upload")
+
+    val createTaskSignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "task/signed-upload")
+
+    val createEventLogSignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "event-log/signed-upload")
+
+    val createPropertySignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "property/signed-upload")
+
+    val createOrganizationSignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "organization/signed-upload")
 }

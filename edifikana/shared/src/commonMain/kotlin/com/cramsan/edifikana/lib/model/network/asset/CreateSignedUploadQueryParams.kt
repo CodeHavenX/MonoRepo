@@ -13,6 +13,5 @@ import kotlinx.serialization.Serializable
 data class CreateSignedUploadQueryParams(
     @SerialName("filename") val filename: String,
     @SerialName("bucket_id") val bucketId: String,
-    @SerialName("resource_type") val resourceType: StorageResourceType,
     @SerialName("resource_id") val resourceId: String,
 ) : QueryParam

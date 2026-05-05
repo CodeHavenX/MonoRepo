@@ -5,7 +5,6 @@ import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.lib.model.network.asset.CreateSignedUploadQueryParams
 import com.cramsan.edifikana.lib.model.network.asset.GetSignedDownloadQueryParams
-import com.cramsan.edifikana.lib.model.network.asset.StorageResourceType
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.runSuspendCatching
@@ -35,23 +34,32 @@ class StorageServiceImpl(
 ) : StorageService {
     override suspend fun uploadFile(
         data: ByteArray,
-        targetRef: String,
+        filename: String,
         bucketId: String,
-        resourceType: StorageResourceType,
+        resourceType: String,
         resourceId: String,
     ): Result<String> =
         runSuspendCatching(TAG) {
+            val apiOperation =
+                when (resourceType) {
+                StorageService.RESOURCE_TYPE_PROFILE -> StorageApi.createProfileSignedUpload
+                StorageService.RESOURCE_TYPE_TIME_CARD -> StorageApi.createTimeCardSignedUpload
+                StorageService.RESOURCE_TYPE_TASK -> StorageApi.createTaskSignedUpload
+                StorageService.RESOURCE_TYPE_EVENT_LOG -> StorageApi.createEventLogSignedUpload
+                StorageService.RESOURCE_TYPE_PROPERTY -> StorageApi.createPropertySignedUpload
+                StorageService.RESOURCE_TYPE_ORGANIZATION -> StorageApi.createOrganizationSignedUpload
+                else -> error("Unknown resource type: $resourceType")
+            }
             val response =
-                StorageApi.createSignedUpload
+                apiOperation
                     .buildRequest(
                         queryParam =
                             CreateSignedUploadQueryParams(
-                            filename = targetRef,
+                            filename = filename,
                             bucketId = bucketId,
-                            resourceType = resourceType,
                             resourceId = resourceId,
                         ),
-                            ).execute(http)
+                    ).execute(http)
             rawHttp.put(response.signedUrl) {
                 setBody(data)
                 contentType(ContentType.Application.OctetStream)
@@ -61,8 +69,6 @@ class StorageServiceImpl(
 
     override suspend fun downloadFile(
         targetRef: String,
-        resourceType: StorageResourceType,
-        resourceId: String,
     ): Result<CoreUri> =
         runSuspendCatching(TAG) {
             if (downloadStrategy.isFileCached(targetRef)) {
@@ -71,13 +77,8 @@ class StorageServiceImpl(
             val response =
                 StorageApi.getSignedDownload
                     .buildRequest(
-                        queryParam =
-                            GetSignedDownloadQueryParams(
-                            assetId = targetRef,
-                            resourceType = resourceType,
-                            resourceId = resourceId,
-                        ),
-                            ).execute(http)
+                        queryParam = GetSignedDownloadQueryParams(assetId = targetRef),
+                    ).execute(http)
             val signedUrl = checkNotNull(response.signedUrl) { "No signed URL returned for $targetRef" }
             val bytes = rawHttp.get(signedUrl).body<ByteArray>()
             downloadStrategy.saveToFile(bytes, targetRef)

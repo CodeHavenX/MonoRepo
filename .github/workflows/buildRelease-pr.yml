@@ -18,7 +18,7 @@ permissions:
 
 env:
   ANDROID_HOME: "/opt/Android/sdk"
-  
+
 jobs:
   build:
     runs-on: self-hosted
@@ -52,14 +52,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
-      - name: Clear All Snapshots
+      - name: Regenerate Snapshots(Android-Debug)
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
-          arguments: clearRoborazziDebug
-      - name: Record New Snapshots(Android-Debug)
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-        with:
-          arguments: recordRoborazziDebug
+          arguments: regenerateRoborazziDebug
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"

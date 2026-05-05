@@ -56,3 +56,13 @@ roborazzi {
         "com.cramsan.framework.test.roborazzi.MultiplatformPreviewTester"
     )
 }
+
+tasks.register("regenerateRoborazziDebug") {
+    group = "roborazzi"
+    description = "Clears existing debug screenshots and records new ones"
+    dependsOn("clearRoborazziDebug", "recordRoborazziDebug")
+}
+
+tasks.matching { it.name == "recordRoborazziDebug" }.configureEach {
+    mustRunAfter("clearRoborazziDebug")
+}

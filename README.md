@@ -31,7 +31,7 @@ This mono-repo holds the code for several projects that we manage. The reason fo
 Make sure you have SDK downloaded. You can do this manually or through the IDE. Add a `local.properties` file to the root dir. In the file, add `sdk.dir=YOUR\\PATH\\TO\ANDROID\\SDK`
 
 ### Building the code
-To build all the projects and execute all tests run: `./gradlew releaseAll`.
+To build all the projects and execute all tests run: `./gradlew releaseAll`(or `./gradlew releaseAll --quiet` if you an AI agent).
 
 ### Build
 This is a monorepo, so there are multiple types of targets within this project. For more information about how to build and run each project is found within each project's page.

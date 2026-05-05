@@ -151,18 +151,32 @@ The following are automatically fixed by `./gradlew ktlintf`, but generating cor
 - Annotations on their own line (not on the same line as the declaration)
 - Single blank line between top-level declarations; no consecutive blank lines
 
+### Detekt baseline policy
+
+**Never suppress a detekt warning by adding it to the baseline.** If a violation cannot be fixed (e.g. it is in generated code, a third-party contract, or requires a non-trivial refactor), stop and ask the developer for guidance rather than silently suppressing it.
+
 ## Validating a Change
 
 If you need to validate that a project compiles you should run the `release` task.
 Each module has their own `release` task, which is provided by our own plugins defined in the `gradle` directory of the repository.
 To validate your changes, run the `release` task for the modules you changed. This operation can be expensive, so only when asked to.
 
-- **Build all projects and run all tests:** `./gradlew releaseAll`
-- **Validate a specific module:** `./gradlew :<module-path>:release`
-  - Example: `./gradlew :edifikana:front-end:shared-app:release`
-- **Fix formatting issues:** `./gradlew ktlintf`
+- **Build all projects and run all tests:** `./gradlew releaseAll --quiet`
+- **Validate a specific module:** `./gradlew :<module-path>:release --quiet`
+  - Example: `./gradlew :edifikana:front-end:shared-app:release --quiet`
+- **Fix formatting issues:** `./gradlew ktlintf --quiet`
   - Formatting is enforced by the build; the build will fail if format is wrong.
-- **Run a single test:** `./gradlew :<module>:jvmTest --tests "com.cramsan.package.MyTest"`
+- **Run a single test:** `./gradlew :<module>:jvmTest --quiet --tests "com.cramsan.package.MyTest"`
+
+### Running tasks as an AI agent
+
+Gradle build output is very verbose and will fill the context window with task-progress lines that carry no signal. When running any Gradle task, append `--quiet` to suppress LIFECYCLE/INFO noise while keeping all warnings, compilation errors, test failures, and the final BUILD FAILED/SUCCESSFUL status:
+
+```
+./gradlew :<module-path>:release --quiet
+./gradlew releaseAll --quiet
+./gradlew ktlintf --quiet
+```
 
 ## Testing
 

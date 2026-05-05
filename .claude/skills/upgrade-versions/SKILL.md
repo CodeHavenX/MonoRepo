@@ -12,13 +12,13 @@ Systematically upgrade dependencies in `versions.properties` using refreshVersio
 
 - The project uses [refreshVersions](https://splitties.github.io/refreshVersions/) for dependency management
 - Versions are defined in `versions.properties`
-- The `releaseAll` gradle task validates all projects compile and pass tests
+- The `releaseAll --quiet` gradle task validates all projects compile and pass tests
 
 ## Process Overview
 
 1. **Refresh available versions** - Run `./gradlew refreshVersions`
 2. **Analyze and group packages** - Identify related packages that should be upgraded together
-3. **Iterative upgrades** - Upgrade one group at a time, verify with `releaseAll`
+3. **Iterative upgrades** - Upgrade one group at a time, verify with `releaseAll --quiet`
 4. **Handle failures** - Roll back failed upgrades, document issues
 5. **Commit per group** - Create atomic commits for each successful upgrade
 6. **Document blockers** - Add comments for packages that cannot be upgraded
@@ -81,7 +81,7 @@ version.example=1.1.0
 
 ### 3.2 Verify with releaseAll
 ```bash
-./gradlew releaseAll 2>&1 | tail -30
+./gradlew releaseAll --quiet 2>&1 | tail -30
 ```
 
 Check for `BUILD SUCCESSFUL` at the end.
@@ -197,7 +197,7 @@ cat versions.properties
 # Update: version.org.apache.logging.log4j..* from 2.25.2 to 2.25.3
 
 # 4. Verify
-./gradlew releaseAll 2>&1 | tail -30
+./gradlew releaseAll --quiet 2>&1 | tail -30
 
 # 5. If successful, commit
 git add versions.properties

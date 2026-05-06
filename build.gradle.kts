@@ -1,10 +1,10 @@
 plugins {
     id("com.android.application") apply false
     id("com.android.library") apply false
+    id("com.android.kotlin.multiplatform.library") apply false
     kotlin("jvm") apply false
     kotlin("multiplatform") apply false
     id("com.google.devtools.ksp") apply false
-    id("com.google.dagger.hilt.android") apply false
     id("org.jetbrains.compose") apply false
     id("org.jetbrains.kotlin.plugin.compose") apply false
     kotlin("plugin.serialization") apply false
@@ -25,7 +25,7 @@ plugins {
     id("com.cramsan.kotlin-mpp-common-compose") apply false
     id("com.cramsan.kotlin-mpp-android-lib") apply false
     id("com.cramsan.kotlin-mpp-android-lib-compose") apply false
-    id("com.cramsan.kotlin-mpp-android-app") apply false
+    id("com.cramsan.kotlin-android-app") apply false
     id("com.cramsan.kotlin-mpp-jvm") apply false
     id("com.cramsan.kotlin-mpp-jvm-compose") apply false
     id("com.cramsan.kotlin-mpp-ios") apply false

@@ -25,21 +25,24 @@ import org.koin.core.annotation.KoinExperimentalAPI
 /**
  * Main activity for the application.
  */
-class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
-
+class MainActivity :
+    ComponentActivity(),
+    EdifikanaMainScreenEventHandler {
     private val viewModel: EdifikanaWindowViewModel by inject()
 
-    private val cameraLauncher = registerForActivityResult(CameraContract()) { filePath ->
-        viewModel.handleReceivedImage(filePath?.let { CoreUri(it) })
-    }
+    private val cameraLauncher =
+        registerForActivityResult(CameraContract()) { filePath ->
+            viewModel.handleReceivedImage(filePath?.let { CoreUri(it) })
+        }
 
     @Suppress("MagicNumber")
-    private val mediaAttachmentLauncher = registerForActivityResult(
-        ActivityResultContracts.PickMultipleVisualMedia(5),
-    ) { uris ->
-        // TODO: Move mapping logic to ViewModel
-        viewModel.handleReceivedImages(uris.map { CoreUri(it) })
-    }
+    private val mediaAttachmentLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.PickMultipleVisualMedia(5),
+        ) { uris ->
+            // TODO: Move mapping logic to ViewModel
+            viewModel.handleReceivedImages(uris.map { CoreUri(it) })
+        }
 
     @OptIn(KoinExperimentalAPI::class)
     @Suppress("LongMethod")
@@ -74,7 +77,7 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
 
     override fun openPhotoPicker(event: EdifikanaWindowsEvent.OpenPhotoPicker) {
         mediaAttachmentLauncher.launch(
-            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
         )
     }
 

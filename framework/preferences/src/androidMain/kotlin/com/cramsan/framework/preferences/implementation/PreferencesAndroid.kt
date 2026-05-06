@@ -11,7 +11,6 @@ import com.cramsan.framework.preferences.PreferencesDelegate
  *   (e.g. "com.example.app.prefs") to avoid key collisions between features.
  */
 class PreferencesAndroid(context: Context, preferenceName: String) : PreferencesDelegate {
-
     private val sharedPref = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE)
 
     override fun saveString(key: String, value: String?) {

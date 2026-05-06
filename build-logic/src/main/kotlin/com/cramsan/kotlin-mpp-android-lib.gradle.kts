@@ -2,84 +2,66 @@ package com.cramsan
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
 }
 
 kotlin {
-    androidTarget { }
     jvmToolchain(21)
-}
-
-android {
-    compileSdk = project.property("compileSdkVersion").toString().toInt()
-
-    defaultConfig {
+    androidLibrary {
+        compileSdk = project.property("compileSdkVersion").toString().toInt()
         minSdk = project.property("minSdkVersion").toString().toInt()
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/**"
+        withHostTestBuilder { }.configure {
+            isIncludeAndroidResources = true
         }
     }
-
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-            all { test ->
-                test.failOnNoDiscoveredTests = false
-                test.testLogging {
-                    events("passed", "skipped", "failed")
-                }
+    sourceSets {
+        androidMain.dependencies {
+            implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:_")
+        }
+        // withHostTestBuilder creates the androidHostTest compilation and source set.
+        // Point it at src/androidUnitTest/kotlin so existing test files are picked up
+        // without renaming directories across all modules.
+        val androidHostTest by getting {
+            kotlin.srcDirs("src/androidHostTest/kotlin", "src/androidUnitTest/kotlin")
+            dependencies {
+                implementation("androidx.test:core:_")
+                implementation("androidx.test.ext:junit:_")
+                implementation("androidx.test.ext:junit-ktx:_")
+                implementation("androidx.arch.core:core-common:_")
+                implementation("androidx.arch.core:core-runtime:_")
+                implementation("androidx.arch.core:core-testing:_")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+                implementation("junit:junit:_")
+                implementation("org.jetbrains.kotlin:kotlin-test:_")
+                implementation("org.jetbrains.kotlin:kotlin-test-junit:_")
+                implementation("io.mockk:mockk:_")
+                implementation("io.mockk:mockk-android:_")
             }
         }
+        androidInstrumentedTest.dependencies {
+            implementation("androidx.test.ext:junit:_")
+            implementation("androidx.test.ext:junit-ktx:_")
+            implementation("androidx.test:core:_")
+            implementation("androidx.test:rules:_")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
+            implementation("junit:junit:_")
+            implementation("org.jetbrains.kotlin:kotlin-test:_")
+            implementation("org.jetbrains.kotlin:kotlin-test-junit:_")
+            implementation("io.mockk:mockk-android:_")
+        }
     }
-}
-
-dependencies {
-    "implementation"("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
-    "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
-    "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-android:_")
-
-    "testImplementation"("androidx.test:core:_")
-    "testImplementation"("androidx.test.ext:junit:_")
-    "testImplementation"("androidx.test.ext:junit-ktx:_")
-    "testImplementation"("androidx.arch.core:core-common:_")
-    "testImplementation"("androidx.arch.core:core-runtime:_")
-    "testImplementation"("androidx.arch.core:core-testing:_")
-    "testImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
-    "testImplementation"("junit:junit:_")
-    "testImplementation"("org.jetbrains.kotlin:kotlin-test:_")
-    "testImplementation"("org.jetbrains.kotlin:kotlin-test-junit:_")
-    "testImplementation"("io.mockk:mockk:_")
-    "testImplementation"("io.mockk:mockk-android:_")
-
-    "androidTestImplementation"("androidx.test.ext:junit:_")
-    "androidTestImplementation"("androidx.test.ext:junit-ktx:_")
-    "androidTestImplementation"("androidx.test:core:_")
-    "androidTestImplementation"("androidx.test:rules:_")
-    "androidTestImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-test:_")
-    "androidTestImplementation"("junit:junit:_")
-    "androidTestImplementation"("org.jetbrains.kotlin:kotlin-test:_")
-    "androidTestImplementation"("org.jetbrains.kotlin:kotlin-test-junit:_")
-    "androidTestImplementation"("io.mockk:mockk-android:_")
-    "androidTestImplementation"("org.robolectric:robolectric:_")
 }
 
 tasks.register("releaseAndroid") {
     group = "release"
     description = "Run all the steps to build a releaseAndroid artifact"
-    dependsOn("assembleDebug")
-    dependsOn("assembleRelease")
+    dependsOn("assemble")
+    dependsOn("testAndroidHostTest")
     dependsOn("detektCommonMainSourceSet")
-    dependsOn("detektAndroidDebugSourceSet")
-    dependsOn("testDebugUnitTest")
+    dependsOn("detektAndroidMainSourceSet")
+    dependsOn("detektAndroidHostTestSourceSet")
 }
 
 tasks.named("release") {

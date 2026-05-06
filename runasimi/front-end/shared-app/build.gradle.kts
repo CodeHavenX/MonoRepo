@@ -8,7 +8,6 @@ plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.android.library")
     id("com.google.devtools.ksp")
     id("io.github.takahirom.roborazzi")
     id("com.cramsan.kotlin-mpp-common-compose")
@@ -19,6 +18,10 @@ plugins {
 
 kotlin {
     applyDefaultHierarchyTemplate()
+
+    androidLibrary {
+        namespace = "com.cramsan.runasimi.client.lib"
+    }
 
     wasmJs {
         browser {}
@@ -91,10 +94,29 @@ kotlin {
 
         androidMain {
             dependencies {
+                implementation("androidx.appcompat:appcompat:_")
+                implementation("androidx.core:core-ktx:_")
+                implementation("androidx.compose.material:material-icons-extended:_")
+
+                implementation("androidx.camera:camera-camera2:_")
+                implementation("androidx.camera:camera-lifecycle:_")
+                implementation("androidx.camera:camera-view:_")
+
+                implementation("io.coil-kt.coil3:coil:")
+                implementation("io.coil-kt.coil3:coil-compose:_")
+                implementation("io.coil-kt.coil3:coil-network-ktor3:_")
+
+                implementation("io.ktor:ktor-client-cio:_")
+
+                implementation("androidx.exifinterface:exifinterface:_")
+
+                implementation("io.insert-koin:koin-core:_")
+                implementation("io.insert-koin:koin-android:_")
+                implementation("io.insert-koin:koin-androidx-compose:_")
             }
         }
 
-        androidUnitTest {
+        val androidHostTest by getting {
             dependencies {
                 implementation(project(":framework:test-roborazzi"))
             }
@@ -108,52 +130,31 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.cramsan.runasimi.client.lib"
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
-    buildFeatures {
-        buildConfig = true
-    }
-
-    buildTypes {
-        all {
-        }
-    }
-}
-
 compose.resources {
     packageOfResClass = "runasimi_lib"
-}
-
-dependencies {
-    implementation("androidx.appcompat:appcompat:_")
-    implementation("androidx.core:core-ktx:_")
-    implementation("androidx.compose.material:material-icons-extended:_")
-
-    implementation("androidx.camera:camera-camera2:_")
-    implementation("androidx.camera:camera-lifecycle:_")
-    implementation("androidx.camera:camera-view:_")
-
-    implementation("io.coil-kt.coil3:coil:")
-    implementation("io.coil-kt.coil3:coil-compose:_")
-    implementation("io.coil-kt.coil3:coil-network-ktor3:_")
-
-    implementation("io.ktor:ktor-client-cio:_")
-
-    implementation("androidx.exifinterface:exifinterface:_")
-
-    implementation("io.insert-koin:koin-core:_")
-    implementation("io.insert-koin:koin-android:_")
-    implementation("io.insert-koin:koin-androidx-compose:_")
 }
 
 roborazzi {
     generateComposePreviewRobolectricTests {
         enable = true
         packages = listOf("com.cramsan.runasimi.client.lib")
+    }
+}
+
+afterEvaluate {
+    val destDir = layout.buildDirectory.dir("intermediates/assets/androidHostTest/mergeAndroidHostTestAssets")
+    val depProjects = listOf(
+        project(":ui-catalog"),
+        project(":runasimi:front-end:shared-ui"),
+    )
+    tasks.named("copyComposeResToHostTestAssets", Copy::class).configure {
+        into(destDir)
+        depProjects.forEach { dep ->
+            val depAssembled = dep.layout.buildDirectory.dir(
+                "generated/compose/resourceGenerator/assembledResources/jvmMain"
+            )
+            from(depAssembled)
+            dependsOn(dep.tasks.named("assembleJvmMainResources"))
+        }
     }
 }

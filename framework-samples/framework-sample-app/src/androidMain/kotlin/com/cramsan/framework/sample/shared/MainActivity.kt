@@ -9,7 +9,6 @@ import com.cramsan.framework.sample.shared.features.ApplicationScreen
  * Main activity for the application.
  */
 class MainActivity : ComponentActivity() {
-
     @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

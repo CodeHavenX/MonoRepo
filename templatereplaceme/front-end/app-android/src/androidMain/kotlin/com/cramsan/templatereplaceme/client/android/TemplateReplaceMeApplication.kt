@@ -9,7 +9,6 @@ import org.koin.android.ext.android.inject
  * Main application class for TemplateReplaceMe Android application.
  */
 class TemplateReplaceMeApplication : Application() {
-
     private val processViewModel: TemplateReplaceMeApplicationViewModel by inject()
 
     override fun onCreate() {

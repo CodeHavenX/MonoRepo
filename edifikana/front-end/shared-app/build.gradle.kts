@@ -9,7 +9,6 @@ plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.android.library")
     id("androidx.room")
     id("com.google.devtools.ksp")
     id("io.github.takahirom.roborazzi")
@@ -22,6 +21,10 @@ plugins {
 
 kotlin {
     applyDefaultHierarchyTemplate()
+
+    androidLibrary {
+        namespace = "com.cramsan.edifikana.client.lib"
+    }
 
     wasmJs {
         browser {}
@@ -114,8 +117,33 @@ kotlin {
 
         androidMain {
             dependsOn(localDB)
+
+            dependencies {
+                implementation("androidx.appcompat:appcompat:_")
+                implementation("androidx.core:core-ktx:_")
+                implementation("androidx.compose.material:material-icons-extended:_")
+
+                implementation("androidx.camera:camera-camera2:_")
+                implementation("androidx.camera:camera-lifecycle:_")
+                implementation("androidx.camera:camera-view:_")
+
+                implementation("io.coil-kt.coil3:coil:")
+                implementation("io.coil-kt.coil3:coil-compose:_")
+                implementation("io.coil-kt.coil3:coil-network-ktor3:_")
+
+                implementation("io.ktor:ktor-client-cio:_")
+
+                implementation("androidx.exifinterface:exifinterface:_")
+
+                implementation("androidx.room:room-runtime:_")
+                implementation("androidx.room:room-ktx:_")
+
+                implementation("io.insert-koin:koin-core:_")
+                implementation("io.insert-koin:koin-android:_")
+                implementation("io.insert-koin:koin-androidx-compose:_")
+            }
         }
-        androidUnitTest {
+        val androidHostTest by getting {
             dependencies {
                 implementation(project(":framework:test-roborazzi"))
             }
@@ -131,18 +159,6 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.cramsan.edifikana.client.lib"
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
-    buildFeatures {
-        buildConfig = false
-    }
-}
-
 compose.resources {
     packageOfResClass = "edifikana_lib"
 }
@@ -152,29 +168,6 @@ dependencies {
     add("kspCommonMainMetadata", "androidx.room:room-compiler:_")
     add("kspAndroid", "androidx.room:room-compiler:_")
     add("kspJvm", "androidx.room:room-compiler:_")
-
-    implementation("androidx.appcompat:appcompat:_")
-    implementation("androidx.core:core-ktx:_")
-    implementation("androidx.compose.material:material-icons-extended:_")
-
-    implementation("androidx.camera:camera-camera2:_")
-    implementation("androidx.camera:camera-lifecycle:_")
-    implementation("androidx.camera:camera-view:_")
-
-    implementation("io.coil-kt.coil3:coil:")
-    implementation("io.coil-kt.coil3:coil-compose:_")
-    implementation("io.coil-kt.coil3:coil-network-ktor3:_")
-
-    implementation("io.ktor:ktor-client-cio:_")
-
-    implementation("androidx.exifinterface:exifinterface:_")
-
-    implementation("androidx.room:room-runtime:_")
-    implementation("androidx.room:room-ktx:_")
-
-    implementation("io.insert-koin:koin-core:_")
-    implementation("io.insert-koin:koin-android:_")
-    implementation("io.insert-koin:koin-androidx-compose:_")
 }
 
 room {
@@ -184,6 +177,24 @@ room {
 tasks.getByName("release") {
     dependsOn("detektLocalDBSourceSet")
     dependsOn("detektNoDBSourceSet")
+}
+
+afterEvaluate {
+    val destDir = layout.buildDirectory.dir("intermediates/assets/androidHostTest/mergeAndroidHostTestAssets")
+    val depProjects = listOf(
+        project(":ui-catalog"),
+        project(":edifikana:front-end:shared-ui"),
+    )
+    tasks.named("copyComposeResToHostTestAssets", Copy::class).configure {
+        into(destDir)
+        depProjects.forEach { dep ->
+            val depAssembled = dep.layout.buildDirectory.dir(
+                "generated/compose/resourceGenerator/assembledResources/jvmMain"
+            )
+            from(depAssembled)
+            dependsOn(dep.tasks.named("assembleJvmMainResources"))
+        }
+    }
 }
 
 roborazzi {

@@ -7,7 +7,6 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.android.library")
     id("com.google.devtools.ksp")
     id("io.github.takahirom.roborazzi")
     id("com.cramsan.kotlin-mpp-common-compose")
@@ -17,6 +16,10 @@ plugins {
 }
 
 kotlin {
+    androidLibrary {
+        namespace = "com.cramsan.runasimi.client.ui"
+    }
+
     wasmJs {
         browser {}
         binaries.executable()
@@ -36,20 +39,12 @@ kotlin {
 
             implementation("io.github.jan-tennert.supabase:coil3-integration:_")
         }
-        androidUnitTest {
+        val androidHostTest by getting {
             dependencies {
                 implementation(project(":framework:test-roborazzi"))
             }
         }
     }
-}
-
-android {
-    namespace = "com.cramsan.runasimi.client.ui"
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 }
 
 compose.resources {
@@ -60,5 +55,18 @@ roborazzi {
     generateComposePreviewRobolectricTests {
         enable = true
         packages = listOf("com.cramsan.runasimi.client.ui")
+    }
+}
+
+
+afterEvaluate {
+    val destDir = layout.buildDirectory.dir("intermediates/assets/androidHostTest/mergeAndroidHostTestAssets")
+    val uiCatalog = project(":ui-catalog")
+    tasks.named("copyComposeResToHostTestAssets", Copy::class).configure {
+        into(destDir)
+        from(uiCatalog.layout.buildDirectory.dir(
+            "generated/compose/resourceGenerator/assembledResources/jvmMain"
+        ))
+        dependsOn(uiCatalog.tasks.named("assembleJvmMainResources"))
     }
 }

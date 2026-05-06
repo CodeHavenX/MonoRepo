@@ -31,7 +31,7 @@ class KeyValueMapEncoderTest {
         val long: Long,
         val short: Short,
         val string: String,
-        val enum: Color
+        val enum: Color,
     )
 
     @Serializable
@@ -41,9 +41,7 @@ class KeyValueMapEncoderTest {
     data class NestedList(val a: Int, val nested: List<List<Int>>)
 
     @Serializable
-    data class NestedClassWithValueClass(
-        val nested: ValueClass,
-    )
+    data class NestedClassWithValueClass(val nested: ValueClass)
 
     @Serializable
     @JvmInline
@@ -57,8 +55,10 @@ class KeyValueMapEncoderTest {
             mapOf(
                 "a" to listOf("1"),
                 "b" to listOf("test"),
-                "c" to listOf("true")
-            ), map)
+                "c" to listOf("true"),
+            ),
+            map,
+        )
     }
 
     @Test
@@ -67,7 +67,7 @@ class KeyValueMapEncoderTest {
         val map = encodeToKeyValueMap(obj)
         assertEquals(
             mapOf("items" to listOf("1", "2", "3")),
-            map
+            map,
         )
     }
 
@@ -77,24 +77,25 @@ class KeyValueMapEncoderTest {
         val map = encodeToKeyValueMap(obj)
         assertEquals(
             mapOf("color" to listOf("GREEN")),
-            map
+            map,
         )
     }
 
     @Test
     fun `encodes all supported types`() {
-        val obj = AllSupportedTypes(
-            bool = true,
-            byte = 1,
-            char = 'x',
-            double = 2.0,
-            float = 3.0f,
-            int = 4,
-            long = 5L,
-            short = 6,
-            string = "str",
-            enum = Color.BLUE,
-        )
+        val obj =
+            AllSupportedTypes(
+                bool = true,
+                byte = 1,
+                char = 'x',
+                double = 2.0,
+                float = 3.0f,
+                int = 4,
+                long = 5L,
+                short = 6,
+                string = "str",
+                enum = Color.BLUE,
+            )
         val map = encodeToKeyValueMap(obj)
         assertEquals(
             mapOf(
@@ -107,9 +108,9 @@ class KeyValueMapEncoderTest {
                 "long" to listOf("5"),
                 "short" to listOf("6"),
                 "string" to listOf("str"),
-                "enum" to listOf("BLUE")
+                "enum" to listOf("BLUE"),
             ),
-            map
+            map,
         )
     }
 
@@ -119,7 +120,7 @@ class KeyValueMapEncoderTest {
         val map = encodeToKeyValueMap(obj)
         assertEquals(
             mapOf("nested" to listOf("vc123")),
-            map
+            map,
         )
     }
 
@@ -147,4 +148,3 @@ class KeyValueMapEncoderTest {
         }
     }
 }
-

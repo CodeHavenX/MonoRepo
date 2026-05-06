@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
     kotlin("plugin.serialization")
     id("com.cramsan.kotlin-mpp-common")
     id("com.cramsan.kotlin-mpp-android-lib")
@@ -12,11 +11,11 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm")
 }
 
-android {
-    namespace = "com.cramsan.flyerboard.lib"
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "com.cramsan.flyerboard.lib"
+    }
+
     wasmJs {
         browser {}
         binaries.executable()

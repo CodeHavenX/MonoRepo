@@ -7,7 +7,6 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.android.library")
     id("com.google.devtools.ksp")
     id("io.github.takahirom.roborazzi")
     id("com.cramsan.kotlin-mpp-common-compose")
@@ -18,6 +17,10 @@ plugins {
 }
 
 kotlin {
+    androidLibrary {
+        namespace = "com.cramsan.ui"
+    }
+
     wasmJs {
         browser {}
         binaries.executable()
@@ -32,20 +35,12 @@ kotlin {
             }
         }
 
-        androidUnitTest {
+        val androidHostTest by getting {
             dependencies {
                 implementation(project(":framework:test-roborazzi"))
             }
         }
     }
-}
-
-android {
-    namespace = "com.cramsan.ui"
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 }
 
 roborazzi {

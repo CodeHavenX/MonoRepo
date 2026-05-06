@@ -9,9 +9,7 @@ import com.cramsan.framework.core.CoreUri
 /**
  * Strategy for downloading files on Android.
  */
-class AndroidDownloadStrategy(
-    private val context: Context,
-) : DownloadStrategy {
+class AndroidDownloadStrategy(private val context: Context) : DownloadStrategy {
     override fun isFileCached(targetRef: String): Boolean {
         return getFileImp(targetRef) != null
     }
@@ -26,36 +24,39 @@ class AndroidDownloadStrategy(
         // 1. First we check the local content to see if the file is already cached.
 
         // Only want to retrieve _ID and DISPLAY_NAME columns
-        val projection = arrayOf(
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DISPLAY_NAME,
-        )
+        val projection =
+            arrayOf(
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DISPLAY_NAME,
+            )
 
         val selection = "${MediaStore.Images.Media.DISPLAY_NAME} = ?"
         val selectionArgs = arrayOf(targetRef)
 
         //  Run query
-        val cachedUri = context.contentResolver.query(
-            imageCollection,
-            projection,
-            selection,
-            selectionArgs,
-            null,
-            null,
-        )?.use { cursor ->
-            val idColumn = cursor.getColumnIndex(MediaStore.Images.Media._ID)
+        val cachedUri =
+            context.contentResolver
+                .query(
+                    imageCollection,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                )?.use { cursor ->
+                    val idColumn = cursor.getColumnIndex(MediaStore.Images.Media._ID)
 
-            // iterating over the found images. If at least one file was found, then there is a cache hit.
-            var uri: Uri? = null
-            while (cursor.moveToNext()) {
-                val imageId = cursor.getString(idColumn)
-                uri = Uri.withAppendedPath(imageCollection, imageId)
-                if (uri != null) {
-                    break
+                    // iterating over the found images. If at least one file was found, then there is a cache hit.
+                    var uri: Uri? = null
+                    while (cursor.moveToNext()) {
+                        val imageId = cursor.getString(idColumn)
+                        uri = Uri.withAppendedPath(imageCollection, imageId)
+                        if (uri != null) {
+                            break
+                        }
+                    }
+                    uri
                 }
-            }
-            uri
-        }
         return cachedUri?.let { CoreUri(it) }
     }
 
@@ -63,14 +64,16 @@ class AndroidDownloadStrategy(
         val resolver = context.contentResolver
         val imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
 
-        val newImageDetails = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, targetRef)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-        }
+        val newImageDetails =
+            ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, targetRef)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            }
 
-        val newImageUri = resolver.insert(imageCollection, newImageDetails) ?: throw RuntimeException(
-            "Failed to create new image"
-        )
+        val newImageUri =
+            resolver.insert(imageCollection, newImageDetails) ?: throw RuntimeException(
+                "Failed to create new image",
+            )
 
         context.contentResolver.openOutputStream(newImageUri).use {
             it?.write(data)

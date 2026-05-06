@@ -13,7 +13,6 @@ dependencies {
     implementation(libs.build.android.gradle.plugin)
     implementation(libs.build.compose.gradle.plugin)
     implementation(libs.build.detekt.gradle.plugin)
-    implementation(libs.build.hilt.gradle.plugin)
     implementation(libs.build.kotlin.gradle.plugin)
     implementation(libs.build.kotlin.compose.compiler.plugin)
     implementation(libs.build.ksp.gradle.plugin)

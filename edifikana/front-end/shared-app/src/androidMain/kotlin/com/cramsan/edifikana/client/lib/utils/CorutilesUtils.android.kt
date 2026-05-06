@@ -12,46 +12,47 @@ import java.io.ByteArrayOutputStream
 /**
  * Read the bytes from the given [uri].
  */
-actual fun readBytes(uri: CoreUri, dependencies: IODependencies): Result<ByteArray> = runCatching {
-    dependencies.contentResolver.openInputStream(uri.getAndroidUri()).use { inputStream ->
-        requireNotNull(inputStream) { "Failed to open input stream for uri: $uri" }
-        inputStream.readBytes()
+actual fun readBytes(uri: CoreUri, dependencies: IODependencies): Result<ByteArray> =
+    runCatching {
+        dependencies.contentResolver.openInputStream(uri.getAndroidUri()).use { inputStream ->
+            requireNotNull(inputStream) { "Failed to open input stream for uri: $uri" }
+            inputStream.readBytes()
+        }
     }
-}
 
 /**
  * Write the given [data] to the given [uri].
  */
 @Suppress("MagicNumber")
-actual fun processImageData(data: ByteArray): Result<ByteArray> = runCatching {
-    val exifInterface = ExifInterface(ByteArrayInputStream(data))
-    val rotation = when (
-        exifInterface.getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_NORMAL
-        )
-    ) {
-        ExifInterface.ORIENTATION_ROTATE_90 -> 90f
-        ExifInterface.ORIENTATION_ROTATE_180 -> 180f
-        ExifInterface.ORIENTATION_ROTATE_270 -> 270f
-        else -> 0f
-    }
-    val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
-    val matrix = Matrix().apply { postRotate(rotation) }
-    val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+actual fun processImageData(data: ByteArray): Result<ByteArray> =
+    runCatching {
+        val exifInterface = ExifInterface(ByteArrayInputStream(data))
+        val rotation =
+            when (
+                exifInterface.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL,
+                )
+            ) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+                ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+                ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+                else -> 0f
+            }
+        val bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+        val matrix = Matrix().apply { postRotate(rotation) }
+        val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
-    val stream = ByteArrayOutputStream()
-    stream.use {
-        // TODO: Set the compression to be configurable
-        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 35, stream)
-        val byteArray = stream.toByteArray()
-        byteArray
+        val stream = ByteArrayOutputStream()
+        stream.use {
+            // TODO: Set the compression to be configurable
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 35, stream)
+            val byteArray = stream.toByteArray()
+            byteArray
+        }
     }
-}
 
 /**
  * Dependencies required for IO operations.
  */
-actual class IODependencies(
-    val contentResolver: ContentResolver,
-)
+actual class IODependencies(val contentResolver: ContentResolver)

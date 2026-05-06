@@ -13,8 +13,9 @@ import org.koin.core.annotation.KoinExperimentalAPI
 /**
  * Main activity for the application.
  */
-class MainActivity : ComponentActivity(), TemplateReplaceMeApplicationMainScreenEventHandler {
-
+class MainActivity :
+    ComponentActivity(),
+    TemplateReplaceMeApplicationMainScreenEventHandler {
     @OptIn(KoinExperimentalAPI::class)
     @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {

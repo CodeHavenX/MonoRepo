@@ -31,7 +31,7 @@ class KeyValueMapDecoderTest {
         val long: Long,
         val short: Short,
         val string: String,
-        val enum: Color
+        val enum: Color,
     )
 
     @Serializable
@@ -41,9 +41,7 @@ class KeyValueMapDecoderTest {
     data class NestedList(val a: Int, val nested: List<List<Int>>)
 
     @Serializable
-    data class NestedClassWithValueClass(
-        val nested: ValueClass,
-    )
+    data class NestedClassWithValueClass(val nested: ValueClass)
 
     @Serializable
     @JvmInline
@@ -72,22 +70,23 @@ class KeyValueMapDecoderTest {
 
     @Test
     fun `decodes all supported types`() {
-        val map = mapOf(
-            "bool" to listOf("true"),
-            "byte" to listOf("1"),
-            "char" to listOf("x"),
-            "double" to listOf("2.0"),
-            "float" to listOf("3.0"),
-            "int" to listOf("4"),
-            "long" to listOf("5"),
-            "short" to listOf("6"),
-            "string" to listOf("str"),
-            "enum" to listOf("BLUE")
-        )
+        val map =
+            mapOf(
+                "bool" to listOf("true"),
+                "byte" to listOf("1"),
+                "char" to listOf("x"),
+                "double" to listOf("2.0"),
+                "float" to listOf("3.0"),
+                "int" to listOf("4"),
+                "long" to listOf("5"),
+                "short" to listOf("6"),
+                "string" to listOf("str"),
+                "enum" to listOf("BLUE"),
+            )
         val obj: AllSupportedTypes = decodeFromKeyValueMap(map)
         assertEquals(
             AllSupportedTypes(true, 1, 'x', 2.0, 3.0f, 4, 5L, 6, "str", Color.BLUE),
-            obj
+            obj,
         )
     }
 
@@ -138,4 +137,3 @@ class KeyValueMapDecoderTest {
         }
     }
 }
-

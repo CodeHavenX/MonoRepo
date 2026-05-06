@@ -16,7 +16,6 @@ data class AndroidKMPreviewTestParameter(
     override val composeTestRuleFactory: () -> AndroidComposeTestRule<ActivityScenarioRule<out ComponentActivity>, *>,
     override val preview: ComposablePreview<JvmAnnotationInfo>,
 ) : ComposePreviewTester.TestParameter.JUnit4TestParameter<JvmAnnotationInfo>(composeTestRuleFactory, preview) {
-
     /**
      * This is used as a mechanism to set the name of the test.
      */

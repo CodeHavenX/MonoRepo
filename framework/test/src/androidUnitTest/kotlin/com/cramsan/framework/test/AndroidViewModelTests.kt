@@ -1,7 +1,7 @@
 package com.cramsan.framework.test
 
-import kotlin.test.BeforeTest
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -14,7 +14,6 @@ import kotlin.test.assertTrue
  */
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class AndroidViewModelTests : CoroutineTest() {
-
     lateinit var viewModel: AndroidViewModel
     lateinit var repository: Repository
 
@@ -34,60 +33,66 @@ class AndroidViewModelTests : CoroutineTest() {
     }
 
     @Test
-    fun `Test for LiveData to be update in suspending function`() = runCoroutineTest {
-        assertNull(viewModel.observableInt.value)
+    fun `Test for LiveData to be update in suspending function`() =
+        runCoroutineTest {
+            assertNull(viewModel.observableInt.value)
 
-        viewModel.updateWithCoroutine()
+            viewModel.updateWithCoroutine()
 
-        assertEquals(100, viewModel.observableInt.value)
-    }
-
-    @Test
-    fun `Test for LiveData to be update in suspending function and blocking wait`() = runCoroutineTest {
-        assertNull(viewModel.observableInt.value)
-
-        viewModel.updateWithCoroutineAndBlockingWait()
-
-        assertEquals(100, viewModel.observableInt.value)
-    }
+            assertEquals(100, viewModel.observableInt.value)
+        }
 
     @Test
-    fun `Test for LiveData to be updated with IO dispatch`() = runCoroutineTest {
-        assertNull(viewModel.observableInt.value)
+    fun `Test for LiveData to be update in suspending function and blocking wait`() =
+        runCoroutineTest {
+            assertNull(viewModel.observableInt.value)
 
-        viewModel.updateWithIODispatch()
-        advanceUntilIdle()
+            viewModel.updateWithCoroutineAndBlockingWait()
 
-        assertEquals(100, viewModel.observableInt.value)
-    }
-
-    @Test
-    fun `Test for LiveData to be updated with IO dispatch and blocking wait`() = runCoroutineTest {
-        assertNull(viewModel.observableInt.value)
-
-        viewModel.updateWithIODispatchAndBlockingWait()
-        advanceUntilIdle()
-
-        assertEquals(100, viewModel.observableInt.value)
-    }
+            assertEquals(100, viewModel.observableInt.value)
+        }
 
     @Test
-    fun `Test for LiveData to be update in scope launch`() = runCoroutineTest {
-        assertNull(viewModel.observableInt.value)
+    fun `Test for LiveData to be updated with IO dispatch`() =
+        runCoroutineTest {
+            assertNull(viewModel.observableInt.value)
 
-        viewModel.updateWithScopeLaunch()
-        advanceUntilIdle()
+            viewModel.updateWithIODispatch()
+            advanceUntilIdle()
 
-        assertEquals(100, viewModel.observableInt.value)
-    }
+            assertEquals(100, viewModel.observableInt.value)
+        }
 
     @Test
-    fun `Test for LiveData to be update in scope launch and blocking wait`() = runCoroutineTest {
-        assertNull(viewModel.observableInt.value)
+    fun `Test for LiveData to be updated with IO dispatch and blocking wait`() =
+        runCoroutineTest {
+            assertNull(viewModel.observableInt.value)
 
-        viewModel.updateWithScopeLaunchAndBlockingWait()
-        advanceUntilIdle()
+            viewModel.updateWithIODispatchAndBlockingWait()
+            advanceUntilIdle()
 
-        assertEquals(100, viewModel.observableInt.value)
-    }
+            assertEquals(100, viewModel.observableInt.value)
+        }
+
+    @Test
+    fun `Test for LiveData to be update in scope launch`() =
+        runCoroutineTest {
+            assertNull(viewModel.observableInt.value)
+
+            viewModel.updateWithScopeLaunch()
+            advanceUntilIdle()
+
+            assertEquals(100, viewModel.observableInt.value)
+        }
+
+    @Test
+    fun `Test for LiveData to be update in scope launch and blocking wait`() =
+        runCoroutineTest {
+            assertNull(viewModel.observableInt.value)
+
+            viewModel.updateWithScopeLaunchAndBlockingWait()
+            advanceUntilIdle()
+
+            assertEquals(100, viewModel.observableInt.value)
+        }
 }

@@ -32,48 +32,51 @@ import sergio.sastre.composable.preview.scanner.jvm.JvmAnnotationScanner
  */
 @OptIn(ExperimentalRoborazziApi::class, InternalRoborazziApi::class)
 class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmAnnotationInfo>> {
-    override fun options(): ComposePreviewTester.Options = super.options().copy(
-        testLifecycleOptions = ComposePreviewTester.Options.JUnit4TestLifecycleOptions(
-            composeRuleFactory = {
-                @Suppress("UNCHECKED_CAST")
-                createAndroidComposeRule<RoborazziActivity>()
-                    as AndroidComposeTestRule<ActivityScenarioRule<out ComponentActivity>, *>
-            },
-            testRuleFactory = { composeTestRule ->
-                RuleChain.outerRule(
-                    object : TestWatcher() {
-                        override fun starting(description: Description?) {
-                            super.starting(description)
-                            registerRoborazziActivityToRobolectricIfNeeded()
-                        }
-                    }
-                )
-                    .around(composeTestRule)
-            }
+    override fun options(): ComposePreviewTester.Options =
+        super.options().copy(
+            testLifecycleOptions =
+            ComposePreviewTester.Options.JUnit4TestLifecycleOptions(
+                composeRuleFactory = {
+                    @Suppress("UNCHECKED_CAST")
+                    createAndroidComposeRule<RoborazziActivity>()
+                        as AndroidComposeTestRule<ActivityScenarioRule<out ComponentActivity>, *>
+                },
+                testRuleFactory = { composeTestRule ->
+                    RuleChain
+                        .outerRule(
+                            object : TestWatcher() {
+                                override fun starting(description: Description?) {
+                                    super.starting(description)
+                                    registerRoborazziActivityToRobolectricIfNeeded()
+                                }
+                            },
+                        ).around(composeTestRule)
+                },
+            ),
         )
-    )
 
     override fun testParameters(): List<JUnit4TestParameter<JvmAnnotationInfo>> {
         val options = options()
-        val annotations = listOf(
-            "org.jetbrains.compose.ui.tooling.preview.Preview",
-            "androidx.compose.ui.tooling.preview.Preview"
-        )
-        return annotations.map { JvmAnnotationScanner(it) }
+        val annotations =
+            listOf(
+                "org.jetbrains.compose.ui.tooling.preview.Preview",
+                "androidx.compose.ui.tooling.preview.Preview",
+            )
+        return annotations
+            .map { JvmAnnotationScanner(it) }
             .map {
                 it
                     .scanPackageTrees(*options.scanOptions.packages.toTypedArray())
                     .includePrivatePreviews()
                     .getPreviews()
-            }
-            .flatten()
+            }.flatten()
             .map {
                 AndroidKMPreviewTestParameter(
                     (
                         options.testLifecycleOptions as
                             ComposePreviewTester.Options.JUnit4TestLifecycleOptions
                         ).composeRuleFactory,
-                    it
+                    it,
                 )
             }
     }
@@ -92,7 +95,8 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
         val filename = "${preview.declaringClass}_${preview.methodName}"
         val filepath = "$outputDir/$filename.${roborazziContext.imageExtension}"
 
-        testParameter.composeTestRule.onRoot()
+        testParameter.composeTestRule
+            .onRoot()
             .captureRoboImage(filepath)
     }
 

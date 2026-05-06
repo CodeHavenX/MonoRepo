@@ -23,7 +23,7 @@ import com.cramsan.samples.android.app.theme.CoreProjectTheme
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalLayoutApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalFoundationApi::class,
 )
 @Suppress("DEPRECATION")
 @Composable
@@ -41,7 +41,8 @@ fun HomePageScreen(
         content = { innerPadding ->
             Column(
                 // consume insets as scaffold doesn't do it by default
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxSize()
                     .consumeWindowInsets(innerPadding),
             ) {
@@ -61,7 +62,7 @@ fun HomePageScreen(
                     )
                 }
             }
-        }
+        },
     )
 }
 

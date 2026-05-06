@@ -13,11 +13,8 @@ import kotlinx.coroutines.withContext
  * into this scope are also completed.
  * https://stackoverflow.com/questions/62332403/how-to-inject-viewmodelscope-for-android-unit-test-with-kotlin-coroutines/62333592#62333592
  */
-class AndroidViewModel(
-    var testScope: CoroutineScope,
-    val repository: Repository,
-) : ViewModel() {
-
+@Suppress("ArchitectureNamingRule")
+class AndroidViewModel(var testScope: CoroutineScope, val repository: Repository) : ViewModel() {
     val observableInt: MutableLiveData<Int> = MutableLiveData()
 
     suspend fun updateWithIODispatch() {

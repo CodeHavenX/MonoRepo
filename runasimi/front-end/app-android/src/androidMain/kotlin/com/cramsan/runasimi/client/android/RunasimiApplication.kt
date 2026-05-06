@@ -9,7 +9,6 @@ import org.koin.android.ext.android.inject
  * Main application class for Runasimi Android application.
  */
 class RunasimiApplication : Application() {
-
     private val processViewModel: RunasimiApplicationViewModel by inject()
 
     override fun onCreate() {

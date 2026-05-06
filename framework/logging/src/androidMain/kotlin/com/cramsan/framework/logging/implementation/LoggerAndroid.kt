@@ -8,7 +8,6 @@ import com.cramsan.framework.logging.Severity
  * Logger that outputs to the standard Android logger.
  */
 class LoggerAndroid : EventLoggerDelegate {
-
     override fun log(
         severity: Severity,
         tag: String,
@@ -16,11 +15,12 @@ class LoggerAndroid : EventLoggerDelegate {
         throwable: Throwable?,
         vararg args: Any?,
     ) {
-        val formattedMessage = if (args.isNotEmpty()) {
-            message.format(*args)
-        } else {
-            message
-        }
+        val formattedMessage =
+            if (args.isNotEmpty()) {
+                message.format(*args)
+            } else {
+                message
+            }
 
         when (severity) {
             Severity.VERBOSE -> Log.v(tag, formattedMessage)

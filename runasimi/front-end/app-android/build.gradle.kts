@@ -1,9 +1,5 @@
 plugins {
-    kotlin("multiplatform")
-    id("com.android.application")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.compose")
-    id("com.cramsan.kotlin-mpp-android-app")
+    id("com.cramsan.kotlin-android-app")
 }
 
 private val ENV_STORE_PASSWORD = "RUNASIMI_STORE_PASSWORD"

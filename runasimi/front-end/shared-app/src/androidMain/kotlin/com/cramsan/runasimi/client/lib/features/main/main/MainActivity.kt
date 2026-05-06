@@ -12,8 +12,9 @@ import org.koin.core.annotation.KoinExperimentalAPI
 /**
  * Main activity for the application.
  */
-class MainActivity : ComponentActivity(), RunasimiMainScreenEventHandler {
-
+class MainActivity :
+    ComponentActivity(),
+    RunasimiMainScreenEventHandler {
     @OptIn(KoinExperimentalAPI::class)
     @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {

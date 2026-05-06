@@ -47,7 +47,7 @@ fun PhotoConfirmation(
                         imageVector = Icons.Sharp.Check,
                         contentDescription = stringResource(Res.string.edifikana_string_confirm),
                         tint = Color.White,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
                     )
                 }
             },
@@ -57,11 +57,13 @@ fun PhotoConfirmation(
                         imageVector = Icons.Sharp.Cancel,
                         contentDescription = stringResource(Res.string.edifikana_string_cancel),
                         tint = Color.White,
-                        modifier = Modifier.fillMaxSize()
-                            .padding(5.dp)
+                        modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(5.dp),
                     )
                 }
-            }
+            },
         )
     }
 }

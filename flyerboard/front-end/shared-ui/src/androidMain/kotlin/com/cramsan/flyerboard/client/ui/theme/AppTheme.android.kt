@@ -28,8 +28,13 @@ actual fun getColorScheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> darkColorScheme
-        else -> lightColorScheme
+        darkTheme -> {
+            darkColorScheme
+        }
+
+        else -> {
+            lightColorScheme
+        }
     }
 }
 

@@ -21,21 +21,22 @@ import org.koin.dsl.module
  * Provides Android-specific implementations for threading, logging, halt utilities,
  * dispatcher providers, and preferences storage using Android APIs.
  */
-internal actual val FrameworkPlatformDelegatesModule = module {
+internal actual val FrameworkPlatformDelegatesModule =
+    module {
 
-    single<ThreadUtilDelegate> {
-        ThreadUtilAndroid(get())
+        single<ThreadUtilDelegate> {
+            ThreadUtilAndroid(get())
+        }
+
+        single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate() }
+
+        single<EventLoggerDelegate> { LoggerAndroid() }
+
+        single<HaltUtilDelegate> {
+            HaltUtilAndroid(androidApplication())
+        }
+
+        single<DispatcherProvider> { DispatcherProviderImpl() }
+
+        single<PreferencesDelegate> { PreferencesAndroid(androidApplication(), get(named(NamedDependency.DOMAIN_KEY))) }
     }
-
-    single<EventLoggerErrorCallbackDelegate> { NoopEventLoggerErrorCallbackDelegate() }
-
-    single<EventLoggerDelegate> { LoggerAndroid() }
-
-    single<HaltUtilDelegate> {
-        HaltUtilAndroid(androidApplication())
-    }
-
-    single<DispatcherProvider> { DispatcherProviderImpl() }
-
-    single<PreferencesDelegate> { PreferencesAndroid(androidApplication(), get(named(NamedDependency.DOMAIN_KEY))) }
-}

@@ -1,21 +1,34 @@
 package com.cramsan
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform")
     id("com.android.application")
+    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
     id("com.cramsan.release-task")
 }
 
 kotlin {
-    androidTarget { }
     jvmToolchain(21)
 }
 
 android {
     compileSdk = project.property("compileSdkVersion").toString().toInt()
+
+    sourceSets["main"].apply {
+        kotlin.srcDirs("src/androidMain/kotlin")
+        java.srcDirs("src/androidMain/java")
+        res.srcDirs("src/androidMain/res")
+        resources.srcDirs("src/androidMain/resources")
+        manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    }
+    sourceSets["test"].apply {
+        kotlin.srcDirs("src/androidUnitTest/kotlin", "src/androidUnitTest/java")
+    }
+    sourceSets["androidTest"].apply {
+        kotlin.srcDirs("src/androidInstrumentedTest/kotlin", "src/androidInstrumentedTest/java")
+    }
 
     defaultConfig {
         minSdk = project.property("minSdkVersion").toString().toInt()
@@ -31,18 +44,6 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-
-    flavorDimensions += "stage"
-    productFlavors {
-        create("preprod") {
-            dimension = "stage"
-            applicationIdSuffix = ".preprod"
-            versionNameSuffix = "-preprod"
-        }
-        create("prod") {
-            dimension = "stage"
         }
     }
 
@@ -80,9 +81,6 @@ android {
 }
 
 dependencies {
-    "kspAndroid"("com.google.dagger:hilt-compiler:_")
-    "kspAndroid"("androidx.hilt:hilt-compiler:_")
-
     "implementation"("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
     "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
     "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-android:_")
@@ -93,9 +91,6 @@ dependencies {
     "implementation"("androidx.compose.foundation:foundation:_")
     "implementation"("androidx.compose.material3:material3:_")
     "implementation"("androidx.activity:activity-compose:_")
-
-    "implementation"("com.google.dagger:hilt-android:_")
-    "implementation"("androidx.hilt:hilt-navigation-compose:_")
 
     "testImplementation"("androidx.test:core:_")
     "testImplementation"("androidx.test.ext:junit:_")
@@ -125,10 +120,11 @@ dependencies {
 tasks.register("releaseAndroid") {
     group = "release"
     description = "Run all the steps to build a release artifact"
-    dependsOn("build")
-    dependsOn("bundle")
-    dependsOn("detektCommonMainSourceSet")
-    dependsOn("detektAndroidDebugSourceSet")
+    dependsOn("assembleRelease")
+    dependsOn("bundleRelease")
+    dependsOn("testDebugUnitTest")
+    dependsOn("detektMainSourceSet")
+    dependsOn("detektTestSourceSet")
 }
 
 tasks.named("release") {

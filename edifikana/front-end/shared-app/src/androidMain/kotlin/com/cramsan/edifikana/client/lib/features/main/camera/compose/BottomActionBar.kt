@@ -35,7 +35,8 @@ fun BottomActionBar(
     mainButton: @Composable () -> Unit,
 ) {
     Row(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
             .padding(vertical = 4.dp),
@@ -67,7 +68,7 @@ private fun PreviewBottomActionBar() {
                         contentDescription = "",
                         tint = Color.White,
                     )
-                }
+                },
             )
         },
         secondaryButton = {
@@ -79,8 +80,8 @@ private fun PreviewBottomActionBar() {
                         contentDescription = "",
                         tint = Color.White,
                     )
-                }
+                },
             )
-        }
+        },
     )
 }

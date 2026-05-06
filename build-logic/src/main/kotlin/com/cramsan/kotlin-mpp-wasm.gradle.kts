@@ -22,8 +22,10 @@ tasks.register("releaseWasm") {
     group = "release"
     description = "Run all the steps to build a releaseWasm artifact"
     dependsOn("wasmJsMainClasses")
+    dependsOn("wasmJsBrowserTest")
     dependsOn("detektCommonMainSourceSet")
     dependsOn("detektWasmJsMainSourceSet")
+    dependsOn("detektWasmJsTestSourceSet")
 }
 
 tasks.named("release") {

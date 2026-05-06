@@ -5,7 +5,6 @@ package com.cramsan.framework.utils.format
  * @see [StringFormatter] in common package.
  */
 actual class StringFormatter actual constructor() {
-
     /**
      * @see [StringFormatter.format] in common package.
      */

@@ -8,7 +8,6 @@ import kotlin.test.assertTrue
 
 @OptIn(ExperimentalSerializationApi::class)
 class SingleValueEncoderDecoderTest {
-
     @Test
     fun `encode and decode String`() {
         val value = "hello"
@@ -68,7 +67,7 @@ class SingleValueEncoderDecoderTest {
         try {
             decodeFromValue<InvalidDataClass>(encoded)
             assert(false) { "Decoding should have failed" }
-        } catch (e: Exception) {
+        } catch (@Suppress("SwallowedException") e: Exception) {
             // Expected exception
         }
     }
@@ -78,7 +77,7 @@ class SingleValueEncoderDecoderTest {
         try {
             encodeToValue(InvalidDataClass(1, "test"))
             assert(false) { "Encoding should have failed" }
-        } catch (e: Exception) {
+        } catch (@Suppress("SwallowedException") e: Exception) {
             // Expected exception
         }
     }
@@ -91,8 +90,5 @@ class SingleValueEncoderDecoderTest {
     value class TestValue(val value: Int)
 
     @Serializable
-    data class InvalidDataClass(
-        val number: Int,
-        val text: String
-    )
+    data class InvalidDataClass(val number: Int, val text: String)
 }

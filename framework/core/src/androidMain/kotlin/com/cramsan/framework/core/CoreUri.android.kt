@@ -6,10 +6,7 @@ import android.net.Uri
  * CoreUri is a wrapper around the Android Uri class to provide a common interface for
  * handling URIs across platforms.
  */
-actual class CoreUri(
-    private val uri: Uri,
-) {
-
+actual class CoreUri(private val uri: Uri) {
     /**
      * Get the URI as a string.
      */
@@ -29,7 +26,6 @@ actual class CoreUri(
     }
 
     actual companion object {
-
         /**
          * Create a URI object from a string.
          */

@@ -10,11 +10,12 @@ data class HomePageUIState(
     val message: String? = null,
 ) {
     companion object {
-        val InitialState = HomePageUIState(
-            false,
-            null,
-            null,
-            null,
-        )
+        val InitialState =
+            HomePageUIState(
+                false,
+                null,
+                null,
+                null,
+            )
     }
 }

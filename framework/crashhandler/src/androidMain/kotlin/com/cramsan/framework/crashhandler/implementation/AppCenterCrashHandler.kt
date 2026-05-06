@@ -9,7 +9,6 @@ import com.microsoft.appcenter.crashes.Crashes
  * and ready to catch crashes. No other action is required from the caller.
  */
 class AppCenterCrashHandler : CrashHandlerDelegate {
-
     override fun initialize() {
         AppCenter.start(Crashes::class.java)
     }

@@ -9,10 +9,8 @@ import com.microsoft.appcenter.crashes.Crashes
  *
  * An optional [EventLoggerErrorCallbackDelegate] is allowed.
  */
-class AppCenterErrorCallback(
-    private val passthroughDelegate: EventLoggerErrorCallbackDelegate? = null,
-) : EventLoggerErrorCallbackDelegate {
-
+class AppCenterErrorCallback(private val passthroughDelegate: EventLoggerErrorCallbackDelegate? = null) :
+    EventLoggerErrorCallbackDelegate {
     override fun handleErrorEvent(tag: String, message: String, throwable: Throwable, severity: Severity) {
         Crashes.trackError(
             throwable,

@@ -13,8 +13,9 @@ import org.koin.core.annotation.KoinExperimentalAPI
 /**
  * Main activity for the application.
  */
-class MainActivity : ComponentActivity(), FlyerBoardApplicationMainScreenEventHandler {
-
+class MainActivity :
+    ComponentActivity(),
+    FlyerBoardApplicationMainScreenEventHandler {
     @OptIn(KoinExperimentalAPI::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

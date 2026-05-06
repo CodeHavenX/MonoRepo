@@ -3,7 +3,6 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    id("com.android.library")
     kotlin("multiplatform")
     id("com.cramsan.kotlin-mpp-common")
     id("com.cramsan.kotlin-mpp-android-lib")
@@ -13,11 +12,11 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm")
 }
 
-android {
-    namespace = "com.cramsan.framework.assertlib"
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "com.cramsan.framework.assertlib"
+    }
+
     wasmJs {
         browser()
     }

@@ -9,7 +9,6 @@ import org.koin.android.ext.android.inject
  * Main application class for Edifikana Android application.
  */
 class EdifikanaApplication : Application() {
-
     private val processViewModel: EdifikanaApplicationViewModel by inject()
 
     override fun onCreate() {

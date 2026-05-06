@@ -26,7 +26,6 @@ import org.koin.android.ext.android.inject
  * Activity that handles camera operations.
  */
 class CameraActivity : ComponentActivity() {
-
     private val imageConfig: ImageConfig by inject()
 
     private val stringProvider: StringProvider by inject()
@@ -59,17 +58,21 @@ class CameraActivity : ComponentActivity() {
                                     RESULT_OK,
                                     Intent().apply {
                                         putExtra(RESULT_URI, event.uri.toString())
-                                    }
+                                    },
                                 )
                                 finish()
                             }
 
-                            is CameraEvent.CancelFlow -> finish()
+                            is CameraEvent.CancelFlow -> {
+                                finish()
+                            }
+
                             is CameraEvent.OpenSettings -> {
-                                val intent = Intent(
-                                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                    Uri.fromParts("package", this@CameraActivity.packageName, null)
-                                )
+                                val intent =
+                                    Intent(
+                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.fromParts("package", this@CameraActivity.packageName, null),
+                                    )
                                 startActivity(intent)
                             }
                         }
@@ -86,6 +89,7 @@ class CameraActivity : ComponentActivity() {
                         cameraDelegate.handleResult(uri)
                     }
                 }
+
                 is CameraUiState.PreviewCamera -> {
                     CameraPreview(
                         lensFacing = state.lensFacing,
@@ -95,12 +99,14 @@ class CameraActivity : ComponentActivity() {
                         onToggleCameraClick = { cameraDelegate.toggleCamera() },
                     )
                 }
+
                 is CameraUiState.Error -> {
                     PhotoErrorScreen(
                         message = state.message,
                         onCancelClick = { cameraDelegate.displayFrontCameraPreview() },
                     )
                 }
+
                 is CameraUiState.PermissionDenied -> {
                     PermissionDeniedScreen(
                         onOpenSettingsClick = { cameraDelegate.openAppSettings() },

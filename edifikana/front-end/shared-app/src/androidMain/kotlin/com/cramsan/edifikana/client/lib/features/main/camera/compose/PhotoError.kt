@@ -39,9 +39,10 @@ fun PhotoErrorScreen(
                         imageVector = Icons.Sharp.Cancel,
                         contentDescription = stringResource(Res.string.edifikana_string_cancel),
                         tint = Color.White,
-                        modifier = Modifier
+                        modifier =
+                        Modifier
                             .fillMaxSize()
-                            .padding(5.dp)
+                            .padding(5.dp),
                     )
                 }
             },

@@ -8,7 +8,6 @@ import com.microsoft.appcenter.analytics.Analytics
  * Implementation of [UserEventsDelegate] that logs events to AppCenter.
  */
 class AppCenterUserEvents : UserEventsDelegate {
-
     override fun initialize() {
         AppCenter.start(Analytics::class.java)
     }

@@ -8,7 +8,6 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
-    id("com.android.library")
     id("com.cramsan.kotlin-mpp-common-compose")
     id("com.cramsan.kotlin-mpp-android-lib-compose")
     id("com.cramsan.kotlin-mpp-ios")
@@ -18,15 +17,11 @@ plugins {
 
 version = "1.0-SNAPSHOT"
 
-android {
-    namespace = "com.cramsan.sample.mpplib.compose"
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "com.cramsan.sample.mpplib.compose"
+    }
+
     wasmJs {
         browser {}
         binaries.executable()

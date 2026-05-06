@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
     id("com.google.devtools.ksp")
@@ -15,15 +14,11 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm")
 }
 
-android {
-    namespace = "com.cramsan.framework.core.compose"
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-}
-
 kotlin {
+    androidLibrary {
+        namespace = "com.cramsan.framework.core.compose"
+    }
+
     wasmJs {
         browser()
     }

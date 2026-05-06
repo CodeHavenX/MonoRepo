@@ -2,15 +2,18 @@ package com.cramsan.framework.test
 
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 
 actual abstract class CoroutineTest actual constructor() {
-    actual val testCoroutineScope: TestScope
-        get() = TODO("Not yet implemented")
+    actual val testCoroutineDispatcher: TestDispatcher = UnconfinedTestDispatcher()
+    private val _testCoroutineScope = TestScope(testCoroutineDispatcher)
 
-    actual val testCoroutineDispatcher: TestDispatcher
-        get() = TODO("Not yet implemented")
+    actual val testCoroutineScope: TestScope = _testCoroutineScope
 
-    actual fun runCoroutineTest(block: suspend TestScope.() -> Unit) = Unit
+    actual fun runCoroutineTest(block: suspend TestScope.() -> Unit) {
+        _testCoroutineScope.runTest { block() }
+    }
 
     @Deprecated(
         message = "Use runCoroutineTest instead",

@@ -33,7 +33,8 @@ fun PermissionDeniedScreen(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(15.dp)
                 .wrapContentSize()
                 .align(Alignment.Center),
@@ -56,9 +57,10 @@ fun PermissionDeniedScreen(
                         imageVector = Icons.Sharp.Cancel,
                         contentDescription = stringResource(Res.string.edifikana_string_cancel),
                         tint = Color.White,
-                        modifier = Modifier
+                        modifier =
+                        Modifier
                             .fillMaxSize()
-                            .padding(5.dp)
+                            .padding(5.dp),
                     )
                 }
             },

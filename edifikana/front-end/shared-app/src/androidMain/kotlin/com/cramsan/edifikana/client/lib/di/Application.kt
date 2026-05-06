@@ -29,7 +29,7 @@ fun startAndroidApplication(
                 managerPlatformModule = ManagerPlatformModule,
                 viewModelModule = ViewModelModule,
                 viewModelPlatformModule = ViewModelPlatformModule,
-            )
+            ),
         )
     }
 }

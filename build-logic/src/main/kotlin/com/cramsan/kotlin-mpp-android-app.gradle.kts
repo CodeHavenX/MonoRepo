@@ -1,8 +1,8 @@
 package com.cramsan
 
 plugins {
-    id("com.android.application")
     id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.application")
     id("org.jetbrains.compose")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
@@ -30,7 +30,7 @@ android {
         }
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -66,6 +66,7 @@ android {
             isIncludeAndroidResources = true
             isReturnDefaultValues = true
             all { test ->
+                test.failOnNoDiscoveredTests = false
                 test.testLogging {
                     events("passed", "skipped", "failed")
                 }

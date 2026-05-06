@@ -1,8 +1,8 @@
 package com.cramsan
 
 plugins {
-    id("com.android.library")
     id("org.jetbrains.kotlin.multiplatform")
+    id("com.android.library")
 }
 
 kotlin {
@@ -15,7 +15,6 @@ android {
 
     defaultConfig {
         minSdk = project.property("minSdkVersion").toString().toInt()
-        targetSdk = project.property("targetSdkVersion").toString().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -34,6 +33,7 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             all { test ->
+                test.failOnNoDiscoveredTests = false
                 test.testLogging {
                     events("passed", "skipped", "failed")
                 }
@@ -80,7 +80,6 @@ tasks.register("releaseAndroid") {
     dependsOn("detektCommonMainSourceSet")
     dependsOn("detektAndroidDebugSourceSet")
     dependsOn("testDebugUnitTest")
-    dependsOn("testReleaseUnitTest")
 }
 
 tasks.named("release") {

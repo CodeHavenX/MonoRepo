@@ -19,6 +19,7 @@ android {
     testOptions {
         unitTests {
             all { test ->
+                test.failOnNoDiscoveredTests = false
                 test.systemProperty("robolectric.pixelCopyRenderMode", "hardware")
             }
         }

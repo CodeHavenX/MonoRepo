@@ -13,7 +13,7 @@ kotlin {
     sourceSets {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
-            implementation(compose.desktop.common)
+            implementation("org.jetbrains.compose.desktop:desktop-jvm:_")
             implementation("org.jetbrains.compose.ui:ui-tooling-preview:_")
         }
     }

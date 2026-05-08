@@ -70,7 +70,13 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.uploadFile(testData, targetRef, bucketId)
+        val result = storageService.uploadFile(
+            testData,
+            targetRef,
+            bucketId,
+            StorageService.RESOURCE_TYPE_TIME_CARD,
+            "property_id_1",
+        )
 
         // Assert
         assertTrue(result.isSuccess)
@@ -85,7 +91,13 @@ class StorageServiceImplTest : CoroutineTest() {
         val storageService: StorageService = StorageServiceImpl(buildHttpClient(mockEngine), buildRawHttpClient(mockEngine), downloadStrategy)
 
         // Act
-        val result = storageService.uploadFile("test".toByteArray(), "file.png", "images")
+        val result = storageService.uploadFile(
+            "test".toByteArray(),
+            "file.png",
+            "images",
+            StorageService.RESOURCE_TYPE_TIME_CARD,
+            "property_id_1",
+        )
 
         // Assert
         assertTrue(result.isFailure)

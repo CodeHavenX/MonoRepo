@@ -134,13 +134,13 @@ class PropertyManagerTest : CoroutineTest() {
         val createdProperty = PropertyModel(propertyId, propertyName, address, organizationId)
         every { fileService.getFilename(imageUri) } returns "photo.jpg"
         coEvery { propertyService.addProperty(propertyName, address, organizationId, null) } returns Result.success(createdProperty)
-        coEvery { storageManager.uploadImage(imageUri, any(), any()) } returns Result.success("storage-ref-123")
+        coEvery { storageManager.uploadImage(imageUri, any(), any(), any(), any()) } returns Result.success("storage-ref-123")
         coEvery { propertyService.updateProperty(propertyId, propertyName, address, "storage:storage-ref-123") } returns Result.success(mockk())
         // Act
         val result = manager.addProperty(propertyName, address, organizationId, imageUri = imageUri)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { storageManager.uploadImage(imageUri, "private/properties/property-1_photo.jpg", any()) }
+        coVerify { storageManager.uploadImage(imageUri, "photo.jpg", any(), any(), any()) }
     }
 
     /**
@@ -157,13 +157,13 @@ class PropertyManagerTest : CoroutineTest() {
         val createdProperty = PropertyModel(propertyId, propertyName, address, organizationId)
         every { fileService.getFilename(imageUri) } returns "../../evil.jpg"
         coEvery { propertyService.addProperty(propertyName, address, organizationId, null) } returns Result.success(createdProperty)
-        coEvery { storageManager.uploadImage(imageUri, any(), any()) } returns Result.success("storage-ref-123")
+        coEvery { storageManager.uploadImage(imageUri, any(), any(), any(), any()) } returns Result.success("storage-ref-123")
         coEvery { propertyService.updateProperty(propertyId, propertyName, address, "storage:storage-ref-123") } returns Result.success(mockk())
         // Act
         val result = manager.addProperty(propertyName, address, organizationId, imageUri = imageUri)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { storageManager.uploadImage(imageUri, "private/properties/property-1_evil.jpg", any()) }
+        coVerify { storageManager.uploadImage(imageUri, "evil.jpg", any(), any(), any()) }
     }
 
     /**
@@ -177,13 +177,13 @@ class PropertyManagerTest : CoroutineTest() {
         val address = "Jiron Juan de Arona 456"
         val imageUri = mockk<CoreUri>()
         every { fileService.getFilename(imageUri) } returns "photo.jpg"
-        coEvery { storageManager.uploadImage(imageUri, any(), any()) } returns Result.success("storage-ref-123")
+        coEvery { storageManager.uploadImage(imageUri, any(), any(), any(), any()) } returns Result.success("storage-ref-123")
         coEvery { propertyService.updateProperty(propertyId, name, address, "storage:storage-ref-123") } returns Result.success(mockk())
         // Act
         val result = manager.updateProperty(propertyId, name, address, imageUri = imageUri)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { storageManager.uploadImage(imageUri, "private/properties/property-1_photo.jpg", any()) }
+        coVerify { storageManager.uploadImage(imageUri, "photo.jpg", any(), any(), any()) }
     }
 
     /**
@@ -197,13 +197,13 @@ class PropertyManagerTest : CoroutineTest() {
         val address = "Jiron Juan de Arona 456"
         val imageUri = mockk<CoreUri>()
         every { fileService.getFilename(imageUri) } returns "../../evil.jpg"
-        coEvery { storageManager.uploadImage(imageUri, any(), any()) } returns Result.success("storage-ref-123")
+        coEvery { storageManager.uploadImage(imageUri, any(), any(), any(), any()) } returns Result.success("storage-ref-123")
         coEvery { propertyService.updateProperty(propertyId, name, address, "storage:storage-ref-123") } returns Result.success(mockk())
         // Act
         val result = manager.updateProperty(propertyId, name, address, imageUri = imageUri)
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { storageManager.uploadImage(imageUri, "private/properties/property-1_evil.jpg", any()) }
+        coVerify { storageManager.uploadImage(imageUri, "evil.jpg", any(), any(), any()) }
     }
 
     /**

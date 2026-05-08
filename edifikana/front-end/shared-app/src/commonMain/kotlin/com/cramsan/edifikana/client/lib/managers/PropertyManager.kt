@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.managers
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.FileService
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.client.lib.service.StorageService
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.utils.requireSuccess
@@ -149,10 +150,16 @@ class PropertyManager(
      */
     private suspend fun uploadPropertyImage(imageUri: CoreUri, propertyId: PropertyId): String {
         val filename = sanitizeFilename(fileService.getFilename(imageUri))
-        logI(TAG, "Filename: $filename")
-        val targetRef = "private/properties/${propertyId}_$filename"
-        logI(TAG, "Uploading image to: $targetRef")
-        val storageRef = storageManager.uploadImage(imageUri, targetRef, PROPERTY_IMAGE_BUCKET).getOrThrow()
+        logI(TAG, "Uploading image: filename=$filename, propertyId=$propertyId")
+        val storageRef =
+            storageManager
+                .uploadImage(
+                    imageUri,
+                    filename,
+                    PROPERTY_IMAGE_BUCKET,
+                    StorageService.RESOURCE_TYPE_PROPERTY,
+                    propertyId.propertyId,
+                ).getOrThrow()
         logI(TAG, "Upload successful: $storageRef")
         return "storage:$storageRef"
     }

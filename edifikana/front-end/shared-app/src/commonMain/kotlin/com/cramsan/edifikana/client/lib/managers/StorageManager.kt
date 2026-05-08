@@ -26,26 +26,28 @@ class StorageManager(
     private val dependencies: ManagerDependencies,
 ) {
     /**
-     * Upload a file to [bucketId] at the path [targetRef].
-     *
-     * @param data The file data as bytes
-     * @param targetRef The target storage path/reference within the bucket
-     * @param bucketId The storage bucket to upload to
-     * @return Result containing the storage reference on success, or error on failure
+     * Upload a file to [bucketId] using [filename] as the leaf name.
+     * [resourceType] and [resourceId] are forwarded to the backend to determine authorization
+     * and construct the canonical storage path server-side.
      */
-    suspend fun uploadFile(data: ByteArray, targetRef: String, bucketId: String): Result<String> =
+    suspend fun uploadFile(
+        data: ByteArray,
+        filename: String,
+        bucketId: String,
+        resourceType: String,
+        resourceId: String,
+    ): Result<String> =
         dependencies.getOrCatch(TAG) {
-            logI(TAG, "uploadFile: targetRef=$targetRef, bucketId=$bucketId, size=${data.size} bytes")
-            storageService.uploadFile(data, targetRef, bucketId).getOrThrow()
+            logI(TAG, "uploadFile: filename=$filename, bucketId=$bucketId, size=${data.size} bytes")
+            storageService.uploadFile(data, filename, bucketId, resourceType, resourceId).getOrThrow()
         }
 
     /**
-     * Download a file from storage.
-     *
-     * @param targetRef The storage path/reference to download
-     * @return Result containing the local file URI on success, or error on failure
+     * Download a file identified by [targetRef] (the full canonical asset path).
      */
-    suspend fun downloadFile(targetRef: String): Result<CoreUri> =
+    suspend fun downloadFile(
+        targetRef: String,
+    ): Result<CoreUri> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "downloadFile: targetRef=$targetRef")
             storageService.downloadFile(targetRef).getOrThrow()
@@ -88,17 +90,26 @@ class StorageManager(
         }
 
     /**
-     * Upload an image file from URI to [bucketId] at the path [targetRef].
+     * Upload an image file from [uri] to [bucketId] using [filename] as the leaf name.
      * Handles reading, processing (EXIF rotation + compression), and uploading.
+     * [resourceType] and [resourceId] are forwarded to the backend for authorization and path construction.
      *
      * @param uri The local file URI to upload
-     * @param targetRef The target storage path/reference within the bucket
+     * @param filename The leaf filename (backend constructs the full canonical path)
      * @param bucketId The storage bucket to upload to
+     * @param resourceType The resource type key (see [StorageService] companion constants)
+     * @param resourceId The ID of the domain resource (e.g. propertyId)
      * @return Result containing the storage reference on success, or error on failure
      */
-    suspend fun uploadImage(uri: CoreUri, targetRef: String, bucketId: String): Result<String> =
+    suspend fun uploadImage(
+        uri: CoreUri,
+        filename: String,
+        bucketId: String,
+        resourceType: String,
+        resourceId: String,
+    ): Result<String> =
         dependencies.getOrCatch(TAG) {
-            logI(TAG, "uploadImage: uri=$uri, targetRef=$targetRef, bucketId=$bucketId")
+            logI(TAG, "uploadImage: uri=$uri, filename=$filename, bucketId=$bucketId")
 
             // Read bytes from URI
             val bytes = fileService.readFileBytes(uri).getOrThrow()
@@ -109,7 +120,15 @@ class StorageManager(
             logI(TAG, "Processed image, final size: ${processedBytes.size} bytes")
 
             // Upload to storage
-            val storageRef = storageService.uploadFile(processedBytes, targetRef, bucketId).getOrThrow()
+            val storageRef =
+                storageService
+                    .uploadFile(
+                        processedBytes,
+                        filename,
+                        bucketId,
+                        resourceType,
+                        resourceId,
+                    ).getOrThrow()
             logI(TAG, "Upload successful: $storageRef")
 
             storageRef

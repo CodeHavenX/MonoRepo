@@ -6,12 +6,46 @@
 # the "_" placeholder for most dependencies so refreshVersions (versions.properties)
 # remains the single source of truth. Only deps that cannot use "_" are pinned here.
 
+[plugins]
+
+android-application = { id = "com.android.application", version.ref = "android-agp" }
+android-library = { id = "com.android.library", version.ref = "android-agp" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ktor-plugin = { id = "io.ktor.plugin", version.ref = "ktor-plugin" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
+
 [versions]
+
 android-agp = "8.10.0"
+##       ⬆ = "8.10.1"
+##       ⬆ = "8.11.0"
+##       ⬆ = "8.11.1"
+##       ⬆ = "8.11.2"
+##       ⬆ = "8.12.0"
+##       ⬆ = "8.12.1"
+##       ⬆ = "8.12.2"
+##       ⬆ = "8.12.3"
+##       ⬆ = "8.13.0"
+##       ⬆ = "8.13.1"
+##       ⬆ = "8.13.2"
+##       ⬆ = "9.0.0"
+##       ⬆ = "9.0.1"
+##       ⬆ = "9.1.0"
+##       ⬆ = "9.1.1"
+##       ⬆ = "9.2.0"
+##       ⬆ = "9.2.1"
 detekt = "2.0.0-alpha.3"
 detekt-rules-ktlint-wrapper = "2.0.0-alpha.3"
 hilt = "2.58"
 composable-preview-scanner = "0.8.1"
+##                      ⬆ = "0.8.2"
+##                      ⬆ = "0.9.0"
 kotlin = "2.3.20"
 compose-multiplatform = "1.10.3"
 ksp = "2.3.6"
@@ -19,6 +53,7 @@ ktor-plugin = "3.4.1"
 roborazzi = "1.59.0"
 
 [libraries]
+
 # Plugin artifacts — used in build-logic/build.gradle.kts as classpath dependencies.
 build-android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "android-agp" }
 build-compose-gradle-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
@@ -34,16 +69,3 @@ build-roborazzi-gradle-plugin = { module = "io.github.takahirom.roborazzi:robora
 detekt-rules-ktlint-wrapper = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt-rules-ktlint-wrapper" }
 composable-preview-scanner-android = { module = "io.github.sergio-sastre.ComposablePreviewScanner:android", version.ref = "composable-preview-scanner" }
 composable-preview-scanner-jvm = { module = "io.github.sergio-sastre.ComposablePreviewScanner:jvm", version.ref = "composable-preview-scanner" }
-
-[plugins]
-android-application = { id = "com.android.application", version.ref = "android-agp" }
-android-library = { id = "com.android.library", version.ref = "android-agp" }
-compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
-detekt = { id = "dev.detekt", version.ref = "detekt" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-ktor-plugin = { id = "io.ktor.plugin", version.ref = "ktor-plugin" }
-roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }

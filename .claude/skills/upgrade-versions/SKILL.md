@@ -1,27 +1,54 @@
 ---
 name: upgrade-versions
-description: "Systematically upgrade dependencies in versions.properties using refreshVersions, with iterative verification and proper documentation."
+description: "Systematically upgrade dependencies in versions.properties and gradle/libs.versions.toml using refreshVersions, with iterative verification and proper documentation."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # Skill: Upgrade Package Versions
 
-Systematically upgrade dependencies in `versions.properties` using refreshVersions, with iterative verification and proper documentation.
+Systematically upgrade dependencies in `versions.properties` and `gradle/libs.versions.toml` using refreshVersions, with iterative verification and proper documentation.
 
 ## Prerequisites
 
 - The project uses [refreshVersions](https://splitties.github.io/refreshVersions/) for dependency management
-- Versions are defined in `versions.properties`
+- Most versions are defined in `versions.properties`
+- Build-logic plugin versions are defined in `gradle/libs.versions.toml` (and mirrored in `versions.properties`)
 - The `releaseAll --quiet` gradle task validates all projects compile and pass tests
+
+## Version File Responsibilities
+
+### `versions.properties`
+Managed by refreshVersions. Covers most runtime and test dependencies. Available upgrades appear as:
+```properties
+version.example=1.0.0
+##      # available=1.0.1
+##      # available=1.1.0
+```
+
+### `gradle/libs.versions.toml`
+Manually managed. Covers:
+- **Build-logic plugin classpath deps**: AGP, Kotlin, KSP, Compose Multiplatform, Detekt, Ktor plugin, Roborazzi
+- **Deps that cannot use `_` placeholder**: `detekt-rules-ktlint-wrapper`, `composable-preview-scanner`
+
+Available upgrades in this file use the `## ⬆ =` comment style:
+```toml
+android-agp = "8.13.2"
+##       ⬆ = "9.0.0"
+##       ⬆ = "9.1.0"
+```
+
+> **Important:** The file header states: *"Plugin versions here match the versions in `versions.properties`. When updating a plugin version, update both files."*
+> Versions for AGP, Kotlin, KSP, Compose Multiplatform, Detekt, Ktor plugin, and Roborazzi must be kept in sync between both files.
 
 ## Process Overview
 
 1. **Refresh available versions** - Run `./gradlew refreshVersions`
-2. **Analyze and group packages** - Identify related packages that should be upgraded together
-3. **Iterative upgrades** - Upgrade one group at a time, verify with `releaseAll --quiet`
-4. **Handle failures** - Roll back failed upgrades, document issues
-5. **Commit per group** - Create atomic commits for each successful upgrade
-6. **Document blockers** - Add comments for packages that cannot be upgraded
+2. **Check both files** - Read `versions.properties` AND `gradle/libs.versions.toml` for available upgrades
+3. **Analyze and group packages** - Identify related packages that should be upgraded together
+4. **Iterative upgrades** - Upgrade one group at a time, verify with `releaseAll --quiet`
+5. **Handle failures** - Roll back failed upgrades, document issues
+6. **Commit per group** - Create atomic commits for each successful upgrade
+7. **Document blockers** - Add comments for packages that cannot be upgraded
 
 ## Step 1: Refresh Available Versions
 
@@ -29,11 +56,11 @@ Systematically upgrade dependencies in `versions.properties` using refreshVersio
 ./gradlew refreshVersions
 ```
 
-This updates `versions.properties` with available version comments like:
-```properties
-version.example=1.0.0
-##      # available=1.0.1
-##      # available=1.1.0
+This updates `versions.properties` with available version comments. Then read both files:
+
+```bash
+grep "available=" versions.properties
+grep "⬆" gradle/libs.versions.toml
 ```
 
 ## Step 2: Analyze and Group Packages
@@ -44,8 +71,9 @@ Group packages by these criteria:
 Packages from the same library family should be upgraded together:
 - All `supabase` packages
 - All `log4j` packages
-- All `roborazzi` packages
-- `plugin.*` and `version.*` for the same library (e.g., Ktor, Dagger)
+- All `roborazzi` packages (including the version in `libs.versions.toml`)
+- `plugin.*` and `version.*` for the same library (e.g., Ktor)
+- Any package that appears in both `versions.properties` and `libs.versions.toml`
 
 ### Group by Risk Level
 Order upgrades from low to high risk:
@@ -56,16 +84,18 @@ Order upgrades from low to high risk:
 
 ### Known Dependencies
 Some packages have upgrade dependencies:
-- **KSP** must match **Kotlin** version
-- **ComposablePreviewScanner** tied to **Roborazzi**
+- **KSP** must match **Kotlin** version — update both `versions.properties` and `libs.versions.toml`
+- **ComposablePreviewScanner** tied to **Roborazzi** — both live in `libs.versions.toml`
 - **ui-tooling-preview** should match **JetBrains Compose**
+- **Roborazzi** appears in both files — update both when upgrading
 
 ## Step 3: Iterative Upgrade Process
 
 For each group:
 
-### 3.1 Edit versions.properties
-Update the version and remove the `available` comments:
+### 3.1 Edit the relevant file(s)
+
+**`versions.properties`** — update the version and remove `available` comments:
 
 **Before:**
 ```properties
@@ -79,6 +109,22 @@ version.example=1.0.0
 version.example=1.1.0
 ```
 
+**`gradle/libs.versions.toml`** — update the version and remove `⬆` comments:
+
+**Before:**
+```toml
+android-agp = "8.13.2"
+##       ⬆ = "9.0.0"
+##       ⬆ = "9.1.0"
+```
+
+**After:**
+```toml
+android-agp = "9.1.0"
+```
+
+If a package exists in **both files**, update both in the same step before verifying.
+
 ### 3.2 Verify with releaseAll
 ```bash
 ./gradlew --stop
@@ -89,7 +135,7 @@ Check for `BUILD SUCCESSFUL` at the end.
 
 ### 3.3 On Success - Commit
 ```bash
-git add versions.properties && git commit -m "[DEPS] Upgrade <package-name> to <version>
+git add versions.properties gradle/libs.versions.toml && git commit -m "[DEPS] Upgrade <package-name> to <version>
 
 <optional details>
 
@@ -98,7 +144,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ### 3.4 On Failure - Roll Back and Document
 ```bash
-git checkout versions.properties
+git checkout versions.properties gradle/libs.versions.toml
 ```
 
 Then add a comment documenting the failure (see Step 5).
@@ -172,18 +218,36 @@ Based on typical dependency chains in this project:
 3. **Testing libraries** - Robolectric, MockK, JUnit
 4. **AndroidX minor** - Navigation, Activity, Lifecycle
 5. **Supabase** - After Kotlin if WasmJS issues
-6. **Dagger/Hilt** - Check AGP compatibility
-7. **Kotlinx Serialization** - After Kotlin if WasmJS issues
-8. **Ktor** - After Kotlin if WasmJS issues
-9. **JetBrains Compose** - Coordinate with ui-tooling-preview
+6. **Kotlinx Serialization** - After Kotlin if WasmJS issues
+7. **Ktor** - Update `versions.properties` and `libs.versions.toml` together
+8. **Roborazzi** - Update `versions.properties` and `libs.versions.toml` together; ComposablePreviewScanner follows
+9. **JetBrains Compose** - Update `libs.versions.toml`; coordinate with ui-tooling-preview in `versions.properties`
 10. **AndroidX Compose** - UI, Foundation
-11. **Kotlin + KSP** - Major undertaking, do last
+11. **Detekt** - Update `versions.properties` and `libs.versions.toml` together
+12. **AGP** - `libs.versions.toml` only; check KMP compatibility before upgrading
+13. **Kotlin + KSP** - Update `versions.properties` and `libs.versions.toml` together; major undertaking, do last
 
 ## Packages with Special Handling
+
+### Packages that exist in both files
+These versions must be kept in sync between `versions.properties` and `gradle/libs.versions.toml`:
+
+| Package | `versions.properties` key | `libs.versions.toml` key |
+|---|---|---|
+| AGP | `plugin.android` | `android-agp` |
+| Kotlin | `version.kotlin` | `kotlin` |
+| KSP | `plugin.com.google.devtools.ksp` | `ksp` |
+| Compose Multiplatform | `plugin.org.jetbrains.compose` | `compose-multiplatform` |
+| Detekt | `plugin.dev.detekt` | `detekt` |
+| Ktor plugin | `plugin.io.ktor.plugin` | `ktor-plugin` |
+| Roborazzi plugin | `plugin.io.github.takahirom.roborazzi` | `roborazzi` |
 
 ### Navigation Compose (JetBrains)
 Does not update automatically from refreshVersions. Check manually:
 https://mvnrepository.com/artifact/org.jetbrains.androidx.navigation/navigation-compose
+
+### AGP (Android Gradle Plugin)
+Available upgrades appear in `gradle/libs.versions.toml` using `## ⬆ =` comments. AGP 9.x currently blocked by a KMP plugin conflict — see the comment in `libs.versions.toml` for details.
 
 ## Example Session
 
@@ -191,31 +255,37 @@ https://mvnrepository.com/artifact/org.jetbrains.androidx.navigation/navigation-
 # 1. Refresh versions
 ./gradlew refreshVersions
 
-# 2. Read current versions
-cat versions.properties
+# 2. Check both files for available upgrades
+grep "available=" versions.properties
+grep "⬆" gradle/libs.versions.toml
 
-# 3. Edit a group (e.g., Log4j)
+# 3. Edit a group (e.g., Log4j — versions.properties only)
 # Update: version.org.apache.logging.log4j..* from 2.25.2 to 2.25.3
 
-# 4. Verify
+# 4. Edit a group that spans both files (e.g., Roborazzi)
+# Update versions.properties: version.io.github.takahirom.roborazzi..* from 1.60.0 to 1.61.0
+# Update libs.versions.toml: roborazzi = "1.60.0" → "1.61.0" (remove ⬆ comments)
+
+# 5. Verify
 ./gradlew releaseAll --quiet 2>&1 | tail -30
 
-# 5. If successful, commit
-git add versions.properties
-git commit -m "[DEPS] Upgrade Log4j packages to 2.25.3
+# 6. If successful, commit (include both files if both changed)
+git add versions.properties gradle/libs.versions.toml
+git commit -m "[DEPS] Upgrade Roborazzi to 1.61.0
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
 
-# 6. If failed, roll back and document
-git checkout versions.properties
-# Add failure comment to versions.properties
+# 7. If failed, roll back both files and document
+git checkout versions.properties gradle/libs.versions.toml
+# Add failure comment to the relevant file(s)
 
-# 7. Repeat for next group
+# 8. Repeat for next group
 ```
 
 ## Final Checklist
 
 - [ ] All successful upgrades committed with descriptive messages
+- [ ] Both `versions.properties` and `gradle/libs.versions.toml` updated for shared packages
 - [ ] All failed upgrades documented with error details and date
 - [ ] All blocked upgrades have comments linking to relevant issues
 - [ ] All pending upgrades have TODO comments

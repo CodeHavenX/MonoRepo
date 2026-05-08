@@ -64,6 +64,7 @@ android {
             isIncludeAndroidResources = true
             isReturnDefaultValues = true
             all { test ->
+                test.failOnNoDiscoveredTests = false
                 test.testLogging {
                     events("passed", "skipped", "failed")
                 }

@@ -34,6 +34,7 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             all { test ->
+                test.failOnNoDiscoveredTests = false
                 test.testLogging {
                     events("passed", "skipped", "failed")
                 }

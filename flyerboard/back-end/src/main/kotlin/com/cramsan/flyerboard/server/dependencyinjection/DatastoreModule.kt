@@ -3,9 +3,11 @@ package com.cramsan.flyerboard.server.dependencyinjection
 import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.flyerboard.server.datastore.FileDatastore
 import com.cramsan.flyerboard.server.datastore.FlyerDatastore
+import com.cramsan.flyerboard.server.datastore.UserDatastore
 import com.cramsan.flyerboard.server.datastore.UserProfileDatastore
 import com.cramsan.flyerboard.server.datastore.impl.SupabaseFileDatastore
 import com.cramsan.flyerboard.server.datastore.impl.SupabaseFlyerDatastore
+import com.cramsan.flyerboard.server.datastore.impl.SupabaseUserDatastore
 import com.cramsan.flyerboard.server.datastore.impl.SupabaseUserProfileDatastore
 import com.cramsan.flyerboard.server.settings.FlyerBoardSettingKey
 import io.github.jan.supabase.SupabaseClient
@@ -67,5 +69,9 @@ internal val DatastoreModule =
 
         singleOf(::SupabaseUserProfileDatastore) {
             bind<UserProfileDatastore>()
+        }
+
+        singleOf(::SupabaseUserDatastore) {
+            bind<UserDatastore>()
         }
     }

@@ -108,5 +108,6 @@ include("flyerboard:api")
 include("flyerboard:front-end:shared-ui")
 include("flyerboard:front-end:shared-app")
 include("flyerboard:front-end:app-wasm")
+include("flyerboard:front-end:app-jvm")
 
 include("detekt-rules")

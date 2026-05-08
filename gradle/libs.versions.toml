@@ -22,6 +22,10 @@ roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 
 [versions]
 
+# AGP 9.x upgrade failed (2026-05-08).
+# Error: Plugin conflict — 'Cannot add extension with name kotlin, as there is an extension already registered with that name.'
+# Affects kotlin-mpp-android-lib.gradle.kts applying org.jetbrains.kotlin.multiplatform alongside AGP 9.x.
+# TODO: Investigate KMP + AGP 9.x compatibility. Also requires Gradle 9.x and unblocks Hilt 2.59.x.
 android-agp = "8.13.2"
 ##       ⬆ = "9.0.0"
 ##       ⬆ = "9.0.1"

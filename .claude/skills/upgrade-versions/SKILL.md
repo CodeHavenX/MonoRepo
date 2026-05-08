@@ -81,6 +81,7 @@ version.example=1.1.0
 
 ### 3.2 Verify with releaseAll
 ```bash
+./gradlew --stop
 ./gradlew releaseAll --quiet 2>&1 | tail -30
 ```
 

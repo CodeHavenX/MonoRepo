@@ -25,4 +25,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.navigation:navigation-fragment-ktx:_")
     implementation("androidx.navigation:navigation-ui-ktx:_")
+
+    implementation("io.insert-koin:koin-core:_")
+    implementation("io.insert-koin:koin-android:_")
 }

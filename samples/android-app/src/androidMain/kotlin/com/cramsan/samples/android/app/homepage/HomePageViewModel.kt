@@ -7,7 +7,6 @@ import com.cramsan.sample.mpplib.greeting
 import com.cramsan.samples.android.app.UIEvent
 import com.cramsan.samples.android.lib.Library
 import com.cramsan.samples.jvm.lib.JVMLib
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,13 +16,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  *
  */
-@HiltViewModel
-class HomePageViewModel @Inject constructor() : ViewModel() {
+class HomePageViewModel : ViewModel() {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e(TAG, "Unhandled exception in VM: $throwable")

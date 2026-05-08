@@ -24,8 +24,6 @@ android {
 }
 
 dependencies {
-    implementation("com.google.dagger:hilt-android:_")
-
     implementation(project(":framework:interfacelib"))
 
     implementation("androidx.appcompat:appcompat:_")

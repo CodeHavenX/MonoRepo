@@ -4,8 +4,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.compose")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
     id("com.cramsan.release-task")
 }
 
@@ -79,9 +77,6 @@ android {
 }
 
 dependencies {
-    "kspAndroid"("com.google.dagger:hilt-compiler:_")
-    "kspAndroid"("androidx.hilt:hilt-compiler:_")
-
     "implementation"("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
     "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
     "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-android:_")
@@ -92,9 +87,6 @@ dependencies {
     "implementation"("androidx.compose.foundation:foundation:_")
     "implementation"("androidx.compose.material3:material3:_")
     "implementation"("androidx.activity:activity-compose:_")
-
-    "implementation"("com.google.dagger:hilt-android:_")
-    "implementation"("androidx.hilt:hilt-navigation-compose:_")
 
     "testImplementation"("androidx.test:core:_")
     "testImplementation"("androidx.test.ext:junit:_")

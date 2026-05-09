@@ -10,8 +10,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun LoadingStateBoxPreview() = AppTheme {
-    Box(modifier = Modifier.size(200.dp)) {
-        LoadingStateBox()
+private fun LoadingStateBoxPreview() =
+    AppTheme {
+        Box(modifier = Modifier.size(200.dp)) {
+            LoadingStateBox()
+        }
     }
-}

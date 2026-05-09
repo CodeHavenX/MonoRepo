@@ -6,6 +6,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun EmptyStateBoxPreview() = AppTheme {
-    EmptyStateBox(message = "No flyers found")
-}
+private fun EmptyStateBoxPreview() =
+    AppTheme {
+        EmptyStateBox(message = "No flyers found")
+    }

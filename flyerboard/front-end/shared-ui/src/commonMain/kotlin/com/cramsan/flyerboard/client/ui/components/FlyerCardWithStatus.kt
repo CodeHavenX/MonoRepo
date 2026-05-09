@@ -19,6 +19,7 @@ import flyerboard_ui.Res
 import flyerboard_ui.flyer_card_with_status_button_edit
 import org.jetbrains.compose.resources.stringResource
 
+/** Clickable card that extends [FlyerCard] with a [StatusBadge] and an optional Edit button shown when [onEdit] is non-null and [status] is not ARCHIVED. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlyerCardWithStatus(

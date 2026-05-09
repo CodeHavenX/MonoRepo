@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.cramsan.ui.theme.Padding
 
+/** Clickable card displaying a flyer's [title], [description], and optional [expiresAt] date. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlyerCard(

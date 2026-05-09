@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+/** Fills its parent with a centered [CircularProgressIndicator] for loading states. */
 @Composable
 fun LoadingStateBox(modifier: Modifier = Modifier) {
     Box(

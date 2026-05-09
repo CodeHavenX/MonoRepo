@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.SubcomposeAsyncImage
 
+/** Displays a flyer image from [url] with a fixed 4:3 aspect ratio and a loading placeholder. When [url] is null renders a neutral placeholder box. */
 @Composable
 fun FlyerAsyncImage(
     url: String?,

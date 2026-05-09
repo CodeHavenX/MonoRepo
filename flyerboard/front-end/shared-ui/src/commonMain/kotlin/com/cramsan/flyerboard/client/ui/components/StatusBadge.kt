@@ -17,36 +17,49 @@ import flyerboard_ui.flyer_status_pending
 import flyerboard_ui.flyer_status_rejected
 import org.jetbrains.compose.resources.stringResource
 
+/** Pill-shaped badge displaying [status] with a color-coded background per the design spec. */
 @Composable
 fun StatusBadge(
     status: FlyerStatus,
     modifier: Modifier = Modifier,
 ) {
-    val (label, backgroundColor, textColor) = when (status) {
-        FlyerStatus.APPROVED -> Triple(
-            stringResource(Res.string.flyer_status_approved),
-            Color(STATUS_APPROVED_BACKGROUND),
-            Color(STATUS_APPROVED_TEXT),
-        )
-        FlyerStatus.PENDING -> Triple(
-            stringResource(Res.string.flyer_status_pending),
-            Color(STATUS_PENDING_BACKGROUND),
-            Color.White,
-        )
-        FlyerStatus.REJECTED -> Triple(
-            stringResource(Res.string.flyer_status_rejected),
-            Color(STATUS_REJECTED_BACKGROUND),
-            Color.White,
-        )
-        FlyerStatus.ARCHIVED -> Triple(
-            stringResource(Res.string.flyer_status_archived),
-            Color(STATUS_ARCHIVED_BACKGROUND),
-            Color.White,
-        )
-    }
+    val (label, backgroundColor, textColor) =
+        when (status) {
+            FlyerStatus.APPROVED -> {
+                Triple(
+                    stringResource(Res.string.flyer_status_approved),
+                    Color(STATUS_APPROVED_BACKGROUND),
+                    Color(STATUS_APPROVED_TEXT),
+                )
+            }
+
+            FlyerStatus.PENDING -> {
+                Triple(
+                    stringResource(Res.string.flyer_status_pending),
+                    Color(STATUS_PENDING_BACKGROUND),
+                    Color.White,
+                )
+            }
+
+            FlyerStatus.REJECTED -> {
+                Triple(
+                    stringResource(Res.string.flyer_status_rejected),
+                    Color(STATUS_REJECTED_BACKGROUND),
+                    Color.White,
+                )
+            }
+
+            FlyerStatus.ARCHIVED -> {
+                Triple(
+                    stringResource(Res.string.flyer_status_archived),
+                    Color(STATUS_ARCHIVED_BACKGROUND),
+                    Color.White,
+                )
+            }
+        }
     Surface(
         color = backgroundColor,
-        shape = RoundedCornerShape(50),
+        shape = RoundedCornerShape(STATUS_BADGE_CORNER_PERCENT),
         modifier = modifier,
     ) {
         Text(
@@ -58,6 +71,7 @@ fun StatusBadge(
     }
 }
 
+private const val STATUS_BADGE_CORNER_PERCENT = 50
 private const val STATUS_APPROVED_BACKGROUND = 0xFF84CC16L
 private const val STATUS_APPROVED_TEXT = 0xFF1C1917L
 private const val STATUS_PENDING_BACKGROUND = 0xFFF43F5EL

@@ -20,6 +20,7 @@ import flyerboard_ui.moderation_flyer_card_button_approve
 import flyerboard_ui.moderation_flyer_card_button_reject
 import org.jetbrains.compose.resources.stringResource
 
+/** Card showing a pending flyer with Reject and Approve action buttons for moderation. */
 @Composable
 fun ModerationFlyerCard(
     title: String,
@@ -56,7 +57,8 @@ fun ModerationFlyerCard(
             ) {
                 OutlinedButton(
                     onClick = onReject,
-                    colors = ButtonDefaults.outlinedButtonColors(
+                    colors =
+                    ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.error,
                     ),
                 ) {

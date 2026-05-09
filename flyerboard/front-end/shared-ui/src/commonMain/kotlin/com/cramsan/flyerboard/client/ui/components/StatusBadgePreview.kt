@@ -7,24 +7,28 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun ApprovedPreview() = AppTheme {
-    StatusBadge(status = FlyerStatus.APPROVED)
-}
+private fun ApprovedPreview() =
+    AppTheme {
+        StatusBadge(status = FlyerStatus.APPROVED)
+    }
 
 @Preview
 @Composable
-private fun PendingPreview() = AppTheme {
-    StatusBadge(status = FlyerStatus.PENDING)
-}
+private fun PendingPreview() =
+    AppTheme {
+        StatusBadge(status = FlyerStatus.PENDING)
+    }
 
 @Preview
 @Composable
-private fun RejectedPreview() = AppTheme {
-    StatusBadge(status = FlyerStatus.REJECTED)
-}
+private fun RejectedPreview() =
+    AppTheme {
+        StatusBadge(status = FlyerStatus.REJECTED)
+    }
 
 @Preview
 @Composable
-private fun ArchivedPreview() = AppTheme {
-    StatusBadge(status = FlyerStatus.ARCHIVED)
-}
+private fun ArchivedPreview() =
+    AppTheme {
+        StatusBadge(status = FlyerStatus.ARCHIVED)
+    }

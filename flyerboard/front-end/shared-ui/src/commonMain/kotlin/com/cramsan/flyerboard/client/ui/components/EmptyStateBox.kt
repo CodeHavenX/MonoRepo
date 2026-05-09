@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+/** Fills its parent with a centered message for when a list or screen has no content to show. */
 @Composable
 fun EmptyStateBox(
     message: String,

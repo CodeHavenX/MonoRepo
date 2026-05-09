@@ -30,7 +30,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class FlyerDetailViewModelTest : CoroutineTest() {
-
     private lateinit var flyerManager: FlyerManager
     private lateinit var viewModel: FlyerDetailViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -44,93 +43,106 @@ class FlyerDetailViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventBus = EventBus()
         windowEventBus = EventBus()
-        viewModel = FlyerDetailViewModel(
-            dependencies = ViewModelDependencies(
-                appScope = testCoroutineScope,
-                dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
-                coroutineExceptionHandler = exceptionHandler,
-                windowEventReceiver = windowEventBus,
-                applicationEventReceiver = applicationEventBus,
-            ),
-            flyerManager = flyerManager,
+        viewModel =
+            FlyerDetailViewModel(
+                dependencies =
+                ViewModelDependencies(
+                    appScope = testCoroutineScope,
+                    dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
+                    coroutineExceptionHandler = exceptionHandler,
+                    windowEventReceiver = windowEventBus,
+                    applicationEventReceiver = applicationEventBus,
+                ),
+                flyerManager = flyerManager,
+            )
+    }
+
+    @Test
+    fun `initial UIState is correct`() =
+        runCoroutineTest {
+            assertEquals(FlyerDetailUIState.Initial, viewModel.uiState.value)
+            assertFalse(viewModel.uiState.value.isLoading)
+            assertNull(viewModel.uiState.value.flyer)
+        }
+
+    @Test
+    fun `loadFlyer success updates UIState with flyer`() =
+        runCoroutineTest {
+            val flyer = makeFlyerModel("flyer-abc")
+            coEvery { flyerManager.getFlyer(FlyerId("flyer-abc")) } returns Result.success(flyer)
+
+            viewModel.loadFlyer("flyer-abc")
+
+            coVerify { flyerManager.getFlyer(FlyerId("flyer-abc")) }
+            assertNotNull(viewModel.uiState.value.flyer)
+            assertEquals(
+                "flyer-abc",
+                viewModel.uiState.value.flyer
+                    ?.id
+                    ?.flyerId,
+            )
+            assertFalse(viewModel.uiState.value.isLoading)
+        }
+
+    @Test
+    fun `loadFlyer returns null emits snackbar`() =
+        runCoroutineTest {
+            turbineScope {
+                val turbine = windowEventBus.events.testIn(backgroundScope)
+                coEvery { flyerManager.getFlyer(FlyerId("missing")) } returns Result.success(null)
+
+                viewModel.loadFlyer("missing")
+
+                assertNull(viewModel.uiState.value.flyer)
+                assertFalse(viewModel.uiState.value.isLoading)
+
+                val event = turbine.awaitItem()
+                assertTrue(event is FlyerBoardWindowsEvent.ShowSnackbar)
+                advanceUntilIdleAndAwaitComplete(turbine)
+            }
+        }
+
+    @Test
+    fun `loadFlyer failure emits snackbar`() =
+        runCoroutineTest {
+            turbineScope {
+                val turbine = windowEventBus.events.testIn(backgroundScope)
+                coEvery { flyerManager.getFlyer(any()) } returns Result.failure(RuntimeException("Error"))
+
+                viewModel.loadFlyer("flyer-xyz")
+
+                assertNull(viewModel.uiState.value.flyer)
+                assertFalse(viewModel.uiState.value.isLoading)
+
+                val event = turbine.awaitItem()
+                assertTrue(event is FlyerBoardWindowsEvent.ShowSnackbar)
+                advanceUntilIdleAndAwaitComplete(turbine)
+            }
+        }
+
+    @Test
+    fun `navigateBack emits NavigateBack event`() =
+        runCoroutineTest {
+            turbineScope {
+                val turbine = windowEventBus.events.testIn(backgroundScope)
+
+                viewModel.navigateBack()
+
+                assertEquals(FlyerBoardWindowsEvent.NavigateBack, turbine.awaitItem())
+                advanceUntilIdleAndAwaitComplete(turbine)
+            }
+        }
+
+    private fun makeFlyerModel(id: String) =
+        FlyerModel(
+            id = FlyerId(id),
+            title = "Flyer $id",
+            description = "Description",
+            fileUrl = "https://example.com/file.jpg",
+            status = FlyerStatus.APPROVED,
+            expiresAt = null,
+            uploaderId = UserId("user-1"),
+            createdAt = "2024-01-01T00:00:00Z",
+            updatedAt = "2024-01-01T00:00:00Z",
         )
-    }
-
-    @Test
-    fun `initial UIState is correct`() = runCoroutineTest {
-        assertEquals(FlyerDetailUIState.Initial, viewModel.uiState.value)
-        assertFalse(viewModel.uiState.value.isLoading)
-        assertNull(viewModel.uiState.value.flyer)
-    }
-
-    @Test
-    fun `loadFlyer success updates UIState with flyer`() = runCoroutineTest {
-        val flyer = makeFlyerModel("flyer-abc")
-        coEvery { flyerManager.getFlyer(FlyerId("flyer-abc")) } returns Result.success(flyer)
-
-        viewModel.loadFlyer("flyer-abc")
-
-        coVerify { flyerManager.getFlyer(FlyerId("flyer-abc")) }
-        assertNotNull(viewModel.uiState.value.flyer)
-        assertEquals("flyer-abc", viewModel.uiState.value.flyer?.id?.flyerId)
-        assertFalse(viewModel.uiState.value.isLoading)
-    }
-
-    @Test
-    fun `loadFlyer returns null emits snackbar`() = runCoroutineTest {
-        turbineScope {
-            val turbine = windowEventBus.events.testIn(backgroundScope)
-            coEvery { flyerManager.getFlyer(FlyerId("missing")) } returns Result.success(null)
-
-            viewModel.loadFlyer("missing")
-
-            assertNull(viewModel.uiState.value.flyer)
-            assertFalse(viewModel.uiState.value.isLoading)
-
-            val event = turbine.awaitItem()
-            assertTrue(event is FlyerBoardWindowsEvent.ShowSnackbar)
-            advanceUntilIdleAndAwaitComplete(turbine)
-        }
-    }
-
-    @Test
-    fun `loadFlyer failure emits snackbar`() = runCoroutineTest {
-        turbineScope {
-            val turbine = windowEventBus.events.testIn(backgroundScope)
-            coEvery { flyerManager.getFlyer(any()) } returns Result.failure(RuntimeException("Error"))
-
-            viewModel.loadFlyer("flyer-xyz")
-
-            assertNull(viewModel.uiState.value.flyer)
-            assertFalse(viewModel.uiState.value.isLoading)
-
-            val event = turbine.awaitItem()
-            assertTrue(event is FlyerBoardWindowsEvent.ShowSnackbar)
-            advanceUntilIdleAndAwaitComplete(turbine)
-        }
-    }
-
-    @Test
-    fun `navigateBack emits NavigateBack event`() = runCoroutineTest {
-        turbineScope {
-            val turbine = windowEventBus.events.testIn(backgroundScope)
-
-            viewModel.navigateBack()
-
-            assertEquals(FlyerBoardWindowsEvent.NavigateBack, turbine.awaitItem())
-            advanceUntilIdleAndAwaitComplete(turbine)
-        }
-    }
-
-    private fun makeFlyerModel(id: String) = FlyerModel(
-        id = FlyerId(id),
-        title = "Flyer $id",
-        description = "Description",
-        fileUrl = "https://example.com/file.jpg",
-        status = FlyerStatus.APPROVED,
-        expiresAt = null,
-        uploaderId = UserId("user-1"),
-        createdAt = "2024-01-01T00:00:00Z",
-        updatedAt = "2024-01-01T00:00:00Z",
-    )
 }

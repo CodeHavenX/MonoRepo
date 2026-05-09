@@ -1,0 +1,31 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
+plugins {
+    kotlin("jvm")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.compose")
+    id("com.cramsan.kotlin-jvm-lib-compose")
+}
+
+dependencies {
+    implementation(project(":framework:core"))
+    implementation(project(":framework:core-compose"))
+
+    implementation(project(":flyerboard:front-end:shared-app"))
+
+    implementation("io.insert-koin:koin-core:_")
+    implementation("io.insert-koin:koin-compose:_")
+    implementation("io.insert-koin:koin-compose-viewmodel:_")
+}
+
+compose.desktop {
+    application {
+        mainClass = "com.cramsan.flyerboard.client.desktop.FlyerBoardApplicationKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "com.cramsan.flyerboard.client.desktop"
+            packageVersion = "1.0.0"
+        }
+    }
+}

@@ -17,6 +17,7 @@ data class FlyerModel(
     val uploaderId: UserId,
     val createdAt: String,
     val updatedAt: String,
+    val rejectionReason: String? = null,
 )
 
 /**

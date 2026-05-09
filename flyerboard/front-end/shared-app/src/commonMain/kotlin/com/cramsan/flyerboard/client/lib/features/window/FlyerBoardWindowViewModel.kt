@@ -2,6 +2,7 @@ package com.cramsan.flyerboard.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
 import com.cramsan.flyerboard.client.lib.managers.AuthManager
+import com.cramsan.flyerboard.client.lib.managers.FlyerManager
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.EventEmitter
@@ -20,6 +21,7 @@ class FlyerBoardWindowViewModel(
     private val windowEventEmitter: EventEmitter<WindowEvent>,
     private val delegatedEvents: EventReceiver<FlyerBoardWindowDelegatedEvent>,
     private val authManager: AuthManager,
+    private val flyerManager: FlyerManager,
 ) : BaseViewModel<FlyerBoardWindowViewModelEvent, FlyerBoardWindowUIState>(
     dependencies,
     FlyerBoardWindowUIState.Initial,
@@ -38,8 +40,16 @@ class FlyerBoardWindowViewModel(
         }
         viewModelCoroutineScope.launch {
             authManager.activeUser().collect { userId ->
-                logI(TAG, "Auth state changed: ${if (userId != null) "authenticated" else "unauthenticated"}")
-                updateUiState { it.copy(isAuthenticated = userId != null) }
+                val authState =
+                    if (userId == null) {
+                        logI(TAG, "Auth state changed: unauthenticated")
+                        AuthState.Unauthenticated
+                    } else {
+                        val isAdmin = flyerManager.listPendingFlyers(limit = 1).isSuccess
+                        logI(TAG, "Auth state changed: authenticated, isAdmin=$isAdmin")
+                        AuthState.Authenticated(isAdmin = isAdmin)
+                    }
+                updateUiState { it.copy(authState = authState) }
             }
         }
     }

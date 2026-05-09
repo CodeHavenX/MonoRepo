@@ -103,12 +103,15 @@ private fun WindowsContent(
         }
     }
 
+    val isAuthenticated = uiState.authState is AuthState.Authenticated
+    val isAdmin = uiState.authState.let { it is AuthState.Authenticated && it.isAdmin }
+
     AppTheme {
         Scaffold(
             bottomBar = {
                 if (isTopLevelMainDestination) {
                     FlyerBoardBottomNavBar(
-                        isAuthenticated = uiState.isAuthenticated,
+                        isAdmin = isAdmin,
                         currentDestination = currentDestination,
                         onBrowse = {
                             navController.navigate(MainDestination.FlyerListDestination) {
@@ -121,7 +124,7 @@ private fun WindowsContent(
                             }
                         },
                         onMyFlyers = {
-                            if (uiState.isAuthenticated) {
+                            if (isAuthenticated) {
                                 navController.navigate(MainDestination.MyFlyersDestination) {
                                     launchSingleTop = true
                                 }
@@ -132,7 +135,7 @@ private fun WindowsContent(
                             }
                         },
                         onModeration = {
-                            if (uiState.isAuthenticated) {
+                            if (isAdmin) {
                                 navController.navigate(MainDestination.ModerationQueueDestination) {
                                     launchSingleTop = true
                                 }
@@ -153,7 +156,7 @@ private fun WindowsContent(
                 modifier = Modifier.padding(paddingValues),
                 navHostController = navController,
                 startDestination = startDestination,
-                isAuthenticated = uiState.isAuthenticated,
+                isAuthenticated = isAuthenticated,
                 onSignIn = {
                     navController.navigate(FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination)
                 },
@@ -165,7 +168,7 @@ private fun WindowsContent(
 
 @Composable
 private fun FlyerBoardBottomNavBar(
-    isAuthenticated: Boolean,
+    isAdmin: Boolean,
     currentDestination: NavDestination?,
     onBrowse: () -> Unit,
     onArchive: () -> Unit,
@@ -191,7 +194,7 @@ private fun FlyerBoardBottomNavBar(
             icon = { Icon(Icons.Default.Person, contentDescription = null) },
             label = { Text(stringResource(Res.string.nav_my_flyers)) },
         )
-        if (isAuthenticated) {
+        if (isAdmin) {
             NavigationBarItem(
                 selected =
                 currentDestination?.hasRoute(

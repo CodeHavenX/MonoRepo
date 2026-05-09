@@ -70,12 +70,12 @@ object FlyerApi : Api("api/v1/flyers") {
             >(HttpMethod.Put)
 
     /**
-     * List archived flyers with pagination.
+     * List archived flyers with optional search and pagination.
      */
     val listArchived =
         operation<
             NoRequestBody,
-            PaginationParams,
+            ListFlyersQueryParams,
             NoPathParam,
             FlyerListNetworkResponse,
             >(HttpMethod.Get, path = "archive")

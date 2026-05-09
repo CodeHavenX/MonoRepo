@@ -69,11 +69,11 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
             }
         }
 
-    override suspend fun listArchived(offset: Int, limit: Int): Result<PaginatedFlyerModel> =
+    override suspend fun listArchived(offset: Int, limit: Int, query: String?): Result<PaginatedFlyerModel> =
         runSuspendCatching(TAG) {
             FlyerApi.listArchived
                 .buildRequest(
-                    PaginationParams(offset = offset, limit = limit),
+                    ListFlyersQueryParams(offset = offset, limit = limit, q = query),
                 ).execute(http)
                 .toPaginatedFlyerModel()
         }

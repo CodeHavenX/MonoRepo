@@ -54,11 +54,12 @@ interface FlyerService {
     ): Result<FlyerModel>
 
     /**
-     * Lists archived flyers with pagination.
+     * Lists archived flyers with optional search and pagination.
      */
     suspend fun listArchived(
         offset: Int = 0,
         limit: Int = DEFAULT_PAGE_SIZE,
+        query: String? = null,
     ): Result<PaginatedFlyerModel>
 
     /**

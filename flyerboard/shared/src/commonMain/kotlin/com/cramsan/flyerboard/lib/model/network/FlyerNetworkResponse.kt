@@ -32,4 +32,6 @@ data class FlyerNetworkResponse(
     val createdAt: String,
     @SerialName("updated_at")
     val updatedAt: String,
+    @SerialName("rejection_reason")
+    val rejectionReason: String? = null,
 ) : ResponseBody

@@ -19,6 +19,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -36,6 +37,8 @@ import com.cramsan.flyerboard.client.lib.features.auth.authNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
 import com.cramsan.flyerboard.client.lib.features.main.mainNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.splash.SplashScreen
+import com.cramsan.flyerboard.client.lib.navigation.BrowserNavigator
+import com.cramsan.flyerboard.client.lib.navigation.pathToDestination
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import flyerboard_lib.Res
@@ -74,6 +77,14 @@ private fun WindowsContent(
     eventHandler: FlyerBoardApplicationMainScreenEventHandler,
 ) {
     val navController = rememberNavController()
+    val browserNavigator = remember { BrowserNavigator() }
+
+    LaunchedEffect(Unit) {
+        browserNavigator.attach(navController)
+        browserNavigator.getInitialPath()?.let { path ->
+            navController.navigate(pathToDestination(path))
+        }
+    }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val uiState by viewModel.uiState.collectAsState()

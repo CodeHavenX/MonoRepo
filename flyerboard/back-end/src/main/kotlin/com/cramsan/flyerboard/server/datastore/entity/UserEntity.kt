@@ -1,7 +1,5 @@
 package com.cramsan.flyerboard.server.datastore.entity
 
-import com.cramsan.flyerboard.lib.model.UserId
-import com.cramsan.flyerboard.server.service.models.User
 import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -40,10 +38,3 @@ data class UserEntity(
         val lastName: String,
     )
 }
-
-fun UserEntity.toUser(): User =
-    User(
-        id = UserId(id),
-        firstName = firstName,
-        lastName = lastName,
-    )

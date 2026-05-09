@@ -1,3 +1,10 @@
 <resources>
     <string name="string_back_navigation">Back</string>
+    <string name="flyer_status_pending">Pending</string>
+    <string name="flyer_status_approved">Approved</string>
+    <string name="flyer_status_rejected">Rejected</string>
+    <string name="flyer_status_archived">Archived</string>
+    <string name="flyer_card_with_status_button_edit">Edit</string>
+    <string name="moderation_flyer_card_button_approve">Approve</string>
+    <string name="moderation_flyer_card_button_reject">Reject</string>
 </resources>

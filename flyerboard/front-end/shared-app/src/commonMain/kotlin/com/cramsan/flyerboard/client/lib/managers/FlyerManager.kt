@@ -74,15 +74,16 @@ class FlyerManager(private val dependencies: ManagerDependencies, private val fl
         }
 
     /**
-     * Lists archived flyers with pagination.
+     * Lists archived flyers with optional search and pagination.
      */
     suspend fun listArchived(
         offset: Int = 0,
         limit: Int = DEFAULT_PAGE_SIZE,
+        query: String? = null,
     ): Result<PaginatedFlyerModel> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "listArchived")
-            flyerService.listArchived(offset, limit).getOrThrow()
+            flyerService.listArchived(offset, limit, query).getOrThrow()
         }
 
     /**

@@ -198,6 +198,39 @@ Every component type has a specific testing pattern. Front-end tests live in the
 
 Composable functions are **not unit tested**. Visual correctness is verified at design time via `@Preview` functions in `<Feature>Preview.kt`. No test file is created for `<Feature>Screen.kt`.
 
+#### Rendering a `@Preview` as a screenshot (Roborazzi)
+
+Each module with Compose UI has Roborazzi configured to generate Robolectric tests from every `@Preview` composable. Use this to visually verify a component during or after implementation.
+
+**Record a single preview:**
+```bash
+./gradlew :<module>:recordRoborazziDebug \
+  --tests "com.github.takahirom.roborazzi.RoborazziPreviewParameterizedTests.test[<fully.qualified.FileNameKt>:<PreviewFunctionName>]"
+```
+
+The test name format is `<fully.qualified.package.FileNameKt>:<PreviewFunctionName>` where `FileNameKt` is the Kotlin file name with `Kt` appended (e.g. `StatusBadgePreview.kt` → `StatusBadgePreviewKt`).
+
+**Example** — render `ApprovedPreview` from `StatusBadgePreview.kt` in `flyerboard:front-end:shared-ui`:
+```bash
+./gradlew :flyerboard:front-end:shared-ui:recordRoborazziDebug \
+  --tests "com.github.takahirom.roborazzi.RoborazziPreviewParameterizedTests.test[com.cramsan.flyerboard.client.ui.components.StatusBadgePreviewKt:ApprovedPreview]"
+```
+
+**Screenshot output location:** `<module-dir>/screenshots/<fully.qualified.FileNameKt>_<PreviewFunctionName>.png`
+
+Example: `flyerboard/front-end/shared-ui/screenshots/com.cramsan.flyerboard.client.ui.components.StatusBadgePreviewKt_ApprovedPreview.png`
+
+**Record all previews in a module** (re-renders everything):
+```bash
+./gradlew :<module>:recordRoborazziDebug
+```
+
+**Discovering test names** — if you are unsure of the exact test name for a preview, run the tests without recording first and grep the output:
+```bash
+./gradlew :<module>:testDebugUnitTest 2>&1 | grep "PASSED\|FAILED"
+```
+Each line contains the full test name in `[<FileNameKt>:<PreviewFunctionName>]` format.
+
 ---
 
 ### ViewModels

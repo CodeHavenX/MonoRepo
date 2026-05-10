@@ -3,6 +3,7 @@ package com.cramsan.flyerboard.client.lib.features.main
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import com.cramsan.flyerboard.client.lib.features.main.archive.ArchiveScreen
 import com.cramsan.flyerboard.client.lib.features.main.flyer_detail.FlyerDetailScreen
@@ -34,6 +35,7 @@ fun NavGraphBuilder.mainNavGraphNavigation(
         composable(
             MainDestination.FlyerListDestination::class,
             typeMap = typeMap,
+            deepLinks = listOf(navDeepLink<MainDestination.FlyerListDestination>(basePath = BASE_URL)),
         ) {
             FlyerListScreen(
                 isAuthenticated = isAuthenticated,
@@ -44,12 +46,14 @@ fun NavGraphBuilder.mainNavGraphNavigation(
         composable(
             MainDestination.FlyerDetailDestination::class,
             typeMap = typeMap,
+            deepLinks = listOf(navDeepLink<MainDestination.FlyerDetailDestination>(basePath = "$BASE_URL/flyer")),
         ) {
             FlyerDetailScreen(destination = it.toRoute())
         }
         composable(
             MainDestination.MyFlyersDestination::class,
             typeMap = typeMap,
+            deepLinks = listOf(navDeepLink<MainDestination.MyFlyersDestination>(basePath = "$BASE_URL/my-flyers")),
         ) {
             MyFlyersScreen(
                 isAuthenticated = isAuthenticated,
@@ -59,6 +63,7 @@ fun NavGraphBuilder.mainNavGraphNavigation(
         composable(
             MainDestination.ArchiveDestination::class,
             typeMap = typeMap,
+            deepLinks = listOf(navDeepLink<MainDestination.ArchiveDestination>(basePath = "$BASE_URL/archive")),
         ) {
             ArchiveScreen(
                 isAuthenticated = isAuthenticated,
@@ -69,6 +74,10 @@ fun NavGraphBuilder.mainNavGraphNavigation(
         composable(
             MainDestination.ModerationQueueDestination::class,
             typeMap = typeMap,
+            deepLinks =
+            listOf(
+                navDeepLink<MainDestination.ModerationQueueDestination>(basePath = "$BASE_URL/moderation"),
+            ),
         ) {
             ModerationQueueScreen(
                 isAuthenticated = isAuthenticated,
@@ -78,6 +87,10 @@ fun NavGraphBuilder.mainNavGraphNavigation(
         composable(
             MainDestination.FlyerEditDestination::class,
             typeMap = typeMap,
+            deepLinks =
+            listOf(
+                navDeepLink<MainDestination.FlyerEditDestination>(basePath = "$BASE_URL/my-flyers/edit"),
+            ),
         ) {
             FlyerEditScreen(destination = it.toRoute())
         }
@@ -89,3 +102,5 @@ fun NavGraphBuilder.mainNavGraphNavigation(
         }
     }
 }
+
+private const val BASE_URL = "https://flyerboard.com"

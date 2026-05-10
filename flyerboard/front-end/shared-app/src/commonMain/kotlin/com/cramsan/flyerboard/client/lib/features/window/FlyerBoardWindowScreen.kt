@@ -19,6 +19,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -36,6 +37,8 @@ import com.cramsan.flyerboard.client.lib.features.auth.authNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
 import com.cramsan.flyerboard.client.lib.features.main.mainNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.splash.SplashScreen
+import com.cramsan.flyerboard.client.lib.navigation.BrowserNavigator
+import com.cramsan.flyerboard.client.lib.navigation.pathToDestination
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import flyerboard_lib.Res
@@ -74,6 +77,14 @@ private fun WindowsContent(
     eventHandler: FlyerBoardApplicationMainScreenEventHandler,
 ) {
     val navController = rememberNavController()
+    val browserNavigator = remember { BrowserNavigator() }
+
+    LaunchedEffect(Unit) {
+        browserNavigator.attach(navController)
+        browserNavigator.getInitialPath()?.let { path ->
+            navController.navigate(pathToDestination(path))
+        }
+    }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val uiState by viewModel.uiState.collectAsState()
@@ -103,12 +114,15 @@ private fun WindowsContent(
         }
     }
 
+    val isAuthenticated = uiState.authState is AuthState.Authenticated
+    val isAdmin = uiState.authState.let { it is AuthState.Authenticated && it.isAdmin }
+
     AppTheme {
         Scaffold(
             bottomBar = {
                 if (isTopLevelMainDestination) {
                     FlyerBoardBottomNavBar(
-                        isAuthenticated = uiState.isAuthenticated,
+                        isAdmin = isAdmin,
                         currentDestination = currentDestination,
                         onBrowse = {
                             navController.navigate(MainDestination.FlyerListDestination) {
@@ -121,7 +135,7 @@ private fun WindowsContent(
                             }
                         },
                         onMyFlyers = {
-                            if (uiState.isAuthenticated) {
+                            if (isAuthenticated) {
                                 navController.navigate(MainDestination.MyFlyersDestination) {
                                     launchSingleTop = true
                                 }
@@ -132,7 +146,7 @@ private fun WindowsContent(
                             }
                         },
                         onModeration = {
-                            if (uiState.isAuthenticated) {
+                            if (isAdmin) {
                                 navController.navigate(MainDestination.ModerationQueueDestination) {
                                     launchSingleTop = true
                                 }
@@ -153,7 +167,7 @@ private fun WindowsContent(
                 modifier = Modifier.padding(paddingValues),
                 navHostController = navController,
                 startDestination = startDestination,
-                isAuthenticated = uiState.isAuthenticated,
+                isAuthenticated = isAuthenticated,
                 onSignIn = {
                     navController.navigate(FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination)
                 },
@@ -165,7 +179,7 @@ private fun WindowsContent(
 
 @Composable
 private fun FlyerBoardBottomNavBar(
-    isAuthenticated: Boolean,
+    isAdmin: Boolean,
     currentDestination: NavDestination?,
     onBrowse: () -> Unit,
     onArchive: () -> Unit,
@@ -191,7 +205,7 @@ private fun FlyerBoardBottomNavBar(
             icon = { Icon(Icons.Default.Person, contentDescription = null) },
             label = { Text(stringResource(Res.string.nav_my_flyers)) },
         )
-        if (isAuthenticated) {
+        if (isAdmin) {
             NavigationBarItem(
                 selected =
                 currentDestination?.hasRoute(

@@ -34,6 +34,7 @@ The following items are currently missing or incomplete relative to `frontend.md
 | **Splash wordmark** | `SplashContent` shows only a `CircularProgressIndicator` — wordmark/logo is absent |
 | **Submit header button** | Flyer List and My Flyers top-bar should show a **Submit** button when authenticated |
 | **createUser on sign-up** | `SignUpViewModel.signUp()` does not call `UserManager.createUser()` after Supabase auth succeeds |
+| **Browser navigation** | URL does not update on navigation; browser back/forward buttons do not work within the app |
 
 ---
 
@@ -323,13 +324,179 @@ impossible state `isAdmin=true, isAuthenticated=false`.
 
 ---
 
-## Phase 3 — New Screen: Submit Flyer
+## Phase 3 — Browser Navigation
+
+> **Primary target:** wasmJs (browser). The JVM desktop app is used for testing
+> only and does not require URL handling. All browser-specific code lives in
+> `wasmJsMain` with no-op `actual` stubs for other targets.
+
+The browser must behave like a standard web app:
+- Every screen has a stable, bookmarkable URL.
+- Browser back/forward buttons navigate through the in-app history.
+- Refreshing the page or entering a URL directly loads the correct screen.
+
+This phase establishes the pattern. **Every new `composable()` registration
+added in Phases 4 and 5 must include a matching `deepLinks` entry at the time
+the route is registered** — this is part of the definition of done for each
+screen from this point on.
+
+### 3.1 URL Scheme
+
+The canonical URL path for every destination. This table is the authoritative
+reference; add new destinations here before implementing them.
+
+| Destination | URL Path |
+|---|---|
+| `FlyerListDestination` | `/` |
+| `FlyerDetailDestination(flyerId)` | `/flyer/{flyerId}` |
+| `ArchiveDestination` | `/archive` |
+| `MyFlyersDestination` | `/my-flyers` |
+| `FlyerSubmitDestination` | `/my-flyers/submit` |
+| `FlyerEditDestination(flyerId)` | `/my-flyers/edit/{flyerId}` |
+| `ModerationQueueDestination` | `/moderation` |
+| `SignInDestination` | `/sign-in` |
+| `SignUpDestination` | `/sign-up` |
+
+The Splash screen is transient and auto-navigates; it has no URL.
+
+---
+
+### 3.2 Deep Link Registration (Existing Routes)
+
+Add a `deepLinks` entry to every existing `composable()` call in
+`MainActivityScreen.kt` and `AuthNavGraph.kt` using the paths from 3.1.
+
+**Pattern:**
+```kotlin
+composable<FlyerListDestination>(
+    deepLinks = listOf(navDeepLink<FlyerListDestination>(basePath = "https://flyerboard.com/"))
+) { ... }
+
+composable<FlyerDetailDestination>(
+    deepLinks = listOf(navDeepLink<FlyerDetailDestination>(basePath = "https://flyerboard.com/flyer"))
+) { ... }
+```
+
+Use `https://flyerboard.com` as the base URI throughout. The host is used
+internally by Navigation Compose to match destinations; the URL actually shown
+in the browser address bar is controlled by the adapter in 3.3.
+
+`FlyerSubmitDestination` does not exist yet — its deep link is registered as
+part of Phase 4.3.
+
+---
+
+### 3.3 Browser History Adapter (wasmJs)
+
+**Files to create:**
+
+| File | Notes |
+|---|---|
+| `commonMain/navigation/BrowserNavigator.kt` | `expect class BrowserNavigator` |
+| `wasmJsMain/navigation/BrowserNavigator.wasmJs.kt` | Real implementation using browser History API |
+| `jvmMain/navigation/BrowserNavigator.jvm.kt` | No-op `actual` — JVM desktop ignores URL routing |
+
+```kotlin
+// commonMain
+expect class BrowserNavigator {
+    fun attach(navController: NavHostController)
+    fun getInitialPath(): String?
+}
+```
+
+The wasmJs `actual` must implement three behaviours:
+
+1. **NavController → browser (push URL on navigation):**
+   Register `addOnDestinationChangedListener` on the `NavHostController`. On
+   each change, convert the destination + arguments to the canonical path from
+   3.1 and call `window.history.pushState(null, "", path)`.
+
+2. **Browser → NavController (back/forward buttons):**
+   Listen for the browser `popstate` event. On each event call
+   `navController.popBackStack()`.
+
+3. **Initial path on startup:**
+   `getInitialPath()` returns `window.location.pathname` when it is non-trivial
+   (not `"/"` and not blank), or `null` otherwise.
+
+**File to change:** `FlyerBoardWindowScreen.kt`
+
+```kotlin
+val navController = rememberNavController()
+val browserNavigator = remember { BrowserNavigator() }
+
+LaunchedEffect(Unit) {
+    browserNavigator.attach(navController)
+    browserNavigator.getInitialPath()?.let { path ->
+        navController.navigate(pathToDestination(path))
+    }
+}
+```
+
+`pathToDestination(path: String): Destination` is a helper in `commonMain`
+that parses a URL path and returns the matching typed destination. Implement
+it as a `when` expression keyed on path prefix matching:
+
+```kotlin
+fun pathToDestination(path: String): Destination = when {
+    path.startsWith("/flyer/")        -> FlyerDetailDestination(path.removePrefix("/flyer/"))
+    path.startsWith("/my-flyers/edit/") -> FlyerEditDestination(path.removePrefix("/my-flyers/edit/"))
+    path == "/my-flyers/submit"       -> FlyerSubmitDestination
+    path == "/archive"                -> ArchiveDestination
+    path == "/my-flyers"              -> MyFlyersDestination
+    path == "/moderation"             -> ModerationQueueDestination
+    path == "/sign-in"                -> SignInDestination
+    path == "/sign-up"                -> SignUpDestination
+    else                              -> FlyerListDestination
+}
+```
+
+When a deep-linked path is detected on startup, skip the Splash screen and
+navigate directly to the target destination.
+
+**Validation:**
+- Navigate Flyer List → Flyer Detail in the browser: address bar updates to `/flyer/{id}`.
+- Press browser Back: returns to Flyer List, URL reverts to `/`.
+- Enter `/archive` directly in the address bar: Archive screen loads without Splash.
+- Refresh on `/my-flyers`: My Flyers screen reloads correctly (requires 3.4).
+- JVM desktop app: launches and navigates normally with no errors (no-op adapter).
+
+---
+
+### 3.4 Development Server SPA Fallback
+
+A hard refresh on `/archive` causes the browser to request that path from the
+HTTP server. Without a fallback rule the server returns 404 — there is no
+`/archive` file on disk.
+
+**Development (`app-wasm` webpack config):**
+```javascript
+// webpack.config.d/devServer.js
+config.devServer = config.devServer || {};
+config.devServer.historyApiFallback = true;
+```
+
+**Production (nginx example):**
+```nginx
+location / {
+    try_files $uri /index.html;
+}
+```
+
+**Validation:**
+- Run `gradle :flyerboard:app-wasm:wasmJsBrowserDevelopmentRun`, then enter
+  `/archive` directly in the browser address bar — the app loads and shows the
+  Archive screen.
+
+---
+
+## Phase 4 — New Screen: Submit Flyer
 
 The docs specify a dedicated **Submit Flyer** screen for creating new flyers.
 The Edit Flyer screen covers the _update_ path; Submit covers the _create_
 path. Both share the same form layout.
 
-### 3.1 Destination
+### 4.1 Destination
 
 **File:** `features/main/MainDestination.kt`
 
@@ -343,13 +510,13 @@ No arguments are needed — the form starts empty.
 
 ---
 
-### 3.2 Screen, ViewModel, UIState, Event, Preview
+### 4.2 Screen, ViewModel, UIState, Event, Preview
 
 **New files under:** `features/main/flyer_submit/`
 
 | File | Notes |
 |---|---|
-| `FlyerSubmitScreen.kt` | Shares the same form layout as `FlyerEditScreen`. Adds a **file picker** section (see Phase 4.7). On save calls `flyerManager.createFlyer(...)`. On success emits `NavigateBack`. On cancel emits `NavigateBack`. |
+| `FlyerSubmitScreen.kt` | Shares the same form layout as `FlyerEditScreen`. Adds a **file picker** section (see Phase 5.7). On save calls `flyerManager.createFlyer(...)`. On success emits `NavigateBack`. On cancel emits `NavigateBack`. |
 | `FlyerSubmitViewModel.kt` | Extends `BaseViewModel<FlyerSubmitEvent, FlyerSubmitUIState>`. Fields: `title`, `description`, `expiresAt`, `selectedFileBytes`, `selectedFileName`, `selectedMimeType`, `isSubmitting`, `errorMessage`. Method: `onFileSelected(bytes, name, mime)`, `submit()`, `navigateBack()`. |
 | `FlyerSubmitUIState.kt` | Mirrors `FlyerEditUIState` plus `selectedFileName: String?` for display. |
 | `FlyerSubmitEvent.kt` | Sealed class; start with `Noop`. |
@@ -375,18 +542,26 @@ No arguments are needed — the form starts empty.
 
 ---
 
-### 3.3 Register route
+### 4.3 Register route
 
 **File:** `features/main/MainActivityScreen.kt`
 
-Add a `composable(MainDestination.FlyerSubmitDestination::class)` entry that
-renders `FlyerSubmitScreen`.
+Add a `composable<FlyerSubmitDestination>` entry that renders `FlyerSubmitScreen`
+and includes its deep link per Phase 3.1:
 
-**Validation:** covered by the previews and ViewModel tests in 3.2.
+```kotlin
+composable<FlyerSubmitDestination>(
+    deepLinks = listOf(navDeepLink<FlyerSubmitDestination>(basePath = "https://flyerboard.com/my-flyers/submit"))
+) {
+    FlyerSubmitScreen(...)
+}
+```
+
+**Validation:** covered by the previews and ViewModel tests in 4.2.
 
 ---
 
-### 3.4 Navigate to Submit from My Flyers
+### 4.4 Navigate to Submit from My Flyers
 
 **File:** `features/main/my_flyers/MyFlyersViewModel.kt`
 
@@ -410,7 +585,7 @@ frontend spec, this button appears in the top-bar of My Flyers.
 
 ---
 
-### 3.5 Navigate to Submit from Flyer List
+### 4.5 Navigate to Submit from Flyer List
 
 **File:** `features/main/flyer_list/FlyerListViewModel.kt`
 
@@ -427,9 +602,9 @@ when `isAuthenticated == true`.
 
 ---
 
-## Phase 4 — Screen-by-Screen Updates
+## Phase 5 — Screen-by-Screen Updates
 
-### 4.1 Splash Screen
+### 5.1 Splash Screen
 
 **File:** `features/splash/SplashScreen.kt`
 
@@ -447,7 +622,7 @@ changes needed.
 
 ---
 
-### 4.2 Flyer List Screen
+### 5.2 Flyer List Screen
 
 **File:** `features/main/flyer_list/FlyerListScreen.kt`
 
@@ -468,11 +643,11 @@ changes needed.
   4. `FlyerListUnauthenticatedPreview` — flyer list populated, Submit button
      absent.
 - No new ViewModel logic; existing `FlyerListViewModelTest` is sufficient after
-  the 3.5 addition.
+  the 4.5 addition.
 
 ---
 
-### 4.3 Flyer Detail Screen
+### 5.3 Flyer Detail Screen
 
 **File:** `features/main/flyer_detail/FlyerDetailScreen.kt`
 
@@ -496,7 +671,7 @@ changes needed.
 
 ---
 
-### 4.4 Archive Screen
+### 5.4 Archive Screen
 
 **File:** `features/main/archive/ArchiveUIState.kt`
 
@@ -542,7 +717,7 @@ Update `loadFlyers()` to accept `query: String? = null` and pass it to
 
 ---
 
-### 4.5 My Flyers Screen
+### 5.5 My Flyers Screen
 
 **File:** `features/main/my_flyers/MyFlyersScreen.kt`
 
@@ -551,7 +726,7 @@ Update `loadFlyers()` to accept `query: String? = null` and pass it to
 | Replace private `MyFlyerCard` | Use `FlyerCardWithStatus` from Phase 1.3 |
 | Replace loading branch | Use `LoadingStateBox` from Phase 1.5 |
 | Replace empty branch | Use `EmptyStateBox` from Phase 1.6 |
-| Add **Submit** header button | `TextButton` in `TopAppBar` actions; calls `viewModel.onSubmitFlyer()` (Phase 3.4) |
+| Add **Submit** header button | `TextButton` in `TopAppBar` actions; calls `viewModel.onSubmitFlyer()` (Phase 4.4) |
 
 **Validation:**
 - `MyFlyersPreview.kt` — 4 `@Preview` composables covering every distinct UI
@@ -564,12 +739,12 @@ Update `loadFlyers()` to accept `query: String? = null` and pass it to
      presence per status.
   4. `MyFlyersArchivedOnlyPreview` — list where all flyers are ARCHIVED, Edit
      buttons absent.
-- No new ViewModel logic beyond 3.4; `MyFlyersViewModelTest` additions are
+- No new ViewModel logic beyond 4.4; `MyFlyersViewModelTest` additions are
   covered there.
 
 ---
 
-### 4.6 Moderation Queue Screen
+### 5.6 Moderation Queue Screen
 
 **File:** `features/main/moderation_queue/ModerationQueueScreen.kt`
 
@@ -612,7 +787,7 @@ fun rejectFlyer(flyerId: FlyerId, reason: String = "") {
 
 ---
 
-### 4.7 File Upload (Flyer Edit + Submit)
+### 5.7 File Upload (Flyer Edit + Submit)
 
 File upload is a platform-specific capability. The service layer already
 accepts `fileBytes: ByteArray`, `fileName: String`, `mimeType: String` — the
@@ -652,7 +827,7 @@ data class PickedFile(val bytes: ByteArray, val name: String, val mimeType: Stri
 | `FlyerEditScreen.kt` | Add **Choose File** section, call `viewModel.onFileSelected(...)` |
 | `FlyerEditUIState.kt` | Add `selectedFileName: String?` for display |
 | `FlyerEditViewModel.kt` | Add `onFileSelected(bytes, name, mime)`, update `saveFlyer` to pass file data when provided |
-| `FlyerSubmitScreen.kt` | Same as above (already part of Phase 3) |
+| `FlyerSubmitScreen.kt` | Same as above (already part of Phase 4) |
 
 **Validation:**
 - `FlyerEditPreview.kt` — add 2 `@Preview` composables for the new picker
@@ -664,14 +839,14 @@ data class PickedFile(val bytes: ByteArray, val name: String, val mimeType: Stri
      `uiState.selectedFileName` to `"photo.jpg"`.
   2. `saveFlyer()` after `onFileSelected` includes `fileBytes`, `fileName`, and
      `mimeType` in the `flyerManager.updateFlyer(...)` call.
-- `FlyerSubmitViewModelTest` — the file-selection tests from 3.2 already cover
+- `FlyerSubmitViewModelTest` — the file-selection tests from 4.2 already cover
   the submit path; no additional cases needed here.
 
 ---
 
-## Phase 5 — Auth Flow Fixes
+## Phase 6 — Auth Flow Fixes
 
-### 5.1 Call `createUser` after sign-up
+### 6.1 Call `createUser` after sign-up
 
 After a successful Supabase Auth sign-up, the backend expects a `POST /user`
 call to register the display name. Without it, the user has an auth account
@@ -707,7 +882,7 @@ adding them to keep the backend data complete:
 
 ---
 
-### 5.2 Admin role check in window ViewModel
+### 6.2 Admin role check in window ViewModel
 
 See Phase 2.3. The window ViewModel should check admin status after the
 session is established (sign-in success or app startup when a session is
@@ -758,12 +933,13 @@ declared as `data class FlyerDetailDestination(val flyerId: String)` and
 |---|---|---|
 | 1 | 8 shared-ui components + previews | — |
 | 2 | Service/model layer: archive query, rejectionReason, AuthState | — |
-| 3 | FlyerSubmit screen (5 files) + destination + route | Phase 1 |
-| 4.1 | Splash wordmark | Phase 1 |
-| 4.2 | FlyerList updates (shared components + Submit button) | Phases 1, 3 |
-| 4.3 | FlyerDetail updates (FlyerAsyncImage, LoadingStateBox, rejectionReason) | Phases 1, 2 |
-| 4.4 | Archive search bar + shared components | Phases 1, 2 |
-| 4.5 | MyFlyers updates (shared components + Submit button) | Phases 1, 3 |
-| 4.6 | ModerationQueue updates (shared components + rejection dialog) | Phases 1, 2 |
-| 4.7 | File upload (FilePicker + FlyerEdit/Submit wiring) | Phase 3 |
-| 5 | Auth fixes (createUser, isAdmin) | Phase 2 |
+| 3 | Browser navigation: URL scheme, deep links, History adapter, SPA fallback | — |
+| 4 | FlyerSubmit screen (5 files) + destination + route | Phases 1, 3 |
+| 5.1 | Splash wordmark | Phase 1 |
+| 5.2 | FlyerList updates (shared components + Submit button) | Phases 1, 4 |
+| 5.3 | FlyerDetail updates (FlyerAsyncImage, LoadingStateBox, rejectionReason) | Phases 1, 2 |
+| 5.4 | Archive search bar + shared components | Phases 1, 2 |
+| 5.5 | MyFlyers updates (shared components + Submit button) | Phases 1, 4 |
+| 5.6 | ModerationQueue updates (shared components + rejection dialog) | Phases 1, 2 |
+| 5.7 | File upload (FilePicker + FlyerEdit/Submit wiring) | Phase 4 |
+| 6 | Auth fixes (createUser, isAdmin) | Phase 2 |

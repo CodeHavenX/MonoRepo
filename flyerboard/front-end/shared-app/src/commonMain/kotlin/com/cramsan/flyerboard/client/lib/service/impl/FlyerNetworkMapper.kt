@@ -20,6 +20,7 @@ fun FlyerNetworkResponse.toFlyerModel(): FlyerModel =
         uploaderId = uploaderId,
         createdAt = createdAt,
         updatedAt = updatedAt,
+        rejectionReason = rejectionReason,
     )
 
 /**

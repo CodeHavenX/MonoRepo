@@ -607,6 +607,22 @@ Custom Gradle scripts in `gradle/` configure KMP targets. Apply the appropriate 
 - `kotlin-mpp-target-wasm-compose-application.gradle` — WASM application
 - `release-task.gradle` — provides the `release` validation task for every module
 
+## Code Quality Skills
+
+When you finish a task and the change touches **10 or more Kotlin files**, proactively mention the relevant code quality skill(s) at the end of your response so the user knows they can run a deeper review. Choose based on what changed:
+
+| Changed files contain… | Suggest |
+|---|---|
+| Front-end features, ViewModels, Composables | `/review-ui` |
+| Back-end controllers, services, datastores | `/review-be` |
+| Framework or architecture modules | `/review-core` |
+| A mix of the above, or you're unsure | `/code-quality` |
+
+Phrase it as a one-liner, for example:
+> This change touches N files — you can run `/code-quality changes` for a full quality review.
+
+Do not run the skill automatically. Only suggest it; let the user decide.
+
 # Commits
 
 When committing changes, use the following format for commit messages to maintain consistency and clarity:

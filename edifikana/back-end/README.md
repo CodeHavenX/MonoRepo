@@ -69,13 +69,6 @@ holds a file lock on the binary output. Running from IntelliJ avoids this issue.
 Open `SupabaseEmployeeDatastoreIntegrationTest` (or any `*IntegrationTest` class)
 in IntelliJ and use the green run gutter icon.
 
-## Stop local Supabase
-
-```bash
-cd edifikana/back-end
-supabase stop
-```
-
 ## Re-seed from scratch
 
 Re-run the seed script at any time to wipe and re-apply:

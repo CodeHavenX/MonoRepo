@@ -6,7 +6,6 @@ import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.framework.utils.uuid.UUID
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -80,7 +79,6 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
         // Clean up
     }
 
-    @Ignore
     @Test
     fun `getProperties should return all properties for user`() = runCoroutineTest {
         // Arrange

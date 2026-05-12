@@ -4,9 +4,9 @@
 This mono-repo holds the code for several projects that we manage. The reason for going with a mono-repo was to make code-sharing easier and reducing maintenance cost.
 
 ## Current Projects
-| Project | Link |
-|---------|------|
-|         |      |
+| Project | Create Release Tag on Main Push Status | Last Build Release Tag Status | Last PR Build Status |
+|---------|----------------------------------------|--------------------|----------------------|
+|[Edifikana](https://github.com/CodeHavenX/MonoRepo/tree/main/edifikana)|[![Create Release Tag on Main Push](https://github.com/CodeHavenX/MonoRepo/actions/workflows/createTag-main.yml/badge.svg)](https://github.com/CodeHavenX/MonoRepo/actions/workflows/createTag-main.yml)|[![Build All Targets Release Tag](https://github.com/CodeHavenX/MonoRepo/actions/workflows/buildRelease-main.yml/badge.svg)](https://github.com/CodeHavenX/MonoRepo/actions/workflows/buildRelease-main.yml) | [![Build All Targets Pull Request](https://github.com/CodeHavenX/MonoRepo/actions/workflows/buildRelease-pr.yml/badge.svg)](https://github.com/CodeHavenX/MonoRepo/actions/workflows/buildRelease-pr.yml)
 
 ## Getting started
  

@@ -13,6 +13,7 @@ node_modules/
 
 # Application runtime configuations
 config.properties*
+!config.properties.integ.example
 
 ### Fastlane ###
 **/fastlane/report.xml

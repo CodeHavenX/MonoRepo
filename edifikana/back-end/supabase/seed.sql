@@ -6,8 +6,8 @@
 -- This runs `supabase db reset` which wipes the DB and re-applies all
 -- migrations + this file from scratch.
 --
--- All seeded users share the password: SeedUser2024!
--- This is an intentionally public dev-only credential for local instances.
+-- Seeded users have no password. Login via OTP / magic link.
+-- Check InBucket at http://localhost:54324 for the OTP code after entering an email.
 --
 -- UUID key:
 --   auth/app users  : 00000000-0000-0000-0003-xxxxxxxxxxxx

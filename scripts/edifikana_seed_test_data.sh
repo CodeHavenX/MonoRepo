@@ -18,8 +18,8 @@ echo "Current directory: $(pwd)"
 supabase db reset
 
 echo ""
-echo "Seed complete. All seeded users share the password: SeedUser2024!"
-echo "Example logins:"
+echo "Seed complete. Login via OTP — enter an email below, then check InBucket at http://localhost:54324 for the code."
+echo "Example accounts:"
 echo "  owner1.org1@dev.local  (OWNER in Sunset Property Management)"
 echo "  cross.alpha@dev.local  (OWNER in Org 1, ADMIN in Org 3)"
 echo "  admin1.org2@dev.local  (ADMIN in Coastal Living Properties)"

@@ -17,64 +17,125 @@
 --   employees       : 00000000-0000-0000-0005-xxxxxxxxxxxx
 -- =============================================================================
 
--- pgcrypto for bcrypt password hashing
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 -- =============================================================================
 -- SECTION 1: AUTH USERS (36 total)
--- Insert directly into auth.users so seeded users can log in.
--- password for all: SeedUser2024!
+-- Column layout matches newuser@dev.local exactly (a confirmed working user).
+-- Login via OTP / magic-link — encrypted_password is NULL (no password set).
+-- Token columns use '' (empty string), not NULL, to match GoTrue's own writes.
+-- confirmed_at is a GENERATED column; do NOT include it here.
+-- email_verified in identity_data is false (set by GoTrue for OTP users);
+--   email_verified in raw_user_meta_data is true (confirms email is valid).
 -- =============================================================================
 
 INSERT INTO auth.users (
     instance_id, id, aud, role, email,
     encrypted_password, email_confirmed_at,
+    invited_at,
+    confirmation_token, confirmation_sent_at,
+    recovery_token, recovery_sent_at,
+    email_change_token_new, email_change, email_change_sent_at,
+    last_sign_in_at,
     raw_app_meta_data, raw_user_meta_data,
-    is_super_admin, is_sso_user,
-    created_at, updated_at
+    created_at, updated_at,
+    phone, phone_confirmed_at,
+    phone_change, phone_change_token, phone_change_sent_at,
+    email_change_token_current, email_change_confirm_status,
+    banned_until,
+    reauthentication_token, reauthentication_sent_at,
+    is_sso_user, deleted_at, is_anonymous
 ) VALUES
 -- Cross-org users (4)
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000001','authenticated','authenticated','cross.alpha@dev.local', crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000002','authenticated','authenticated','cross.beta@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000003','authenticated','authenticated','cross.gamma@dev.local', crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000004','authenticated','authenticated','cross.delta@dev.local', crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
--- Org 1 (Sunset Property Management) — 8 org-specific users
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000101','authenticated','authenticated','owner1.org1@dev.local',    crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000102','authenticated','authenticated','admin1.org1@dev.local',     crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000103','authenticated','authenticated','admin2.org1@dev.local',     crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000104','authenticated','authenticated','manager1.org1@dev.local',   crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000105','authenticated','authenticated','employee1.org1@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000106','authenticated','authenticated','employee2.org1@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000107','authenticated','authenticated','employee3.org1@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000108','authenticated','authenticated','employee4.org1@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
--- Org 2 (Coastal Living Properties) — 8 org-specific users
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000201','authenticated','authenticated','owner1.org2@dev.local',    crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000202','authenticated','authenticated','owner2.org2@dev.local',    crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000203','authenticated','authenticated','admin1.org2@dev.local',     crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000204','authenticated','authenticated','manager1.org2@dev.local',   crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000205','authenticated','authenticated','manager2.org2@dev.local',   crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000206','authenticated','authenticated','employee1.org2@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000207','authenticated','authenticated','employee2.org2@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000208','authenticated','authenticated','employee3.org2@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
--- Org 3 (Mountain View Estates) — 8 org-specific users
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000301','authenticated','authenticated','owner1.org3@dev.local',    crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000302','authenticated','authenticated','admin1.org3@dev.local',     crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000303','authenticated','authenticated','manager1.org3@dev.local',   crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000304','authenticated','authenticated','manager2.org3@dev.local',   crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000305','authenticated','authenticated','employee1.org3@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000306','authenticated','authenticated','employee2.org3@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000307','authenticated','authenticated','employee3.org3@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000308','authenticated','authenticated','employee4.org3@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
--- Org 4 (Urban Nest Realty) — 8 org-specific users
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000401','authenticated','authenticated','owner1.org4@dev.local',    crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000402','authenticated','authenticated','owner2.org4@dev.local',    crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000403','authenticated','authenticated','admin1.org4@dev.local',     crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000404','authenticated','authenticated','admin2.org4@dev.local',     crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000405','authenticated','authenticated','manager1.org4@dev.local',   crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000406','authenticated','authenticated','employee1.org4@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000407','authenticated','authenticated','employee2.org4@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW()),
-('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000408','authenticated','authenticated','employee3.org4@dev.local',  crypt('SeedUser2024!',gen_salt('bf',10)),NOW(),'{"provider":"email","providers":["email"]}','{}',false,false,NOW(),NOW())
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000001','authenticated','authenticated','cross.alpha@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000002','authenticated','authenticated','cross.beta@dev.local',  NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000003','authenticated','authenticated','cross.gamma@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000004','authenticated','authenticated','cross.delta@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+-- Org 1 (Sunset Property Management)
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000101','authenticated','authenticated','owner1.org1@dev.local',   NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000102','authenticated','authenticated','admin1.org1@dev.local',    NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000103','authenticated','authenticated','admin2.org1@dev.local',    NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000104','authenticated','authenticated','manager1.org1@dev.local',  NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000105','authenticated','authenticated','employee1.org1@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000106','authenticated','authenticated','employee2.org1@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000107','authenticated','authenticated','employee3.org1@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000108','authenticated','authenticated','employee4.org1@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+-- Org 2 (Coastal Living Properties)
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000201','authenticated','authenticated','owner1.org2@dev.local',   NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000202','authenticated','authenticated','owner2.org2@dev.local',   NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000203','authenticated','authenticated','admin1.org2@dev.local',    NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000204','authenticated','authenticated','manager1.org2@dev.local',  NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000205','authenticated','authenticated','manager2.org2@dev.local',  NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000206','authenticated','authenticated','employee1.org2@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000207','authenticated','authenticated','employee2.org2@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000208','authenticated','authenticated','employee3.org2@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+-- Org 3 (Mountain View Estates)
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000301','authenticated','authenticated','owner1.org3@dev.local',   NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000302','authenticated','authenticated','admin1.org3@dev.local',    NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000303','authenticated','authenticated','manager1.org3@dev.local',  NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000304','authenticated','authenticated','manager2.org3@dev.local',  NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000305','authenticated','authenticated','employee1.org3@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000306','authenticated','authenticated','employee2.org3@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000307','authenticated','authenticated','employee3.org3@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000308','authenticated','authenticated','employee4.org3@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+-- Org 4 (Urban Nest Realty)
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000401','authenticated','authenticated','owner1.org4@dev.local',   NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000402','authenticated','authenticated','owner2.org4@dev.local',   NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000403','authenticated','authenticated','admin1.org4@dev.local',    NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000404','authenticated','authenticated','admin2.org4@dev.local',    NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000405','authenticated','authenticated','manager1.org4@dev.local',  NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000406','authenticated','authenticated','employee1.org4@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000407','authenticated','authenticated','employee2.org4@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false),
+('00000000-0000-0000-0000-000000000000','00000000-0000-0000-0003-000000000408','authenticated','authenticated','employee3.org4@dev.local', NULL,NOW(), NULL, '',NULL, '',NULL, '',  '',NULL, NULL, '{"provider":"email","providers":["email"]}','{"email_verified":true}', NOW(),NOW(), NULL,NULL, '',  '',NULL, '',0, NULL, '',NULL, false,NULL,false)
 ON CONFLICT (id) DO NOTHING;
+
+-- =============================================================================
+-- SECTION 1b: AUTH IDENTITIES
+-- Required for GoTrue to resolve email logins.
+-- Structure confirmed from a working locally-created user (newuser@dev.local).
+-- =============================================================================
+
+INSERT INTO auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at) VALUES
+-- Cross-org users
+('00000000-0000-0000-0003-000000000001','00000000-0000-0000-0003-000000000001','{"sub":"00000000-0000-0000-0003-000000000001","email":"cross.alpha@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000002','00000000-0000-0000-0003-000000000002','{"sub":"00000000-0000-0000-0003-000000000002","email":"cross.beta@dev.local","email_verified":false,"phone_verified":false}',  'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000003','00000000-0000-0000-0003-000000000003','{"sub":"00000000-0000-0000-0003-000000000003","email":"cross.gamma@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000004','00000000-0000-0000-0003-000000000004','{"sub":"00000000-0000-0000-0003-000000000004","email":"cross.delta@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+-- Org 1
+('00000000-0000-0000-0003-000000000101','00000000-0000-0000-0003-000000000101','{"sub":"00000000-0000-0000-0003-000000000101","email":"owner1.org1@dev.local","email_verified":false,"phone_verified":false}',   'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000102','00000000-0000-0000-0003-000000000102','{"sub":"00000000-0000-0000-0003-000000000102","email":"admin1.org1@dev.local","email_verified":false,"phone_verified":false}',    'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000103','00000000-0000-0000-0003-000000000103','{"sub":"00000000-0000-0000-0003-000000000103","email":"admin2.org1@dev.local","email_verified":false,"phone_verified":false}',    'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000104','00000000-0000-0000-0003-000000000104','{"sub":"00000000-0000-0000-0003-000000000104","email":"manager1.org1@dev.local","email_verified":false,"phone_verified":false}',  'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000105','00000000-0000-0000-0003-000000000105','{"sub":"00000000-0000-0000-0003-000000000105","email":"employee1.org1@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000106','00000000-0000-0000-0003-000000000106','{"sub":"00000000-0000-0000-0003-000000000106","email":"employee2.org1@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000107','00000000-0000-0000-0003-000000000107','{"sub":"00000000-0000-0000-0003-000000000107","email":"employee3.org1@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000108','00000000-0000-0000-0003-000000000108','{"sub":"00000000-0000-0000-0003-000000000108","email":"employee4.org1@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+-- Org 2
+('00000000-0000-0000-0003-000000000201','00000000-0000-0000-0003-000000000201','{"sub":"00000000-0000-0000-0003-000000000201","email":"owner1.org2@dev.local","email_verified":false,"phone_verified":false}',   'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000202','00000000-0000-0000-0003-000000000202','{"sub":"00000000-0000-0000-0003-000000000202","email":"owner2.org2@dev.local","email_verified":false,"phone_verified":false}',   'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000203','00000000-0000-0000-0003-000000000203','{"sub":"00000000-0000-0000-0003-000000000203","email":"admin1.org2@dev.local","email_verified":false,"phone_verified":false}',    'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000204','00000000-0000-0000-0003-000000000204','{"sub":"00000000-0000-0000-0003-000000000204","email":"manager1.org2@dev.local","email_verified":false,"phone_verified":false}',  'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000205','00000000-0000-0000-0003-000000000205','{"sub":"00000000-0000-0000-0003-000000000205","email":"manager2.org2@dev.local","email_verified":false,"phone_verified":false}',  'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000206','00000000-0000-0000-0003-000000000206','{"sub":"00000000-0000-0000-0003-000000000206","email":"employee1.org2@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000207','00000000-0000-0000-0003-000000000207','{"sub":"00000000-0000-0000-0003-000000000207","email":"employee2.org2@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000208','00000000-0000-0000-0003-000000000208','{"sub":"00000000-0000-0000-0003-000000000208","email":"employee3.org2@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+-- Org 3
+('00000000-0000-0000-0003-000000000301','00000000-0000-0000-0003-000000000301','{"sub":"00000000-0000-0000-0003-000000000301","email":"owner1.org3@dev.local","email_verified":false,"phone_verified":false}',   'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000302','00000000-0000-0000-0003-000000000302','{"sub":"00000000-0000-0000-0003-000000000302","email":"admin1.org3@dev.local","email_verified":false,"phone_verified":false}',    'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000303','00000000-0000-0000-0003-000000000303','{"sub":"00000000-0000-0000-0003-000000000303","email":"manager1.org3@dev.local","email_verified":false,"phone_verified":false}',  'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000304','00000000-0000-0000-0003-000000000304','{"sub":"00000000-0000-0000-0003-000000000304","email":"manager2.org3@dev.local","email_verified":false,"phone_verified":false}',  'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000305','00000000-0000-0000-0003-000000000305','{"sub":"00000000-0000-0000-0003-000000000305","email":"employee1.org3@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000306','00000000-0000-0000-0003-000000000306','{"sub":"00000000-0000-0000-0003-000000000306","email":"employee2.org3@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000307','00000000-0000-0000-0003-000000000307','{"sub":"00000000-0000-0000-0003-000000000307","email":"employee3.org3@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000308','00000000-0000-0000-0003-000000000308','{"sub":"00000000-0000-0000-0003-000000000308","email":"employee4.org3@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+-- Org 4
+('00000000-0000-0000-0003-000000000401','00000000-0000-0000-0003-000000000401','{"sub":"00000000-0000-0000-0003-000000000401","email":"owner1.org4@dev.local","email_verified":false,"phone_verified":false}',   'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000402','00000000-0000-0000-0003-000000000402','{"sub":"00000000-0000-0000-0003-000000000402","email":"owner2.org4@dev.local","email_verified":false,"phone_verified":false}',   'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000403','00000000-0000-0000-0003-000000000403','{"sub":"00000000-0000-0000-0003-000000000403","email":"admin1.org4@dev.local","email_verified":false,"phone_verified":false}',    'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000404','00000000-0000-0000-0003-000000000404','{"sub":"00000000-0000-0000-0003-000000000404","email":"admin2.org4@dev.local","email_verified":false,"phone_verified":false}',    'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000405','00000000-0000-0000-0003-000000000405','{"sub":"00000000-0000-0000-0003-000000000405","email":"manager1.org4@dev.local","email_verified":false,"phone_verified":false}',  'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000406','00000000-0000-0000-0003-000000000406','{"sub":"00000000-0000-0000-0003-000000000406","email":"employee1.org4@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000407','00000000-0000-0000-0003-000000000407','{"sub":"00000000-0000-0000-0003-000000000407","email":"employee2.org4@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW()),
+('00000000-0000-0000-0003-000000000408','00000000-0000-0000-0003-000000000408','{"sub":"00000000-0000-0000-0003-000000000408","email":"employee3.org4@dev.local","email_verified":false,"phone_verified":false}', 'email',NOW(),NOW(),NOW())
+ON CONFLICT (provider, provider_id) DO NOTHING;
 
 -- =============================================================================
 -- SECTION 2: APP USERS (public.users — same UUIDs as auth.users)

@@ -43,8 +43,11 @@ supabase.disable=false
 
 ## Seed credentials
 
-All seeded users share the password **`SeedUser2024!`**. This is an intentionally
-public, local-only development credential; do **not** use it in production.
+Seeded users have **no password set** and log in via **OTP / magic link**.
+
+To sign in: enter a seed email in the app's sign-in screen, then check
+Supabase's local email inbox at **http://localhost:54324** (InBucket) for the
+OTP code.
 
 Example accounts:
 

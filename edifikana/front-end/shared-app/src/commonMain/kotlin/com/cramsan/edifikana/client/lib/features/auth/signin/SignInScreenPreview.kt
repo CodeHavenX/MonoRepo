@@ -34,6 +34,7 @@ private fun SignInScreenPreview() =
             onPWSignInClicked = {},
             onSignInOtpClicked = { },
             onSignUpClicked = { },
+            onForgotPasswordClicked = { },
             onThemeSelected = { _ -> },
             onInfoClicked = { },
         )
@@ -68,6 +69,7 @@ private fun SignInContentPreview() =
             onPWSignInClicked = {},
             onSignInOtpClicked = { },
             onSignUpClicked = {},
+            onForgotPasswordClicked = {},
             onThemeSelected = { _ -> },
             onInfoClicked = {},
         )

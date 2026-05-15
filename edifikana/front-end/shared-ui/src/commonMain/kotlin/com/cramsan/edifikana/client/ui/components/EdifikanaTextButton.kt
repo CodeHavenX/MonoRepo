@@ -26,7 +26,7 @@ fun EdifikanaTextButton(
     TextButton(
         onClick = onClick,
         modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(25.dp),
     ) {
         Text(
             text = text,

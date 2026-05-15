@@ -65,6 +65,20 @@ class FlyerListViewModel(dependencies: ViewModelDependencies, private val flyerM
         }
     }
 
+    /**
+     * Navigate to the Submit Flyer screen.
+     */
+    fun onSubmitFlyer() {
+        logI(TAG, "onSubmitFlyer")
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                FlyerBoardWindowsEvent.NavigateToScreen(
+                    MainDestination.FlyerSubmitDestination,
+                ),
+            )
+        }
+    }
+
     companion object {
         private const val TAG = "FlyerListViewModel"
     }

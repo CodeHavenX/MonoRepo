@@ -47,6 +47,12 @@ sealed class MainDestination : Destination {
     data class FlyerEditDestination(val flyerId: String) : MainDestination()
 
     /**
+     * Flyer Submit screen destination (create a new flyer).
+     */
+    @Serializable
+    data object FlyerSubmitDestination : MainDestination()
+
+    /**
      * Dev/debug menu screen destination.
      */
     @Serializable

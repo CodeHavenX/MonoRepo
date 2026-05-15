@@ -9,6 +9,7 @@ import com.cramsan.flyerboard.client.lib.features.main.archive.ArchiveScreen
 import com.cramsan.flyerboard.client.lib.features.main.flyer_detail.FlyerDetailScreen
 import com.cramsan.flyerboard.client.lib.features.main.flyer_edit.FlyerEditScreen
 import com.cramsan.flyerboard.client.lib.features.main.flyer_list.FlyerListScreen
+import com.cramsan.flyerboard.client.lib.features.main.flyer_submit.FlyerSubmitScreen
 import com.cramsan.flyerboard.client.lib.features.main.menu.MainMenuScreen
 import com.cramsan.flyerboard.client.lib.features.main.moderation_queue.ModerationQueueScreen
 import com.cramsan.flyerboard.client.lib.features.main.my_flyers.MyFlyersScreen
@@ -93,6 +94,16 @@ fun NavGraphBuilder.mainNavGraphNavigation(
             ),
         ) {
             FlyerEditScreen(destination = it.toRoute())
+        }
+        composable(
+            MainDestination.FlyerSubmitDestination::class,
+            typeMap = typeMap,
+            deepLinks =
+            listOf(
+                navDeepLink<MainDestination.FlyerSubmitDestination>(basePath = "$BASE_URL/my-flyers/submit"),
+            ),
+        ) {
+            FlyerSubmitScreen()
         }
         composable(
             MainDestination.MenuDestination::class,

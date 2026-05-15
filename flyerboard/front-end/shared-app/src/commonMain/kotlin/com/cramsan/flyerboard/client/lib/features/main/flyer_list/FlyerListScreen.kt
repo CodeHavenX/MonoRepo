@@ -34,6 +34,7 @@ import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
 import flyerboard_lib.app_bar_action_sign_in
 import flyerboard_lib.app_bar_action_sign_out
+import flyerboard_lib.flyer_list_screen_button_submit
 import flyerboard_lib.flyer_list_screen_empty_message
 import flyerboard_lib.flyer_list_screen_title
 import org.jetbrains.compose.resources.stringResource
@@ -69,6 +70,7 @@ fun FlyerListScreen(
         onSignIn = onSignIn,
         onSignOut = onSignOut,
         onRefresh = { viewModel.refresh() },
+        onSubmitFlyer = { viewModel.onSubmitFlyer() },
         onFlyerSelected = { viewModel.onFlyerSelected(it.id) },
     )
 }
@@ -85,6 +87,7 @@ internal fun FlyerListContent(
     onSignIn: () -> Unit = {},
     onSignOut: () -> Unit = {},
     onRefresh: () -> Unit,
+    onSubmitFlyer: () -> Unit = {},
     onFlyerSelected: (FlyerModel) -> Unit,
 ) {
     Scaffold(
@@ -94,6 +97,9 @@ internal fun FlyerListContent(
                 title = { Text(stringResource(Res.string.flyer_list_screen_title)) },
                 actions = {
                     if (isAuthenticated) {
+                        TextButton(onClick = onSubmitFlyer) {
+                            Text(stringResource(Res.string.flyer_list_screen_button_submit))
+                        }
                         TextButton(onClick = onSignOut) {
                             Text(stringResource(Res.string.app_bar_action_sign_out))
                         }

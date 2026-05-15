@@ -4,12 +4,11 @@ These rules apply to every Kotlin file regardless of category.
 
 **G1 — KDoc on public API** (P1)
 Every `public` class and every `public` function must have a KDoc comment (`/** ... */`).
-Exceptions: functions annotated `@Preview`; the default `companion object` inside a class.
+Exceptions: functions annotated `@Preview`; functions annotated `@Test`; the default `companion object` inside a class.
 Remediation: add a one-line KDoc describing the purpose.
 
-**G2 — Trailing commas** (P2)
-When a parameter list, argument list, or collection literal spans multiple lines, the last item must have a trailing comma.
-Remediation: add the missing trailing comma on the last item.
+**G2 — NO RULE** (P4)
+This is a placeholder since a rule has been removed. Ignore this rule.
 
 **G3 — No wildcard imports** (P2)
 `import com.example.*` is forbidden.

@@ -38,6 +38,7 @@ import edifikana_lib.Res
 import edifikana_lib.edifikana_string_email
 import edifikana_lib.edifikana_string_password
 import edifikana_lib.edifikana_string_sign_up
+import edifikana_lib.sign_in_screen_text_forgot_password
 import edifikana_lib.sign_in_screen_text_sign_in
 import edifikana_lib.sign_in_screen_text_sign_in_otp
 import org.jetbrains.compose.resources.stringResource
@@ -79,6 +80,7 @@ fun SignInScreen(
         onPWSignInClicked = { viewModel.signInWithPassword() },
         onSignInOtpClicked = { viewModel.signInWithOtp() },
         onSignUpClicked = { viewModel.navigateToSignUpPage() },
+        onForgotPasswordClicked = { viewModel.navigateToPasswordReset() },
         onInfoClicked = { viewModel.navigateToDebugPage() },
         onThemeSelected = { viewModel.changeSelectedTheme(it) },
     )
@@ -95,6 +97,7 @@ internal fun SignInContent(
     onPWSignInClicked: () -> Unit,
     onSignInOtpClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit,
     onInfoClicked: () -> Unit,
     onThemeSelected: (SelectedTheme) -> Unit,
 ) {
@@ -190,6 +193,15 @@ internal fun SignInContent(
             EdifikanaTextButton(
                 text = stringResource(Res.string.edifikana_string_sign_up),
                 onClick = onSignUpClicked,
+                modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 48.dp),
+            )
+
+            EdifikanaTextButton(
+                text = stringResource(Res.string.sign_in_screen_text_forgot_password),
+                onClick = onForgotPasswordClicked,
                 modifier =
                 Modifier
                     .align(Alignment.BottomCenter)

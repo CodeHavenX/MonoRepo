@@ -159,6 +159,20 @@ class SignInViewModel(
     }
 
     /**
+     * Navigate to the password reset page.
+     */
+    fun navigateToPasswordReset() {
+        viewModelCoroutineScope.launch {
+            val email = uiState.value.email.trim()
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.PasswordResetDestination(prefillEmail = email),
+                ),
+            )
+        }
+    }
+
+    /**
      * Navigate to the signUp page.
      */
     fun navigateToSignUpPage() {

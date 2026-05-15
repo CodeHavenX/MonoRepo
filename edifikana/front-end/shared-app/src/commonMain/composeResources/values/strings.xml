@@ -95,6 +95,18 @@
     <string name="sign_in_screen_text_sign_in">Continue with password</string>
     <string name="sign_in_screen_text_sign_in_password">Sign in</string>
     <string name="sign_in_screen_text_sign_in_otp">Sign in with OTP</string>
+    <string name="sign_in_screen_text_forgot_password">Forgot password?</string>
+
+    <!-- Password reset screen -->
+    <string name="password_reset_screen_title">Reset Password</string>
+    <string name="password_reset_screen_subtitle">Enter your email address and we will send you a reset link.</string>
+    <string name="password_reset_screen_send_button">Send Reset Link</string>
+
+    <!-- Password reset confirmation screen -->
+    <string name="password_reset_confirmation_screen_title">Check Your Email</string>
+    <string name="password_reset_confirmation_screen_message">A password reset link was sent to %1$s. Check your inbox and follow the instructions.</string>
+    <string name="password_reset_confirmation_screen_resend_button">Resend Link</string>
+    <string name="password_reset_confirmation_screen_back_to_sign_in">Back to Sign In</string>
 
     <!-- Sign up screen -->
     <string name="sign_up_screen_text_policy">By creating an account, I accept Edifikans's Terms of Service and Privacy Policy.</string>

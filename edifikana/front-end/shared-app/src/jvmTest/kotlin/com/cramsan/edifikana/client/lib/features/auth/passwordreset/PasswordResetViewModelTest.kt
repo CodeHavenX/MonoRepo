@@ -24,8 +24,8 @@ import io.mockk.mockk
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 /**
  * Test the [PasswordResetViewModel] class.
@@ -72,26 +72,27 @@ class PasswordResetViewModelTest : CoroutineTest() {
         viewModel.initialize("prefill@example.com")
 
         // Assert
+        assertIs<PasswordResetUIState.Stable>(viewModel.uiState.value)
         assertEquals("prefill@example.com", viewModel.uiState.value.email)
     }
 
     /**
-     * Test the [PasswordResetViewModel.initialize] method with blank email leaves email empty.
+     * Test the [PasswordResetViewModel.initialize] method with blank email leaves state unchanged.
      */
     @Test
-    fun `test initialize with blank email leaves email unchanged`() = runCoroutineTest {
+    fun `test initialize with blank email leaves state unchanged`() = runCoroutineTest {
         // Act
         viewModel.initialize("")
 
         // Assert
-        assertEquals("", viewModel.uiState.value.email)
+        assertEquals(PasswordResetUIState.Initial, viewModel.uiState.value)
     }
 
     /**
-     * Test the [PasswordResetViewModel.changeEmailValue] method updates email in UIState.
+     * Test the [PasswordResetViewModel.changeEmailValue] method transitions to Stable with updated email.
      */
     @Test
-    fun `test changeEmailValue updates email in UIState`() = runCoroutineTest {
+    fun `test changeEmailValue transitions to Stable with updated email`() = runCoroutineTest {
         // Arrange
         val email = "test@example.com"
 
@@ -99,6 +100,7 @@ class PasswordResetViewModelTest : CoroutineTest() {
         viewModel.changeEmailValue(email)
 
         // Assert
+        assertIs<PasswordResetUIState.Stable>(viewModel.uiState.value)
         assertEquals(email, viewModel.uiState.value.email)
     }
 
@@ -159,7 +161,7 @@ class PasswordResetViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test the [PasswordResetViewModel.sendPasswordReset] method shows an error for invalid email
+     * Test the [PasswordResetViewModel.sendPasswordReset] method transitions to Error for an invalid email
      * and does not call the manager.
      */
     @Test
@@ -171,15 +173,17 @@ class PasswordResetViewModelTest : CoroutineTest() {
         viewModel.sendPasswordReset()
 
         // Assert
-        assertTrue(viewModel.uiState.value.errorMessages?.isNotEmpty() == true)
+        val state = viewModel.uiState.value
+        assertIs<PasswordResetUIState.Error>(state)
+        assertEquals(true, state.messages.isNotEmpty())
         coVerify(exactly = 0) { authManager.sendPasswordReset(any()) }
     }
 
     /**
-     * Test the [PasswordResetViewModel.sendPasswordReset] method shows error message on failure.
+     * Test the [PasswordResetViewModel.sendPasswordReset] method transitions to Error on manager failure.
      */
     @Test
-    fun `test sendPasswordReset failure shows error message`() = runCoroutineTest {
+    fun `test sendPasswordReset failure transitions to Error state`() = runCoroutineTest {
         // Arrange
         val errorMessage = "There was an unexpected error."
         coEvery { authManager.sendPasswordReset(any()) } returns Result.failure(Exception("network error"))
@@ -194,24 +198,26 @@ class PasswordResetViewModelTest : CoroutineTest() {
             viewModel.sendPasswordReset()
 
             // Assert
-            assertEquals(listOf(errorMessage), viewModel.uiState.value.errorMessages)
+            val state = viewModel.uiState.value
+            assertIs<PasswordResetUIState.Error>(state)
+            assertEquals(listOf(errorMessage), state.messages)
             advanceUntilIdleAndAwaitComplete(turbine)
         }
     }
 
     /**
-     * Test the [PasswordResetViewModel.sendPasswordReset] method clears previous errors on a new attempt.
+     * Test the [PasswordResetViewModel.sendPasswordReset] method clears errors on a subsequent successful attempt.
      */
     @Test
-    fun `test sendPasswordReset clears previous error on new successful attempt`() = runCoroutineTest {
-        // Arrange — first attempt fails to put an error in state
+    fun `test sendPasswordReset clears Error state on successful retry`() = runCoroutineTest {
+        // Arrange — first attempt fails
         val errorMessage = "There was an unexpected error."
         coEvery { authManager.sendPasswordReset(any()) } returns Result.failure(Exception())
         coEvery { stringProvider.getString(Res.string.error_message_unexpected_error) } returns errorMessage
 
         viewModel.changeEmailValue("user@example.com")
         viewModel.sendPasswordReset()
-        assertEquals(listOf(errorMessage), viewModel.uiState.value.errorMessages)
+        assertIs<PasswordResetUIState.Error>(viewModel.uiState.value)
 
         // Arrange — second attempt succeeds
         coEvery { authManager.sendPasswordReset(any()) } returns Result.success(Unit)
@@ -222,8 +228,7 @@ class PasswordResetViewModelTest : CoroutineTest() {
             // Act
             viewModel.sendPasswordReset()
 
-            // Assert
-            assertNull(viewModel.uiState.value.errorMessages)
+            // Assert — navigated, no longer in Error state
             turbine.awaitItem()
             advanceUntilIdleAndAwaitComplete(turbine)
         }

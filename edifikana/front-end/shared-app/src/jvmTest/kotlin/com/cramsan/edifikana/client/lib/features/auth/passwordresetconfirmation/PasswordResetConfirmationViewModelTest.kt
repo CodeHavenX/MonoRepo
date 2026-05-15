@@ -24,7 +24,7 @@ import io.mockk.mockk
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
+import kotlin.test.assertIs
 
 /**
  * Test the [PasswordResetConfirmationViewModel] class.
@@ -63,14 +63,15 @@ class PasswordResetConfirmationViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test the [PasswordResetConfirmationViewModel.initialize] method sets email in UIState.
+     * Test the [PasswordResetConfirmationViewModel.initialize] method transitions to Stable with the given email.
      */
     @Test
-    fun `test initialize sets email in UIState`() = runCoroutineTest {
+    fun `test initialize transitions to Stable with email`() = runCoroutineTest {
         // Act
         viewModel.initialize("user@example.com")
 
         // Assert
+        assertIs<PasswordResetConfirmationUIState.Stable>(viewModel.uiState.value)
         assertEquals("user@example.com", viewModel.uiState.value.email)
     }
 
@@ -97,10 +98,10 @@ class PasswordResetConfirmationViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test the [PasswordResetConfirmationViewModel.resend] method shows error message on failure.
+     * Test the [PasswordResetConfirmationViewModel.resend] method transitions to Error on failure.
      */
     @Test
-    fun `test resend failure shows error message`() = runCoroutineTest {
+    fun `test resend failure transitions to Error state`() = runCoroutineTest {
         // Arrange
         val errorMessage = "There was an unexpected error."
         coEvery { authManager.sendPasswordReset(any()) } returns Result.failure(Exception("network error"))
@@ -115,16 +116,18 @@ class PasswordResetConfirmationViewModelTest : CoroutineTest() {
             viewModel.resend()
 
             // Assert
-            assertEquals(listOf(errorMessage), viewModel.uiState.value.errorMessages)
+            val state = viewModel.uiState.value
+            assertIs<PasswordResetConfirmationUIState.Error>(state)
+            assertEquals(listOf(errorMessage), state.messages)
             advanceUntilIdleAndAwaitComplete(turbine)
         }
     }
 
     /**
-     * Test the [PasswordResetConfirmationViewModel.resend] method clears loading state on completion.
+     * Test the [PasswordResetConfirmationViewModel.resend] method returns to Stable on success.
      */
     @Test
-    fun `test resend clears loading state on completion`() = runCoroutineTest {
+    fun `test resend success returns to Stable state`() = runCoroutineTest {
         // Arrange
         coEvery { authManager.sendPasswordReset(any()) } returns Result.success(Unit)
 
@@ -137,7 +140,7 @@ class PasswordResetConfirmationViewModelTest : CoroutineTest() {
             viewModel.resend()
 
             // Assert
-            assertFalse(viewModel.uiState.value.isLoading)
+            assertIs<PasswordResetConfirmationUIState.Stable>(viewModel.uiState.value)
             advanceUntilIdleAndAwaitComplete(turbine)
         }
     }

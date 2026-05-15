@@ -7,11 +7,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 internal fun PasswordResetConfirmationContentPreview() {
     PasswordResetConfirmationContent(
-        uiState = PasswordResetConfirmationUIState(
-            isLoading = false,
-            email = "user@example.com",
-            errorMessages = null,
-        ),
+        uiState = PasswordResetConfirmationUIState.Stable(email = "user@example.com"),
         onResendClicked = {},
         onBackToSignInClicked = {},
         onCloseClicked = {},
@@ -22,10 +18,9 @@ internal fun PasswordResetConfirmationContentPreview() {
 @Composable
 internal fun PasswordResetConfirmationContentWithErrorPreview() {
     PasswordResetConfirmationContent(
-        uiState = PasswordResetConfirmationUIState(
-            isLoading = false,
+        uiState = PasswordResetConfirmationUIState.Error(
             email = "user@example.com",
-            errorMessages = listOf("There was an unexpected error."),
+            messages = listOf("There was an unexpected error."),
         ),
         onResendClicked = {},
         onBackToSignInClicked = {},
@@ -37,11 +32,7 @@ internal fun PasswordResetConfirmationContentWithErrorPreview() {
 @Composable
 internal fun PasswordResetConfirmationContentLoadingPreview() {
     PasswordResetConfirmationContent(
-        uiState = PasswordResetConfirmationUIState(
-            isLoading = true,
-            email = "user@example.com",
-            errorMessages = null,
-        ),
+        uiState = PasswordResetConfirmationUIState.Loading(email = "user@example.com"),
         onResendClicked = {},
         onBackToSignInClicked = {},
         onCloseClicked = {},

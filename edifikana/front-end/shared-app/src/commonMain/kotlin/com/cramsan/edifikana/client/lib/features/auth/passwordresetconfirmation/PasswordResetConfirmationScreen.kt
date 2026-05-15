@@ -1,9 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.auth.passwordresetconfirmation
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
+import com.cramsan.edifikana.client.ui.components.EdifikanaErrorMessages
 import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
@@ -70,6 +67,9 @@ internal fun PasswordResetConfirmationContent(
     onBackToSignInClicked: () -> Unit,
     onCloseClicked: () -> Unit,
 ) {
+    val isLoading = uiState is PasswordResetConfirmationUIState.Loading
+    val errorMessages = (uiState as? PasswordResetConfirmationUIState.Error)?.messages
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -85,27 +85,19 @@ internal fun PasswordResetConfirmationContent(
                 .fillMaxSize(),
             sectionContent = { sectionModifier ->
                 Text(
-                    text = stringResource(Res.string.password_reset_confirmation_screen_message, uiState.email),
+                    text = stringResource(
+                        Res.string.password_reset_confirmation_screen_message,
+                        uiState.email,
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = sectionModifier,
                 )
 
-                AnimatedContent(
-                    uiState.errorMessages,
+                EdifikanaErrorMessages(
+                    messages = errorMessages,
                     modifier = sectionModifier,
-                    transitionSpec = { fadeIn().togetherWith(fadeOut()) },
-                ) {
-                    if (!it.isNullOrEmpty()) {
-                        it.forEach { errorMessage ->
-                            Text(
-                                text = errorMessage,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    }
-                }
+                )
             },
             buttonContent = { buttonModifier ->
                 EdifikanaSecondaryButton(
@@ -120,7 +112,7 @@ internal fun PasswordResetConfirmationContent(
                 )
             },
             overlay = {
-                LoadingAnimationOverlay(uiState.isLoading)
+                LoadingAnimationOverlay(isLoading)
             },
             contentAlignment = Alignment.Center,
         )

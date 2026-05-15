@@ -1,9 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.auth.passwordreset
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
+import com.cramsan.edifikana.client.ui.components.EdifikanaErrorMessages
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
@@ -70,6 +67,9 @@ internal fun PasswordResetContent(
     onSendClicked: () -> Unit,
     onCloseClicked: () -> Unit,
 ) {
+    val isLoading = uiState is PasswordResetUIState.Loading
+    val errorMessages = (uiState as? PasswordResetUIState.Error)?.messages
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -91,21 +91,10 @@ internal fun PasswordResetContent(
                     modifier = sectionModifier,
                 )
 
-                AnimatedContent(
-                    uiState.errorMessages,
+                EdifikanaErrorMessages(
+                    messages = errorMessages,
                     modifier = sectionModifier,
-                    transitionSpec = { fadeIn().togetherWith(fadeOut()) },
-                ) {
-                    if (!it.isNullOrEmpty()) {
-                        it.forEach { errorMessage ->
-                            Text(
-                                text = errorMessage,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    }
-                }
+                )
 
                 EdifikanaTextField(
                     value = uiState.email,
@@ -124,7 +113,7 @@ internal fun PasswordResetContent(
                 )
             },
             overlay = {
-                LoadingAnimationOverlay(uiState.isLoading)
+                LoadingAnimationOverlay(isLoading)
             },
             contentAlignment = Alignment.Center,
         )

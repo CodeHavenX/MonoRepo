@@ -1,9 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,11 +15,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationUIState
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.ui.components.EdifikanaErrorMessages
 import com.cramsan.edifikana.client.ui.components.EdifikanaPasswordTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
@@ -33,6 +29,7 @@ import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.components.themetoggle.SelectedTheme
+import com.cramsan.ui.theme.Padding
 import com.cramsan.ui.components.themetoggle.ThemeToggle
 import edifikana_lib.Res
 import edifikana_lib.edifikana_string_email
@@ -113,26 +110,10 @@ internal fun SignInContent(
         ) {
             ScreenLayout(
                 sectionContent = { modifier ->
-                    AnimatedContent(
-                        uiState.errorMessages,
+                    EdifikanaErrorMessages(
+                        messages = uiState.errorMessages,
                         modifier = modifier,
-                        transitionSpec = {
-                            fadeIn()
-                                .togetherWith(
-                                    fadeOut(),
-                                )
-                        },
-                    ) {
-                        if (!uiState.errorMessages.isNullOrEmpty()) {
-                            it?.forEach { errorMessage ->
-                                Text(
-                                    text = errorMessage,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.error,
-                                )
-                            }
-                        }
-                    }
+                    )
 
                     EdifikanaTextField(
                         value = uiState.email,
@@ -196,7 +177,7 @@ internal fun SignInContent(
                 modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 48.dp),
+                    .padding(bottom = Padding.XX_LARGE),
             )
 
             EdifikanaTextButton(
@@ -205,7 +186,7 @@ internal fun SignInContent(
                 modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = Padding.MEDIUM),
             )
 
             IconButton(

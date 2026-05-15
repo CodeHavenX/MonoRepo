@@ -80,6 +80,20 @@ class MyFlyersViewModel(dependencies: ViewModelDependencies, private val flyerMa
     }
 
     /**
+     * Navigate to the Submit Flyer screen.
+     */
+    fun onSubmitFlyer() {
+        logI(TAG, "onSubmitFlyer")
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                FlyerBoardWindowsEvent.NavigateToScreen(
+                    MainDestination.FlyerSubmitDestination,
+                ),
+            )
+        }
+    }
+
+    /**
      * Navigate back.
      */
     fun navigateBack() {

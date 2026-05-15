@@ -43,6 +43,7 @@ import flyerboard_lib.flyer_status_archived
 import flyerboard_lib.flyer_status_pending
 import flyerboard_lib.flyer_status_rejected
 import flyerboard_lib.my_flyers_screen_button_edit
+import flyerboard_lib.my_flyers_screen_button_submit
 import flyerboard_lib.my_flyers_screen_empty_message
 import flyerboard_lib.my_flyers_screen_navigate_back
 import flyerboard_lib.my_flyers_screen_title
@@ -78,6 +79,7 @@ fun MyFlyersScreen(
         onSignOut = onSignOut,
         onNavigateBack = { viewModel.navigateBack() },
         onRefresh = { viewModel.refresh() },
+        onSubmitFlyer = { viewModel.onSubmitFlyer() },
         onFlyerSelected = { viewModel.onFlyerSelected(it.id) },
         onEditFlyer = { viewModel.onEditFlyer(it.id) },
     )
@@ -95,6 +97,7 @@ internal fun MyFlyersContent(
     onSignOut: () -> Unit = {},
     onNavigateBack: () -> Unit,
     onRefresh: () -> Unit,
+    onSubmitFlyer: () -> Unit = {},
     onFlyerSelected: (FlyerModel) -> Unit,
     onEditFlyer: (FlyerModel) -> Unit,
 ) {
@@ -112,6 +115,9 @@ internal fun MyFlyersContent(
                     }
                 },
                 actions = {
+                    TextButton(onClick = onSubmitFlyer) {
+                        Text(stringResource(Res.string.my_flyers_screen_button_submit))
+                    }
                     if (isAuthenticated) {
                         TextButton(onClick = onSignOut) {
                             Text(stringResource(Res.string.app_bar_action_sign_out))

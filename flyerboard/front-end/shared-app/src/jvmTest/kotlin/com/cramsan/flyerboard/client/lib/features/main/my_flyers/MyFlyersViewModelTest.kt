@@ -170,6 +170,24 @@ class MyFlyersViewModelTest : CoroutineTest() {
         }
 
     @Test
+    fun `onSubmitFlyer emits NavigateToScreen for FlyerSubmitDestination`() =
+        runCoroutineTest {
+            turbineScope {
+                val turbine = windowEventBus.events.testIn(backgroundScope)
+
+                viewModel.onSubmitFlyer()
+
+                assertEquals(
+                    FlyerBoardWindowsEvent.NavigateToScreen(
+                        MainDestination.FlyerSubmitDestination,
+                    ),
+                    turbine.awaitItem(),
+                )
+                advanceUntilIdleAndAwaitComplete(turbine)
+            }
+        }
+
+    @Test
     fun `navigateBack emits NavigateBack event`() =
         runCoroutineTest {
             turbineScope {

@@ -46,4 +46,20 @@
     <string name="flyer_edit_screen_label_expires_at">Expires At (optional)</string>
     <string name="flyer_edit_screen_button_save">Save</string>
     <string name="flyer_edit_screen_not_found">Flyer not found.</string>
+    <string name="flyer_submit_screen_title">New Flyer</string>
+    <string name="flyer_submit_screen_subtitle">Upload your design and reach the neighborhood.</string>
+    <string name="flyer_submit_screen_navigate_back">Navigate back</string>
+    <string name="flyer_submit_screen_label_title">Title</string>
+    <string name="flyer_submit_screen_title_placeholder">e.g., Block Party this Saturday!</string>
+    <string name="flyer_submit_screen_label_description">Description</string>
+    <string name="flyer_submit_screen_description_placeholder">Tell the neighborhood more about it...</string>
+    <string name="flyer_submit_screen_label_expires_at">Expires on (optional)</string>
+    <string name="flyer_submit_screen_expires_at_hint">Flyer will be archived after this date.</string>
+    <string name="flyer_submit_screen_upload_hint">Drag &amp; drop your image or PDF here, or click to browse</string>
+    <string name="flyer_submit_screen_upload_size">Max file size: 10MB</string>
+    <string name="flyer_submit_screen_button_choose_file">Choose File</string>
+    <string name="flyer_submit_screen_button_submit">Submit for Review</string>
+    <string name="flyer_submit_screen_button_cancel">Cancel</string>
+    <string name="flyer_list_screen_button_submit">Submit</string>
+    <string name="my_flyers_screen_button_submit">Submit</string>
 </resources>

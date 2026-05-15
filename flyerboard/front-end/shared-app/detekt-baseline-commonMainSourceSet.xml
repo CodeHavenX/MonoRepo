@@ -65,6 +65,11 @@
     <ID>PackageName:FlyerListScreen.kt:package com.cramsan.flyerboard.client.lib.features.main.flyer_list</ID>
     <ID>PackageName:FlyerListUIState.kt:package com.cramsan.flyerboard.client.lib.features.main.flyer_list</ID>
     <ID>PackageName:FlyerListViewModel.kt:package com.cramsan.flyerboard.client.lib.features.main.flyer_list</ID>
+    <ID>PackageName:FlyerSubmitEvent.kt:package com.cramsan.flyerboard.client.lib.features.main.flyer_submit</ID>
+    <ID>PackageName:FlyerSubmitPreview.kt:package com.cramsan.flyerboard.client.lib.features.main.flyer_submit</ID>
+    <ID>PackageName:FlyerSubmitScreen.kt:package com.cramsan.flyerboard.client.lib.features.main.flyer_submit</ID>
+    <ID>PackageName:FlyerSubmitUIState.kt:package com.cramsan.flyerboard.client.lib.features.main.flyer_submit</ID>
+    <ID>PackageName:FlyerSubmitViewModel.kt:package com.cramsan.flyerboard.client.lib.features.main.flyer_submit</ID>
     <ID>PackageName:ModerationQueueEvent.kt:package com.cramsan.flyerboard.client.lib.features.main.moderation_queue</ID>
     <ID>PackageName:ModerationQueuePreview.kt:package com.cramsan.flyerboard.client.lib.features.main.moderation_queue</ID>
     <ID>PackageName:ModerationQueueScreen.kt:package com.cramsan.flyerboard.client.lib.features.main.moderation_queue</ID>

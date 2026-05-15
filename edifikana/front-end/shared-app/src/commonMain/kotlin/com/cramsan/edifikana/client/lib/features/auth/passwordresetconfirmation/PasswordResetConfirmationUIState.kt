@@ -5,17 +5,27 @@ import com.cramsan.framework.core.compose.ViewModelUIState
 /**
  * Password reset confirmation UI state.
  */
-data class PasswordResetConfirmationUIState(
-    val isLoading: Boolean,
-    val email: String,
-    val errorMessages: List<String>?,
-) : ViewModelUIState {
+sealed class PasswordResetConfirmationUIState : ViewModelUIState {
+    /** The email address the reset link was sent to. */
+    abstract val email: String
+
+    /**
+     * Stable state — reset link sent, user can resend.
+     */
+    data class Stable(override val email: String = "") : PasswordResetConfirmationUIState()
+
+    /**
+     * Loading state — a resend request is in flight.
+     */
+    data class Loading(override val email: String) : PasswordResetConfirmationUIState()
+
+    /**
+     * Error state — the resend request failed.
+     */
+    data class Error(override val email: String, val messages: List<String>) : PasswordResetConfirmationUIState()
+
     companion object {
         /** Initial state for the password reset confirmation screen. */
-        val Initial = PasswordResetConfirmationUIState(
-            isLoading = false,
-            email = "",
-            errorMessages = null,
-        )
+        val Initial: PasswordResetConfirmationUIState = Stable()
     }
 }

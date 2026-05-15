@@ -31,7 +31,7 @@ class PasswordResetConfirmationViewModel(
      */
     fun initialize(email: String) {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(email = email) }
+            updateUiState { PasswordResetConfirmationUIState.Stable(email) }
         }
     }
 
@@ -42,19 +42,19 @@ class PasswordResetConfirmationViewModel(
         logI(TAG, "resend called")
         viewModelCoroutineScope.launch {
             val email = uiState.value.email
-            updateUiState { it.copy(isLoading = true, errorMessages = null) }
+            updateUiState { PasswordResetConfirmationUIState.Loading(email) }
 
             authManager.sendPasswordReset(email).onFailure {
                 updateUiState {
-                    it.copy(
-                        isLoading = false,
-                        errorMessages = listOf(stringProvider.getString(Res.string.error_message_unexpected_error)),
+                    PasswordResetConfirmationUIState.Error(
+                        email,
+                        listOf(stringProvider.getString(Res.string.error_message_unexpected_error)),
                     )
                 }
                 return@launch
             }
 
-            updateUiState { it.copy(isLoading = false) }
+            updateUiState { PasswordResetConfirmationUIState.Stable(email) }
         }
     }
 

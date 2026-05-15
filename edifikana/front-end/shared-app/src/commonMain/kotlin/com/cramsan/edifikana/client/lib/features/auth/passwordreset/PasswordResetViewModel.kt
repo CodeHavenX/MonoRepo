@@ -29,7 +29,7 @@ class PasswordResetViewModel(
     fun initialize(prefillEmail: String) {
         viewModelCoroutineScope.launch {
             if (prefillEmail.isNotBlank()) {
-                updateUiState { it.copy(email = prefillEmail) }
+                updateUiState { PasswordResetUIState.Stable(prefillEmail) }
             }
         }
     }
@@ -39,7 +39,7 @@ class PasswordResetViewModel(
      */
     fun changeEmailValue(email: String) {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(email = email) }
+            updateUiState { PasswordResetUIState.Stable(email) }
         }
     }
 
@@ -53,23 +53,22 @@ class PasswordResetViewModel(
 
             val validationErrors = validateEmail(email)
             if (validationErrors.isNotEmpty()) {
-                updateUiState { it.copy(errorMessages = validationErrors) }
+                updateUiState { PasswordResetUIState.Error(email, validationErrors) }
                 return@launch
             }
 
-            updateUiState { it.copy(isLoading = true, errorMessages = null) }
+            updateUiState { PasswordResetUIState.Loading(email) }
 
             authManager.sendPasswordReset(email).onFailure {
                 updateUiState {
-                    it.copy(
-                        isLoading = false,
-                        errorMessages = listOf(stringProvider.getString(Res.string.error_message_unexpected_error)),
+                    PasswordResetUIState.Error(
+                        email,
+                        listOf(stringProvider.getString(Res.string.error_message_unexpected_error)),
                     )
                 }
                 return@launch
             }
 
-            updateUiState { it.copy(isLoading = false) }
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AuthDestination.PasswordResetConfirmationDestination(userEmail = email),

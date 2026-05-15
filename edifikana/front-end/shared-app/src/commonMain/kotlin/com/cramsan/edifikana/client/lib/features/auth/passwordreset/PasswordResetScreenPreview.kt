@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.passwordreset
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable

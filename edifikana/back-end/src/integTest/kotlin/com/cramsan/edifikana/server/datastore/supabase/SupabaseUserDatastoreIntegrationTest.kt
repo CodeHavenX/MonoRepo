@@ -305,7 +305,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     // We cannot test this in the integration test because it requires a Supabase user to be created first.
     // Right now we can create the user but we are not able to retrieve the user ID from Supabase Auth.
-    @Ignore
+    @Ignore("OTP sign-in does not return user ID synchronously; needs Supabase Auth admin API workaround")
     @Test
     fun `associateUser should associate a pending user with a Supabase user`() = runCoroutineTest {
         // Arrange: Create a user with a password (Supabase user)

@@ -13,6 +13,7 @@ node_modules/
 
 # Application runtime configuations
 config.properties*
+!config.properties.integ.example
 
 ### Fastlane ###
 **/fastlane/report.xml
@@ -103,3 +104,4 @@ google-services.json
 # Claude Files
 .claude/settings.local.json
 edifikana/.claude/settings.local.json
+.mcp.json

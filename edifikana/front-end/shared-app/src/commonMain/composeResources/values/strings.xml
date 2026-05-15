@@ -87,7 +87,7 @@
 
     <!-- Error messages -->
     <string name="error_message_unexpected_error">There was an unexpected error.</string>
-    <string name="error_message_invalid_credentials">Username and/or password didn\'t match our records.</string>
+    <string name="error_message_invalid_credentials">Username and/or password didn't match our records.</string>
     <string name="error_message_currently_uploading">Processing… Please wait a few seconds…</string>
     <string name="error_message_invalid_otp">Invalid OTP.</string>
 
@@ -97,10 +97,10 @@
     <string name="sign_in_screen_text_sign_in_otp">Sign in with OTP</string>
 
     <!-- Sign up screen -->
-    <string name="sign_up_screen_text_policy">By creating an account, I accept Edifikans\'s Terms of Service and Privacy Policy.</string>
+    <string name="sign_up_screen_text_policy">By creating an account, I accept Edifikans's Terms of Service and Privacy Policy.</string>
 
     <!-- OTP validation screen -->
-    <string name="otp_validation_screen_text">We\'ve sent an OTP code to your email. Please enter your code below.</string>
+    <string name="otp_validation_screen_text">We've sent an OTP code to your email. Please enter your code below.</string>
     <string name="otp_validation_screen_image_description">Validation Image</string>
     <string name="otp_validation_screen_login_button">Login</string>
 
@@ -207,7 +207,7 @@
     <string name="event_log_screen_reported_by">Reported by: %1$s</string>
 
     <!-- Go to org screen -->
-    <string name="go_to_org_screen_no_properties_message">You don\'t have any properties yet. Create your first property to get started!</string>
+    <string name="go_to_org_screen_no_properties_message">You don't have any properties yet. Create your first property to get started!</string>
     <string name="go_to_org_screen_get_started_button">Get Started!</string>
 
     <!-- Invite staff member screen -->

@@ -126,7 +126,6 @@ class AuthManager(private val dependencies: ManagerDependencies, private val aut
 
     /**
      * Sends a password reset email to the given [email] address.
-     * Always returns success to prevent email enumeration.
      */
     suspend fun sendPasswordReset(email: String): Result<Unit> =
         dependencies.getOrCatch(TAG) {

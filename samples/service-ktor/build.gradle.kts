@@ -8,6 +8,7 @@ plugins {
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 val jarNameTarget by extra("sample-service-ktor")
+val ciDeployable by extra(true)
 
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:_")

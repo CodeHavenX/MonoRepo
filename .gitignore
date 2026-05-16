@@ -101,6 +101,9 @@ google-services.json
 *.local.properties
 .secrets/
 
+# Generated build outputs
+build-artifacts.txt
+
 # Claude Files
 .claude/settings.local.json
 edifikana/.claude/settings.local.json

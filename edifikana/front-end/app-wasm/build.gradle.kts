@@ -12,6 +12,7 @@ plugins {
 }
 
 val wasmModuleName by extra("EdifikanaWasmApp")
+val ciDeployable by extra(true)
 
 kotlin {
     wasmJs {

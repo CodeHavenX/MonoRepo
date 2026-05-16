@@ -57,6 +57,25 @@ subprojects {
 }
 
 /**
+ * Collects CI artifact paths from all opted-in modules and writes build-artifacts.txt.
+ * Modules opt in by setting `val ciDeployable by extra(true)` in their build.gradle.kts.
+ */
+tasks.register("generateBuildArtifacts") {
+    group = "ci"
+    description = "Aggregates CI artifact paths from all deployable modules into build-artifacts.txt"
+    dependsOn(subprojects.map { it.tasks.matching { t -> t.name == "writeCIArtifactPath" } })
+    val outputFile = layout.projectDirectory.file("build-artifacts.txt")
+    doLast {
+        val paths = subprojects
+            .map { sub -> sub.layout.buildDirectory.file("ci-artifact-path.txt").get().asFile }
+            .filter { it.exists() }
+            .map { it.readText().trim() }
+            .sorted()
+        outputFile.asFile.writeText(paths.joinToString("\n") + "\n")
+    }
+}
+
+/**
  * Production task settings for all projects. These must pass to consider
  * all projects are running correctly.
  */
@@ -142,4 +161,5 @@ tasks.register("releaseAll") {
     dependsOn("flyerboard:front-end:app-wasm:release")
 
     dependsOn("detekt-rules:release")
+    dependsOn("generateBuildArtifacts")
 }

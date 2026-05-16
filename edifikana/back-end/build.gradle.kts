@@ -10,6 +10,7 @@ plugins {
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")
 val jarNameTarget by extra("edifikana-back-end")
+val ciDeployable by extra(true)
 
 sourceSets {
     val integTest by creating {

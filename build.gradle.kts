@@ -64,14 +64,20 @@ tasks.register("generateBuildArtifacts") {
     group = "ci"
     description = "Aggregates CI artifact paths from all deployable modules into build-artifacts.txt"
     dependsOn(subprojects.map { it.tasks.matching { t -> t.name == "writeCIArtifactPath" } })
-    val outputFile = layout.projectDirectory.file("build-artifacts.txt")
+    // Resolve to plain File objects at configuration time so the configuration cache
+    // does not need to serialize Project references.
+    val stagingFiles: List<File> = subprojects.map { sub ->
+        sub.layout.buildDirectory.file("ci-artifact-path.txt").get().asFile
+    }
+    val outputFile: File = layout.projectDirectory.file("build-artifacts.txt").asFile
+    inputs.files(stagingFiles)
+    outputs.file(outputFile)
     doLast {
-        val paths = subprojects
-            .map { sub -> sub.layout.buildDirectory.file("ci-artifact-path.txt").get().asFile }
+        val paths = stagingFiles
             .filter { it.exists() }
             .map { it.readText().trim() }
             .sorted()
-        outputFile.asFile.writeText(paths.joinToString("\n") + "\n")
+        outputFile.writeText(paths.joinToString("\n") + "\n")
     }
 }
 

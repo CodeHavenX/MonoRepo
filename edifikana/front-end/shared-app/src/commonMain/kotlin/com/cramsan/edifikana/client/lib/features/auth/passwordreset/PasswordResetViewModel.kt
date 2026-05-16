@@ -22,7 +22,6 @@ class PasswordResetViewModel(
     private val authManager: AuthManager,
     private val stringProvider: StringProvider,
 ) : BaseViewModel<PasswordResetEvent, PasswordResetUIState>(dependencies, PasswordResetUIState.Initial, TAG) {
-
     /**
      * Initialize the screen, optionally pre-filling the email from the destination.
      */

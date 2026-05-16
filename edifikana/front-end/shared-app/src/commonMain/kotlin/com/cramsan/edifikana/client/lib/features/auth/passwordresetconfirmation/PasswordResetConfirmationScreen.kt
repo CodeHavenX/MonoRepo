@@ -80,12 +80,14 @@ internal fun PasswordResetConfirmationContent(
         },
     ) { innerPadding ->
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             sectionContent = { sectionModifier ->
                 Text(
-                    text = stringResource(
+                    text =
+                    stringResource(
                         Res.string.password_reset_confirmation_screen_message,
                         uiState.email,
                     ),

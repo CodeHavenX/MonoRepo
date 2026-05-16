@@ -18,7 +18,8 @@ internal fun PasswordResetConfirmationContentPreview() {
 @Composable
 internal fun PasswordResetConfirmationContentWithErrorPreview() {
     PasswordResetConfirmationContent(
-        uiState = PasswordResetConfirmationUIState.Error(
+        uiState =
+        PasswordResetConfirmationUIState.Error(
             email = "user@example.com",
             messages = listOf("There was an unexpected error."),
         ),

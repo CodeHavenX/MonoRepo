@@ -18,7 +18,8 @@ internal fun PasswordResetContentPreview() {
 @Composable
 internal fun PasswordResetContentWithErrorPreview() {
     PasswordResetContent(
-        uiState = PasswordResetUIState.Error(
+        uiState =
+        PasswordResetUIState.Error(
             email = "user@example.com",
             messages = listOf("Please enter a valid email address."),
         ),

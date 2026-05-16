@@ -25,7 +25,6 @@ class PasswordResetConfirmationViewModel(
     PasswordResetConfirmationUIState.Initial,
     TAG,
 ) {
-
     /**
      * Initialize the screen with the email the reset link was sent to.
      */

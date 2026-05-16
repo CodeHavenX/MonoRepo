@@ -144,7 +144,8 @@ private fun FlyerSubmitForm(
     val isSubmitting = uiState.status is SubmitStatus.Submitting
     val outlineColor = MaterialTheme.colorScheme.secondary
     Column(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(Padding.MEDIUM),
@@ -155,7 +156,8 @@ private fun FlyerSubmitForm(
             style = MaterialTheme.typography.bodyMedium,
         )
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxWidth()
                 .drawBehind {
                     val strokeWidth = 2.dp.toPx()
@@ -163,14 +165,14 @@ private fun FlyerSubmitForm(
                     val gapLength = 4.dp.toPx()
                     drawRoundRect(
                         color = outlineColor,
-                        style = Stroke(
+                        style =
+                        Stroke(
                             width = strokeWidth,
                             pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashLength, gapLength)),
                         ),
                         cornerRadius = CornerRadius(12.dp.toPx()),
                     )
-                }
-                .clickable(enabled = !isSubmitting) { /* FilePicker wired in Phase 5.7 */ }
+                }.clickable(enabled = !isSubmitting) { /* FilePicker wired in Phase 5.7 */ }
                 .padding(Padding.LARGE),
             contentAlignment = Alignment.Center,
         ) {
@@ -185,7 +187,8 @@ private fun FlyerSubmitForm(
                     tint = MaterialTheme.colorScheme.secondary,
                 )
                 Text(
-                    text = uiState.selectedFileName
+                    text =
+                    uiState.selectedFileName
                         ?: stringResource(Res.string.flyer_submit_screen_upload_hint),
                     textAlign = TextAlign.Center,
                 )

@@ -36,20 +36,15 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: releaseAll
-    - name: Load build artifact list
-      run: |
-        {
-          echo 'BUILD_FILES<<EOF'
-          cat build-artifacts.txt
-          echo EOF
-        } >> $GITHUB_ENV
     - name: Create Release
       uses: softprops/action-gh-release@v2
+    - name: Archive build artifacts
+      run: tar -czf build-artifacts.tar.gz -T build-artifacts.txt
     - name: Upload build artifacts for container builds
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
-        path: ${{ env.BUILD_FILES }}
+        path: build-artifacts.tar.gz
   integ:
     runs-on: self-hosted
     environment: "integ"
@@ -92,6 +87,8 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-artifacts
+    - name: Extract build artifacts
+      run: tar -xzf build-artifacts.tar.gz
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx

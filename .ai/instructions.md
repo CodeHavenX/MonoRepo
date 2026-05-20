@@ -1,5 +1,7 @@
 ## Architecture Guidelines
 
+Look at <project-root>/../wiki and ensure that this folder contains a git repo. This folder will contain our wiki and documentation. Without it, we will be missing a lot of crucial information. If the folder is not in place, request the user to checkout the wiki repo into that location.
+
 ### Back End
 
 Strict layering: **Controllers → Services → Datastores**
@@ -8,7 +10,7 @@ Strict layering: **Controllers → Services → Datastores**
 - **Services** (example: `edifikana/back-end/.../service/`): All business logic lives here.
 - **Datastores** (example: `edifikana/back-end/.../datastore/`): Optimized data access, minimal business logic.
 
-**For more in-depth information look at: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Architecture/back-end**
+**For more in-depth information look at: <project-root>/../wiki/Projects/Architecture/back-end**
 
 ### Front End
 
@@ -30,7 +32,7 @@ A test file `<Feature>ViewModelTest.kt` belongs in the `jvmTest` source set.
 
 **Navigation:** Uses `org.jetbrains.androidx.navigation:navigation-compose`. Each screen declares a `@Serializable data object <Feature>Destination : Destination()` and must be registered as a route in the relevant router.
 
-**For more in-depth information look at: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Architecture/front-end**
+**For more in-depth information look at: <project-root>/../wiki/Projects/Architecture/front-end**
 
 ## Repository Structure
 

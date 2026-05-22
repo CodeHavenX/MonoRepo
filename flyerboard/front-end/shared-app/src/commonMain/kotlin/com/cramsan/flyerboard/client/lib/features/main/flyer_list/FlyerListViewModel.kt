@@ -22,18 +22,19 @@ class FlyerListViewModel(dependencies: ViewModelDependencies, private val flyerM
     fun loadFlyers() {
         logI(TAG, "loadFlyers")
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isLoading = true, errorMessage = null) }
+            updateUiState { FlyerListUIState.Loading }
             flyerManager
                 .listFlyers()
                 .onSuccess { paginated ->
                     updateUiState {
-                        it.copy(
-                            isLoading = false,
-                            flyers = paginated.flyers,
-                        )
+                        if (paginated.flyers.isEmpty()) {
+                            FlyerListUIState.Empty
+                        } else {
+                            FlyerListUIState.Content(paginated.flyers)
+                        }
                     }
                 }.onFailure { error ->
-                    updateUiState { it.copy(isLoading = false, errorMessage = error.message) }
+                    updateUiState { FlyerListUIState.Error(error.message ?: "Unknown error") }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(
                             message = "Failed to load flyers: ${error.message}",

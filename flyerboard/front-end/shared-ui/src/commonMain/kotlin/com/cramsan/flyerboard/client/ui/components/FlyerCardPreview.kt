@@ -6,11 +6,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun FlyerCardWithExpiryPreview() =
-    AppTheme {
+private fun FlyerCardWithImageAndExpiryPreview() =
+    AppTheme(dynamicColor = false) {
         FlyerCard(
             title = "Community Yard Sale",
             description = "Everything must go! Furniture, clothes, books and more.",
+            imageUrl = null,
             expiresAt = "2026-05-01",
             onClick = {},
         )
@@ -19,7 +20,7 @@ private fun FlyerCardWithExpiryPreview() =
 @Preview
 @Composable
 private fun FlyerCardNoExpiryPreview() =
-    AppTheme {
+    AppTheme(dynamicColor = false) {
         FlyerCard(
             title = "Lost Cat – Please Help",
             description = "Orange tabby, answers to Mango. Last seen near Oak Street.",

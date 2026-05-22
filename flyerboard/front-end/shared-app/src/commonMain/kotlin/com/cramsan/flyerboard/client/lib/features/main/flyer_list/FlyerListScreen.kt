@@ -133,6 +133,7 @@ internal fun FlyerListContent(
                         FlyerCard(
                             title = flyer.title,
                             description = flyer.description,
+                            imageUrl = flyer.fileUrl,
                             expiresAt = flyer.expiresAt,
                             onClick = { onFlyerSelected(flyer) },
                         )

@@ -37,7 +37,18 @@ class SignUpViewModel(dependencies: ViewModelDependencies, private val authManag
     }
 
     /**
+     * Update the confirm password field value.
+     */
+    fun onConfirmPasswordChanged(confirmPassword: String) {
+        viewModelCoroutineScope.launch {
+            logD(TAG, "Confirm password changed")
+            updateUiState { it.copy(confirmPassword = confirmPassword) }
+        }
+    }
+
+    /**
      * Attempt to register a new account with the current email and password.
+     * Validates that all fields are filled and passwords match before calling auth.
      * On success, navigate to the main nav graph clearing the back stack.
      * On failure, show a snackbar with the error message.
      */
@@ -47,6 +58,20 @@ class SignUpViewModel(dependencies: ViewModelDependencies, private val authManag
             updateUiState { it.copy(isLoading = true) }
             val email = uiState.value.email
             val password = uiState.value.password
+            val confirmPassword = uiState.value.confirmPassword
+
+            if (email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+                updateUiState { it.copy(isLoading = false) }
+                emitWindowEvent(FlyerBoardWindowsEvent.ShowSnackbar(message = MSG_FILL_ALL_FIELDS))
+                return@launch
+            }
+
+            if (password != confirmPassword) {
+                updateUiState { it.copy(isLoading = false) }
+                emitWindowEvent(FlyerBoardWindowsEvent.ShowSnackbar(message = MSG_PASSWORD_MISMATCH))
+                return@launch
+            }
+
             authManager
                 .signUp(email, password)
                 .onFailure {
@@ -80,5 +105,7 @@ class SignUpViewModel(dependencies: ViewModelDependencies, private val authManag
 
     companion object {
         private const val TAG = "SignUpViewModel"
+        const val MSG_FILL_ALL_FIELDS = "Please fill in all fields."
+        const val MSG_PASSWORD_MISMATCH = "Passwords do not match."
     }
 }

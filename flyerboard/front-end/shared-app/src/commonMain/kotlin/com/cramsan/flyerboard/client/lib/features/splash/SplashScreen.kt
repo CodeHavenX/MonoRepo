@@ -1,16 +1,30 @@
 package com.cramsan.flyerboard.client.lib.features.splash
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.flyerboard.client.ui.theme.primaryContainerLight
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
+import com.cramsan.ui.theme.Padding
+import flyerboard_lib.Res
+import flyerboard_lib.splash_screen_tagline
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -53,11 +67,34 @@ internal fun SplashContent(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
+        modifier =
+            modifier
+            .fillMaxSize()
+            .background(primaryContainerLight),
+            contentAlignment = Alignment.Center,
     ) {
-        if (content.isLoading) {
-            CircularProgressIndicator()
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = "FLYERBOARD",
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+            )
+            Text(
+                text = stringResource(Res.string.splash_screen_tagline),
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White.copy(alpha = TAGLINE_ALPHA),
+            )
+            if (content.isLoading) {
+                Spacer(modifier = Modifier.height(Padding.LARGE))
+                CircularProgressIndicator(color = Color.White.copy(alpha = SPINNER_ALPHA))
+            }
         }
     }
 }
+
+private const val TAGLINE_ALPHA = 0.75f
+private const val SPINNER_ALPHA = 0.8f

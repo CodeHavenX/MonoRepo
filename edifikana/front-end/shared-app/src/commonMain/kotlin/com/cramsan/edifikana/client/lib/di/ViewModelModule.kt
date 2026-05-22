@@ -5,6 +5,8 @@ import com.cramsan.edifikana.client.lib.features.account.changepassword.ChangePa
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsViewModel
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.createneworg.CreateNewOrgViewModel
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg.SelectOrgViewModel
+import com.cramsan.edifikana.client.lib.features.auth.passwordreset.PasswordResetViewModel
+import com.cramsan.edifikana.client.lib.features.auth.passwordresetconfirmation.PasswordResetConfirmationViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInViewModel
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpViewModel
 import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationViewModel
@@ -32,6 +34,8 @@ internal val ViewModelModule =
             viewModelOf(::SignUpViewModel)
             viewModelOf(::SelectOrgViewModel)
             viewModelOf(::CreateNewOrgViewModel)
+            viewModelOf(::PasswordResetViewModel)
+            viewModelOf(::PasswordResetConfirmationViewModel)
             viewModelOf(::AccountViewModel)
             viewModelOf(::DebugViewModel)
             viewModelOf(::PropertyHomeViewModel)

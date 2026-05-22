@@ -125,6 +125,15 @@ class AuthManager(private val dependencies: ManagerDependencies, private val aut
         }
 
     /**
+     * Sends a password reset email to the given [email] address.
+     */
+    suspend fun sendPasswordReset(email: String): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "sendPasswordReset")
+            authService.passwordReset(email, null).getOrThrow()
+        }
+
+    /**
      * Check if a user exists with the provided [email].
      */
     suspend fun checkUserExists(email: String): Result<Boolean> =

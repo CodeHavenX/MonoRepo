@@ -95,6 +95,18 @@
     <string name="sign_in_screen_text_sign_in">Usar Contraseña</string>
     <string name="sign_in_screen_text_sign_in_password">Iniciar Sesión</string>
     <string name="sign_in_screen_text_sign_in_otp">Iniciar Sesión con OTP</string>
+    <string name="sign_in_screen_text_forgot_password">¿Olvidaste tu contraseña?</string>
+
+    <!-- Password reset screen -->
+    <string name="password_reset_screen_title">Restablecer Contraseña</string>
+    <string name="password_reset_screen_subtitle">Ingresa tu correo electrónico y te enviaremos un enlace de restablecimiento.</string>
+    <string name="password_reset_screen_send_button">Enviar Enlace</string>
+
+    <!-- Password reset confirmation screen -->
+    <string name="password_reset_confirmation_screen_title">Revisa tu Correo</string>
+    <string name="password_reset_confirmation_screen_message">Se envió un enlace de restablecimiento a %1$s. Revisa tu bandeja de entrada y sigue las instrucciones.</string>
+    <string name="password_reset_confirmation_screen_resend_button">Reenviar Enlace</string>
+    <string name="password_reset_confirmation_screen_back_to_sign_in">Volver al Inicio de Sesión</string>
 
     <!-- Sign up screen -->
     <string name="sign_up_screen_text_policy">Al crear una cuenta, acepto los Términos de Servicio y la Política de Privacidad de Edifikans.</string>

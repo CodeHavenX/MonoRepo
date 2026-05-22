@@ -38,4 +38,16 @@ sealed class AuthDestination : Destination {
      */
     @Serializable
     data object CreateNewOrgDestination : AuthDestination()
+
+    /**
+     * A class representing navigating to the password reset screen.
+     */
+    @Serializable
+    data class PasswordResetDestination(val prefillEmail: String = "") : AuthDestination()
+
+    /**
+     * A class representing navigating to the password reset confirmation screen.
+     */
+    @Serializable
+    data class PasswordResetConfirmationDestination(val userEmail: String) : AuthDestination()
 }

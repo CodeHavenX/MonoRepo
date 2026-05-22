@@ -6,6 +6,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.createneworg.CreateNewOrgScreen
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg.SelectOrgScreen
+import com.cramsan.edifikana.client.lib.features.auth.passwordreset.PasswordResetScreen
+import com.cramsan.edifikana.client.lib.features.auth.passwordresetconfirmation.PasswordResetConfirmationScreen
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInScreen
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpScreen
 import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationScreen
@@ -58,6 +60,18 @@ fun NavGraphBuilder.authNavGraphNavigation(
             typeMap = typeMap,
         ) {
             CreateNewOrgScreen()
+        }
+        composable(
+            AuthDestination.PasswordResetDestination::class,
+            typeMap = typeMap,
+        ) {
+            PasswordResetScreen(destination = it.toRoute())
+        }
+        composable(
+            AuthDestination.PasswordResetConfirmationDestination::class,
+            typeMap = typeMap,
+        ) {
+            PasswordResetConfirmationScreen(destination = it.toRoute())
         }
     }
 }

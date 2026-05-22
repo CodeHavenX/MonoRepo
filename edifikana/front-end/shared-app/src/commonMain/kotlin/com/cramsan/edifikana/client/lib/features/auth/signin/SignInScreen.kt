@@ -1,9 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,19 +8,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationUIState
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.ui.components.EdifikanaErrorMessages
 import com.cramsan.edifikana.client.ui.components.EdifikanaPasswordTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
@@ -34,10 +29,12 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import com.cramsan.ui.components.themetoggle.ThemeToggle
+import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
 import edifikana_lib.edifikana_string_email
 import edifikana_lib.edifikana_string_password
 import edifikana_lib.edifikana_string_sign_up
+import edifikana_lib.sign_in_screen_text_forgot_password
 import edifikana_lib.sign_in_screen_text_sign_in
 import edifikana_lib.sign_in_screen_text_sign_in_otp
 import org.jetbrains.compose.resources.stringResource
@@ -79,6 +76,7 @@ fun SignInScreen(
         onPWSignInClicked = { viewModel.signInWithPassword() },
         onSignInOtpClicked = { viewModel.signInWithOtp() },
         onSignUpClicked = { viewModel.navigateToSignUpPage() },
+        onForgotPasswordClicked = { viewModel.navigateToPasswordReset() },
         onInfoClicked = { viewModel.navigateToDebugPage() },
         onThemeSelected = { viewModel.changeSelectedTheme(it) },
     )
@@ -95,6 +93,7 @@ internal fun SignInContent(
     onPWSignInClicked: () -> Unit,
     onSignInOtpClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit,
     onInfoClicked: () -> Unit,
     onThemeSelected: (SelectedTheme) -> Unit,
 ) {
@@ -110,26 +109,10 @@ internal fun SignInContent(
         ) {
             ScreenLayout(
                 sectionContent = { modifier ->
-                    AnimatedContent(
-                        uiState.errorMessages,
+                    EdifikanaErrorMessages(
+                        messages = uiState.errorMessages,
                         modifier = modifier,
-                        transitionSpec = {
-                            fadeIn()
-                                .togetherWith(
-                                    fadeOut(),
-                                )
-                        },
-                    ) {
-                        if (!uiState.errorMessages.isNullOrEmpty()) {
-                            it?.forEach { errorMessage ->
-                                Text(
-                                    text = errorMessage,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.error,
-                                )
-                            }
-                        }
-                    }
+                    )
 
                     EdifikanaTextField(
                         value = uiState.email,
@@ -193,7 +176,16 @@ internal fun SignInContent(
                 modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = Padding.XX_LARGE),
+            )
+
+            EdifikanaTextButton(
+                text = stringResource(Res.string.sign_in_screen_text_forgot_password),
+                onClick = onForgotPasswordClicked,
+                modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = Padding.MEDIUM),
             )
 
             IconButton(

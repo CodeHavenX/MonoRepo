@@ -1,9 +1,5 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
@@ -25,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
+import com.cramsan.edifikana.client.ui.components.EdifikanaErrorMessages
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -101,26 +98,10 @@ internal fun SignUpContent(
         ScreenLayout(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
             sectionContent = { modifier ->
-                AnimatedContent(
-                    uiState.errorMessages,
+                EdifikanaErrorMessages(
+                    messages = uiState.errorMessages,
                     modifier = modifier,
-                    transitionSpec = {
-                        fadeIn()
-                            .togetherWith(
-                                fadeOut(),
-                            )
-                    },
-                ) {
-                    if (!uiState.errorMessages.isNullOrEmpty()) {
-                        it?.forEach { errorMessage ->
-                            Text(
-                                text = errorMessage,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                    }
-                }
+                )
 
                 EdifikanaTextField(
                     value = uiState.firstName,

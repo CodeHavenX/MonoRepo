@@ -300,6 +300,30 @@ class SignInViewModelTest : CoroutineTest() {
         }
     }
 
+    /**
+     * Test the [SignInViewModel.navigateToPasswordReset] method emits PasswordResetDestination with pre-filled email.
+     */
+    @Test
+    fun `test navigateToPasswordReset emits PasswordResetDestination with pre-filled email`() = runCoroutineTest {
+        // Arrange
+        val email = "user@example.com"
+        viewModel.changeUsernameValue(email)
+
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.navigateToPasswordReset()
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.PasswordResetDestination(prefillEmail = email)),
+                turbine.awaitItem(),
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
+    }
+
     @Test
     fun `test signInWithOtp redirects to SignUp page when email is not registered`() = runCoroutineTest {
         // Arrange

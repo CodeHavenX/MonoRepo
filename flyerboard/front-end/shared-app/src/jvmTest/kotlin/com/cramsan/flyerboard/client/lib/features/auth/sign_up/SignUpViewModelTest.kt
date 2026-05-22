@@ -59,6 +59,7 @@ class SignUpViewModelTest : CoroutineTest() {
             assertFalse(viewModel.uiState.value.isLoading)
             assertEquals("", viewModel.uiState.value.email)
             assertEquals("", viewModel.uiState.value.password)
+            assertEquals("", viewModel.uiState.value.confirmPassword)
         }
 
     @Test
@@ -78,6 +79,14 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
+    fun `onConfirmPasswordChanged updates confirmPassword in UIState`() =
+        runCoroutineTest {
+            viewModel.onConfirmPasswordChanged("mypassword")
+
+            assertEquals("mypassword", viewModel.uiState.value.confirmPassword)
+        }
+
+    @Test
     fun `signUp success navigates to main nav graph`() =
         runCoroutineTest {
             turbineScope {
@@ -86,6 +95,7 @@ class SignUpViewModelTest : CoroutineTest() {
 
                 viewModel.onEmailChanged("new@example.com")
                 viewModel.onPasswordChanged("pass123")
+                viewModel.onConfirmPasswordChanged("pass123")
                 viewModel.signUp()
 
                 coVerify { authManager.signUp("new@example.com", "pass123") }
@@ -112,6 +122,7 @@ class SignUpViewModelTest : CoroutineTest() {
 
                 viewModel.onEmailChanged("taken@example.com")
                 viewModel.onPasswordChanged("pass123")
+                viewModel.onConfirmPasswordChanged("pass123")
                 viewModel.signUp()
 
                 coVerify { authManager.signUp("taken@example.com", "pass123") }
@@ -119,6 +130,45 @@ class SignUpViewModelTest : CoroutineTest() {
 
                 val event = turbine.awaitItem()
                 assertTrue(event is FlyerBoardWindowsEvent.ShowSnackbar)
+                advanceUntilIdleAndAwaitComplete(turbine)
+            }
+        }
+
+    @Test
+    fun `signUp with blank email emits snackbar and does not call authManager`() =
+        runCoroutineTest {
+            turbineScope {
+                val turbine = windowEventBus.events.testIn(backgroundScope)
+
+                viewModel.onPasswordChanged("pass123")
+                viewModel.onConfirmPasswordChanged("pass123")
+                viewModel.signUp()
+
+                val event = turbine.awaitItem()
+                assertTrue(event is FlyerBoardWindowsEvent.ShowSnackbar)
+                assertEquals(SignUpViewModel.MSG_FILL_ALL_FIELDS, (event as FlyerBoardWindowsEvent.ShowSnackbar).message)
+                assertFalse(viewModel.uiState.value.isLoading)
+                coVerify(exactly = 0) { authManager.signUp(any(), any()) }
+                advanceUntilIdleAndAwaitComplete(turbine)
+            }
+        }
+
+    @Test
+    fun `signUp with mismatched passwords emits snackbar and does not call authManager`() =
+        runCoroutineTest {
+            turbineScope {
+                val turbine = windowEventBus.events.testIn(backgroundScope)
+
+                viewModel.onEmailChanged("user@example.com")
+                viewModel.onPasswordChanged("pass123")
+                viewModel.onConfirmPasswordChanged("different")
+                viewModel.signUp()
+
+                val event = turbine.awaitItem()
+                assertTrue(event is FlyerBoardWindowsEvent.ShowSnackbar)
+                assertEquals(SignUpViewModel.MSG_PASSWORD_MISMATCH, (event as FlyerBoardWindowsEvent.ShowSnackbar).message)
+                assertFalse(viewModel.uiState.value.isLoading)
+                coVerify(exactly = 0) { authManager.signUp(any(), any()) }
                 advanceUntilIdleAndAwaitComplete(turbine)
             }
         }

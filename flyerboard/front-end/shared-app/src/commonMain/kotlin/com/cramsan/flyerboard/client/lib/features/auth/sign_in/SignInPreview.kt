@@ -4,20 +4,12 @@ import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-/**
- * Preview for the Sign In screen.
- */
 @Preview
 @Composable
-private fun SignInScreenPreview() =
-    AppTheme {
+private fun SignInPreview() =
+    AppTheme(dynamicColor = false) {
         SignInContent(
-            uiState =
-            SignInUIState(
-                isLoading = false,
-                email = "user@example.com",
-                password = "",
-            ),
+            uiState = SignInUIState(isLoading = false, email = "", password = ""),
             onEmailChanged = {},
             onPasswordChanged = {},
             onSignInClicked = {},
@@ -25,20 +17,12 @@ private fun SignInScreenPreview() =
         )
     }
 
-/**
- * Preview for the Sign In screen in loading state.
- */
 @Preview
 @Composable
-private fun SignInScreenLoadingPreview() =
-    AppTheme {
+private fun SignInFilledPreview() =
+    AppTheme(dynamicColor = false) {
         SignInContent(
-            uiState =
-            SignInUIState(
-                isLoading = true,
-                email = "user@example.com",
-                password = "",
-            ),
+            uiState = SignInUIState(isLoading = false, email = "user@example.com", password = "••••••••"),
             onEmailChanged = {},
             onPasswordChanged = {},
             onSignInClicked = {},

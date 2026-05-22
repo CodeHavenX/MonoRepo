@@ -68,10 +68,10 @@ internal fun SplashContent(
 ) {
     Box(
         modifier =
-            modifier
+        modifier
             .fillMaxSize()
             .background(primaryContainerLight),
-            contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

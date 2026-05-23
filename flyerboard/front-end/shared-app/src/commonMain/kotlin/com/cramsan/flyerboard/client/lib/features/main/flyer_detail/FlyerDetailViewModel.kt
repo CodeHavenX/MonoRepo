@@ -21,20 +21,22 @@ class FlyerDetailViewModel(dependencies: ViewModelDependencies, private val flye
     fun loadFlyer(flyerIdValue: String) {
         logI(TAG, "loadFlyer: $flyerIdValue")
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isLoading = true) }
+            updateUiState { FlyerDetailUIState.Loading }
             flyerManager
                 .getFlyer(FlyerId(flyerIdValue))
                 .onSuccess { flyer ->
-                    updateUiState { it.copy(isLoading = false, flyer = flyer) }
                     if (flyer == null) {
+                        updateUiState { FlyerDetailUIState.NotFound }
                         emitWindowEvent(
                             FlyerBoardWindowsEvent.ShowSnackbar(
                                 message = "Flyer not found.",
                             ),
                         )
+                    } else {
+                        updateUiState { FlyerDetailUIState.Content(flyer) }
                     }
                 }.onFailure { error ->
-                    updateUiState { it.copy(isLoading = false) }
+                    updateUiState { FlyerDetailUIState.NotFound }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(
                             message = "Failed to load flyer: ${error.message}",

@@ -32,6 +32,8 @@
     <string name="flyer_detail_screen_navigate_back">Navigate back</string>
     <string name="flyer_detail_screen_expires_label">Expires:</string>
     <string name="flyer_detail_screen_not_found">Flyer not found.</string>
+    <string name="flyer_detail_screen_rejection_reason_label">Rejection reason:</string>
+    <string name="flyer_detail_screen_metadata_separator"> · </string>
     <string name="my_flyers_screen_title">My Flyers</string>
     <string name="my_flyers_screen_empty_message">You haven\'t posted any flyers yet.</string>
     <string name="my_flyers_screen_button_edit">Edit</string>

@@ -28,18 +28,19 @@ class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val 
     fun loadPendingFlyers() {
         logI(TAG, "loadPendingFlyers")
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isLoading = true, errorMessage = null) }
+            updateUiState { ModerationQueueUIState.Loading }
             flyerManager
                 .listPendingFlyers()
                 .onSuccess { paginated ->
                     updateUiState {
-                        it.copy(
-                            isLoading = false,
-                            pendingFlyers = paginated.flyers,
-                        )
+                        if (paginated.flyers.isEmpty()) {
+                            ModerationQueueUIState.Empty
+                        } else {
+                            ModerationQueueUIState.Content(flyers = paginated.flyers)
+                        }
                     }
                 }.onFailure { error ->
-                    updateUiState { it.copy(isLoading = false, errorMessage = error.message) }
+                    updateUiState { ModerationQueueUIState.Error }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(
                             message = "Failed to load moderation queue: ${error.message}",
@@ -58,6 +59,38 @@ class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val 
     }
 
     /**
+     * Show the rejection reason dialog for [flyerId].
+     */
+    fun onRejectTapped(flyerId: FlyerId) {
+        logI(TAG, "onRejectTapped: ${flyerId.flyerId}")
+        viewModelCoroutineScope.launch {
+            updateUiState { state ->
+                if (state is ModerationQueueUIState.Content) {
+                    state.copy(pendingRejectionFlyerId = flyerId)
+                } else {
+                    state
+                }
+            }
+        }
+    }
+
+    /**
+     * Dismiss the rejection reason dialog without rejecting.
+     */
+    fun onRejectDialogDismissed() {
+        logI(TAG, "onRejectDialogDismissed")
+        viewModelCoroutineScope.launch {
+            updateUiState { state ->
+                if (state is ModerationQueueUIState.Content) {
+                    state.copy(pendingRejectionFlyerId = null)
+                } else {
+                    state
+                }
+            }
+        }
+    }
+
+    /**
      * Approve the flyer identified by [flyerId] and refresh the list.
      */
     fun approveFlyer(flyerId: FlyerId) {
@@ -66,9 +99,7 @@ class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val 
             flyerManager
                 .moderate(flyerId, ACTION_APPROVE)
                 .onSuccess {
-                    emitWindowEvent(
-                        FlyerBoardWindowsEvent.ShowSnackbar(message = "Flyer approved."),
-                    )
+                    emitWindowEvent(FlyerBoardWindowsEvent.ShowSnackbar(message = "Flyer approved."))
                     loadPendingFlyers()
                 }.onFailure { error ->
                     emitWindowEvent(
@@ -81,17 +112,15 @@ class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val 
     }
 
     /**
-     * Reject the flyer identified by [flyerId] and refresh the list.
+     * Reject the flyer identified by [flyerId] with an optional [reason] and refresh the list.
      */
-    fun rejectFlyer(flyerId: FlyerId) {
+    fun rejectFlyer(flyerId: FlyerId, reason: String = "") {
         logI(TAG, "rejectFlyer: ${flyerId.flyerId}")
         viewModelCoroutineScope.launch {
             flyerManager
-                .moderate(flyerId, ACTION_REJECT)
+                .moderate(flyerId, ACTION_REJECT, reason = reason.ifEmpty { null })
                 .onSuccess {
-                    emitWindowEvent(
-                        FlyerBoardWindowsEvent.ShowSnackbar(message = "Flyer rejected."),
-                    )
+                    emitWindowEvent(FlyerBoardWindowsEvent.ShowSnackbar(message = "Flyer rejected."))
                     loadPendingFlyers()
                 }.onFailure { error ->
                     emitWindowEvent(

@@ -17,23 +17,24 @@ import kotlinx.coroutines.launch
 class ArchiveViewModel(dependencies: ViewModelDependencies, private val flyerManager: FlyerManager) :
     BaseViewModel<ArchiveEvent, ArchiveUIState>(dependencies, ArchiveUIState.Initial, TAG) {
     /**
-     * Load the archived flyers.
+     * Load archived flyers, optionally filtered by [query].
      */
-    fun loadFlyers() {
-        logI(TAG, "loadFlyers")
+    fun loadFlyers(query: String? = null) {
+        logI(TAG, "loadFlyers query=$query")
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isLoading = true, errorMessage = null) }
+            updateUiState { ArchiveUIState.Loading(query = query ?: "") }
             flyerManager
-                .listArchived()
+                .listArchived(query = query)
                 .onSuccess { paginated ->
                     updateUiState {
-                        it.copy(
-                            isLoading = false,
-                            flyers = paginated.flyers,
-                        )
+                        if (paginated.flyers.isEmpty()) {
+                            ArchiveUIState.Empty(query = query ?: "")
+                        } else {
+                            ArchiveUIState.Content(flyers = paginated.flyers, query = query ?: "")
+                        }
                     }
                 }.onFailure { error ->
-                    updateUiState { it.copy(isLoading = false, errorMessage = error.message) }
+                    updateUiState { ArchiveUIState.Error(query = query ?: "") }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.ShowSnackbar(
                             message = "Failed to load archive: ${error.message}",
@@ -44,11 +45,20 @@ class ArchiveViewModel(dependencies: ViewModelDependencies, private val flyerMan
     }
 
     /**
-     * Reload the archive list from the beginning.
+     * Reload the archive preserving the current search query.
      */
     fun refresh() {
         logI(TAG, "refresh")
-        loadFlyers()
+        val currentQuery = uiState.value.query.takeIf { it.isNotEmpty() }
+        loadFlyers(query = currentQuery)
+    }
+
+    /**
+     * Update the search query and reload results.
+     */
+    fun onQueryChanged(q: String) {
+        logI(TAG, "onQueryChanged q=$q")
+        loadFlyers(query = q.takeIf { it.isNotEmpty() })
     }
 
     /**

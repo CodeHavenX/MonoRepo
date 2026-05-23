@@ -15,11 +15,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.flyerboard.client.ui.theme.primaryContainerLight
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
@@ -70,7 +68,7 @@ internal fun SplashContent(
         modifier =
         modifier
             .fillMaxSize()
-            .background(primaryContainerLight),
+            .background(MaterialTheme.colorScheme.primaryContainer),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -81,16 +79,18 @@ internal fun SplashContent(
                 text = "FLYERBOARD",
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
             Text(
                 text = stringResource(Res.string.splash_screen_tagline),
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White.copy(alpha = TAGLINE_ALPHA),
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = TAGLINE_ALPHA),
             )
             if (content.isLoading) {
                 Spacer(modifier = Modifier.height(Padding.LARGE))
-                CircularProgressIndicator(color = Color.White.copy(alpha = SPINNER_ALPHA))
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = SPINNER_ALPHA),
+                )
             }
         }
     }

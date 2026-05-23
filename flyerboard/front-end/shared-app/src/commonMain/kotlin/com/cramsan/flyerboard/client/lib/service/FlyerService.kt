@@ -82,7 +82,7 @@ interface FlyerService {
      * Applies a moderation [action] ("approve" or "reject") to [flyerId].
      * Requires admin authentication.
      */
-    suspend fun moderate(flyerId: FlyerId, action: String): Result<FlyerModel>
+    suspend fun moderate(flyerId: FlyerId, action: String, reason: String? = null): Result<FlyerModel>
 
     companion object {
         /** Default page size for paginated flyer requests. */

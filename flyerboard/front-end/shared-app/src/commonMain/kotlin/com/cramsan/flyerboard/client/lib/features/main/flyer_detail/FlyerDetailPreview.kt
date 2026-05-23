@@ -8,65 +8,70 @@ import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private val sampleFlyer =
-    FlyerModel(
-        id = FlyerId("1"),
-        title = "Community Yard Sale",
-        description = "Everything must go! Furniture, clothes, books and more. Come early for the best deals.",
-        fileUrl = null,
-        status = FlyerStatus.APPROVED,
-        expiresAt = "2026-05-01",
-        uploaderId = UserId("user1"),
-        createdAt = "2026-04-01",
-        updatedAt = "2026-04-01",
-    )
-
-/**
- * Preview for the Flyer Detail screen with content.
- */
 @Preview
 @Composable
-private fun FlyerDetailScreenPreview() =
-    AppTheme {
+private fun FlyerDetailLoadingPreview() =
+    AppTheme(dynamicColor = false) {
+        FlyerDetailContent(
+            uiState = FlyerDetailUIState.Loading,
+            onNavigateBack = {},
+        )
+    }
+
+@Preview
+@Composable
+private fun FlyerDetailNotFoundPreview() =
+    AppTheme(dynamicColor = false) {
+        FlyerDetailContent(
+            uiState = FlyerDetailUIState.NotFound,
+            onNavigateBack = {},
+        )
+    }
+
+@Preview
+@Composable
+private fun FlyerDetailApprovedPreview() =
+    AppTheme(dynamicColor = false) {
         FlyerDetailContent(
             uiState =
-            FlyerDetailUIState(
-                isLoading = false,
-                flyer = sampleFlyer,
+            FlyerDetailUIState.Content(
+                flyer =
+                FlyerModel(
+                    id = FlyerId("1"),
+                    title = "Community Cleanup Day — Riverside Park",
+                    description = "Join us for our monthly community cleanup at Riverside Park! We'll be gathering near the north entrance to pick up litter, trim overgrown paths, and ensure our favorite local spot stays beautiful for everyone.",
+                    fileUrl = null,
+                    status = FlyerStatus.APPROVED,
+                    expiresAt = "May 1",
+                    uploaderId = UserId("user1"),
+                    createdAt = "2026-04-17",
+                    updatedAt = "2026-04-17",
+                ),
             ),
             onNavigateBack = {},
         )
     }
 
-/**
- * Preview for the Flyer Detail screen in loading state.
- */
 @Preview
 @Composable
-private fun FlyerDetailScreenLoadingPreview() =
-    AppTheme {
+private fun FlyerDetailRejectedPreview() =
+    AppTheme(dynamicColor = false) {
         FlyerDetailContent(
             uiState =
-            FlyerDetailUIState(
-                isLoading = true,
-                flyer = null,
-            ),
-            onNavigateBack = {},
-        )
-    }
-
-/**
- * Preview for the Flyer Detail screen when flyer is not found.
- */
-@Preview
-@Composable
-private fun FlyerDetailScreenNotFoundPreview() =
-    AppTheme {
-        FlyerDetailContent(
-            uiState =
-            FlyerDetailUIState(
-                isLoading = false,
-                flyer = null,
+            FlyerDetailUIState.Content(
+                flyer =
+                FlyerModel(
+                    id = FlyerId("2"),
+                    title = "Garage Sale This Weekend",
+                    description = "Come find a bargain at 42 Oak Street. Furniture, clothes, tools and more.",
+                    fileUrl = null,
+                    status = FlyerStatus.REJECTED,
+                    expiresAt = null,
+                    uploaderId = UserId("user2"),
+                    createdAt = "2026-04-20",
+                    updatedAt = "2026-04-21",
+                    rejectionReason = "Content does not meet community guidelines.",
+                ),
             ),
             onNavigateBack = {},
         )

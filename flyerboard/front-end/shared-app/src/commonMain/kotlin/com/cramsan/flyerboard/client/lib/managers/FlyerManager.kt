@@ -114,10 +114,10 @@ class FlyerManager(private val dependencies: ManagerDependencies, private val fl
      * Applies a moderation [action] ("approve" or "reject") to [flyerId].
      * Requires admin authentication.
      */
-    suspend fun moderate(flyerId: FlyerId, action: String): Result<FlyerModel> =
+    suspend fun moderate(flyerId: FlyerId, action: String, reason: String? = null): Result<FlyerModel> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "moderate")
-            flyerService.moderate(flyerId, action).getOrThrow()
+            flyerService.moderate(flyerId, action, reason).getOrThrow()
         }
 
     companion object {

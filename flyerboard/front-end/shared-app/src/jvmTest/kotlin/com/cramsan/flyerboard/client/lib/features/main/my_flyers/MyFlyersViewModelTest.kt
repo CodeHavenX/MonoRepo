@@ -26,8 +26,6 @@ import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class MyFlyersViewModelTest : CoroutineTest() {
@@ -59,19 +57,14 @@ class MyFlyersViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial UIState is correct`() =
+    fun `initial UIState is Loading`() =
         runCoroutineTest {
             assertEquals(MyFlyersUIState.Initial, viewModel.uiState.value)
-            assertFalse(viewModel.uiState.value.isLoading)
-            assertTrue(
-                viewModel.uiState.value.flyers
-                    .isEmpty(),
-            )
-            assertNull(viewModel.uiState.value.errorMessage)
+            assertTrue(viewModel.uiState.value is MyFlyersUIState.Loading)
         }
 
     @Test
-    fun `loadFlyers success updates UIState with user flyers`() =
+    fun `loadFlyers success updates UIState to Content`() =
         runCoroutineTest {
             val flyers = listOf(makeFlyerModel("1", FlyerStatus.PENDING), makeFlyerModel("2", FlyerStatus.APPROVED))
             val paginated = PaginatedFlyerModel(flyers = flyers, total = 2, offset = 0, limit = 20)
@@ -80,13 +73,24 @@ class MyFlyersViewModelTest : CoroutineTest() {
             viewModel.loadFlyers()
 
             coVerify { flyerManager.listMyFlyers() }
-            assertEquals(2, viewModel.uiState.value.flyers.size)
-            assertFalse(viewModel.uiState.value.isLoading)
-            assertNull(viewModel.uiState.value.errorMessage)
+            val state = viewModel.uiState.value
+            assertTrue(state is MyFlyersUIState.Content)
+            assertEquals(2, state.flyers.size)
         }
 
     @Test
-    fun `loadFlyers failure sets errorMessage and emits snackbar`() =
+    fun `loadFlyers success with empty list transitions to Empty`() =
+        runCoroutineTest {
+            val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
+            coEvery { flyerManager.listMyFlyers() } returns Result.success(paginated)
+
+            viewModel.loadFlyers()
+
+            assertTrue(viewModel.uiState.value is MyFlyersUIState.Empty)
+        }
+
+    @Test
+    fun `loadFlyers failure transitions to Error and emits snackbar`() =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -95,13 +99,23 @@ class MyFlyersViewModelTest : CoroutineTest() {
                 viewModel.loadFlyers()
 
                 coVerify { flyerManager.listMyFlyers() }
-                assertEquals("Unauthorized", viewModel.uiState.value.errorMessage)
-                assertFalse(viewModel.uiState.value.isLoading)
+                assertTrue(viewModel.uiState.value is MyFlyersUIState.Error)
 
                 val event = turbine.awaitItem()
                 assertTrue(event is FlyerBoardWindowsEvent.ShowSnackbar)
                 advanceUntilIdleAndAwaitComplete(turbine)
             }
+        }
+
+    @Test
+    fun `refresh calls loadFlyers`() =
+        runCoroutineTest {
+            val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
+            coEvery { flyerManager.listMyFlyers() } returns Result.success(paginated)
+
+            viewModel.refresh()
+
+            coVerify { flyerManager.listMyFlyers() }
         }
 
     @Test
@@ -140,33 +154,6 @@ class MyFlyersViewModelTest : CoroutineTest() {
                 )
                 advanceUntilIdleAndAwaitComplete(turbine)
             }
-        }
-
-    @Test
-    fun `refresh calls loadFlyers`() =
-        runCoroutineTest {
-            val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
-            coEvery { flyerManager.listMyFlyers() } returns Result.success(paginated)
-
-            viewModel.refresh()
-
-            coVerify { flyerManager.listMyFlyers() }
-        }
-
-    @Test
-    fun `loadFlyers success with empty list updates UIState`() =
-        runCoroutineTest {
-            val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
-            coEvery { flyerManager.listMyFlyers() } returns Result.success(paginated)
-
-            viewModel.loadFlyers()
-
-            assertTrue(
-                viewModel.uiState.value.flyers
-                    .isEmpty(),
-            )
-            assertFalse(viewModel.uiState.value.isLoading)
-            assertNull(viewModel.uiState.value.errorMessage)
         }
 
     @Test

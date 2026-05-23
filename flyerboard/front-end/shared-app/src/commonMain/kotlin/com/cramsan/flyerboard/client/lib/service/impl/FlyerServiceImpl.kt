@@ -96,12 +96,12 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
                 .toPaginatedFlyerModel()
         }
 
-    override suspend fun moderate(flyerId: FlyerId, action: String): Result<FlyerModel> =
+    override suspend fun moderate(flyerId: FlyerId, action: String, reason: String?): Result<FlyerModel> =
         runSuspendCatching(TAG) {
             ModerationApi.moderate
                 .buildRequest(
                     flyerId,
-                    ModerationActionNetworkRequest(action = action),
+                    ModerationActionNetworkRequest(action = action, reason = reason),
                 ).execute(http, authHeader())
                 .toFlyerModel()
         }

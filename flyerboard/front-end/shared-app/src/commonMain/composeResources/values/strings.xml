@@ -47,6 +47,10 @@
     <string name="moderation_queue_screen_button_approve">Approve</string>
     <string name="moderation_queue_screen_button_reject">Reject</string>
     <string name="moderation_queue_screen_navigate_back">Navigate back</string>
+    <string name="moderation_queue_screen_reject_dialog_title">Reject Flyer</string>
+    <string name="moderation_queue_screen_reject_reason_label">Reason (optional)</string>
+    <string name="moderation_queue_screen_reject_dialog_confirm">Reject</string>
+    <string name="moderation_queue_screen_reject_dialog_cancel">Cancel</string>
     <string name="flyer_status_pending">Pending</string>
     <string name="flyer_status_approved">Approved</string>
     <string name="flyer_status_rejected">Rejected</string>

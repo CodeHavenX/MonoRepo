@@ -41,11 +41,11 @@ fun FlyerCardWithStatus(
     ) {
         Box(
             modifier =
-                Modifier
+            Modifier
                 .fillMaxWidth()
                 .height(Padding.XX_SMALL)
                 .background(statusBorderColor(status)),
-                )
+        )
         Column(
             modifier = Modifier.padding(Padding.MEDIUM),
             verticalArrangement = Arrangement.spacedBy(Padding.XX_SMALL),

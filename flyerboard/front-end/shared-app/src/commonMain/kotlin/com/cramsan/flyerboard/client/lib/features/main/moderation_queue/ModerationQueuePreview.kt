@@ -34,65 +34,66 @@ private val samplePendingFlyers =
         ),
     )
 
-/**
- * Preview for the Moderation Queue screen with content.
- */
 @Preview
 @Composable
-private fun ModerationQueueScreenPreview() =
-    AppTheme {
+private fun ModerationQueueLoadingPreview() =
+    AppTheme(dynamicColor = false) {
         ModerationQueueContent(
-            uiState =
-            ModerationQueueUIState(
-                isLoading = false,
-                pendingFlyers = samplePendingFlyers,
-                errorMessage = null,
-            ),
+            uiState = ModerationQueueUIState.Loading,
             onNavigateBack = {},
             onRefresh = {},
             onApprove = {},
-            onReject = {},
+            onRejectTapped = {},
+            onConfirmReject = { _, _ -> },
+            onDismissRejectDialog = {},
         )
     }
 
-/**
- * Preview for the Moderation Queue screen in loading state.
- */
 @Preview
 @Composable
-private fun ModerationQueueScreenLoadingPreview() =
-    AppTheme {
+private fun ModerationQueueEmptyPreview() =
+    AppTheme(dynamicColor = false) {
         ModerationQueueContent(
-            uiState =
-            ModerationQueueUIState(
-                isLoading = true,
-                pendingFlyers = emptyList(),
-                errorMessage = null,
-            ),
+            uiState = ModerationQueueUIState.Empty,
             onNavigateBack = {},
             onRefresh = {},
             onApprove = {},
-            onReject = {},
+            onRejectTapped = {},
+            onConfirmReject = { _, _ -> },
+            onDismissRejectDialog = {},
         )
     }
 
-/**
- * Preview for the Moderation Queue screen in empty state.
- */
 @Preview
 @Composable
-private fun ModerationQueueScreenEmptyPreview() =
-    AppTheme {
+private fun ModerationQueueWithFlyersPreview() =
+    AppTheme(dynamicColor = false) {
+        ModerationQueueContent(
+            uiState = ModerationQueueUIState.Content(flyers = samplePendingFlyers),
+            onNavigateBack = {},
+            onRefresh = {},
+            onApprove = {},
+            onRejectTapped = {},
+            onConfirmReject = { _, _ -> },
+            onDismissRejectDialog = {},
+        )
+    }
+
+@Preview
+@Composable
+private fun ModerationQueueRejectDialogPreview() =
+    AppTheme(dynamicColor = false) {
         ModerationQueueContent(
             uiState =
-            ModerationQueueUIState(
-                isLoading = false,
-                pendingFlyers = emptyList(),
-                errorMessage = null,
+            ModerationQueueUIState.Content(
+                flyers = samplePendingFlyers,
+                pendingRejectionFlyerId = FlyerId("1"),
             ),
             onNavigateBack = {},
             onRefresh = {},
             onApprove = {},
-            onReject = {},
+            onRejectTapped = {},
+            onConfirmReject = { _, _ -> },
+            onDismissRejectDialog = {},
         )
     }

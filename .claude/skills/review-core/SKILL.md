@@ -73,6 +73,11 @@ Remediation: add a test in the `jvmTest` (or `test`) source set using MockK and 
 Test data must use named constants or clearly named variables, not bare string/integer literals, so the test communicates intent.
 Remediation: extract the literal into a named `val` at the top of the test class or companion object.
 
+### Build Tools
+
+Create a subagent to run the `release` task for the modified components. This will trigger the compiler, linter and static analyzer to run and generate a report.
+Gather the final result and the list of errors reported.
+
 ## Step 3 — Produce output
 
 Read `.claude/skills/_shared/output-format.md` and follow those instructions.

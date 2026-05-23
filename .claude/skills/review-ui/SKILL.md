@@ -120,6 +120,11 @@ Remediation: remove the duplicate, place the canonical version in the appropriat
 Padding, shape, color, and typography values must come from the design-system theme tokens (e.g. `MaterialTheme.spacing`, `MaterialTheme.shapes`, `MaterialTheme.colorScheme`, `MaterialTheme.typography`, or project-specific equivalents such as `FlyerBoardColors`). Hard-coded literals (`16.dp`, `Color(0xFF...)`, `12.sp`, `RoundedCornerShape(8.dp)`) are violations unless the value is a one-off structural layout detail with no design-token equivalent.
 Remediation: replace the hard-coded literal with the appropriate theme token. If no token exists for the value, add one to the shared design-system definition rather than leaving a bare literal in the composable.
 
+### Build Tools
+
+Create a subagent to run the `release` task for the modified components. This will trigger the compiler, linter and static analyzer to run and generate a report.
+Gather the final result and the list of errors reported.
+
 ## Step 3 — Produce output
 
 Read `.claude/skills/_shared/output-format.md` and follow those instructions.

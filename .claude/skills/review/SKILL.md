@@ -1,10 +1,10 @@
 ---
-name: code-quality
+name: review
 description: "Run a full code quality review across any scope: auto-detects front-end, back-end, and framework code and applies all relevant rule sets. Use when asked to review code quality, check for violations, or audit a module/feature/PR."
 allowed-tools: Read, Glob, Grep, Bash
 ---
 
-# code-quality — Full Code Quality Orchestrator
+# review — Full Code Quality Orchestrator
 
 ## Purpose
 Run all applicable code quality rule sets against a given scope and produce one unified, prioritized findings report.
@@ -45,6 +45,11 @@ Read `.claude/skills/review-be/SKILL.md` — apply all rules under "Architecture
 ### Core rules (Core category files)
 
 Read `.claude/skills/review-core/SKILL.md` — apply all rules under "Coroutine and threading rules", "API design rules", "Module boundary rules", and "Testing rules" to Core files. Elevate G1 to P0 for core files.
+
+### Build Tools
+
+Create a subagent to run the `release` task for the modified components. This will trigger the compiler, linter and static analyzer to run and generate a report. 
+Gather the final result and the list of errors reported.
 
 ## Step 4 — Produce output
 

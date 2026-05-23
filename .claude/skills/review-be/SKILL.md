@@ -78,6 +78,12 @@ Remediation: create the missing test file.
 Service tests that interact with data must use a real or in-memory database, not a mocked Datastore, to catch migration mismatches.
 Remediation: replace mock with a real test database or integration test setup.
 
+### Build Tools
+
+Create a subagent to run the `release` task for the modified components. This will trigger the compiler, linter and static analyzer to run and generate a report.
+Gather the final result and the list of errors reported.
+
+
 ## Step 3 — Produce output
 
 Read `.claude/skills/_shared/output-format.md` and follow those instructions.

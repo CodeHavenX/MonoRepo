@@ -13,7 +13,7 @@
     <string name="sign_in_screen_button_sign_in">Sign In</string>
     <string name="sign_in_screen_no_account">Don’t have an account?</string>
     <string name="sign_in_screen_sign_up_link">Sign Up</string>
-    <string name="sign_in_screen_button_sign_up">Don\'t have an account? Sign Up</string>
+    <string name="sign_in_screen_button_sign_up">Don't have an account? Sign Up</string>
     <string name="sign_up_screen_title">Join the board</string>
     <string name="sign_up_screen_subtitle">Create your account</string>
     <string name="sign_up_screen_label_email">Email</string>
@@ -35,7 +35,7 @@
     <string name="flyer_detail_screen_rejection_reason_label">Rejection reason:</string>
     <string name="flyer_detail_screen_metadata_separator"> · </string>
     <string name="my_flyers_screen_title">My Flyers</string>
-    <string name="my_flyers_screen_empty_message">You haven\'t posted any flyers yet.</string>
+    <string name="my_flyers_screen_empty_message">You haven't posted any flyers yet.</string>
     <string name="my_flyers_screen_button_edit">Edit</string>
     <string name="my_flyers_screen_navigate_back">Navigate back</string>
     <string name="archive_screen_title">Archive</string>

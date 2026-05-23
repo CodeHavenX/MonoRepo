@@ -8,7 +8,7 @@ import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private val sampleFlyers =
+private val mixedFlyers =
     listOf(
         FlyerModel(
             id = FlyerId("1"),
@@ -34,6 +34,17 @@ private val sampleFlyers =
         ),
         FlyerModel(
             id = FlyerId("3"),
+            title = "Rejected Flyer",
+            description = "This flyer was rejected by a moderator.",
+            fileUrl = null,
+            status = FlyerStatus.REJECTED,
+            expiresAt = null,
+            uploaderId = UserId("user1"),
+            createdAt = "2026-04-12",
+            updatedAt = "2026-04-13",
+        ),
+        FlyerModel(
+            id = FlyerId("4"),
             title = "Old Event Flyer",
             description = "This event has already passed.",
             fileUrl = null,
@@ -45,20 +56,38 @@ private val sampleFlyers =
         ),
     )
 
-/**
- * Preview for the My Flyers screen with content.
- */
+private val archivedOnlyFlyers =
+    listOf(
+        FlyerModel(
+            id = FlyerId("5"),
+            title = "Spring Clean-Up Drive",
+            description = "Neighbourhood spring clean-up. Come join us!",
+            fileUrl = null,
+            status = FlyerStatus.ARCHIVED,
+            expiresAt = "2026-03-15",
+            uploaderId = UserId("user1"),
+            createdAt = "2026-03-01",
+            updatedAt = "2026-03-16",
+        ),
+        FlyerModel(
+            id = FlyerId("6"),
+            title = "Block Party 2025",
+            description = "Annual block party — food, games, and live music.",
+            fileUrl = null,
+            status = FlyerStatus.ARCHIVED,
+            expiresAt = "2025-08-20",
+            uploaderId = UserId("user1"),
+            createdAt = "2025-08-01",
+            updatedAt = "2025-08-21",
+        ),
+    )
+
 @Preview
 @Composable
-private fun MyFlyersScreenPreview() =
-    AppTheme {
+private fun MyFlyersLoadingPreview() =
+    AppTheme(dynamicColor = false) {
         MyFlyersContent(
-            uiState =
-            MyFlyersUIState(
-                isLoading = false,
-                flyers = sampleFlyers,
-                errorMessage = null,
-            ),
+            uiState = MyFlyersUIState.Loading,
             onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},
@@ -66,20 +95,12 @@ private fun MyFlyersScreenPreview() =
         )
     }
 
-/**
- * Preview for the My Flyers screen in loading state.
- */
 @Preview
 @Composable
-private fun MyFlyersScreenLoadingPreview() =
-    AppTheme {
+private fun MyFlyersEmptyPreview() =
+    AppTheme(dynamicColor = false) {
         MyFlyersContent(
-            uiState =
-            MyFlyersUIState(
-                isLoading = true,
-                flyers = emptyList(),
-                errorMessage = null,
-            ),
+            uiState = MyFlyersUIState.Empty,
             onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},
@@ -87,20 +108,25 @@ private fun MyFlyersScreenLoadingPreview() =
         )
     }
 
-/**
- * Preview for the My Flyers screen in empty state.
- */
 @Preview
 @Composable
-private fun MyFlyersScreenEmptyPreview() =
-    AppTheme {
+private fun MyFlyersWithFlyersPreview() =
+    AppTheme(dynamicColor = false) {
         MyFlyersContent(
-            uiState =
-            MyFlyersUIState(
-                isLoading = false,
-                flyers = emptyList(),
-                errorMessage = null,
-            ),
+            uiState = MyFlyersUIState.Content(flyers = mixedFlyers),
+            onNavigateBack = {},
+            onRefresh = {},
+            onFlyerSelected = {},
+            onEditFlyer = {},
+        )
+    }
+
+@Preview
+@Composable
+private fun MyFlyersArchivedOnlyPreview() =
+    AppTheme(dynamicColor = false) {
+        MyFlyersContent(
+            uiState = MyFlyersUIState.Content(flyers = archivedOnlyFlyers),
             onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},

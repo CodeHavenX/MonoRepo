@@ -5,4 +5,6 @@ import com.cramsan.framework.core.compose.ViewModelUIState
 /**
  * Main Menu UI state.
  */
-data object MainMenuIState : ViewModelUIState
+data object MainMenuUIState : ViewModelUIState {
+    val Initial: MainMenuUIState get() = this
+}

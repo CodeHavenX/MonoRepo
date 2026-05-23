@@ -70,6 +70,12 @@ kotlin {
             }
         }
 
+        jvmTest {
+            dependencies {
+                implementation(project(":framework:test"))
+            }
+        }
+
         wasmJsMain {
             dependencies {
             }

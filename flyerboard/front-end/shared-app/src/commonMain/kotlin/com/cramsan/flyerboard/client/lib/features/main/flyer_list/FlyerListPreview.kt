@@ -34,58 +34,46 @@ private val sampleFlyers =
         ),
     )
 
-/**
- * Preview for the Flyer List screen with content.
- */
 @Preview
 @Composable
 private fun FlyerListScreenPreview() =
-    AppTheme {
+    AppTheme(dynamicColor = false) {
         FlyerListContent(
-            uiState =
-            FlyerListUIState(
-                isLoading = false,
-                flyers = sampleFlyers,
-                errorMessage = null,
-            ),
+            uiState = FlyerListUIState.Content(flyers = sampleFlyers),
             onRefresh = {},
             onFlyerSelected = {},
         )
     }
 
-/**
- * Preview for the Flyer List screen in loading state.
- */
+@Preview
+@Composable
+private fun FlyerListScreenAuthenticatedPreview() =
+    AppTheme(dynamicColor = false) {
+        FlyerListContent(
+            uiState = FlyerListUIState.Content(flyers = sampleFlyers),
+            isAuthenticated = true,
+            onRefresh = {},
+            onFlyerSelected = {},
+        )
+    }
+
 @Preview
 @Composable
 private fun FlyerListScreenLoadingPreview() =
-    AppTheme {
+    AppTheme(dynamicColor = false) {
         FlyerListContent(
-            uiState =
-            FlyerListUIState(
-                isLoading = true,
-                flyers = emptyList(),
-                errorMessage = null,
-            ),
+            uiState = FlyerListUIState.Loading,
             onRefresh = {},
             onFlyerSelected = {},
         )
     }
 
-/**
- * Preview for the Flyer List screen in empty state.
- */
 @Preview
 @Composable
 private fun FlyerListScreenEmptyPreview() =
-    AppTheme {
+    AppTheme(dynamicColor = false) {
         FlyerListContent(
-            uiState =
-            FlyerListUIState(
-                isLoading = false,
-                flyers = emptyList(),
-                errorMessage = null,
-            ),
+            uiState = FlyerListUIState.Empty,
             onRefresh = {},
             onFlyerSelected = {},
         )

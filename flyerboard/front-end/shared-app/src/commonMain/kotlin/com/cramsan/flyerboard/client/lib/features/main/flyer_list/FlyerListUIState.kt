@@ -6,14 +6,20 @@ import com.cramsan.framework.core.compose.ViewModelUIState
 /**
  * UI state for the Flyer List screen.
  */
-data class FlyerListUIState(val isLoading: Boolean, val flyers: List<FlyerModel>, val errorMessage: String?) :
-    ViewModelUIState {
+sealed class FlyerListUIState : ViewModelUIState {
+    /** Flyers are being fetched. */
+    data object Loading : FlyerListUIState()
+
+    /** Flyers loaded successfully with at least one item. */
+    data class Content(val flyers: List<FlyerModel>) : FlyerListUIState()
+
+    /** Flyers loaded successfully but the list is empty. */
+    data object Empty : FlyerListUIState()
+
+    /** Loading failed; detail is shown in a snackbar. */
+    data class Error(val message: String) : FlyerListUIState()
+
     companion object {
-        val Initial =
-            FlyerListUIState(
-                isLoading = false,
-                flyers = emptyList(),
-                errorMessage = null,
-            )
+        val Initial: FlyerListUIState = Loading
     }
 }

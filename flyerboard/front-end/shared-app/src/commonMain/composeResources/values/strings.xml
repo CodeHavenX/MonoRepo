@@ -40,6 +40,7 @@
     <string name="my_flyers_screen_navigate_back">Navigate back</string>
     <string name="archive_screen_title">Archive</string>
     <string name="archive_screen_empty_message">No archived flyers.</string>
+    <string name="archive_screen_search_placeholder">Search archive…</string>
     <string name="archive_screen_navigate_back">Navigate back</string>
     <string name="moderation_queue_screen_title">Moderation Queue</string>
     <string name="moderation_queue_screen_empty_message">No flyers pending moderation.</string>

@@ -26,8 +26,6 @@ import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ArchiveViewModelTest : CoroutineTest() {
@@ -59,19 +57,15 @@ class ArchiveViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial UIState is correct`() =
+    fun `initial UIState is Loading with empty query`() =
         runCoroutineTest {
             assertEquals(ArchiveUIState.Initial, viewModel.uiState.value)
-            assertFalse(viewModel.uiState.value.isLoading)
-            assertTrue(
-                viewModel.uiState.value.flyers
-                    .isEmpty(),
-            )
-            assertNull(viewModel.uiState.value.errorMessage)
+            assertTrue(viewModel.uiState.value is ArchiveUIState.Loading)
+            assertEquals("", viewModel.uiState.value.query)
         }
 
     @Test
-    fun `loadFlyers success updates UIState with archived flyers`() =
+    fun `loadFlyers success updates UIState to Content`() =
         runCoroutineTest {
             val flyers = listOf(makeFlyerModel("a1"), makeFlyerModel("a2"), makeFlyerModel("a3"))
             val paginated = PaginatedFlyerModel(flyers = flyers, total = 3, offset = 0, limit = 20)
@@ -80,13 +74,24 @@ class ArchiveViewModelTest : CoroutineTest() {
             viewModel.loadFlyers()
 
             coVerify { flyerManager.listArchived() }
-            assertEquals(3, viewModel.uiState.value.flyers.size)
-            assertFalse(viewModel.uiState.value.isLoading)
-            assertNull(viewModel.uiState.value.errorMessage)
+            val state = viewModel.uiState.value
+            assertTrue(state is ArchiveUIState.Content)
+            assertEquals(3, state.flyers.size)
         }
 
     @Test
-    fun `loadFlyers failure sets errorMessage and emits snackbar`() =
+    fun `loadFlyers with empty results transitions to Empty`() =
+        runCoroutineTest {
+            val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
+            coEvery { flyerManager.listArchived() } returns Result.success(paginated)
+
+            viewModel.loadFlyers()
+
+            assertTrue(viewModel.uiState.value is ArchiveUIState.Empty)
+        }
+
+    @Test
+    fun `loadFlyers failure transitions to Error and emits snackbar`() =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -95,8 +100,7 @@ class ArchiveViewModelTest : CoroutineTest() {
                 viewModel.loadFlyers()
 
                 coVerify { flyerManager.listArchived() }
-                assertEquals("Server error", viewModel.uiState.value.errorMessage)
-                assertFalse(viewModel.uiState.value.isLoading)
+                assertTrue(viewModel.uiState.value is ArchiveUIState.Error)
 
                 val event = turbine.awaitItem()
                 assertTrue(event is FlyerBoardWindowsEvent.ShowSnackbar)
@@ -105,7 +109,7 @@ class ArchiveViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `refresh calls loadFlyers`() =
+    fun `refresh calls loadFlyers preserving current query`() =
         runCoroutineTest {
             val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
             coEvery { flyerManager.listArchived() } returns Result.success(paginated)
@@ -113,6 +117,33 @@ class ArchiveViewModelTest : CoroutineTest() {
             viewModel.refresh()
 
             coVerify { flyerManager.listArchived() }
+        }
+
+    @Test
+    fun `onQueryChanged with non-empty query updates state and calls listArchived with query`() =
+        runCoroutineTest {
+            val flyers = listOf(makeFlyerModel("a1"))
+            val paginated = PaginatedFlyerModel(flyers = flyers, total = 1, offset = 0, limit = 20)
+            coEvery { flyerManager.listArchived(query = "foo") } returns Result.success(paginated)
+
+            viewModel.onQueryChanged("foo")
+
+            coVerify { flyerManager.listArchived(query = "foo") }
+            val state = viewModel.uiState.value
+            assertTrue(state is ArchiveUIState.Content)
+            assertEquals("foo", state.query)
+        }
+
+    @Test
+    fun `onQueryChanged with empty query updates state and calls listArchived with no filter`() =
+        runCoroutineTest {
+            val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
+            coEvery { flyerManager.listArchived() } returns Result.success(paginated)
+
+            viewModel.onQueryChanged("")
+
+            coVerify { flyerManager.listArchived() }
+            assertEquals("", viewModel.uiState.value.query)
         }
 
     @Test

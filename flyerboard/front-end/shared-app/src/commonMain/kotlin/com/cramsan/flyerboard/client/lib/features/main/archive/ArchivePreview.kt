@@ -34,60 +34,48 @@ private val sampleArchivedFlyers =
         ),
     )
 
-/**
- * Preview for the Archive screen with content.
- */
 @Preview
 @Composable
-private fun ArchiveScreenPreview() =
-    AppTheme {
+private fun ArchiveLoadingPreview() =
+    AppTheme(dynamicColor = false) {
         ArchiveContent(
-            uiState =
-            ArchiveUIState(
-                isLoading = false,
-                flyers = sampleArchivedFlyers,
-                errorMessage = null,
-            ),
+            uiState = ArchiveUIState.Loading(),
             onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},
         )
     }
 
-/**
- * Preview for the Archive screen in loading state.
- */
 @Preview
 @Composable
-private fun ArchiveScreenLoadingPreview() =
-    AppTheme {
+private fun ArchiveEmptyPreview() =
+    AppTheme(dynamicColor = false) {
         ArchiveContent(
-            uiState =
-            ArchiveUIState(
-                isLoading = true,
-                flyers = emptyList(),
-                errorMessage = null,
-            ),
+            uiState = ArchiveUIState.Empty(),
             onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},
         )
     }
 
-/**
- * Preview for the Archive screen in empty state.
- */
 @Preview
 @Composable
-private fun ArchiveScreenEmptyPreview() =
-    AppTheme {
+private fun ArchiveWithResultsPreview() =
+    AppTheme(dynamicColor = false) {
         ArchiveContent(
-            uiState =
-            ArchiveUIState(
-                isLoading = false,
-                flyers = emptyList(),
-                errorMessage = null,
-            ),
+            uiState = ArchiveUIState.Content(flyers = sampleArchivedFlyers),
+            onNavigateBack = {},
+            onRefresh = {},
+            onFlyerSelected = {},
+        )
+    }
+
+@Preview
+@Composable
+private fun ArchiveWithQueryPreview() =
+    AppTheme(dynamicColor = false) {
+        ArchiveContent(
+            uiState = ArchiveUIState.Content(flyers = sampleArchivedFlyers, query = "spring"),
             onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},

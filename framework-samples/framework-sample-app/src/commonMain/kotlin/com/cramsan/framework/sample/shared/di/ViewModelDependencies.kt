@@ -6,11 +6,22 @@ import com.cramsan.framework.core.compose.EventReceiver
 import com.cramsan.framework.core.compose.InvalidEventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.remoteconfig.RemoteConfig
 import com.cramsan.framework.sample.shared.features.ApplicationViewModel
 import com.cramsan.framework.sample.shared.features.SampleWindowDelegatedEvent
+import com.cramsan.framework.sample.shared.features.main.assertutil.AssertUtilViewModel
+import com.cramsan.framework.sample.shared.features.main.configuration.ConfigurationViewModel
+import com.cramsan.framework.sample.shared.features.main.crashhandler.CrashHandlerViewModel
+import com.cramsan.framework.sample.shared.features.main.dispatcher.DispatcherViewModel
 import com.cramsan.framework.sample.shared.features.main.halt.HaltUtilViewModel
 import com.cramsan.framework.sample.shared.features.main.logging.LoggingViewModel
 import com.cramsan.framework.sample.shared.features.main.menu.MainMenuViewModel
+import com.cramsan.framework.sample.shared.features.main.metrics.MetricsViewModel
+import com.cramsan.framework.sample.shared.features.main.preferences.PreferencesViewModel
+import com.cramsan.framework.sample.shared.features.main.remoteconfig.RemoteConfigViewModel
+import com.cramsan.framework.sample.shared.features.main.threadutil.ThreadUtilViewModel
+import com.cramsan.framework.sample.shared.features.main.userevents.UserEventsViewModel
+import com.cramsan.framework.sample.shared.stubs.SampleRemoteConfigPayload
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -58,6 +69,15 @@ internal val ViewModelModule =
             viewModelOf(::HaltUtilViewModel)
             viewModelOf(::MainMenuViewModel)
             viewModelOf(::LoggingViewModel)
+            viewModelOf(::PreferencesViewModel)
+            viewModelOf(::ThreadUtilViewModel)
+            viewModelOf(::AssertUtilViewModel)
+            viewModelOf(::MetricsViewModel)
+            viewModelOf(::ConfigurationViewModel)
+            viewModelOf(::CrashHandlerViewModel)
+            viewModelOf(::UserEventsViewModel)
+            viewModel { RemoteConfigViewModel(get(), get<RemoteConfig<SampleRemoteConfigPayload>>()) }
+            viewModelOf(::DispatcherViewModel)
         }
     }
 

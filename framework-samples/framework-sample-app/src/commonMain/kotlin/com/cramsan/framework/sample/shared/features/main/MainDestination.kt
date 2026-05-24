@@ -26,4 +26,58 @@ sealed class MainDestination : Destination {
      */
     @Serializable
     data object LoggingDestination : MainDestination()
+
+    /**
+     * A class representing a preferences destination.
+     */
+    @Serializable
+    data object PreferencesDestination : MainDestination()
+
+    /**
+     * A class representing a thread util destination.
+     */
+    @Serializable
+    data object ThreadUtilDestination : MainDestination()
+
+    /**
+     * A class representing an assert util destination.
+     */
+    @Serializable
+    data object AssertUtilDestination : MainDestination()
+
+    /**
+     * A class representing a metrics destination.
+     */
+    @Serializable
+    data object MetricsDestination : MainDestination()
+
+    /**
+     * A class representing a configuration destination.
+     */
+    @Serializable
+    data object ConfigurationDestination : MainDestination()
+
+    /**
+     * A class representing a crash handler destination.
+     */
+    @Serializable
+    data object CrashHandlerDestination : MainDestination()
+
+    /**
+     * A class representing a user events destination.
+     */
+    @Serializable
+    data object UserEventsDestination : MainDestination()
+
+    /**
+     * A class representing a remote config destination.
+     */
+    @Serializable
+    data object RemoteConfigDestination : MainDestination()
+
+    /**
+     * A class representing a dispatcher provider destination.
+     */
+    @Serializable
+    data object DispatcherDestination : MainDestination()
 }

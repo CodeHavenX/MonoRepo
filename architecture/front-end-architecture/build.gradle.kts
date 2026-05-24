@@ -92,6 +92,7 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation("io.ktor:ktor-client-mock:_")
+                implementation("io.mockk:mockk:_")
 
                 implementation(project(":framework:test"))
             }

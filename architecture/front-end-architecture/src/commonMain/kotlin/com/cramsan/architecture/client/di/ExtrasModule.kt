@@ -1,6 +1,9 @@
 package com.cramsan.architecture.client.di
 
+import com.cramsan.architecture.client.features.debugsettings.DebugSettingsViewModel
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
+import com.cramsan.architecture.client.settings.SettingRegistry
+import com.cramsan.architecture.client.settings.SettingRegistryImpl
 import com.cramsan.architecture.client.settings.SettingsHolder
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -20,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -56,6 +60,15 @@ internal val ExtrasModule =
 
         single {
             SettingsHolder(get())
+        }
+
+        singleOf(::SettingRegistryImpl) {
+            bind<SettingRegistry>()
+        }
+
+        single(createdAtStart = true) {
+            val registry: SettingRegistry = get()
+            registry.register(FrontEndApplicationSettingKey.defaultGroup())
         }
 
         single(named(ApplicationIdentifier.IS_DEBUG)) {
@@ -108,6 +121,8 @@ internal val ExtrasModule =
                     get(named(ApplicationIdentifier.IS_DEBUG)),
                 )
             }
+
+            viewModelOf(::DebugSettingsViewModel)
         }
     }
 

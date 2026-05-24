@@ -29,4 +29,24 @@ object FrontEndApplicationSettingKey {
      * Defaults to the platform build type if not explicitly set.
      */
     val IsDebug = SettingKey.boolean("is_debug")
+
+    /**
+     * Returns a [SettingGroup] describing all framework-level settings for use with [SettingRegistry].
+     *
+     * Call this once during DI startup and pass the result to [SettingRegistry.register].
+     */
+    fun defaultGroup(): SettingGroup =
+        settingGroup("Framework") {
+        subGroup("Logging") {
+            setting(LoggingLevel, "Logging Level", "VERBOSE / DEBUG / INFO / WARNING / ERROR")
+            setting(LoggingEnableFileLogging, "Enable File Logging")
+        }
+        subGroup("Core") {
+            setting(HaltOnFailure, "Halt on Failure", "Freezes the app on assertion failure.")
+            setting(IsDebug, "Debug Mode Override", "Defaults to the platform build type if unset.")
+        }
+        subGroup("Network") {
+            setting(BackEndUrl, "Back-End URL", "Override the default API base URL.")
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.cramsan.flyerboard.client.lib.features.main.menu
 
+import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import com.cramsan.flyerboard.client.lib.managers.UserManager
 import com.cramsan.framework.annotations.FrontendViewModel
@@ -70,6 +71,19 @@ class MainMenuViewModel(dependencies: ViewModelDependencies, private val userMan
                     }.getOrThrow()
 
             logI(TAG, "User created: $newUser")
+        }
+    }
+
+    /**
+     * Navigate to the debug settings screen.
+     */
+    fun navigateToDebugSettings() {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                FlyerBoardWindowsEvent.NavigateToNavGraph(
+                    FlyerBoardWindowNavGraphDestination.DebugSettingsNavGraphDestination,
+                ),
+            )
         }
     }
 

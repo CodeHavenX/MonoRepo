@@ -27,4 +27,10 @@ sealed class FlyerBoardWindowNavGraphDestination : NavigationGraphDestination {
      */
     @Serializable
     data object MainNavGraphDestination : FlyerBoardWindowNavGraphDestination()
+
+    /**
+     * Debug settings navigation graph destination.
+     */
+    @Serializable
+    data object DebugSettingsNavGraphDestination : FlyerBoardWindowNavGraphDestination()
 }

@@ -3,10 +3,12 @@ package com.cramsan.flyerboard.client.lib.di
 import com.cramsan.architecture.client.di.ApplicationIdentifier
 import com.cramsan.architecture.client.di.NamedDependency
 import com.cramsan.architecture.client.di.WindowIdentifier
+import com.cramsan.architecture.client.settings.SettingRegistry
 import com.cramsan.flyerboard.client.lib.features.application.FlyerBoardApplicationViewModel
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowDelegatedEvent
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowViewModel
 import com.cramsan.flyerboard.client.lib.init.Initializer
+import com.cramsan.flyerboard.client.lib.settings.FlyerBoardSettingKey
 import com.cramsan.flyerboard.lib.serialization.createJson
 import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.EventEmitter
@@ -31,6 +33,11 @@ internal val ApplicationModule =
 
         single {
             createJson()
+        }
+
+        single(createdAtStart = true) {
+            val registry: SettingRegistry = get()
+            registry.register(FlyerBoardSettingKey.defaultGroup())
         }
 
         scope<String> {

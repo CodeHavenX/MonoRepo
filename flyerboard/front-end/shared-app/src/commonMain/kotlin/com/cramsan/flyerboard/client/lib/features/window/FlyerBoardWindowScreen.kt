@@ -32,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.cramsan.architecture.client.features.debugsettings.debugSettingsNavGraph
 import com.cramsan.flyerboard.client.lib.features.application.FlyerBoardApplicationMainScreenEventHandler
 import com.cramsan.flyerboard.client.lib.features.auth.authNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
@@ -337,6 +338,10 @@ private fun WindowNavigationHost(
             isAuthenticated = isAuthenticated,
             onSignIn = onSignIn,
             onSignOut = onSignOut,
+        )
+        debugSettingsNavGraph(
+            graphDestination = FlyerBoardWindowNavGraphDestination.DebugSettingsNavGraphDestination::class,
+            onBack = { navHostController.popBackStack() },
         )
     }
 }

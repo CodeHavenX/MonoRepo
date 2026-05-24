@@ -55,6 +55,7 @@ fun MainMenuScreen(
         onLastNameValueChange = { viewModel.changeLastNameValue(it) },
         onMultiWindowToggled = { applicationViewModel.setShowDebugWindow(it) },
         onClicked = { viewModel.createAccount() },
+        onDebugSettings = { viewModel.navigateToDebugSettings() },
     )
 }
 
@@ -67,6 +68,7 @@ internal fun MainMenuContent(
     onLastNameValueChange: (String) -> Unit,
     onMultiWindowToggled: (Boolean) -> Unit,
     onClicked: () -> Unit,
+    onDebugSettings: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -112,6 +114,10 @@ internal fun MainMenuContent(
                 modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                Button(onClick = onDebugSettings) {
+                    Text("Debug Settings")
+                }
+                Spacer(Modifier.width(8.dp))
                 Text("Multi-window")
                 Spacer(Modifier.width(4.dp))
                 Switch(

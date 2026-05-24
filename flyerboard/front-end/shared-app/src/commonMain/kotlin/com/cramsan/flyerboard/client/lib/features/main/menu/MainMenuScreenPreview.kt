@@ -23,5 +23,6 @@ private fun MainMenuScreenPreview() =
             onLastNameValueChange = {},
             onMultiWindowToggled = {},
             onClicked = {},
+            onDebugSettings = {},
         )
     }

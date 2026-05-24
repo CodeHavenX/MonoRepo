@@ -6,10 +6,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun SignUpPreview() =
+private fun SignUpEmptyPreview() =
     AppTheme(dynamicColor = false) {
         SignUpContent(
             uiState = SignUpUIState.Initial,
+            onFirstNameChanged = {},
+            onLastNameChanged = {},
             onEmailChanged = {},
             onPasswordChanged = {},
             onConfirmPasswordChanged = {},
@@ -25,11 +27,15 @@ private fun SignUpFilledPreview() =
         SignUpContent(
             uiState =
             SignUpUIState(
-                email = "user@example.com",
+                firstName = "Jane",
+                lastName = "Doe",
+                email = "jane.doe@example.com",
                 password = "••••••••",
                 confirmPassword = "••••••••",
                 isLoading = false,
             ),
+            onFirstNameChanged = {},
+            onLastNameChanged = {},
             onEmailChanged = {},
             onPasswordChanged = {},
             onConfirmPasswordChanged = {},

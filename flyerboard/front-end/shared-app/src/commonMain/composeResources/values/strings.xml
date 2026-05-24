@@ -16,6 +16,8 @@
     <string name="sign_in_screen_button_sign_up">Don't have an account? Sign Up</string>
     <string name="sign_up_screen_title">Join the board</string>
     <string name="sign_up_screen_subtitle">Create your account</string>
+    <string name="sign_up_screen_label_first_name">First Name</string>
+    <string name="sign_up_screen_label_last_name">Last Name</string>
     <string name="sign_up_screen_label_email">Email</string>
     <string name="sign_up_screen_email_placeholder">you@example.com</string>
     <string name="sign_up_screen_label_password">Password</string>

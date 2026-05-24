@@ -76,8 +76,10 @@ internal fun ConfigurationContent(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
             sectionContent = { modifier ->
                 when (uiState) {
-                    is ConfigurationUIState.NotRead ->
+                    is ConfigurationUIState.NotRead -> {
                         Text("No values read yet (no-op returns null for all keys)")
+                    }
+
                     is ConfigurationUIState.Read -> {
                         Text("String: ${uiState.stringValue ?: "null"}")
                         Text("Int: ${uiState.intValue ?: "null"}")

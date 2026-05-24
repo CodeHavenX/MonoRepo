@@ -27,10 +27,18 @@ class ConfigurationViewModel(dependencies: ViewModelDependencies, private val co
             val value = configuration.readString(SAMPLE_KEY)
             updateUiState { current ->
                 when (current) {
-                    is ConfigurationUIState.NotRead -> ConfigurationUIState.Read(
-                        stringValue = value, intValue = null, longValue = null, booleanValue = null,
-                    )
-                    is ConfigurationUIState.Read -> current.copy(stringValue = value)
+                    is ConfigurationUIState.NotRead -> {
+                        ConfigurationUIState.Read(
+                            stringValue = value,
+                            intValue = null,
+                            longValue = null,
+                            booleanValue = null,
+                        )
+                    }
+
+                    is ConfigurationUIState.Read -> {
+                        current.copy(stringValue = value)
+                    }
                 }
             }
         }
@@ -44,10 +52,18 @@ class ConfigurationViewModel(dependencies: ViewModelDependencies, private val co
             val value = configuration.readInt(SAMPLE_KEY)
             updateUiState { current ->
                 when (current) {
-                    is ConfigurationUIState.NotRead -> ConfigurationUIState.Read(
-                        stringValue = null, intValue = value, longValue = null, booleanValue = null,
-                    )
-                    is ConfigurationUIState.Read -> current.copy(intValue = value)
+                    is ConfigurationUIState.NotRead -> {
+                        ConfigurationUIState.Read(
+                            stringValue = null,
+                            intValue = value,
+                            longValue = null,
+                            booleanValue = null,
+                        )
+                    }
+
+                    is ConfigurationUIState.Read -> {
+                        current.copy(intValue = value)
+                    }
                 }
             }
         }
@@ -61,10 +77,18 @@ class ConfigurationViewModel(dependencies: ViewModelDependencies, private val co
             val value = configuration.readLong(SAMPLE_KEY)
             updateUiState { current ->
                 when (current) {
-                    is ConfigurationUIState.NotRead -> ConfigurationUIState.Read(
-                        stringValue = null, intValue = null, longValue = value, booleanValue = null,
-                    )
-                    is ConfigurationUIState.Read -> current.copy(longValue = value)
+                    is ConfigurationUIState.NotRead -> {
+                        ConfigurationUIState.Read(
+                            stringValue = null,
+                            intValue = null,
+                            longValue = value,
+                            booleanValue = null,
+                        )
+                    }
+
+                    is ConfigurationUIState.Read -> {
+                        current.copy(longValue = value)
+                    }
                 }
             }
         }
@@ -78,10 +102,18 @@ class ConfigurationViewModel(dependencies: ViewModelDependencies, private val co
             val value = configuration.readBoolean(SAMPLE_KEY)
             updateUiState { current ->
                 when (current) {
-                    is ConfigurationUIState.NotRead -> ConfigurationUIState.Read(
-                        stringValue = null, intValue = null, longValue = null, booleanValue = value,
-                    )
-                    is ConfigurationUIState.Read -> current.copy(booleanValue = value)
+                    is ConfigurationUIState.NotRead -> {
+                        ConfigurationUIState.Read(
+                            stringValue = null,
+                            intValue = null,
+                            longValue = null,
+                            booleanValue = value,
+                        )
+                    }
+
+                    is ConfigurationUIState.Read -> {
+                        current.copy(booleanValue = value)
+                    }
                 }
             }
         }

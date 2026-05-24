@@ -6,6 +6,7 @@ import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.edifikana.client.lib.BuildConfig
 import com.cramsan.edifikana.client.lib.features.debug.DebugDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.framework.annotations.FrontendViewModel
@@ -269,6 +270,17 @@ class DebugViewModel(
                                 emitWindowEvent(
                                     EdifikanaWindowsEvent.NavigateToScreen(
                                         DebugDestination.ScreenSelectorDestination,
+                                    ),
+                                )
+                            },
+                        ),
+                        Field.ActionField(
+                            title = "Open Debug Settings",
+                            subtitle = "View and edit all registered settings.",
+                            action = {
+                                emitWindowEvent(
+                                    EdifikanaWindowsEvent.NavigateToNavGraph(
+                                        EdifikanaNavGraphDestination.DebugSettingsNavGraphDestination,
                                     ),
                                 )
                             },

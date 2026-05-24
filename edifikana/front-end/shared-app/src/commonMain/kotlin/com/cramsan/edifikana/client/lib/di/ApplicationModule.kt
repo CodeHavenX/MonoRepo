@@ -3,10 +3,12 @@ package com.cramsan.edifikana.client.lib.di
 import com.cramsan.architecture.client.di.ApplicationIdentifier
 import com.cramsan.architecture.client.di.NamedDependency
 import com.cramsan.architecture.client.di.WindowIdentifier
+import com.cramsan.architecture.client.settings.SettingRegistry
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowDelegatedEvent
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
 import com.cramsan.edifikana.client.lib.init.Initializer
+import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.EventEmitter
@@ -24,6 +26,11 @@ internal val ApplicationModule =
         single<String>(named(NamedDependency.DOMAIN_KEY)) { "EDIFIKANA" }
 
         singleOf(::Initializer)
+
+        single(createdAtStart = true) {
+            val registry: SettingRegistry = get()
+            registry.register(EdifikanaSettingKey.defaultGroup())
+        }
 
         single {
             createJson()

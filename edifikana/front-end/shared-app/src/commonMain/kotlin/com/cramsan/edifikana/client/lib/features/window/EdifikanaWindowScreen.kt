@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.cramsan.architecture.client.features.debugsettings.debugSettingsNavGraph
 import com.cramsan.edifikana.client.lib.features.account.accountNavGraph
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.auth.authNavGraphNavigation
@@ -249,6 +250,10 @@ private fun WindowNavigationHost(
         authNavGraphNavigation(typeMap)
         accountNavGraph(typeMap)
         debugNavGraphNavigation(typeMap)
+        debugSettingsNavGraph(
+            graphDestination = EdifikanaNavGraphDestination.DebugSettingsNavGraphDestination::class,
+            onBack = { navHostController.popBackStack() },
+        )
         homeNavGraphNavigation(typeMap)
         settingsNavGraphNavigation(typeMap)
     }

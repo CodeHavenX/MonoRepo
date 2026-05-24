@@ -14,12 +14,8 @@ sealed class ConfigurationUIState : ViewModelUIState {
     /**
      * At least one read has been performed; each field holds the value the API returned (null = key absent).
      */
-    data class Read(
-        val stringValue: String?,
-        val intValue: Int?,
-        val longValue: Long?,
-        val booleanValue: Boolean?,
-    ) : ConfigurationUIState()
+    data class Read(val stringValue: String?, val intValue: Int?, val longValue: Long?, val booleanValue: Boolean?) :
+        ConfigurationUIState()
 
     companion object {
         val Initial: ConfigurationUIState = NotRead

@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import com.cramsan.flyerboard.client.lib.filepicker.FilePicker
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
-import kotlinx.coroutines.launch
 import flyerboard_lib.Res
 import flyerboard_lib.flyer_submit_screen_button_cancel
 import flyerboard_lib.flyer_submit_screen_button_submit
@@ -55,6 +54,7 @@ import flyerboard_lib.flyer_submit_screen_title
 import flyerboard_lib.flyer_submit_screen_title_placeholder
 import flyerboard_lib.flyer_submit_screen_upload_hint
 import flyerboard_lib.flyer_submit_screen_upload_size
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -182,8 +182,7 @@ private fun FlyerSubmitForm(
                     scope.launch {
                         filePicker.pickFile()?.let { onFileSelected(it.bytes, it.name, it.mimeType) }
                     }
-                }
-                .padding(Padding.LARGE),
+                }.padding(Padding.LARGE),
             contentAlignment = Alignment.Center,
         ) {
             Column(

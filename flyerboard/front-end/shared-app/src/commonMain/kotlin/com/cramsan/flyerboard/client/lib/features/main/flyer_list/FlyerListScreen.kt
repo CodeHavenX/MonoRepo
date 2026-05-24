@@ -117,26 +117,33 @@ internal fun FlyerListContent(
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
             when (val state = uiState) {
-                is FlyerListUIState.Loading -> LoadingStateBox()
+                is FlyerListUIState.Loading -> {
+                    LoadingStateBox()
+                }
 
                 is FlyerListUIState.Empty,
-                is FlyerListUIState.Error -> EmptyStateBox(
-                    message = stringResource(Res.string.flyer_list_screen_empty_message),
-                )
+                is FlyerListUIState.Error,
+                -> {
+                    EmptyStateBox(
+                        message = stringResource(Res.string.flyer_list_screen_empty_message),
+                    )
+                }
 
-                is FlyerListUIState.Content -> LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(Padding.MEDIUM),
-                    verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
-                ) {
-                    items(state.flyers, key = { it.id.flyerId }) { flyer ->
-                        FlyerCard(
-                            title = flyer.title,
-                            description = flyer.description,
-                            imageUrl = flyer.fileUrl,
-                            expiresAt = flyer.expiresAt,
-                            onClick = { onFlyerSelected(flyer) },
-                        )
+                is FlyerListUIState.Content -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(Padding.MEDIUM),
+                        verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
+                    ) {
+                        items(state.flyers, key = { it.id.flyerId }) { flyer ->
+                            FlyerCard(
+                                title = flyer.title,
+                                description = flyer.description,
+                                imageUrl = flyer.fileUrl,
+                                expiresAt = flyer.expiresAt,
+                                onClick = { onFlyerSelected(flyer) },
+                            )
+                        }
                     }
                 }
             }

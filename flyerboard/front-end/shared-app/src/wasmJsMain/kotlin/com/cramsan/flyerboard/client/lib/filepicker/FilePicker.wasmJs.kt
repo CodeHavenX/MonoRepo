@@ -1,26 +1,29 @@
 package com.cramsan.flyerboard.client.lib.filepicker
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
 
 /** Browser implementation — shows an `<input type="file">` and reads the chosen file via the File API. */
 actual class FilePicker actual constructor(backgroundDispatcher: CoroutineDispatcher) {
+    /**
+     * Suspending function to open the file picker.
+     */
     @OptIn(ExperimentalEncodingApi::class)
-    actual suspend fun pickFile(): PickedFile? = suspendCancellableCoroutine { continuation ->
-        jsPickFile(
-            onSuccess = { base64, name, mime ->
-                val bytes = Base64.decode(base64)
-                continuation.resume(PickedFile(bytes = bytes, name = name, mimeType = mime))
-            },
-            onCancel = {
-                continuation.resume(null)
-            },
-        )
-    }
+    actual suspend fun pickFile(): PickedFile? =
+        suspendCancellableCoroutine { continuation ->
+            jsPickFile(
+                onSuccess = { base64, name, mime ->
+                    val bytes = Base64.decode(base64)
+                    continuation.resume(PickedFile(bytes = bytes, name = name, mimeType = mime))
+                },
+                onCancel = {
+                    continuation.resume(null)
+                },
+            )
+        }
 }
 
 @JsFun(

@@ -166,18 +166,22 @@ internal fun SignUpContent(
                             trailingIcon = {
                                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                     Icon(
-                                        imageVector = if (passwordVisible)
+                                        imageVector =
+                                        if (passwordVisible) {
                                             Icons.Default.VisibilityOff
-                                        else
-                                            Icons.Default.Visibility,
+                                        } else {
+                                            Icons.Default.Visibility
+                                        },
                                         contentDescription = null,
                                     )
                                 }
                             },
-                            visualTransformation = if (passwordVisible)
+                            visualTransformation =
+                            if (passwordVisible) {
                                 VisualTransformation.None
-                            else
-                                PasswordVisualTransformation(),
+                            } else {
+                                PasswordVisualTransformation()
+                            },
                             shape = CircleShape,
                             keyboardOptions =
                             KeyboardOptions(
@@ -196,18 +200,22 @@ internal fun SignUpContent(
                             trailingIcon = {
                                 IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                                     Icon(
-                                        imageVector = if (confirmPasswordVisible)
+                                        imageVector =
+                                        if (confirmPasswordVisible) {
                                             Icons.Default.VisibilityOff
-                                        else
-                                            Icons.Default.Visibility,
+                                        } else {
+                                            Icons.Default.Visibility
+                                        },
                                         contentDescription = null,
                                     )
                                 }
                             },
-                            visualTransformation = if (confirmPasswordVisible)
+                            visualTransformation =
+                            if (confirmPasswordVisible) {
                                 VisualTransformation.None
-                            else
-                                PasswordVisualTransformation(),
+                            } else {
+                                PasswordVisualTransformation()
+                            },
                             shape = CircleShape,
                             keyboardOptions =
                             KeyboardOptions(

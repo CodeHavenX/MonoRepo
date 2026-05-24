@@ -6,8 +6,14 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  * UI state for the Flyer Edit screen.
  */
 sealed class FlyerEditUIState : ViewModelUIState {
+    /**
+     * Loading state
+     */
     data object Loading : FlyerEditUIState()
 
+    /**
+     * DData class for editing the flyer.
+     */
     data class Editing(
         val title: String,
         val description: String,

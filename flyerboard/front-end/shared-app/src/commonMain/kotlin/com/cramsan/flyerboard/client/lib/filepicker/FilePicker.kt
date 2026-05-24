@@ -11,6 +11,9 @@ import kotlinx.coroutines.Dispatchers
  * dispatcher in unit tests to avoid touching real I/O.
  */
 expect class FilePicker(backgroundDispatcher: CoroutineDispatcher = Dispatchers.Default) {
+    /**
+     * Suspending function to open the file picker.
+     */
     suspend fun pickFile(): PickedFile?
 }
 

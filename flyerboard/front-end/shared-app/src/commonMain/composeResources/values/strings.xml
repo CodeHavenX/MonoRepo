@@ -67,6 +67,7 @@
     <string name="flyer_edit_screen_label_description">Description</string>
     <string name="flyer_edit_screen_label_expires_at">Expires At (optional)</string>
     <string name="flyer_edit_screen_button_save">Save</string>
+    <string name="flyer_edit_screen_button_choose_file">Choose File</string>
     <string name="flyer_edit_screen_not_found">Flyer not found.</string>
     <string name="flyer_submit_screen_title">New Flyer</string>
     <string name="flyer_submit_screen_subtitle">Upload your design and reach the neighborhood.</string>

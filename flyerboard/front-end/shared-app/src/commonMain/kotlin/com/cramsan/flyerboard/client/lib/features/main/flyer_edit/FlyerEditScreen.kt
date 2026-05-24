@@ -15,6 +15,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,20 +23,26 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
+import com.cramsan.flyerboard.client.lib.features.main.flyer_edit.FlyerEditUIState.Editing
+import com.cramsan.flyerboard.client.lib.filepicker.FilePicker
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
+import flyerboard_lib.flyer_edit_screen_button_choose_file
 import flyerboard_lib.flyer_edit_screen_button_save
 import flyerboard_lib.flyer_edit_screen_label_description
 import flyerboard_lib.flyer_edit_screen_label_expires_at
 import flyerboard_lib.flyer_edit_screen_label_title
 import flyerboard_lib.flyer_edit_screen_navigate_back
 import flyerboard_lib.flyer_edit_screen_title
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -67,6 +74,7 @@ fun FlyerEditScreen(
         onTitleChanged = { viewModel.onTitleChanged(it) },
         onDescriptionChanged = { viewModel.onDescriptionChanged(it) },
         onExpiresAtChanged = { viewModel.onExpiresAtChanged(it) },
+        onFileSelected = { bytes, name, mime -> viewModel.onFileSelected(bytes, name, mime) },
         onSave = { viewModel.saveFlyer(destination.flyerId) },
     )
 }
@@ -83,6 +91,7 @@ internal fun FlyerEditContent(
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onExpiresAtChanged: (String) -> Unit,
+    onFileSelected: (ByteArray, String, String) -> Unit,
     onSave: () -> Unit,
 ) {
     Scaffold(
@@ -105,17 +114,18 @@ internal fun FlyerEditContent(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            when {
-                uiState.isLoading -> {
+            when (uiState) {
+                is FlyerEditUIState.Loading -> {
                     CircularProgressIndicator()
                 }
 
-                else -> {
+                is Editing -> {
                     FlyerEditForm(
                         uiState = uiState,
                         onTitleChanged = onTitleChanged,
                         onDescriptionChanged = onDescriptionChanged,
                         onExpiresAtChanged = onExpiresAtChanged,
+                        onFileSelected = onFileSelected,
                         onSave = onSave,
                     )
                 }
@@ -126,13 +136,16 @@ internal fun FlyerEditContent(
 
 @Composable
 private fun FlyerEditForm(
-    uiState: FlyerEditUIState,
+    uiState: Editing,
     modifier: Modifier = Modifier,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onExpiresAtChanged: (String) -> Unit,
+    onFileSelected: (ByteArray, String, String) -> Unit,
     onSave: () -> Unit,
 ) {
+    val filePicker = remember { FilePicker() }
+    val scope = rememberCoroutineScope()
     Column(
         modifier =
         modifier
@@ -163,6 +176,20 @@ private fun FlyerEditForm(
             modifier = Modifier.fillMaxWidth(),
             enabled = !uiState.isSaving,
         )
+        OutlinedButton(
+            onClick = {
+                scope.launch {
+                    filePicker.pickFile()?.let { onFileSelected(it.bytes, it.name, it.mimeType) }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !uiState.isSaving,
+        ) {
+            Text(stringResource(Res.string.flyer_edit_screen_button_choose_file))
+        }
+        uiState.selectedFileName?.let { name ->
+            Text(text = name)
+        }
         uiState.errorMessage?.let { msg ->
             Text(text = msg)
         }

@@ -27,6 +27,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -35,8 +37,10 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.cramsan.flyerboard.client.lib.filepicker.FilePicker
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
+import kotlinx.coroutines.launch
 import flyerboard_lib.Res
 import flyerboard_lib.flyer_submit_screen_button_cancel
 import flyerboard_lib.flyer_submit_screen_button_submit
@@ -138,9 +142,11 @@ private fun FlyerSubmitForm(
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onExpiresAtChanged: (String) -> Unit,
-    @Suppress("UNUSED_PARAMETER") onFileSelected: (ByteArray, String, String) -> Unit,
+    onFileSelected: (ByteArray, String, String) -> Unit,
     onSubmit: () -> Unit,
 ) {
+    val filePicker = remember { FilePicker() }
+    val scope = rememberCoroutineScope()
     val isSubmitting = uiState.status is SubmitStatus.Submitting
     val outlineColor = MaterialTheme.colorScheme.secondary
     Column(
@@ -172,7 +178,11 @@ private fun FlyerSubmitForm(
                         ),
                         cornerRadius = CornerRadius(12.dp.toPx()),
                     )
-                }.clickable(enabled = !isSubmitting) { /* FilePicker wired in Phase 5.7 */ }
+                }.clickable(enabled = !isSubmitting) {
+                    scope.launch {
+                        filePicker.pickFile()?.let { onFileSelected(it.bytes, it.name, it.mimeType) }
+                    }
+                }
                 .padding(Padding.LARGE),
             contentAlignment = Alignment.Center,
         ) {

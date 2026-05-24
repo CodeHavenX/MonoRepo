@@ -3,19 +3,44 @@ package com.cramsan.flyerboard.client.lib.features.auth.sign_up
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import com.cramsan.flyerboard.client.lib.managers.AuthManager
+import com.cramsan.flyerboard.client.lib.managers.UserManager
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.logging.logW
 import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the Sign Up screen.
  */
 @FrontendViewModel
-class SignUpViewModel(dependencies: ViewModelDependencies, private val authManager: AuthManager) :
-    BaseViewModel<SignUpEvent, SignUpUIState>(dependencies, SignUpUIState.Initial, TAG) {
+class SignUpViewModel(
+    dependencies: ViewModelDependencies,
+    private val authManager: AuthManager,
+    private val userManager: UserManager,
+) : BaseViewModel<SignUpEvent, SignUpUIState>(dependencies, SignUpUIState.Initial, TAG) {
+    /**
+     * Update the first name field value.
+     */
+    fun onFirstNameChanged(firstName: String) {
+        viewModelCoroutineScope.launch {
+            logD(TAG, "First name changed")
+            updateUiState { it.copy(firstName = firstName) }
+        }
+    }
+
+    /**
+     * Update the last name field value.
+     */
+    fun onLastNameChanged(lastName: String) {
+        viewModelCoroutineScope.launch {
+            logD(TAG, "Last name changed")
+            updateUiState { it.copy(lastName = lastName) }
+        }
+    }
+
     /**
      * Update the email field value.
      */
@@ -49,18 +74,22 @@ class SignUpViewModel(dependencies: ViewModelDependencies, private val authManag
     /**
      * Attempt to register a new account with the current email and password.
      * Validates that all fields are filled and passwords match before calling auth.
-     * On success, navigate to the main nav graph clearing the back stack.
+     * On success, calls [UserManager.createUser] to register the profile, then
+     * navigates to the main nav graph clearing the back stack.
      * On failure, show a snackbar with the error message.
      */
     fun signUp() {
         logI(TAG, "signUp called")
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
-            val email = uiState.value.email
-            val password = uiState.value.password
-            val confirmPassword = uiState.value.confirmPassword
+            val state = uiState.value
+            val firstName = state.firstName
+            val lastName = state.lastName
+            val email = state.email
+            val password = state.password
+            val confirmPassword = state.confirmPassword
 
-            if (email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+            if (hasBlankFields(firstName, lastName, email, password, confirmPassword)) {
                 updateUiState { it.copy(isLoading = false) }
                 emitWindowEvent(FlyerBoardWindowsEvent.ShowSnackbar(message = MSG_FILL_ALL_FIELDS))
                 return@launch
@@ -82,6 +111,9 @@ class SignUpViewModel(dependencies: ViewModelDependencies, private val authManag
                         ),
                     )
                 }.onSuccess {
+                    userManager
+                        .createUser(firstName = firstName, lastName = lastName)
+                        .onFailure { err -> logW(TAG, "createUser failed (non-fatal): ${err.message}") }
                     updateUiState { state -> state.copy(isLoading = false) }
                     emitWindowEvent(
                         FlyerBoardWindowsEvent.NavigateToNavGraph(
@@ -102,6 +134,8 @@ class SignUpViewModel(dependencies: ViewModelDependencies, private val authManag
             emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
         }
     }
+
+    private fun hasBlankFields(vararg fields: String) = fields.any { it.isBlank() }
 
     companion object {
         private const val TAG = "SignUpViewModel"

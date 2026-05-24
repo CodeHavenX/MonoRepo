@@ -49,6 +49,8 @@ import flyerboard_lib.sign_up_screen_email_placeholder
 import flyerboard_lib.sign_up_screen_have_account
 import flyerboard_lib.sign_up_screen_label_confirm_password
 import flyerboard_lib.sign_up_screen_label_email
+import flyerboard_lib.sign_up_screen_label_first_name
+import flyerboard_lib.sign_up_screen_label_last_name
 import flyerboard_lib.sign_up_screen_label_password
 import flyerboard_lib.sign_up_screen_sign_in_link
 import flyerboard_lib.sign_up_screen_subtitle
@@ -75,6 +77,8 @@ fun SignUpScreen(
     SignUpContent(
         uiState = uiState,
         modifier = modifier,
+        onFirstNameChanged = { viewModel.onFirstNameChanged(it) },
+        onLastNameChanged = { viewModel.onLastNameChanged(it) },
         onEmailChanged = { viewModel.onEmailChanged(it) },
         onPasswordChanged = { viewModel.onPasswordChanged(it) },
         onConfirmPasswordChanged = { viewModel.onConfirmPasswordChanged(it) },
@@ -90,6 +94,8 @@ fun SignUpScreen(
 internal fun SignUpContent(
     uiState: SignUpUIState,
     modifier: Modifier = Modifier,
+    onFirstNameChanged: (String) -> Unit,
+    onLastNameChanged: (String) -> Unit,
     onEmailChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     onConfirmPasswordChanged: (String) -> Unit,
@@ -143,6 +149,34 @@ internal fun SignUpContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Spacer(modifier = Modifier.height(Padding.X_SMALL))
+                    LabeledField(label = stringResource(Res.string.sign_up_screen_label_first_name)) {
+                        OutlinedTextField(
+                            value = uiState.firstName,
+                            onValueChange = onFirstNameChanged,
+                            shape = CircleShape,
+                            keyboardOptions =
+                            KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                            ),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                    LabeledField(label = stringResource(Res.string.sign_up_screen_label_last_name)) {
+                        OutlinedTextField(
+                            value = uiState.lastName,
+                            onValueChange = onLastNameChanged,
+                            shape = CircleShape,
+                            keyboardOptions =
+                            KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                            ),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
                     LabeledField(label = stringResource(Res.string.sign_up_screen_label_email)) {
                         OutlinedTextField(
                             value = uiState.email,

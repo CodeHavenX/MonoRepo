@@ -40,6 +40,7 @@ private fun FlyerListScreenPreview() =
     AppTheme(dynamicColor = false) {
         FlyerListContent(
             uiState = FlyerListUIState.Content(flyers = sampleFlyers),
+            isAuthenticated = false,
             onRefresh = {},
             onFlyerSelected = {},
         )
@@ -63,6 +64,7 @@ private fun FlyerListScreenLoadingPreview() =
     AppTheme(dynamicColor = false) {
         FlyerListContent(
             uiState = FlyerListUIState.Loading,
+            isAuthenticated = false,
             onRefresh = {},
             onFlyerSelected = {},
         )
@@ -74,6 +76,7 @@ private fun FlyerListScreenEmptyPreview() =
     AppTheme(dynamicColor = false) {
         FlyerListContent(
             uiState = FlyerListUIState.Empty,
+            isAuthenticated = false,
             onRefresh = {},
             onFlyerSelected = {},
         )

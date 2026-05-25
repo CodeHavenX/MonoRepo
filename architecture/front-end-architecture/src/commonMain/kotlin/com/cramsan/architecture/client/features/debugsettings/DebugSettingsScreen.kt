@@ -126,53 +126,38 @@ internal fun DebugSettingsContent(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        if (!uiState.isDebugBuild) {
-            Column(
-                modifier =
-                    Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp),
-                    ) {
-                Text(
-                    text = "Debug settings are not available in release builds.",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            }
-        } else {
-            LazyColumn(
-                modifier =
-                    Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                    ) {
-                uiState.groups.forEach { group ->
+        LazyColumn(
+            modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+        ) {
+            uiState.groups.forEach { group ->
+                item {
+                    Text(
+                        text = group.name,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    )
+                }
+                group.subGroups.forEach { subGroup ->
                     item {
                         Text(
-                            text = group.name,
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                            text = subGroup.name,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                         )
                     }
-                    group.subGroups.forEach { subGroup ->
-                        item {
-                            Text(
-                                text = subGroup.name,
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                            )
-                        }
-                        items(subGroup.rows) { row ->
-                            SettingRowItem(
-                                row = row,
-                                onSaveBoolean = onSaveBoolean,
-                                onSaveString = onSaveString,
-                            )
-                            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-                        }
-                        item { Spacer(modifier = Modifier.height(8.dp)) }
+                    items(subGroup.rows) { row ->
+                        SettingRowItem(
+                            row = row,
+                            onSaveBoolean = onSaveBoolean,
+                            onSaveString = onSaveString,
+                        )
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                     }
+                    item { Spacer(modifier = Modifier.height(8.dp)) }
                 }
             }
         }
@@ -192,35 +177,35 @@ private fun SettingRowItem(
 
         is SettingRowUIModel.StringRow -> {
             TextSettingRow(
-            key = row.key,
-            label = row.label,
-            subtitle = row.subtitle,
-            currentValue = row.currentValue,
-            keyboardType = KeyboardType.Text,
-            onSaveString = onSaveString,
-        )
+                key = row.key,
+                label = row.label,
+                subtitle = row.subtitle,
+                currentValue = row.currentValue,
+                keyboardType = KeyboardType.Text,
+                onSaveString = onSaveString,
+            )
         }
 
         is SettingRowUIModel.IntRow -> {
             TextSettingRow(
-            key = row.key,
-            label = row.label,
-            subtitle = row.subtitle,
-            currentValue = row.currentValue,
-            keyboardType = KeyboardType.Number,
-            onSaveString = onSaveString,
-        )
+                key = row.key,
+                label = row.label,
+                subtitle = row.subtitle,
+                currentValue = row.currentValue,
+                keyboardType = KeyboardType.Number,
+                onSaveString = onSaveString,
+            )
         }
 
         is SettingRowUIModel.LongRow -> {
             TextSettingRow(
-            key = row.key,
-            label = row.label,
-            subtitle = row.subtitle,
-            currentValue = row.currentValue,
-            keyboardType = KeyboardType.Number,
-            onSaveString = onSaveString,
-        )
+                key = row.key,
+                label = row.label,
+                subtitle = row.subtitle,
+                currentValue = row.currentValue,
+                keyboardType = KeyboardType.Number,
+                onSaveString = onSaveString,
+            )
         }
     }
 }
@@ -232,10 +217,10 @@ private fun BooleanSettingRow(
 ) {
     Row(
         modifier =
-            Modifier
+        Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(text = row.label, style = MaterialTheme.typography.bodyLarge)
@@ -268,10 +253,10 @@ private fun TextSettingRow(
 
     Column(
         modifier =
-            Modifier
+        Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-            ) {
+    ) {
         Text(text = label, style = MaterialTheme.typography.bodyLarge)
         if (subtitle != null) {
             Text(
@@ -285,7 +270,7 @@ private fun TextSettingRow(
             value = text,
             onValueChange = { text = it },
             modifier =
-                Modifier
+            Modifier
                 .fillMaxWidth()
                 .onFocusChanged { focusState ->
                     if (hasFocus && !focusState.isFocused) {
@@ -293,7 +278,7 @@ private fun TextSettingRow(
                     }
                     hasFocus = focusState.isFocused
                 },
-                singleLine = true,
+            singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         )
     }

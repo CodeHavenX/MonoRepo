@@ -51,10 +51,4 @@ sealed class MainDestination : Destination {
      */
     @Serializable
     data object FlyerSubmitDestination : MainDestination()
-
-    /**
-     * Dev/debug menu screen destination.
-     */
-    @Serializable
-    data object MenuDestination : MainDestination()
 }

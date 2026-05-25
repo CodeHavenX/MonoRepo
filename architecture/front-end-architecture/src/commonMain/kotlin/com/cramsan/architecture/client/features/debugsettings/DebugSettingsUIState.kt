@@ -11,10 +11,10 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  *   a placeholder instead of real settings, providing a safety net against accidental release access.
  * @property groups Ordered list of display-ready setting groups to render.
  */
-data class DebugSettingsUIState(val isDebugBuild: Boolean, val groups: List<SettingGroupUIModel>) : ViewModelUIState {
+data class DebugSettingsUIState(val groups: List<SettingGroupUIModel>) : ViewModelUIState {
     companion object {
         /** Sensible starting state before [DebugSettingsViewModel.loadSettings] completes. */
-        val Initial = DebugSettingsUIState(isDebugBuild = false, groups = emptyList())
+        val Initial = DebugSettingsUIState(groups = emptyList())
     }
 }
 

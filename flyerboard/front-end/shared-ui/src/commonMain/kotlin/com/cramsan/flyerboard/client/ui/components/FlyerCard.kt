@@ -59,11 +59,12 @@ fun FlyerCard(
                                 style = MaterialTheme.typography.labelSmall,
                             )
                         },
-                        colors = SuggestionChipDefaults.suggestionChipColors(
+                        colors =
+                            SuggestionChipDefaults.suggestionChipColors(
                             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                             labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         ),
-                        border = null,
+                            border = null,
                     )
                 }
             }

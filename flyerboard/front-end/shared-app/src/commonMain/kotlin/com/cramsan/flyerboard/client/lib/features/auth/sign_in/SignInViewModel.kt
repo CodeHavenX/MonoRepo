@@ -83,6 +83,19 @@ class SignInViewModel(dependencies: ViewModelDependencies, private val authManag
         }
     }
 
+    /**
+     * Navigate to the debug settings screen.
+     */
+    fun navigateToDebugSettings() {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                FlyerBoardWindowsEvent.NavigateToNavGraph(
+                    FlyerBoardWindowNavGraphDestination.DebugSettingsNavGraphDestination,
+                ),
+            )
+        }
+    }
+
     companion object {
         private const val TAG = "SignInViewModel"
     }

@@ -4,7 +4,6 @@ import com.cramsan.flyerboard.client.lib.init.Initializer
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import kotlinx.coroutines.launch
 
 /**
  * View model for the entire application.
@@ -13,7 +12,7 @@ import kotlinx.coroutines.launch
 class FlyerBoardApplicationViewModel(private val initHandler: Initializer, dependencies: ViewModelDependencies) :
     BaseViewModel<FlyerBoardApplicationViewModelEvent, FlyerBoardApplicationUIState>(
         dependencies,
-        FlyerBoardApplicationUIState(),
+        FlyerBoardApplicationUIState,
         TAG,
     ) {
     /**
@@ -21,17 +20,6 @@ class FlyerBoardApplicationViewModel(private val initHandler: Initializer, depen
      */
     fun initialize() {
         initHandler.startStep()
-    }
-
-    /**
-     * Set whether to show the debug window.
-     */
-    fun setShowDebugWindow(show: Boolean) {
-        viewModelCoroutineScope.launch {
-            updateUiState {
-                it.copy(showDebugWindow = show)
-            }
-        }
     }
 
     companion object {

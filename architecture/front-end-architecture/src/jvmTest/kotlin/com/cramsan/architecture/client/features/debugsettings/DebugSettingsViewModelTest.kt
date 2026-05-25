@@ -60,15 +60,6 @@ class DebugSettingsViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `loadSettings with isDebugBuild false sets isDebugBuild false in state`() = runCoroutineTest {
-        val viewModel = buildViewModel(isDebugBuild = false)
-
-        viewModel.loadSettings()
-
-        assertFalse(viewModel.uiState.value.isDebugBuild)
-    }
-
-    @Test
     fun `loadSettings with isDebugBuild false does not populate groups`() = runCoroutineTest {
         val viewModel = buildViewModel(isDebugBuild = false)
 

@@ -8,9 +8,6 @@ import com.cramsan.architecture.client.settings.settingGroup
  * Setting keys used in FlyerBoard application.
  */
 object FlyerBoardSettingKey {
-    /** Whether to open the debug window on desktop. */
-    val OpenDebugWindow = SettingKey.boolean("debug.window.open")
-
     /** Supabase API URL override. */
     val SupabaseUrl = SettingKey.string("KEY_SUPABASE_URL")
 
@@ -29,9 +26,6 @@ object FlyerBoardSettingKey {
             subGroup("Supabase") {
                 setting(SupabaseUrl, "Supabase API URL", "Override from `supabase status`")
                 setting(SupabaseKey, "Supabase Publishable Key", "Override from `supabase status`")
-            }
-            subGroup("UI") {
-                setting(OpenDebugWindow, "Open Debug Window", "Desktop only.")
             }
         }
 }

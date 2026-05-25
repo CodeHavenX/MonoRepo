@@ -80,7 +80,7 @@ fun FlyerListScreen(
 internal fun FlyerListContent(
     uiState: FlyerListUIState,
     modifier: Modifier = Modifier,
-    isAuthenticated: Boolean = false,
+    isAuthenticated: Boolean,
     onSignIn: () -> Unit = {},
     onSignOut: () -> Unit = {},
     onRefresh: () -> Unit,

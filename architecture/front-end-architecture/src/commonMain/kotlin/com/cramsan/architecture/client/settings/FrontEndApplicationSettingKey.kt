@@ -37,16 +37,16 @@ object FrontEndApplicationSettingKey {
      */
     fun defaultGroup(): SettingGroup =
         settingGroup("Framework") {
-        subGroup("Logging") {
-            setting(LoggingLevel, "Logging Level", "VERBOSE / DEBUG / INFO / WARNING / ERROR")
-            setting(LoggingEnableFileLogging, "Enable File Logging")
+            subGroup("Logging") {
+                setting(LoggingLevel, "Logging Level", "VERBOSE / DEBUG / INFO / WARNING / ERROR")
+                setting(LoggingEnableFileLogging, "Enable File Logging")
+            }
+            subGroup("Core") {
+                setting(HaltOnFailure, "Halt on Failure", "Freezes the app on assertion failure.")
+                setting(IsDebug, "Debug Mode Override", "Defaults to the platform build type if unset.")
+            }
+            subGroup("Network") {
+                setting(BackEndUrl, "Back-End URL", "Override the default API base URL.")
+            }
         }
-        subGroup("Core") {
-            setting(HaltOnFailure, "Halt on Failure", "Freezes the app on assertion failure.")
-            setting(IsDebug, "Debug Mode Override", "Defaults to the platform build type if unset.")
-        }
-        subGroup("Network") {
-            setting(BackEndUrl, "Back-End URL", "Override the default API base URL.")
-        }
-    }
 }

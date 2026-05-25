@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -79,6 +81,7 @@ fun SignInScreen(
         onPasswordChanged = { viewModel.onPasswordChanged(it) },
         onSignInClicked = { viewModel.signIn() },
         onSignUpClicked = { viewModel.navigateToSignUp() },
+        onDebugIconClicked = { viewModel.navigateToDebugSettings() },
     )
 }
 
@@ -93,6 +96,7 @@ internal fun SignInContent(
     onPasswordChanged: (String) -> Unit,
     onSignInClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
+    onDebugIconClicked: () -> Unit,
 ) {
     var rememberMe by remember { mutableStateOf(false) }
 
@@ -105,6 +109,15 @@ internal fun SignInContent(
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center,
         ) {
+            IconButton(
+                onClick = onDebugIconClicked,
+                modifier = Modifier.align(Alignment.BottomEnd),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = null,
+                )
+            }
             Card(
                 modifier =
                 Modifier

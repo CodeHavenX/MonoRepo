@@ -14,6 +14,7 @@ private fun SignInPreview() =
             onPasswordChanged = {},
             onSignInClicked = {},
             onSignUpClicked = {},
+            onDebugIconClicked = {},
         )
     }
 
@@ -27,5 +28,6 @@ private fun SignInFilledPreview() =
             onPasswordChanged = {},
             onSignInClicked = {},
             onSignUpClicked = {},
+            onDebugIconClicked = {},
         )
     }

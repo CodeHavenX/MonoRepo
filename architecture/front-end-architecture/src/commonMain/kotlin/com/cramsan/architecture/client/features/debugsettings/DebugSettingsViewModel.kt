@@ -42,8 +42,6 @@ class DebugSettingsViewModel(
      */
     fun loadSettings() {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isDebugBuild = dependencies.isDebugBuild) }
-            if (!dependencies.isDebugBuild) return@launch
             refreshGroups()
         }
     }
@@ -64,22 +62,22 @@ class DebugSettingsViewModel(
         viewModelCoroutineScope.launch {
             val propertyValue: PropertyValue =
                 when (key.type) {
-                is PropertyValueType.StringType -> {
-                    PropertyValue.StringValue((value as String).trim())
-                }
+                    is PropertyValueType.StringType -> {
+                        PropertyValue.StringValue((value as String).trim())
+                    }
 
-                is PropertyValueType.BooleanType -> {
-                    PropertyValue.BooleanValue(value as Boolean)
-                }
+                    is PropertyValueType.BooleanType -> {
+                        PropertyValue.BooleanValue(value as Boolean)
+                    }
 
-                is PropertyValueType.IntType -> {
-                    PropertyValue.IntValue((value as String).trim().toIntOrNull() ?: 0)
-                }
+                    is PropertyValueType.IntType -> {
+                        PropertyValue.IntValue((value as String).trim().toIntOrNull() ?: 0)
+                    }
 
-                is PropertyValueType.LongType -> {
-                    PropertyValue.LongValue((value as String).trim().toLongOrNull() ?: 0L)
+                    is PropertyValueType.LongType -> {
+                        PropertyValue.LongValue((value as String).trim().toLongOrNull() ?: 0L)
+                    }
                 }
-            }
             preferencesManager.updatePreference(key, propertyValue)
             refreshGroups()
             emitEvent(DebugSettingsEvent.ShowSnackbar("Saved. Restart the app to apply changes."))
@@ -89,20 +87,20 @@ class DebugSettingsViewModel(
     private suspend fun refreshGroups() {
         val groups =
             settingRegistry.groups.map { group ->
-            SettingGroupUIModel(
-                name = group.name,
-                subGroups =
+                SettingGroupUIModel(
+                    name = group.name,
+                    subGroups =
                     group.subGroups.map { subGroup ->
-                    SettingSubGroupUIModel(
-                        name = subGroup.name,
-                        rows =
+                        SettingSubGroupUIModel(
+                            name = subGroup.name,
+                            rows =
                             subGroup.descriptors.mapNotNull { descriptor ->
-                            buildRow(descriptor)
-                        },
-                            )
-                },
-                    )
-        }
+                                buildRow(descriptor)
+                            },
+                        )
+                    },
+                )
+            }
         updateUiState { it.copy(groups = groups) }
     }
 
@@ -135,10 +133,10 @@ class DebugSettingsViewModel(
                 val key = descriptor.key as SettingKey<PropertyValueType.IntType>
                 val value =
                     preferencesManager
-                    .getIntPreference(key)
-                    .getOrNull()
-                    ?.toString()
-                    .orEmpty()
+                        .getIntPreference(key)
+                        .getOrNull()
+                        ?.toString()
+                        .orEmpty()
                 SettingRowUIModel.IntRow(
                     key = key,
                     label = descriptor.label,
@@ -151,10 +149,10 @@ class DebugSettingsViewModel(
                 val key = descriptor.key as SettingKey<PropertyValueType.LongType>
                 val value =
                     preferencesManager
-                    .getLongPreference(key)
-                    .getOrNull()
-                    ?.toString()
-                    .orEmpty()
+                        .getLongPreference(key)
+                        .getOrNull()
+                        ?.toString()
+                        .orEmpty()
                 SettingRowUIModel.LongRow(
                     key = key,
                     label = descriptor.label,

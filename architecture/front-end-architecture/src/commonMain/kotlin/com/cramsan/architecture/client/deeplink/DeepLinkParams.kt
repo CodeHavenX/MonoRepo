@@ -15,15 +15,15 @@ data class DeepLinkParams(val rawInput: String, val params: Map<String, String>)
         fun parse(rawInput: String): DeepLinkParams {
             val paramStr =
                 when {
-                '#' in rawInput -> rawInput.substringAfter('#')
-                '?' in rawInput -> rawInput.substringAfter('?')
-                else -> rawInput
-            }
+                    '#' in rawInput -> rawInput.substringAfter('#')
+                    '?' in rawInput -> rawInput.substringAfter('?')
+                    else -> rawInput
+                }
             val params =
                 paramStr
-                .split('&')
-                .filter { '=' in it }
-                .associate { it.substringBefore('=') to it.substringAfter('=') }
+                    .split('&')
+                    .filter { '=' in it }
+                    .associate { it.substringBefore('=') to it.substringAfter('=') }
             return DeepLinkParams(rawInput, params)
         }
     }

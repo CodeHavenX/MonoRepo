@@ -1,50 +1,53 @@
 ---
 name: create-feature
-description: "Create a new feature screen in the Edifikana front-end app. Use when asked to create a new screen, feature, or UI component with ViewModel pattern."
+description: "Create a new feature screen in the front-end app. Use when asked to create a new screen, feature, or UI component with ViewModel pattern."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
-# Create Feature - Front-End Feature Generator
+# Create Feature
 
 ## Purpose
-This skill generates the boilerplate files for a new feature screen in our Kotlin Multiplatform front-end application following the established MVVM architecture pattern.
+Scaffold a new front-end feature screen (Screen, ViewModel, UIState, Event, Preview, ViewModelTest) by running `scripts/create-feature.sh`, then wiring up DI and navigation.
 
-## Required Information
-Before creating a feature, gather:
-1. **Feature name** (e.g., "SelectOrg", "AddProperty", "Notifications")
-2. **Parent folder**. This is the directory where the new package will be created. If the feature is named "AddProperty", the package will be named `addproperty`. So the parent folder could be `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/` for a path like `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/addproperty/`.
+## Step 1 — Gather information
 
-Provide the user with some examples of valid feature names and parent folders but DO NOT provide them with options to select from. 
+Ask the user for:
+- **Feature name** (PascalCase, e.g. `AddProperty`, `SelectOrg`)
+- **Parent folder** — the existing directory where the new feature package will be created.
+  The feature package name is the feature name lowercased. For example, feature `AddProperty`
+  with parent `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`
+  produces the package `com.cramsan.edifikana.client.lib.features.addproperty`.
 
-## Files to Create
+Provide a couple of examples of valid parent folders from the codebase but do NOT offer a fixed list to pick from.
 
-For a feature named `{FeatureName}` in package `{packagePath}`:
+## Step 2 — Run the script
 
-Look at the templates in `.idea/fileTemplates/Compose Feature*` and create each file by injecting the feature name and package path.
+```bash
+./scripts/create-feature.sh --name <FeatureName> --parent <parent-dir-path>
+```
 
-## Registration
+The script creates 6 files:
+- `<Name>Screen.kt` — Composable screen + `<Name>Destination` nav destination (commonMain)
+- `<Name>Event.kt` — sealed class of ViewModelEvents (commonMain)
+- `<Name>UIState.kt` — immutable UI state data class with `Initial` companion (commonMain)
+- `<Name>ViewModel.kt` — extends `BaseViewModel` (commonMain)
+- `<Name>Screen.preview.kt` — `@Preview` composable (commonMain)
+- `<Name>ViewModelTest.kt` — placed in the matching `jvmTest` source set
 
-After creating the files, run through the TODOs in the templates to complete each step. Some files may need to be moved, for example the
-test files should be moved to the test source set.
+## Step 3 — Apply DI registration
 
-## Verification
+The script prints a reminder like:
+```
+viewModelOf(::AddPropertyViewModel)
+```
+Read the appropriate `ViewModelModule.kt` (or platform-specific variant) and use the Edit tool to insert that line inside the `module { ... }` block.
 
-After creating all files, compile and run the tests to ensure everything is set up correctly.
+## Step 4 — Register the navigation destination
 
-## Examples
+Remind the user to register the `<Name>Destination` as a route in the relevant router composable.
 
-### Example 1: Creating "AddProperty" feature in home
-- Feature name: `AddProperty`
-- Parent folder: `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/`
+## Step 5 — Verify compilation
 
-- Creating feature `AddProperty` in package `com.cramsan.edifikana.client.lib.features.addproperty` 
-- Source folder is `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/addproperty/`
-- Files created:
-  - `AddPropertyScreen.kt`
-  - `AddPropertyViewModel.kt`
-  - `AddPropertyUIState.kt`
-  - `AddPropertyEvent.kt`
-  - `AddPropertyViewModelTest.kt`
-  - `AddPropertyScreen.preview.kt`
-
-- Completing tasks in the TODOs in each file.
+```bash
+./gradlew :<app>:front-end:shared-app:release --quiet
+```

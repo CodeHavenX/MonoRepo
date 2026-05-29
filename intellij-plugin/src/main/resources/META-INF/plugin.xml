@@ -1,0 +1,24 @@
+<idea-plugin>
+    <id>com.cramsan.dev-tools</id>
+    <name>Cramsan Dev Tools</name>
+    <version>1.0.0</version>
+    <vendor>Cramsan</vendor>
+
+    <description>Developer tools for the Cramsan MonoRepo: scaffold new components and apps from templates.</description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <actions>
+        <group id="com.cramsan.DevTools" text="Cramsan Dev Tools" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action id="CreateComponent"
+                    class="com.cramsan.plugin.CreateComponentAction"
+                    text="Create Component..."
+                    description="Scaffold a new back-end or front-end component"/>
+            <action id="CreateApp"
+                    class="com.cramsan.plugin.CreateAppAction"
+                    text="Create App..."
+                    description="Scaffold a new full-stack app from the template"/>
+        </group>
+    </actions>
+</idea-plugin>

@@ -1,0 +1,85 @@
+name: Build and Publish IntelliJ Plugin
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'intellij-plugin/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write  # create releases and push to gh-pages
+  pages: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.5"
+
+      - name: Extract plugin metadata
+        id: meta
+        run: |
+          VERSION=$(grep -E '^\s*version\s*=\s*"' intellij-plugin/build.gradle.kts | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "version=$VERSION"                              >> $GITHUB_OUTPUT
+          echo "tag=intellij-plugin-v$VERSION"                >> $GITHUB_OUTPUT
+          echo "zip=intellij-plugin-$VERSION.zip"             >> $GITHUB_OUTPUT
+
+      - name: Build plugin
+        working-directory: intellij-plugin
+        run: gradle buildPlugin
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.meta.outputs.tag }}"
+          ZIP="intellij-plugin/build/distributions/${{ steps.meta.outputs.zip }}"
+          if gh release view "$TAG" &>/dev/null; then
+            gh release upload "$TAG" "$ZIP" --clobber
+          else
+            gh release create "$TAG" "$ZIP" \
+              --title "IntelliJ Plugin v${{ steps.meta.outputs.version }}" \
+              --notes "Built from commit ${{ github.sha }}"
+          fi
+
+      - name: Generate updatePlugins.xml
+        run: |
+          mkdir -p pages
+          cat > pages/updatePlugins.xml << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <plugins>
+            <plugin
+              id="com.cramsan.dev-tools"
+              url="https://github.com/${{ github.repository }}/releases/download/${{ steps.meta.outputs.tag }}/${{ steps.meta.outputs.zip }}"
+              version="${{ steps.meta.outputs.version }}">
+              <idea-version since-build="243"/>
+              <description>
+                Developer tools for the Cramsan MonoRepo.
+                Scaffold new back-end components (controller, service, datastore),
+                front-end components (manager, service, feature), API contracts,
+                and entire new apps directly from the IDE.
+              </description>
+            </plugin>
+          </plugins>
+          EOF
+
+      - name: Deploy updatePlugins.xml to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: pages
+          force_orphan: true
+          commit_message: "Update plugin repository for v${{ steps.meta.outputs.version }}"

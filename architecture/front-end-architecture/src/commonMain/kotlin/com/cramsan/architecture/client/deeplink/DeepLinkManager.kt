@@ -11,8 +11,7 @@ import com.cramsan.framework.core.compose.navigation.Destination
  * layer and making the router reusable across projects.
  */
 @FrontendManager
-class DeepLinkRouter {
-
+class DeepLinkManager {
     private val handlers = mutableListOf<(DeepLinkParams) -> Destination?>()
 
     /**

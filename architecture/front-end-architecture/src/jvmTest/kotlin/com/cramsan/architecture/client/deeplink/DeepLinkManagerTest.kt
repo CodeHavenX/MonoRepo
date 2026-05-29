@@ -7,9 +7,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 /**
- * Unit tests for [DeepLinkRouter] and [DeepLinkParams].
+ * Unit tests for [DeepLinkManager] and [DeepLinkParams].
  */
-class DeepLinkRouterTest {
+class DeepLinkManagerTest {
 
     @Serializable
     private data object TestDestination : Destination
@@ -19,14 +19,14 @@ class DeepLinkRouterTest {
 
     @Test
     fun `resolve returns null when no handlers registered`() {
-        val router = DeepLinkRouter()
+        val router = DeepLinkManager()
 
         assertNull(router.resolve("edifikana://reset#type=recovery"))
     }
 
     @Test
     fun `resolve returns destination when handler matches`() {
-        val router = DeepLinkRouter()
+        val router = DeepLinkManager()
         router.register { params ->
             if (params.params["type"] == "recovery") TestDestination else null
         }
@@ -36,7 +36,7 @@ class DeepLinkRouterTest {
 
     @Test
     fun `resolve returns null when handler does not match`() {
-        val router = DeepLinkRouter()
+        val router = DeepLinkManager()
         router.register { params ->
             if (params.params["type"] == "recovery") TestDestination else null
         }
@@ -46,7 +46,7 @@ class DeepLinkRouterTest {
 
     @Test
     fun `resolve uses first matching handler when multiple are registered`() {
-        val router = DeepLinkRouter()
+        val router = DeepLinkManager()
         router.register { params ->
             if (params.params["type"] == "recovery") TestDestination else null
         }
@@ -57,7 +57,7 @@ class DeepLinkRouterTest {
 
     @Test
     fun `resolve falls through to second handler when first returns null`() {
-        val router = DeepLinkRouter()
+        val router = DeepLinkManager()
         router.register { null }
         router.register { OtherDestination }
 

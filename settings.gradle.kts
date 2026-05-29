@@ -111,5 +111,3 @@ include("flyerboard:front-end:app-wasm")
 include("flyerboard:front-end:app-jvm")
 
 include("detekt-rules")
-
-include("intellij-plugin")

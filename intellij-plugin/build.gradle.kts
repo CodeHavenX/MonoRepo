@@ -1,6 +1,13 @@
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "2.1.0"
     id("org.jetbrains.intellij.platform") version "2.3.0"
+}
+
+repositories {
+    mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 intellijPlatform {
@@ -14,6 +21,7 @@ intellijPlatform {
 dependencies {
     intellijPlatform {
         intellijIdeaCommunity("2024.3")
+        instrumentationTools()
     }
 }
 

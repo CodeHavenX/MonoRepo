@@ -17,6 +17,8 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.utils.shareContent
 import com.cramsan.framework.core.CoreUri
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.handleDeeplinks
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.compose.scope.KoinScope
@@ -28,6 +30,7 @@ import org.koin.core.annotation.KoinExperimentalAPI
 class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
 
     private val viewModel: EdifikanaWindowViewModel by inject()
+    private val supabase: SupabaseClient by inject()
 
     private val cameraLauncher = registerForActivityResult(CameraContract()) { filePath ->
         viewModel.handleReceivedImage(filePath?.let { CoreUri(it) })
@@ -54,6 +57,21 @@ class MainActivity : ComponentActivity(), EdifikanaMainScreenEventHandler {
                     )
                 }
             }
+        }
+        handleIncomingIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIncomingIntent(intent)
+    }
+
+    private fun handleIncomingIntent(intent: Intent) {
+        val uri = intent.data ?: return
+        if (uri.scheme != "edifikana") return
+        lifecycleScope.launch {
+            supabase.handleDeeplinks(intent)
+            viewModel.handleDeepLink(uri.toString())
         }
     }
 

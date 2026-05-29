@@ -21,7 +21,6 @@ intellijPlatform {
 dependencies {
     intellijPlatform {
         intellijIdeaCommunity("2024.3")
-        instrumentationTools()
     }
 }
 

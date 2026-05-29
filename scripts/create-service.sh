@@ -16,39 +16,22 @@ if [[ -z "$NAME" || -z "$APP" ]]; then
     exit 1
 fi
 
-to_pascal() {
-    echo "$1" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)} 1' | tr -d ' '
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/_common.sh"
 APP_PASCAL=$(to_pascal "$APP")
 NAME_LOWER=$(echo "$NAME" | awk '{print tolower(substr($0,1,1)) substr($0,2)}')
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-
-TMPL_SRC="$REPO_ROOT/templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/service/UserService.kt"
+TMPL="$REPO_ROOT/templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/service/UserService.kt"
 TMPL_TEST="$REPO_ROOT/templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/service/UserServiceTest.kt"
+DEST="$REPO_ROOT/$APP/back-end/src/main/kotlin/com/cramsan/$APP/server/service/${NAME}Service.kt"
+DEST_TEST="$REPO_ROOT/$APP/back-end/src/test/kotlin/com/cramsan/$APP/server/service/${NAME}ServiceTest.kt"
 
-DEST_DIR="$REPO_ROOT/$APP/back-end/src/main/kotlin/com/cramsan/$APP/server/service"
-DEST_TEST_DIR="$REPO_ROOT/$APP/back-end/src/test/kotlin/com/cramsan/$APP/server/service"
-
-apply_subs() {
-    local src="$1" dst="$2"
-    mkdir -p "$(dirname "$dst")"
-    cp "$src" "$dst"
-    sed -i \
-        -e "s/TemplateReplaceMe/$APP_PASCAL/g" \
-        -e "s/templatereplaceme/$APP/g" \
-        -e "s/User/$NAME/g" \
-        -e "s/user/$NAME_LOWER/g" \
-        "$dst"
-}
-
-apply_subs "$TMPL_SRC"  "$DEST_DIR/${NAME}Service.kt"
-apply_subs "$TMPL_TEST" "$DEST_TEST_DIR/${NAME}ServiceTest.kt"
+apply_subs "$TMPL"      "$DEST"
+apply_subs "$TMPL_TEST" "$DEST_TEST"
 
 echo "Created:"
-echo "  $DEST_DIR/${NAME}Service.kt"
-echo "  $DEST_TEST_DIR/${NAME}ServiceTest.kt"
+echo "  $DEST"
+echo "  $DEST_TEST"
 echo ""
 echo "# Add to $APP/back-end/src/main/kotlin/com/cramsan/$APP/server/dependencyinjection/ServicesModule.kt"
 echo "singleOf(::${NAME}Service)"

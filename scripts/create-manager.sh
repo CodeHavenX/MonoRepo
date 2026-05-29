@@ -16,35 +16,18 @@ if [[ -z "$NAME" || -z "$APP" ]]; then
     exit 1
 fi
 
-to_pascal() {
-    echo "$1" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)} 1' | tr -d ' '
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/_common.sh"
 APP_PASCAL=$(to_pascal "$APP")
 NAME_LOWER=$(echo "$NAME" | awk '{print tolower(substr($0,1,1)) substr($0,2)}')
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+TMPL="$REPO_ROOT/templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/managers/UserManager.kt"
+DEST="$REPO_ROOT/$APP/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$APP/client/lib/managers/${NAME}Manager.kt"
 
-TMPL_SRC="$REPO_ROOT/templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/managers/UserManager.kt"
-
-DEST_DIR="$REPO_ROOT/$APP/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$APP/client/lib/managers"
-
-apply_subs() {
-    local src="$1" dst="$2"
-    mkdir -p "$(dirname "$dst")"
-    cp "$src" "$dst"
-    sed -i \
-        -e "s/TemplateReplaceMe/$APP_PASCAL/g" \
-        -e "s/templatereplaceme/$APP/g" \
-        -e "s/User/$NAME/g" \
-        -e "s/user/$NAME_LOWER/g" \
-        "$dst"
-}
-
-apply_subs "$TMPL_SRC" "$DEST_DIR/${NAME}Manager.kt"
+apply_subs "$TMPL" "$DEST"
 
 echo "Created:"
-echo "  $DEST_DIR/${NAME}Manager.kt"
+echo "  $DEST"
 echo ""
 echo "# Add to $APP/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$APP/client/lib/di/ManagerModule.kt"
 echo "singleOf(::${NAME}Manager)"

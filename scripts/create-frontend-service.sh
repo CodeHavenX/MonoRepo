@@ -16,39 +16,22 @@ if [[ -z "$NAME" || -z "$APP" ]]; then
     exit 1
 fi
 
-to_pascal() {
-    echo "$1" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) substr($i,2)} 1' | tr -d ' '
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/_common.sh"
 APP_PASCAL=$(to_pascal "$APP")
 NAME_LOWER=$(echo "$NAME" | awk '{print tolower(substr($0,1,1)) substr($0,2)}')
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-
 TMPL_IFACE="$REPO_ROOT/templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/service/UserService.kt"
 TMPL_IMPL="$REPO_ROOT/templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/service/impl/UserServiceImpl.kt"
+DEST_IFACE="$REPO_ROOT/$APP/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$APP/client/lib/service/${NAME}Service.kt"
+DEST_IMPL="$REPO_ROOT/$APP/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$APP/client/lib/service/impl/${NAME}ServiceImpl.kt"
 
-DEST_DIR="$REPO_ROOT/$APP/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$APP/client/lib/service"
-DEST_IMPL_DIR="$DEST_DIR/impl"
-
-apply_subs() {
-    local src="$1" dst="$2"
-    mkdir -p "$(dirname "$dst")"
-    cp "$src" "$dst"
-    sed -i \
-        -e "s/TemplateReplaceMe/$APP_PASCAL/g" \
-        -e "s/templatereplaceme/$APP/g" \
-        -e "s/User/$NAME/g" \
-        -e "s/user/$NAME_LOWER/g" \
-        "$dst"
-}
-
-apply_subs "$TMPL_IFACE" "$DEST_DIR/${NAME}Service.kt"
-apply_subs "$TMPL_IMPL"  "$DEST_IMPL_DIR/${NAME}ServiceImpl.kt"
+apply_subs "$TMPL_IFACE" "$DEST_IFACE"
+apply_subs "$TMPL_IMPL"  "$DEST_IMPL"
 
 echo "Created:"
-echo "  $DEST_DIR/${NAME}Service.kt"
-echo "  $DEST_IMPL_DIR/${NAME}ServiceImpl.kt"
+echo "  $DEST_IFACE"
+echo "  $DEST_IMPL"
 echo ""
 echo "# Add to $APP/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$APP/client/lib/di/ServiceModule.kt"
 echo "singleOf(::${NAME}ServiceImpl) { bind<${NAME}Service>() }"

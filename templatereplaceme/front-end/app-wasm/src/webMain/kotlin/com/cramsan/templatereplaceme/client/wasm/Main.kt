@@ -18,10 +18,14 @@ import org.koin.compose.scope.KoinScope
  */
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    // Read the hash before entering composition so it is available as a stable parameter.
-    // TODO: Filter by your app's custom scheme before passing to handleDeepLink.
-    // TODO: If using Supabase Auth, the SDK auto-processes the hash during initialization.
-    //       Verify before adding an explicit session call.
+    // Capture the hash before entering composition. Calling handleDeepLink() inside a
+    // LaunchedEffect within KoinScope would fire before ObserveViewModelEvents' collector
+    // subscribes; with MutableSharedFlow(replay=0) the navigation event would be silently
+    // dropped. Passing it as a parameter and firing from inside WindowsContent (after
+    // ObserveViewModelEvents) guarantees the collector is active first.
+    // TODO: Filter by your app's custom URI scheme before passing to handleDeepLink.
+    // TODO: If using Supabase Auth, the SDK may auto-process the hash during init —
+    //       verify before adding an explicit session call here.
     val initialDeepLink = window.location.hash.takeIf { it.isNotEmpty() }
 
     onWasmReady {

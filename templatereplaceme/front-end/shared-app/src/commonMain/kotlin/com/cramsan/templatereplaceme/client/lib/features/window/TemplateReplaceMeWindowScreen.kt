@@ -65,6 +65,11 @@ private fun WindowsContent(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Guards against calling navController.navigate() before NavHost calls setGraph().
+    // NavHost's internal LaunchedEffect sets the graph during composition, but
+    // LaunchedEffect(initialDeepLink) below can fire first because it is higher in the tree.
+    // Any navigation action that arrives before the graph is ready is stored here and
+    // drained once currentBackStackEntry becomes non-null (i.e. the graph is set).
     var pendingNavAction by remember { mutableStateOf<(() -> Unit)?>(null) }
 
     LaunchedEffect(navController.currentBackStackEntry, pendingNavAction) {
@@ -98,6 +103,9 @@ private fun WindowsContent(
         }
     }
 
+    // Intentionally placed after ObserveViewModelEvents. Compose launches effects in
+    // composition order, so the event collector above is guaranteed to reach its collect
+    // suspend point before this effect calls handleDeepLink and emits a navigation event.
     LaunchedEffect(initialDeepLink) {
         if (initialDeepLink != null) {
             viewModel.handleDeepLink(initialDeepLink)

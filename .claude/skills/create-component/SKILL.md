@@ -1,6 +1,6 @@
 ---
 name: create-component
-description: "Create a new back-end or front-end component (controller, service, datastore, manager, frontend-service, api) by running the matching generator script and wiring up DI."
+description: "Create a new back-end or front-end component (controller, service, datastore, manager, frontend-service, api) by running the devtools CLI and wiring up DI."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
@@ -18,16 +18,16 @@ Ask the user for:
 - **Provider** (required only when type = `datastore`, e.g. `Supabase`)
 - **Parent folder** (required only when type = `feature`, e.g. `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`)
 
-## Step 2 — Run the script
+## Step 2 — Run the CLI
 
 For all types except `feature`:
 ```bash
-./scripts/create-<type>.sh --name <Name> --app <app> [--provider <Provider>]
+./scripts/devtools create <type> --name <Name> --app <app> [--provider <Provider>]
 ```
 
 For `feature` type:
 ```bash
-./scripts/create-feature.sh --name <Name> --parent <parent-dir-path>
+./scripts/devtools create feature --name <Name> --parent <parent-dir-path>
 ```
 
 Capture stdout — it includes the list of created files and a DI/navigation registration hint.

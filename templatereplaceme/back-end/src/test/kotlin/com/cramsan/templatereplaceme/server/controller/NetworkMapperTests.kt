@@ -1,23 +1,23 @@
 package com.cramsan.templatereplaceme.server.controller
 
-import com.cramsan.templatereplaceme.lib.model.UserId
-import com.cramsan.templatereplaceme.server.service.models.User
+import com.cramsan.templatereplaceme.lib.model.PingPong
+import com.cramsan.templatereplaceme.server.service.models.Pong
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class NetworkMapperTests {
     @Test
-    fun `test user network response`() {
+    fun `test pong network response`() {
         // Arrange
-        val user =
-            User(
-                id = UserId("user123"),
+        val pong =
+            Pong(
+                id = PingPong("user123"),
                 firstName = "John",
                 lastName = "Doe",
             )
 
         // Act
-        val networkResponse = user.toUserNetworkResponse()
+        val networkResponse = pong.toUserNetworkResponse()
 
         // Assert
         assertEquals("user123", networkResponse.id)

@@ -110,4 +110,7 @@ include("flyerboard:front-end:shared-app")
 include("flyerboard:front-end:app-wasm")
 include("flyerboard:front-end:app-jvm")
 
+include("devtools:core")
+include("devtools:cli")
+
 include("detekt-rules")

@@ -1,16 +1,16 @@
 package com.cramsan.templatereplaceme.server.controller
 
 import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.templatereplaceme.lib.model.network.UserNetworkResponse
-import com.cramsan.templatereplaceme.server.service.models.User
+import com.cramsan.templatereplaceme.lib.model.network.PongNetworkResponse
+import com.cramsan.templatereplaceme.server.service.models.Pong
 
 /**
- * Maps a [User] domain model to a [UserNetworkResponse] network model.
+ * Maps a [Pong] domain model to a [PongNetworkResponse] network model.
  */
 @NetworkModel
-fun User.toUserNetworkResponse(): UserNetworkResponse {
-    return UserNetworkResponse(
-        id = id.userId,
+fun Pong.toUserNetworkResponse(): PongNetworkResponse {
+    return PongNetworkResponse(
+        id = id.id,
         firstName = firstName,
         lastName = lastName,
     )

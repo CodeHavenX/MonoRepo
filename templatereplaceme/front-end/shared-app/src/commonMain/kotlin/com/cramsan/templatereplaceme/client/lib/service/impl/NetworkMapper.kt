@@ -1,16 +1,16 @@
 package com.cramsan.templatereplaceme.client.lib.service.impl
 
 import com.cramsan.templatereplaceme.client.lib.models.UserModel
-import com.cramsan.templatereplaceme.lib.model.UserId
-import com.cramsan.templatereplaceme.lib.model.network.UserNetworkResponse
+import com.cramsan.templatereplaceme.lib.model.PingPong
+import com.cramsan.templatereplaceme.lib.model.network.PongNetworkResponse
 
 /**
- * Maps a [UserNetworkResponse] network model to a [UserModel] domain model.
+ * Maps a [PongNetworkResponse] network model to a [UserModel] domain model.
  */
 
-fun UserNetworkResponse.toUserModel(): UserModel {
+fun PongNetworkResponse.toUserModel(): UserModel {
     return UserModel(
-        id = UserId(this.id),
+        id = PingPong(this.id),
         firstName = this.firstName,
         lastName = this.lastName,
     )

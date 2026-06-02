@@ -4,10 +4,10 @@ import com.cramsan.architecture.client.service.execute
 import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
-import com.cramsan.templatereplaceme.api.UserApi
+import com.cramsan.templatereplaceme.api.PingPonApi
 import com.cramsan.templatereplaceme.client.lib.models.UserModel
 import com.cramsan.templatereplaceme.client.lib.service.UserService
-import com.cramsan.templatereplaceme.lib.model.network.CreateUserNetworkRequest
+import com.cramsan.templatereplaceme.lib.model.network.PingNetworkRequest
 import io.ktor.client.HttpClient
 
 /**
@@ -21,9 +21,9 @@ class UserServiceImpl(private val http: HttpClient) : UserService {
     ): Result<UserModel> =
         runSuspendCatching(TAG) {
             val response =
-                UserApi.createUser
+                PingPonApi.ping
                     .buildRequest(
-                        CreateUserNetworkRequest(
+                        PingNetworkRequest(
                             firstName = firstName,
                             lastName = lastName,
                         ),

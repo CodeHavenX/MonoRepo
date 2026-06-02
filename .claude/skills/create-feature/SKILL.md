@@ -1,13 +1,13 @@
 ---
 name: create-feature
-description: "Create a new feature screen in the front-end app. Use when asked to create a new screen, feature, or UI component with ViewModel pattern."
+description: "Create a new feature screen in the front-end app. Use when asked to create a new screen, feature, or UI component with ViewModel pattern. Uses the devtools CLI."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # Create Feature
 
 ## Purpose
-Scaffold a new front-end feature screen (Screen, ViewModel, UIState, Event, Preview, ViewModelTest) by running `scripts/create-feature.sh`, then wiring up DI and navigation.
+Scaffold a new front-end feature screen (Screen, ViewModel, UIState, Event, Preview, ViewModelTest) using the devtools CLI, then wiring up DI and navigation. Templates are embedded in the devtools JAR — no `.idea/fileTemplates` dependency.
 
 ## Step 1 — Gather information
 
@@ -20,10 +20,10 @@ Ask the user for:
 
 Provide a couple of examples of valid parent folders from the codebase but do NOT offer a fixed list to pick from.
 
-## Step 2 — Run the script
+## Step 2 — Run the CLI
 
 ```bash
-./scripts/create-feature.sh --name <FeatureName> --parent <parent-dir-path>
+./scripts/devtools create feature --name <FeatureName> --parent <parent-dir-path>
 ```
 
 The script creates 6 files:

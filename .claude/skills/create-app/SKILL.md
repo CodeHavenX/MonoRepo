@@ -7,7 +7,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 # Create App
 
 ## Purpose
-Generate a new full-stack app (back-end + front-end) from the `templatereplaceme/` template by running `scripts/create-app.sh`.
+Generate a new full-stack app (back-end + front-end) from the `templatereplaceme/` template by running the `devtools` CLI.
 
 ## Step 1 — Gather information
 
@@ -16,10 +16,10 @@ Ask the user for:
 - **Display name** (PascalCase, e.g. `Payments`) — used in class names and UI labels
 - **Platforms to exclude** (optional): `--no-wasm`, `--no-android`, `--no-jvm`
 
-## Step 2 — Run the script
+## Step 2 — Run the CLI
 
 ```bash
-./scripts/create-app.sh --name <appname> --display <DisplayName> [--no-wasm] [--no-android] [--no-jvm]
+./scripts/devtools create app --name <appname> --display <DisplayName> [--no-wasm] [--no-android] [--no-jvm]
 ```
 
 ## Step 3 — Display the post-generation checklist

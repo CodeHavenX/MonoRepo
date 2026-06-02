@@ -167,5 +167,7 @@ tasks.register("releaseAll") {
     dependsOn("flyerboard:front-end:app-wasm:release")
 
     dependsOn("detekt-rules:release")
+    dependsOn("devtools:core:release")
+    dependsOn("devtools:cli:release")
     dependsOn("generateBuildArtifacts")
 }

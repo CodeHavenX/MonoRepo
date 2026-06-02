@@ -48,7 +48,7 @@ class PingPongServiceTest {
     }
 
     /**
-     * Tests that createUser creates a transient user.
+     * Tests that ping returns a pong.
      */
     @Test
     fun `ping should return a pong`() =

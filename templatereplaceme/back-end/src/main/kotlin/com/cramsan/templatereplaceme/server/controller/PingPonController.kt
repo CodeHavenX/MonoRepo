@@ -31,7 +31,7 @@ class PingPonController(private val pingPongService: PingPongService, private va
                 lastName = pingNetworkRequest.lastName,
             )
 
-        return pong.getOrThrow().toUserNetworkResponse()
+        return pong.getOrThrow().toPongNetworkResponse()
     }
 
     override fun registerRoutes(route: Routing) {

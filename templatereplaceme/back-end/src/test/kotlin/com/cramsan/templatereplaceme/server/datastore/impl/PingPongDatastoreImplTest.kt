@@ -8,11 +8,11 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PingPongDatastoreImplTest : CoroutineTest() {
-    lateinit var userDatastore: ExamplePingPongDatastore
+    lateinit var pingpongDatastore: ExamplePingPongDatastore
 
     @BeforeTest
     fun setUp() {
-        userDatastore = ExamplePingPongDatastore()
+        pingpongDatastore = ExamplePingPongDatastore()
     }
 
     @Test
@@ -21,18 +21,18 @@ class PingPongDatastoreImplTest : CoroutineTest() {
             // Arrange
 
             // Act
-            val user =
-                userDatastore.ping(
+            val pongResponse =
+                pingpongDatastore.ping(
                     firstName = "John",
                     lastName = "Doe",
                 )
 
             // Assert
-            assertTrue(user.isSuccess)
-            val createdUser = user.getOrNull()
-            assertNotNull(createdUser)
-            assertEquals("John", createdUser.firstName)
-            assertEquals("Doe", createdUser.lastName)
-            assertNotNull(createdUser.id)
+            assertTrue(pongResponse.isSuccess)
+            val pong = pongResponse.getOrNull()
+            assertNotNull(pong)
+            assertEquals("John", pong.firstName)
+            assertEquals("Doe", pong.lastName)
+            assertNotNull(pong.id)
         }
 }

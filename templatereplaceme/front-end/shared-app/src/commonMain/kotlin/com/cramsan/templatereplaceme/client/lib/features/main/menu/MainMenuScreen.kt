@@ -27,9 +27,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import templatereplaceme_lib.Res
-import templatereplaceme_lib.main_menu_screen_text_create_account
 import templatereplaceme_lib.main_menu_screen_text_first_name
 import templatereplaceme_lib.main_menu_screen_text_last_name
+import templatereplaceme_lib.main_menu_screen_text_ping_request
 
 /**
  * Sign In screen
@@ -60,7 +60,7 @@ fun MainMenuScreen(
         onFirstnameValueChange = { viewModel.changeFirstNameValue(it) },
         onLastNameValueChange = { viewModel.changeLastNameValue(it) },
         onMultiWindowToggled = { applicationViewModel.setShowDebugWindow(it) },
-        onClicked = { viewModel.createAccount() },
+        onClicked = { viewModel.ping() },
     )
 }
 
@@ -105,7 +105,7 @@ internal fun MainMenuContent(
                         modifier = modifier,
                     ) {
                         Text(
-                            stringResource(Res.string.main_menu_screen_text_create_account),
+                            stringResource(Res.string.main_menu_screen_text_ping_request),
                         )
                     }
                 },

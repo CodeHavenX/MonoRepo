@@ -8,7 +8,7 @@ import com.cramsan.templatereplaceme.server.service.models.Pong
  * Maps a [Pong] domain model to a [PongNetworkResponse] network model.
  */
 @NetworkModel
-fun Pong.toUserNetworkResponse(): PongNetworkResponse {
+fun Pong.toPongNetworkResponse(): PongNetworkResponse {
     return PongNetworkResponse(
         id = id.id,
         firstName = firstName,

@@ -4,12 +4,13 @@ import com.cramsan.architecture.client.deeplink.DeepLinkManager
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.templatereplaceme.client.lib.features.main.MainDestination
 import com.cramsan.templatereplaceme.client.lib.managers.UserManager
+import com.cramsan.templatereplaceme.client.lib.managers.PingPongManager
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 internal val ManagerModule =
     module {
-        singleOf(::UserManager)
+        singleOf(::PingPongManager)
         singleOf(::PreferencesManager)
 
         // Example deep link handler for WASM testing: open http://localhost:8080/#type=demo

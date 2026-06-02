@@ -1,18 +1,18 @@
 package com.cramsan.templatereplaceme.client.lib.service
 
 import com.cramsan.framework.annotations.FrontendService
-import com.cramsan.templatereplaceme.client.lib.models.UserModel
+import com.cramsan.templatereplaceme.client.lib.models.PongModel
 
 /**
- * Service to manage users.
+ * Service to for the ping pong api.
  */
 @FrontendService
-interface UserService {
+interface PingPongService {
     /**
-     * Create a new user.
+     * Make a ping request.
      */
-    suspend fun createUser(
+    suspend fun ping(
         firstName: String,
         lastName: String,
-    ): Result<UserModel>
+    ): Result<PongModel>
 }

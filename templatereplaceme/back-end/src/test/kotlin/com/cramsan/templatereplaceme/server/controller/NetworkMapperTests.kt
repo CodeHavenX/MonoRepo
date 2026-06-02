@@ -17,7 +17,7 @@ class NetworkMapperTests {
             )
 
         // Act
-        val networkResponse = pong.toUserNetworkResponse()
+        val networkResponse = pong.toPongNetworkResponse()
 
         // Assert
         assertEquals("user123", networkResponse.id)

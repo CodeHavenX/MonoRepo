@@ -2,7 +2,7 @@ package com.cramsan.templatereplaceme.server.dependencyinjection
 
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
-import com.cramsan.templatereplaceme.server.controller.PingPonController
+import com.cramsan.templatereplaceme.server.controller.PingPongController
 import com.cramsan.templatereplaceme.server.service.PingPongService
 import io.mockk.mockk
 import kotlinx.serialization.json.Json
@@ -24,7 +24,7 @@ internal fun testApplicationModule(json: Json) =
  */
 internal val TestControllerModule =
     module {
-        singleOf(::PingPonController) {
+        singleOf(::PingPongController) {
             bind<Controller>()
         }
     }

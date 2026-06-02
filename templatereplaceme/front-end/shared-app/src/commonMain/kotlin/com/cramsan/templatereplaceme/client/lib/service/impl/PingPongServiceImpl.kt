@@ -4,7 +4,7 @@ import com.cramsan.architecture.client.service.execute
 import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.networkapi.buildRequest
-import com.cramsan.templatereplaceme.api.PingPonApi
+import com.cramsan.templatereplaceme.api.PingPongApi
 import com.cramsan.templatereplaceme.client.lib.models.PongModel
 import com.cramsan.templatereplaceme.client.lib.service.PingPongService
 import com.cramsan.templatereplaceme.lib.model.network.PingNetworkRequest
@@ -21,7 +21,7 @@ class PingPongServiceImpl(private val http: HttpClient) : PingPongService {
     ): Result<PongModel> =
         runSuspendCatching(TAG) {
             val response =
-                PingPonApi.ping
+                PingPongApi.ping
                     .buildRequest(
                         PingNetworkRequest(
                             firstName = firstName,

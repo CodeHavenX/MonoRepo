@@ -11,10 +11,7 @@ import com.cramsan.templatereplaceme.server.settings.TemplateReplaceMeSettingKey
  * Example of PingPong service .
  */
 @BackendService
-class PingPongService(
-    private val pingPongDatastore: PingPongDatastore,
-    private val settingsHolder: SettingsHolder,
-) {
+class PingPongService(private val pingPongDatastore: PingPongDatastore, private val settingsHolder: SettingsHolder) {
     /**
      * Ping operation that responds with a pong.
      *

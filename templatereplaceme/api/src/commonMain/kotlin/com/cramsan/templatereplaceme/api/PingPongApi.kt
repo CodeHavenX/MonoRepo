@@ -10,8 +10,11 @@ import io.ktor.http.HttpMethod
 /**
  * Singleton object representing the PingPong API.
  */
-
-object PingPonApi : Api("ping") {
+object PingPongApi : Api("ping") {
+    /**
+     * HTTP POST operation at route `"ping"`.
+     * Accepts a [PingNetworkRequest] body and returns a [PongNetworkResponse].
+     */
     val ping =
         operation<
             PingNetworkRequest,

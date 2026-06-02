@@ -19,6 +19,9 @@ import org.koin.compose.scope.KoinScope
  */
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
+    // Read the hash before entering composition so it is available as a stable parameter.
+    val initialDeepLink = window.location.hash.takeIf { it.isNotEmpty() }
+
     onWasmReady {
         ComposeViewport {
             ComposableKoinContext {
@@ -32,16 +35,10 @@ fun main() {
                 KoinScope<String>("root-window") {
                     val windowViewModel: EdifikanaWindowViewModel = koinInject()
 
-                    LaunchedEffect(Unit) {
-                        val hash = window.location.hash
-                        if (hash.isNotEmpty()) {
-                            windowViewModel.handleDeepLink(hash)
-                        }
-                    }
-
                     EdifikanaWindowScreen(
                         eventHandler = eventHandler,
                         viewModel = windowViewModel,
+                        initialDeepLink = initialDeepLink,
                     )
                 }
             }

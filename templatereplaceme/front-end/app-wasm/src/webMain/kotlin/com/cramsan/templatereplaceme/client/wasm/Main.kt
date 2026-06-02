@@ -8,7 +8,6 @@ import com.cramsan.templatereplaceme.client.lib.features.application.TemplateRep
 import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeWasmMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.features.window.ComposableKoinContext
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowScreen
-import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowViewModel
 import kotlinx.browser.window
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.koin.compose.koinInject
@@ -19,6 +18,12 @@ import org.koin.compose.scope.KoinScope
  */
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
+    // Read the hash before entering composition so it is available as a stable parameter.
+    // TODO: Filter by your app's custom scheme before passing to handleDeepLink.
+    // TODO: If using Supabase Auth, the SDK auto-processes the hash during initialization.
+    //       Verify before adding an explicit session call.
+    val initialDeepLink = window.location.hash.takeIf { it.isNotEmpty() }
+
     onWasmReady {
         ComposeViewport {
             ComposableKoinContext {
@@ -30,20 +35,9 @@ fun main() {
                 }
 
                 KoinScope<String>("root-window") {
-                    val windowViewModel: TemplateReplaceMeWindowViewModel = koinInject()
-
-                    LaunchedEffect(Unit) {
-                        // TODO: Filter by your app's custom scheme before calling handleDeepLink.
-                        // TODO: If using Supabase Auth, the SDK auto-processes the hash during
-                        //       initialization. Verify before adding an explicit session call.
-                        val hash = window.location.hash
-                        if (hash.isNotEmpty()) {
-                            windowViewModel.handleDeepLink(hash)
-                        }
-                    }
-
                     TemplateReplaceMeWindowScreen(
                         eventHandler = eventHandler,
+                        initialDeepLink = initialDeepLink,
                     )
                 }
             }

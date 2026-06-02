@@ -14,10 +14,7 @@ import io.ktor.client.HttpClient
  * Implementation of [PingPongService].
  */
 @FrontendService
-class PingPongServiceImpl(
-    private val http: HttpClient,
-) : PingPongService {
-
+class PingPongServiceImpl(private val http: HttpClient) : PingPongService {
     override suspend fun ping(
         firstName: String,
         lastName: String,

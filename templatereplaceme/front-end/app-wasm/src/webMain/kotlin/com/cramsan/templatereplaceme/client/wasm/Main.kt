@@ -4,13 +4,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
-import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationViewModel
-import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeWasmMainScreenEventHandler
+import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationViewModel
+import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeWasmMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.features.window.ComposableKoinContext
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowScreen
 import kotlinx.browser.window
 import org.jetbrains.skiko.wasm.onWasmReady
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.compose.scope.KoinScope
 
 /**
@@ -31,7 +31,7 @@ fun main() {
     onWasmReady {
         ComposeViewport {
             ComposableKoinContext {
-                val processViewModel: TemplateReplaceMeApplicationViewModel = koinInject()
+                val processViewModel: TemplateReplaceMeApplicationViewModel = koinViewModel()
                 val eventHandler = remember { TemplateReplaceMeWasmMainScreenEventHandler() }
 
                 LaunchedEffect(Unit) {

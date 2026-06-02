@@ -22,7 +22,10 @@ fun AppTheme(
 
     WindowDecorations(colorScheme, darkTheme)
 
-    CompositionLocalProvider(LocalDebugLayoutInspection provides debugLayoutInspection) {
+    CompositionLocalProvider(
+        LocalDebugLayoutInspection provides debugLayoutInspection,
+        LocalSpacing provides Spacing(),
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             content = content,

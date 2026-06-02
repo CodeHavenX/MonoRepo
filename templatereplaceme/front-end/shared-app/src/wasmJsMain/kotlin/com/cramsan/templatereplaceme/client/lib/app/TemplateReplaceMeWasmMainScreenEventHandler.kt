@@ -1,10 +1,10 @@
-package com.cramsan.templatereplaceme.client.lib.features.application
+package com.cramsan.templatereplaceme.client.lib.app
 
 import com.cramsan.framework.logging.logE
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowsEvent
 
 /**
- * Main screen event handler for JVM.
+ * Main screen event handler for Wasm.
  */
 class TemplateReplaceMeWasmMainScreenEventHandler : TemplateReplaceMeApplicationMainScreenEventHandler {
     override fun shareContent(event: TemplateReplaceMeWindowsEvent.ShareContent) {

@@ -11,10 +11,7 @@ import com.cramsan.templatereplaceme.client.lib.service.PingPongService
  * Manager to handle ping pong operations.
  */
 @FrontendManager
-class PingPongManager(
-    private val dependencies: ManagerDependencies,
-    private val authService: PingPongService,
-) {
+class PingPongManager(private val dependencies: ManagerDependencies, private val authService: PingPongService) {
     /**
      * Make a ping request.
      */

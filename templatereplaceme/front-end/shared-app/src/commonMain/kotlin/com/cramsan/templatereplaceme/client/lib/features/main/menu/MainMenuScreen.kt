@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -16,15 +17,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
-import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationViewModel
+import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationViewModel
+import com.cramsan.templatereplaceme.client.ui.theme.spacing
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import templatereplaceme_lib.Res
 import templatereplaceme_lib.main_menu_screen_text_first_name
@@ -37,7 +37,7 @@ import templatereplaceme_lib.main_menu_screen_text_ping_request
 @Composable
 fun MainMenuScreen(
     viewModel: MainMenuViewModel = koinViewModel(),
-    applicationViewModel: TemplateReplaceMeApplicationViewModel = koinInject(),
+    applicationViewModel: TemplateReplaceMeApplicationViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -115,11 +115,11 @@ internal fun MainMenuContent(
                 contentAlignment = Alignment.Center,
             )
             Row(
-                modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),
+                modifier = Modifier.align(Alignment.TopEnd).padding(MaterialTheme.spacing.medium),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text("Multi-window")
-                Spacer(Modifier.width(4.dp))
+                Spacer(Modifier.width(MaterialTheme.spacing.extraSmall))
                 Switch(
                     checked = isMultiWindowEnabled,
                     onCheckedChange = onMultiWindowToggled,

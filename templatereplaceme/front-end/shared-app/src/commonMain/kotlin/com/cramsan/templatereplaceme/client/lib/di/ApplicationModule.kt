@@ -6,10 +6,9 @@ import com.cramsan.architecture.client.di.WindowIdentifier
 import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
-import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationViewModel
+import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationViewModel
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowDelegatedEvent
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowViewModel
-import com.cramsan.templatereplaceme.client.lib.init.Initializer
 import com.cramsan.templatereplaceme.lib.serialization.createJson
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.viewModel
@@ -21,10 +20,6 @@ internal val ApplicationModule =
     module {
 
         single<String>(named(NamedDependency.DOMAIN_KEY)) { "TEMPLATE_REPLACE_ME" }
-
-        single {
-            Initializer()
-        }
 
         single {
             createJson()
@@ -48,7 +43,7 @@ internal val ApplicationModule =
             }
         }
 
-        single {
+        viewModel {
             TemplateReplaceMeApplicationViewModel(
                 get(),
                 get(named(ApplicationIdentifier.VIEW_MODEL_DEPENDENCIES)),

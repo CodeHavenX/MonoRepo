@@ -4,12 +4,14 @@ import com.cramsan.architecture.client.deeplink.DeepLinkManager
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.templatereplaceme.client.lib.features.main.MainDestination
 import com.cramsan.templatereplaceme.client.lib.managers.UserManager
+import com.cramsan.templatereplaceme.client.lib.managers.InitializerManager
 import com.cramsan.templatereplaceme.client.lib.managers.PingPongManager
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 internal val ManagerModule =
     module {
+        singleOf(::InitializerManager)
         singleOf(::PingPongManager)
         singleOf(::PreferencesManager)
 

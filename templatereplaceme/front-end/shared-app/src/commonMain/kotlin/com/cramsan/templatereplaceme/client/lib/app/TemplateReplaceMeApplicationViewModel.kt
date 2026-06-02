@@ -1,9 +1,9 @@
-package com.cramsan.templatereplaceme.client.lib.features.application
+package com.cramsan.templatereplaceme.client.lib.app
 
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.templatereplaceme.client.lib.init.Initializer
+import com.cramsan.templatereplaceme.client.lib.managers.InitializerManager
 import kotlinx.coroutines.launch
 
 /**
@@ -11,11 +11,11 @@ import kotlinx.coroutines.launch
  */
 @FrontendViewModel
 class TemplateReplaceMeApplicationViewModel(
-    private val initHandler: Initializer,
+    private val initHandler: InitializerManager,
     dependencies: ViewModelDependencies,
 ) : BaseViewModel<TemplateReplaceMeApplicationViewModelEvent, TemplateReplaceMeApplicationUIState>(
     dependencies,
-    TemplateReplaceMeApplicationUIState(),
+    TemplateReplaceMeApplicationUIState.Initial,
     TAG,
 ) {
     /**

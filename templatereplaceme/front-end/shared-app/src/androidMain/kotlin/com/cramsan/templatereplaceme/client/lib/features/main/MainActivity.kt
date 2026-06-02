@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.LaunchedEffect
+import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationMainScreenEventHandler
+import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationViewModel
 import androidx.lifecycle.lifecycleScope
 import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.features.window.ComposableKoinContext
@@ -13,6 +16,7 @@ import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceM
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.compose.scope.KoinScope
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 /**
@@ -28,6 +32,10 @@ class MainActivity : ComponentActivity(), TemplateReplaceMeApplicationMainScreen
         super.onCreate(savedInstanceState)
         setContent {
             ComposableKoinContext {
+                val processViewModel: TemplateReplaceMeApplicationViewModel = koinViewModel()
+                LaunchedEffect(Unit) {
+                    processViewModel.initialize()
+                }
                 KoinScope<String>("root-window") {
                     TemplateReplaceMeWindowScreen(
                         eventHandler = this,

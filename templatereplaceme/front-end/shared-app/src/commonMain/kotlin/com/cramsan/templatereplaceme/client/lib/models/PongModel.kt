@@ -5,8 +5,4 @@ import com.cramsan.templatereplaceme.lib.model.PingPong
 /**
  * Model for a Pong.
  */
-data class PongModel(
-    val id: PingPong,
-    val firstName: String,
-    val lastName: String,
-)
+data class PongModel(val id: PingPong, val firstName: String, val lastName: String)

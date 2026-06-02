@@ -1,4 +1,4 @@
-package com.cramsan.templatereplaceme.client.lib.features.application
+package com.cramsan.templatereplaceme.client.lib.app
 
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -10,7 +10,7 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
-import com.cramsan.templatereplaceme.client.lib.init.Initializer
+import com.cramsan.templatereplaceme.client.lib.managers.InitializerManager
 import io.mockk.mockk
 import io.mockk.verify
 import kotlin.test.BeforeTest
@@ -24,7 +24,7 @@ import kotlin.test.assertTrue
 class TemplateReplaceMeApplicationViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: TemplateReplaceMeApplicationViewModel
-    private lateinit var initializer: Initializer
+    private lateinit var initializer: InitializerManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
@@ -35,7 +35,7 @@ class TemplateReplaceMeApplicationViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
-        initializer = mockk(relaxed = true)
+        initializer = mockk<InitializerManager>(relaxed = true)
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),

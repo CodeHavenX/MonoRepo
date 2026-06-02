@@ -1,4 +1,4 @@
-package com.cramsan.templatereplaceme.client.lib.features.application
+package com.cramsan.templatereplaceme.client.lib.app
 
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowsEvent
 

@@ -17,12 +17,11 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
-import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationMainScreenEventHandler
+import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.features.main.mainNavGraphNavigation
-import com.cramsan.templatereplaceme.client.lib.features.splash.SplashScreen
+import com.cramsan.templatereplaceme.client.lib.features.splash.splashNavGraphNavigation
 import com.cramsan.templatereplaceme.client.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -237,9 +236,7 @@ private fun WindowNavigationHost(
         enterTransition = { fadeIn(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
         exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {
-        composable(TemplateReplaceMeWindowNavGraphDestination.SplashNavGraphDestination::class) {
-            SplashScreen()
-        }
+        splashNavGraphNavigation(typeMap)
         mainNavGraphNavigation(typeMap)
     }
 }

@@ -9,11 +9,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationViewModel
-import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeJvmMainScreenEventHandler
+import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationViewModel
+import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeJvmMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.features.window.ComposableKoinContext
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowScreen
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.compose.scope.KoinScope
 import org.koin.core.annotation.KoinExperimentalAPI
 
@@ -24,7 +24,7 @@ import org.koin.core.annotation.KoinExperimentalAPI
 fun main() =
     application {
         ComposableKoinContext {
-            val processViewModel: TemplateReplaceMeApplicationViewModel = koinInject()
+            val processViewModel: TemplateReplaceMeApplicationViewModel = koinViewModel()
             val eventHandler = remember { TemplateReplaceMeJvmMainScreenEventHandler() }
             val appState by processViewModel.uiState.collectAsState()
 

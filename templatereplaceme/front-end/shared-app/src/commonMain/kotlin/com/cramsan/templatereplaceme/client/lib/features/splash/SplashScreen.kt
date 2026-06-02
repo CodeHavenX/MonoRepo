@@ -10,8 +10,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
+import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
+
+/**
+ * Typed navigation destination for the Splash screen.
+ */
+@Serializable
+data object SplashDestination : Destination
 
 /**
  * Splash screen.

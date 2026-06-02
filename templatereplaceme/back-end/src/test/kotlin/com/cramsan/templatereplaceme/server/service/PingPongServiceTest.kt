@@ -4,84 +4,57 @@ import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.templatereplaceme.lib.model.PingPong
-import com.cramsan.templatereplaceme.server.datastore.PingPongDatastore
-import com.cramsan.templatereplaceme.server.service.models.Pong
-import io.mockk.coEvery
-import io.mockk.coVerify
+import com.cramsan.framework.test.CoroutineTest
+import com.cramsan.templatereplaceme.server.datastore.impl.ExamplePingPongDatastore
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.koin.core.context.stopKoin
-import kotlin.test.AfterTest
-import kotlin.time.ExperimentalTime
+import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 /**
  * Test class for [PingPongService].
  */
-@OptIn(ExperimentalTime::class)
-class PingPongServiceTest {
-    private lateinit var pingPongDatastore: PingPongDatastore
+class PingPongServiceTest : CoroutineTest() {
     private lateinit var pingPongService: PingPongService
-
     private lateinit var settingsHolder: SettingsHolder
 
     /**
-     * Sets up the test environment by initializing mocks for [PingPongDatastore] and [pingPongService].
+     * Sets up the test environment using [ExamplePingPongDatastore] as the real in-memory datastore.
      */
-    @BeforeEach
+    @BeforeTest
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        pingPongDatastore = mockk()
-        settingsHolder = mockk()
-        pingPongService = PingPongService(pingPongDatastore, settingsHolder)
+        settingsHolder = mockk(relaxed = true)
+        pingPongService = PingPongService(ExamplePingPongDatastore(), settingsHolder)
     }
 
     /**
-     * Cleans up the test environment by stopping Koin.
-     */
-    @AfterTest
-    fun cleanUp() {
-        stopKoin()
-    }
-
-    /**
-     * Tests that ping returns a pong.
+     * Tests that ping returns a successful pong with the names passed in.
      */
     @Test
-    fun `ping should return a pong`() =
-        runTest {
-            // Arrange
-            val firstName = "John"
-            val lastName = "Doe"
-            val pong =
-                Pong(
-                    id = PingPong("user123"),
-                    firstName = "John",
-                    lastName = "Doe",
-                )
-            coEvery {
-                pingPongDatastore.ping(
-                    any(),
-                    any(),
-                )
-            } returns Result.success(pong)
-            coEvery {
-                settingsHolder.getBoolean(any())
-            } returns true
+    fun `ping returns success with correct names`() =
+        runCoroutineTest {
+            val result = pingPongService.ping("John", "Doe")
 
-            // Act
-            val result = pingPongService.ping(firstName, lastName)
-
-            // Assert
             assertTrue(result.isSuccess)
-            coVerify {
-                pingPongDatastore.ping(
-                    "John",
-                    "Doe",
-                )
-            }
+            val pong = result.getOrThrow()
+            assertEquals("John", pong.firstName)
+            assertEquals("Doe", pong.lastName)
+            assertNotNull(pong.id)
+        }
+
+    /**
+     * Tests that ping preserves first and last name values regardless of content.
+     */
+    @Test
+    fun `ping preserves first and last name values`() =
+        runCoroutineTest {
+            val result = pingPongService.ping("Alice", "Smith")
+
+            assertTrue(result.isSuccess)
+            assertEquals("Alice", result.getOrThrow().firstName)
+            assertEquals("Smith", result.getOrThrow().lastName)
         }
 }

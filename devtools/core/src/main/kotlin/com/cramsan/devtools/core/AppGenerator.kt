@@ -60,21 +60,42 @@ fun generateApp(
 }
 
 private fun copyTemplate(repoRoot: Path, dest: Path) {
-    val template = repoRoot.resolve("templatereplaceme")
-    template.toFile().copyRecursively(dest.toFile())
-    // Remove build artifacts from the copy
-    Files.walk(dest).use { stream ->
-        stream
-            .filter { it.toFile().isDirectory && it.fileName.toString() == "build" }
-            .sorted(Comparator.reverseOrder())
-            .forEach { it.toFile().deleteRecursively() }
-    }
+    repoRoot.resolve("templatereplaceme").toFile().copyRecursively(dest.toFile())
+    // Collect build artifact directories first, then delete to avoid mutating
+    // the directory tree while the walk stream is still open.
+    val buildDirs =
+        Files.walk(dest).use { stream ->
+            stream
+                .filter { it.toFile().isDirectory && it.fileName.toString() == "build" }
+                .toList()
+        }
+    buildDirs.forEach { it.toFile().deleteRecursively() }
+}
+
+private fun buildAppSubstitutions(
+    appName: String,
+    displayName: String,
+    initialComponent: String,
+): List<Pair<String, String>> {
+    val appUpper = appName.uppercase().replace('-', '_')
+    return listOf(
+        "TEMPLATE_REPLACE_ME" to appUpper,
+        "TEMPLATEREPLACEME" to appUpper,
+        "template-replace-me" to appName.replace('_', '-'),
+        "template_replace_me" to appName.replace('-', '_'),
+        "TemplateReplaceMe" to displayName,
+        "templatereplaceme" to appName,
+        "ComponentReplaceme" to initialComponent,
+        "componentreplaceme" to initialComponent.lowercase(),
+        "FeatureReplaceme" to "Home",
+        "featurereplaceme" to "home",
+        "ActivityReplaceme" to "Main",
+        "activityreplaceme" to "main",
+    )
 }
 
 private fun substituteFileContents(dest: Path, appName: String, displayName: String, initialComponent: String) {
-    val appUpper = appName.uppercase().replace('-', '_')
-    val appDash = appName.replace('_', '-')
-    val appUnderscore = appName.replace('-', '_')
+    val subs = buildAppSubstitutions(appName, displayName, initialComponent)
 
     Files.walk(dest).use { stream ->
         stream
@@ -84,39 +105,23 @@ private fun substituteFileContents(dest: Path, appName: String, displayName: Str
                     !path.pathString.contains("/build/")
             }.forEach { file ->
                 var content = file.readText()
-                content = content.replace("TEMPLATE_REPLACE_ME", appUpper)
-                content = content.replace("TEMPLATEREPLACEME", appUpper)
-                content = content.replace("template-replace-me", appDash)
-                content = content.replace("template_replace_me", appUnderscore)
-                content = content.replace("TemplateReplaceMe", displayName)
-                content = content.replace("templatereplaceme", appName)
-                content = content.replace("ComponentReplaceme", initialComponent)
-                content = content.replace("componentreplaceme", initialComponent.lowercase())
-                content = content.replace("FeatureReplaceme", "Home")
-                content = content.replace("featurereplaceme", "home")
-                content = content.replace("ActivityReplaceme", "Main")
-                content = content.replace("activityreplaceme", "main")
+                for ((from, to) in subs) {
+                    content = content.replace(from, to)
+                }
                 file.writeText(content)
             }
     }
 }
 
-@Suppress("CyclomaticComplexMethod")
 private fun renamePathComponents(dest: Path, appName: String, displayName: String, initialComponent: String) {
+    val subs = buildAppSubstitutions(appName, displayName, initialComponent)
+    val placeholders = subs.map { it.first }.toSet()
+
     val toRename = mutableListOf<Path>()
     Files.walk(dest).use { stream ->
         stream
-            .filter { path ->
-                val fileName = path.fileName.toString()
-                "templatereplaceme" in fileName ||
-                    "TemplateReplaceMe" in fileName ||
-                    "ComponentReplaceme" in fileName ||
-                    "FeatureReplaceme" in fileName ||
-                    fileName == "featurereplaceme" ||
-                    "ActivityReplaceme" in fileName ||
-                    fileName == "activityreplaceme" ||
-                    "componentreplaceme" in fileName
-            }.forEach { toRename.add(it) }
+            .filter { path -> placeholders.any { it in path.fileName.toString() } }
+            .forEach { toRename.add(it) }
     }
 
     // Sort deepest paths first so files are renamed before their parent directories
@@ -124,23 +129,15 @@ private fun renamePathComponents(dest: Path, appName: String, displayName: Strin
     toRename.forEach { path ->
         if (!path.exists()) return@forEach
         val fileName = path.fileName.toString()
-        val newName =
-            fileName
-                .replace("templatereplaceme", appName)
-                .replace("TemplateReplaceMe", displayName)
-                .replace("ComponentReplaceme", initialComponent)
-                .replace("componentreplaceme", initialComponent.lowercase())
-                .replace("FeatureReplaceme", "Home")
-                .let { if (it == "featurereplaceme") "home" else it }
-                .replace("ActivityReplaceme", "Main")
-                .let {
-                    if (it == "activityreplaceme") "main" else it
-                }
+        var newName = fileName
+        for ((from, to) in subs) {
+            newName = newName.replace(from, to)
+        }
         if (fileName != newName) {
             val target = path.parent.resolve(newName)
             // If the target is an empty directory left over from a prior template cleanup,
             // remove it so Files.move() can succeed.
-            if (target.toFile().isDirectory && target.toFile().list().isNullOrEmpty()) {
+            if (target.toFile().isDirectory && target.toFile().list()?.isEmpty() == true) {
                 target.toFile().delete()
             }
             Files.move(path, target)
@@ -154,6 +151,17 @@ private fun removePlatformDirs(dest: Path, includeWasm: Boolean, includeAndroid:
     if (!includeJvm) dest.resolve("front-end/app-jvm").toFile().deleteRecursively()
 }
 
+private fun platformModules(
+    includeWasm: Boolean,
+    includeAndroid: Boolean,
+    includeJvm: Boolean,
+): List<String> =
+    buildList {
+        if (includeAndroid) add("front-end:app-android")
+        if (includeJvm) add("front-end:app-jvm")
+        if (includeWasm) add("front-end:app-wasm")
+    }
+
 private fun updateSettingsGradle(
     repoRoot: Path,
     appName: String,
@@ -161,19 +169,14 @@ private fun updateSettingsGradle(
     includeAndroid: Boolean,
     includeJvm: Boolean,
 ) {
-    val settings = repoRoot.resolve("settings.gradle.kts")
+    val coreModules = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
+    val allModules = coreModules + platformModules(includeWasm, includeAndroid, includeJvm)
     val block =
         buildString {
-            append("\ninclude(\"$appName:api\")\n")
-            append("include(\"$appName:shared\")\n")
-            append("include(\"$appName:back-end\")\n")
-            append("include(\"$appName:front-end:shared-app\")\n")
-            append("include(\"$appName:front-end:shared-ui\")\n")
-            if (includeAndroid) append("include(\"$appName:front-end:app-android\")\n")
-            if (includeJvm) append("include(\"$appName:front-end:app-jvm\")\n")
-            if (includeWasm) append("include(\"$appName:front-end:app-wasm\")\n")
+            append("\n")
+            allModules.forEach { append("include(\"$appName:$it\")\n") }
         }
-    settings.appendText(block)
+    repoRoot.resolve("settings.gradle.kts").appendText(block)
 }
 
 private fun updateBuildGradle(
@@ -183,19 +186,10 @@ private fun updateBuildGradle(
     includeAndroid: Boolean,
     includeJvm: Boolean,
 ) {
-    val buildFile = repoRoot.resolve("build.gradle.kts")
-    val dependsBlock =
-        buildString {
-            append("    dependsOn(\"$appName:api:release\")\n")
-            append("    dependsOn(\"$appName:shared:release\")\n")
-            append("    dependsOn(\"$appName:back-end:release\")\n")
-            append("    dependsOn(\"$appName:front-end:shared-app:release\")\n")
-            append("    dependsOn(\"$appName:front-end:shared-ui:release\")")
-            if (includeAndroid) append("\n    dependsOn(\"$appName:front-end:app-android:release\")")
-            if (includeJvm) append("\n    dependsOn(\"$appName:front-end:app-jvm:release\")")
-            if (includeWasm) append("\n    dependsOn(\"$appName:front-end:app-wasm:release\")")
-        }
+    val coreModules = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
+    val allModules = coreModules + platformModules(includeWasm, includeAndroid, includeJvm)
+    val dependsBlock = allModules.joinToString("\n") { "    dependsOn(\"$appName:$it:release\")" }
     val marker = "    dependsOn(\"generateBuildArtifacts\")"
-    val updated = buildFile.readText().replace(marker, "$dependsBlock\n$marker")
-    buildFile.writeText(updated)
+    val buildFile = repoRoot.resolve("build.gradle.kts")
+    buildFile.writeText(buildFile.readText().replace(marker, "$dependsBlock\n$marker"))
 }

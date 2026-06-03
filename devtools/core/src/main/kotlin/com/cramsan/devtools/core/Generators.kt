@@ -8,75 +8,41 @@ fun generateApi(
     repoRoot: Path,
     name: String,
     app: String,
-): GenerationResult {
-    val appPascal = toPascal(app)
-    val nameLower = toLowerCamel(name)
-
-    val tmplApi =
-        repoRoot.resolve("devtools/templates/api/ComponentReplacemeApi.kt")
-    val tmplReq =
-        repoRoot.resolve("devtools/templates/api/CreateComponentReplacemeNetworkRequest.kt")
-    val tmplResp =
-        repoRoot.resolve("devtools/templates/api/ComponentReplacemeNetworkResponse.kt")
-
-    val destApi = repoRoot.resolve("$app/api/src/commonMain/kotlin/com/cramsan/$app/api/${name}Api.kt")
-    val destReq =
-        repoRoot.resolve(
-            "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/Create${name}NetworkRequest.kt",
-        )
-    val destResp =
-        repoRoot.resolve(
-            "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/${name}NetworkResponse.kt",
-        )
-
-    applySubs(tmplApi, destApi, appPascal, app, name, nameLower)
-    applySubs(tmplReq, destReq, appPascal, app, name, nameLower)
-    applySubs(tmplResp, destResp, appPascal, app, name, nameLower)
-
-    return GenerationResult(
-        createdFiles =
+): GenerationResult =
+    generateFromTemplates(
+        repoRoot,
+        name,
+        app,
+        filePairs =
         listOf(
-            destApi.toString(),
-            destReq.toString(),
-            destResp.toString(),
+            "devtools/templates/api/ComponentReplacemeApi.kt" to
+                "$app/api/src/commonMain/kotlin/com/cramsan/$app/api/${name}Api.kt",
+            "devtools/templates/api/CreateComponentReplacemeNetworkRequest.kt" to
+                "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/Create${name}NetworkRequest.kt",
+            "devtools/templates/api/ComponentReplacemeNetworkResponse.kt" to
+                "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/${name}NetworkResponse.kt",
         ),
-        postGenerationChecklist =
-        listOf(
-            "[ ] Wire-up this Api with its respective Controller",
-        ),
+        checklist = listOf("[ ] Wire-up this Api with its respective Controller"),
     )
-}
 
 /** Generates a back-end Controller and its unit test. */
 fun generateController(
     repoRoot: Path,
     name: String,
     app: String,
-): GenerationResult {
-    val appPascal = toPascal(app)
-    val nameLower = toLowerCamel(name)
-
-    val tmpl =
-        repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeController.kt")
-    val tmplTest =
-        repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeControllerTest.kt")
-
-    val dest = repoRoot.resolve("$app/back-end/src/main/kotlin/com/cramsan/$app/server/controller/${name}Controller.kt")
-    val destTest =
-        repoRoot.resolve(
-            "$app/back-end/src/test/kotlin/com/cramsan/$app/server/controller/${name}ControllerTest.kt",
-        )
-
-    applySubs(tmpl, dest, appPascal, app, name, nameLower)
-    applySubs(tmplTest, destTest, appPascal, app, name, nameLower)
-
-    return GenerationResult(
-        createdFiles =
+): GenerationResult =
+    generateFromTemplates(
+        repoRoot,
+        name,
+        app,
+        filePairs =
         listOf(
-            dest.toString(),
-            destTest.toString(),
+            "devtools/templates/backend/controller/ComponentReplacemeController.kt" to
+                "$app/back-end/src/main/kotlin/com/cramsan/$app/server/controller/${name}Controller.kt",
+            "devtools/templates/backend/controller/ComponentReplacemeControllerTest.kt" to
+                "$app/back-end/src/test/kotlin/com/cramsan/$app/server/controller/${name}ControllerTest.kt",
         ),
-        postGenerationChecklist =
+        checklist =
         listOf(
             "# Add to $app/back-end/src/main/kotlin/com/cramsan/$app/server/dependencyinjection/ControllerModule.kt",
             "singleOf(::${name}Controller) { bind<Controller>() }",
@@ -84,44 +50,30 @@ fun generateController(
             "# Also verify the API route is registered in registerRoutes.",
         ),
     )
-}
 
 /** Generates a back-end Service and its unit test. */
 fun generateService(
     repoRoot: Path,
     name: String,
     app: String,
-): GenerationResult {
-    val appPascal = toPascal(app)
-    val nameLower = toLowerCamel(name)
-
-    val tmpl =
-        repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeService.kt")
-    val tmplTest =
-        repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeServiceTest.kt")
-
-    val dest = repoRoot.resolve("$app/back-end/src/main/kotlin/com/cramsan/$app/server/service/${name}Service.kt")
-    val destTest =
-        repoRoot.resolve(
-            "$app/back-end/src/test/kotlin/com/cramsan/$app/server/service/${name}ServiceTest.kt",
-        )
-
-    applySubs(tmpl, dest, appPascal, app, name, nameLower)
-    applySubs(tmplTest, destTest, appPascal, app, name, nameLower)
-
-    return GenerationResult(
-        createdFiles =
+): GenerationResult =
+    generateFromTemplates(
+        repoRoot,
+        name,
+        app,
+        filePairs =
         listOf(
-            dest.toString(),
-            destTest.toString(),
+            "devtools/templates/backend/service/ComponentReplacemeService.kt" to
+                "$app/back-end/src/main/kotlin/com/cramsan/$app/server/service/${name}Service.kt",
+            "devtools/templates/backend/service/ComponentReplacemeServiceTest.kt" to
+                "$app/back-end/src/test/kotlin/com/cramsan/$app/server/service/${name}ServiceTest.kt",
         ),
-        postGenerationChecklist =
+        checklist =
         listOf(
             "# Add to $app/back-end/src/main/kotlin/com/cramsan/$app/server/dependencyinjection/ServicesModule.kt",
             "singleOf(::${name}Service)",
         ),
     )
-}
 
 /** Generates a back-end Datastore interface, a provider implementation, and its unit test. */
 fun generateDatastore(
@@ -129,72 +81,44 @@ fun generateDatastore(
     name: String,
     app: String,
     provider: String,
-): GenerationResult {
-    val appPascal = toPascal(app)
-    val nameLower = toLowerCamel(name)
-
-    val tmplIface =
-        repoRoot.resolve("devtools/templates/backend/datastore/ComponentReplacemeDatastore.kt")
-    val tmplImpl =
-        repoRoot.resolve("devtools/templates/backend/datastore/impl/ExampleComponentReplacemeDatastore.kt")
-    val tmplTest =
-        repoRoot.resolve("devtools/templates/backend/datastore/impl/ComponentReplacemeDatastoreImplTest.kt")
-
-    val destIface =
-        repoRoot.resolve(
-            "$app/back-end/src/main/kotlin/com/cramsan/$app/server/datastore/${name}Datastore.kt",
-        )
-    val destImpl =
-        repoRoot.resolve(
-            "$app/back-end/src/main/kotlin/com/cramsan/$app/server/datastore/impl/${provider}${name}Datastore.kt",
-        )
-    val destTest =
-        repoRoot.resolve(
-            "$app/back-end/src/test/kotlin/com/cramsan/$app/server/datastore/impl/${provider}${name}DatastoreTest.kt",
-        )
-
-    val providerSub = mapOf("Example" to provider)
-
-    applySubs(tmplIface, destIface, appPascal, app, name, nameLower)
-    applySubs(tmplImpl, destImpl, appPascal, app, name, nameLower, providerSub)
-    applySubs(tmplTest, destTest, appPascal, app, name, nameLower, providerSub)
-
-    return GenerationResult(
-        createdFiles =
+): GenerationResult =
+    generateFromTemplates(
+        repoRoot,
+        name,
+        app,
+        filePairs =
         listOf(
-            destIface.toString(),
-            destImpl.toString(),
-            destTest.toString(),
+            "devtools/templates/backend/datastore/ComponentReplacemeDatastore.kt" to
+                "$app/back-end/src/main/kotlin/com/cramsan/$app/server/datastore/${name}Datastore.kt",
+            "devtools/templates/backend/datastore/impl/ExampleComponentReplacemeDatastore.kt" to
+                "$app/back-end/src/main/kotlin/com/cramsan/$app/server/datastore/impl/${provider}${name}Datastore.kt",
+            "devtools/templates/backend/datastore/impl/ComponentReplacemeDatastoreImplTest.kt" to
+                "$app/back-end/src/test/kotlin/com/cramsan/$app/server/datastore/impl/${provider}${name}DatastoreTest.kt",
         ),
-        postGenerationChecklist =
+        checklist =
         listOf(
             "# Add to $app/back-end/src/main/kotlin/com/cramsan/$app/server/dependencyinjection/DatastoreModule.kt",
             "singleOf(::${provider}${name}Datastore) { bind<${name}Datastore>() }",
         ),
+        extraSubs = mapOf("Example" to provider),
     )
-}
 
 /** Generates a front-end Manager. */
 fun generateManager(
     repoRoot: Path,
     name: String,
     app: String,
-): GenerationResult {
-    val appPascal = toPascal(app)
-    val nameLower = toLowerCamel(name)
-
-    val tmpl =
-        repoRoot.resolve("devtools/templates/frontend/manager/ComponentReplacemeManager.kt")
-    val dest =
-        repoRoot.resolve(
-            "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/managers/${name}Manager.kt",
-        )
-
-    applySubs(tmpl, dest, appPascal, app, name, nameLower)
-
-    return GenerationResult(
-        createdFiles = listOf(dest.toString()),
-        postGenerationChecklist =
+): GenerationResult =
+    generateFromTemplates(
+        repoRoot,
+        name,
+        app,
+        filePairs =
+        listOf(
+            "devtools/templates/frontend/manager/ComponentReplacemeManager.kt" to
+                "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/managers/${name}Manager.kt",
+        ),
+        checklist =
         listOf(
             "# Add to $app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/di/ManagerModule.kt",
             "singleOf(::${name}Manager)",
@@ -203,41 +127,25 @@ fun generateManager(
             "#   $app/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/$app/client/lib/managers/${name}ManagerTest.kt",
         ),
     )
-}
 
 /** Generates a front-end Service interface and its implementation. */
 fun generateFrontendService(
     repoRoot: Path,
     name: String,
     app: String,
-): GenerationResult {
-    val appPascal = toPascal(app)
-    val nameLower = toLowerCamel(name)
-
-    val tmplIface =
-        repoRoot.resolve("devtools/templates/frontend/service/ComponentReplacemeService.kt")
-    val tmplImpl =
-        repoRoot.resolve("devtools/templates/frontend/service/impl/ComponentReplacemeServiceImpl.kt")
-
-    val destIface =
-        repoRoot.resolve(
-            "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/${name}Service.kt",
-        )
-    val destImpl =
-        repoRoot.resolve(
-            "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/impl/${name}ServiceImpl.kt",
-        )
-
-    applySubs(tmplIface, destIface, appPascal, app, name, nameLower)
-    applySubs(tmplImpl, destImpl, appPascal, app, name, nameLower)
-
-    return GenerationResult(
-        createdFiles =
+): GenerationResult =
+    generateFromTemplates(
+        repoRoot,
+        name,
+        app,
+        filePairs =
         listOf(
-            destIface.toString(),
-            destImpl.toString(),
+            "devtools/templates/frontend/service/ComponentReplacemeService.kt" to
+                "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/${name}Service.kt",
+            "devtools/templates/frontend/service/impl/ComponentReplacemeServiceImpl.kt" to
+                "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/impl/${name}ServiceImpl.kt",
         ),
-        postGenerationChecklist =
+        checklist =
         listOf(
             "# Add to $app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/di/ServiceModule.kt",
             "singleOf(::${name}ServiceImpl) { bind<${name}Service>() }",
@@ -246,21 +154,18 @@ fun generateFrontendService(
             "#   $app/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/$app/client/lib/service/impl/${name}ServiceImplTest.kt",
         ),
     )
-}
 
-private const val FEATURE_TMPL_COMMON = "devtools/templates/frontend/feature"
-
-private const val FEATURE_TMPL_TEST = "devtools/templates/frontend/feature"
+private const val FEATURE_TMPL_DIR = "devtools/templates/frontend/feature"
 
 private const val ACTIVITY_TMPL_COMMON = "devtools/templates/frontend/activity"
 
 /**
  * Generates a full Compose feature: Screen, Event, UIState, ViewModel, ScreenPreview, and ViewModelTest.
  *
- * Uses `templatereplaceme/front-end/.../features/main/menu` as the template source.
+ * Template source: `devtools/templates/frontend/feature/`
  *
- * @param parentRel repo-relative path to the parent features directory,
- *   e.g. `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`
+ * @param parentRel repo-relative path to the parent activity directory,
+ *   e.g. `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth`
  */
 fun generateFeature(
     repoRoot: Path,
@@ -276,8 +181,8 @@ fun generateFeature(
 
     val commonDir = repoRoot.resolve("$normalizedParent/$featurePackage")
     val testDir = repoRoot.resolve("${normalizedParent.replace("/commonMain/", "/jvmTest/")}/$featurePackage")
-    val srcCommon = repoRoot.resolve(FEATURE_TMPL_COMMON)
-    val srcTest = repoRoot.resolve(FEATURE_TMPL_TEST)
+    val srcCommon = repoRoot.resolve(FEATURE_TMPL_DIR)
+    val srcTest = repoRoot.resolve(FEATURE_TMPL_DIR)
 
     val subs =
         listOf(
@@ -318,7 +223,7 @@ fun generateFeature(
 /**
  * Generates a Compose activity: a NavGraphBuilder extension and a Destination sealed class.
  *
- * Uses `templatereplaceme/front-end/.../features/main` as the template source.
+ * Template source: `devtools/templates/frontend/activity/`
  *
  * @param parentRel repo-relative path to the parent features directory,
  *   e.g. `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`
@@ -386,6 +291,24 @@ private fun findWindowNavGraphDestinationClass(repoRoot: Path, app: String): Str
 private fun toRepoRelative(repoRoot: Path, parentRel: String): String {
     val rootPrefix = repoRoot.toString().trimEnd('/') + "/"
     return if (parentRel.startsWith(rootPrefix)) parentRel.removePrefix(rootPrefix) else parentRel
+}
+
+private fun generateFromTemplates(
+    repoRoot: Path,
+    name: String,
+    app: String,
+    filePairs: List<Pair<String, String>>,
+    checklist: List<String>,
+    extraSubs: Map<String, String> = emptyMap(),
+): GenerationResult {
+    val appPascal = toPascal(app)
+    val nameLower = toLowerCamel(name)
+    val resolved = filePairs.map { (t, d) -> repoRoot.resolve(t) to repoRoot.resolve(d) }
+    resolved.forEach { (src, dst) -> applySubs(src, dst, appPascal, app, name, nameLower, extraSubs) }
+    return GenerationResult(
+        createdFiles = resolved.map { it.second.toString() },
+        postGenerationChecklist = checklist,
+    )
 }
 
 private fun applyOrderedSubs(src: Path, dst: Path, subs: List<Pair<String, String>>) {

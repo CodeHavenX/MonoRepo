@@ -14,30 +14,18 @@ fun toLowerCamel(input: String): String =
     input.replaceFirstChar(Char::lowercaseChar)
 
 /**
- * Copies [src] to [dst] and applies the standard component substitutions in order:
- * 1. `TemplateReplaceMe` → [appPascal]
- * 2. `templatereplaceme` → [app]
- * 3. Each entry in [extraSubs] (e.g. `"Example"` → provider name)
- * 4. `ComponentReplaceme` → [name]
- * 5. `componentreplaceme` → [nameLower]
+ * Copies [src] to [dst] and applies [subs] as ordered find-and-replace pairs.
+ * Substitutions are applied in list order, so earlier entries take precedence over later ones.
  */
 fun applySubs(
     src: Path,
     dst: Path,
-    appPascal: String,
-    app: String,
-    name: String,
-    nameLower: String,
-    extraSubs: Map<String, String> = emptyMap(),
+    subs: List<Pair<String, String>>,
 ) {
     dst.parent.createDirectories()
     var content = src.readText()
-    content = content.replace("TemplateReplaceMe", appPascal)
-    content = content.replace("templatereplaceme", app)
-    for ((from, to) in extraSubs) {
+    for ((from, to) in subs) {
         content = content.replace(from, to)
     }
-    content = content.replace("ComponentReplaceme", name)
-    content = content.replace("componentreplaceme", nameLower)
     dst.writeText(content)
 }

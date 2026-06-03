@@ -1,7 +1,6 @@
 package com.cramsan.devtools.core
 
 import java.nio.file.Path
-import kotlin.io.path.readText
 
 /** Generates an API interface and its network request/response models. */
 fun generateApi(
@@ -182,7 +181,6 @@ fun generateFeature(
     val commonDir = repoRoot.resolve("$normalizedParent/$featurePackage")
     val testDir = repoRoot.resolve("${normalizedParent.replace("/commonMain/", "/jvmTest/")}/$featurePackage")
     val srcCommon = repoRoot.resolve(FEATURE_TMPL_DIR)
-    val srcTest = repoRoot.resolve(FEATURE_TMPL_DIR)
 
     val subs =
         listOf(
@@ -203,10 +201,10 @@ fun generateFeature(
             srcCommon.resolve(
                 "FeatureReplacemeScreenPreview.kt",
             ) to commonDir.resolve("${featureName}ScreenPreview.kt"),
-            srcTest.resolve("FeatureReplacemeViewModelTest.kt") to testDir.resolve("${featureName}ViewModelTest.kt"),
+            srcCommon.resolve("FeatureReplacemeViewModelTest.kt") to testDir.resolve("${featureName}ViewModelTest.kt"),
         )
 
-    fileMap.forEach { (src, dst) -> applyOrderedSubs(src, dst, subs) }
+    fileMap.forEach { (src, dst) -> applySubs(src, dst, subs) }
 
     return GenerationResult(
         createdFiles = fileMap.map { it.second.toString() },
@@ -262,7 +260,7 @@ fun generateActivity(
             ) to activityDir.resolve("${activityName}Destination.kt"),
         )
 
-    fileMap.forEach { (src, dst) -> applyOrderedSubs(src, dst, subs) }
+    fileMap.forEach { (src, dst) -> applySubs(src, dst, subs) }
 
     return GenerationResult(
         createdFiles = fileMap.map { it.second.toString() },
@@ -303,19 +301,20 @@ private fun generateFromTemplates(
 ): GenerationResult {
     val appPascal = toPascal(app)
     val nameLower = toLowerCamel(name)
+    val subs =
+        listOf(
+            "TemplateReplaceMe" to appPascal,
+            "templatereplaceme" to app,
+        ) +
+            extraSubs.entries.map { it.toPair() } +
+            listOf(
+                "ComponentReplaceme" to name,
+                "componentreplaceme" to nameLower,
+            )
     val resolved = filePairs.map { (t, d) -> repoRoot.resolve(t) to repoRoot.resolve(d) }
-    resolved.forEach { (src, dst) -> applySubs(src, dst, appPascal, app, name, nameLower, extraSubs) }
+    resolved.forEach { (src, dst) -> applySubs(src, dst, subs) }
     return GenerationResult(
         createdFiles = resolved.map { it.second.toString() },
         postGenerationChecklist = checklist,
     )
-}
-
-private fun applyOrderedSubs(src: Path, dst: Path, subs: List<Pair<String, String>>) {
-    dst.parent.toFile().mkdirs()
-    var content = src.readText()
-    for ((from, to) in subs) {
-        content = content.replace(from, to)
-    }
-    dst.toFile().writeText(content)
 }

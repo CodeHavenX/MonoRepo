@@ -61,7 +61,16 @@ class TemplateEngineTest {
         )
 
         val dst = tempDir.resolve("output.kt")
-        applySubs(src, dst, "Edifikana", "edifikana", "Property", "property")
+        applySubs(
+            src,
+            dst,
+            listOf(
+                "TemplateReplaceMe" to "Edifikana",
+                "templatereplaceme" to "edifikana",
+                "ComponentReplaceme" to "Property",
+                "componentreplaceme" to "property",
+            ),
+        )
 
         val content = dst.readText()
         assertTrue(content.contains("com.cramsan.edifikana.api"))
@@ -82,7 +91,17 @@ class TemplateEngineTest {
         src.toFile().writeText("class ExampleComponentReplacemeDatastore : ComponentReplacemeDatastore")
 
         val dst = tempDir.resolve("output.kt")
-        applySubs(src, dst, "Edifikana", "edifikana", "Property", "property", mapOf("Example" to "Supabase"))
+        applySubs(
+            src,
+            dst,
+            listOf(
+                "TemplateReplaceMe" to "Edifikana",
+                "templatereplaceme" to "edifikana",
+                "Example" to "Supabase",
+                "ComponentReplaceme" to "Property",
+                "componentreplaceme" to "property",
+            ),
+        )
 
         val content = dst.readText()
         assertTrue(content.contains("SupabasePropertyDatastore"))
@@ -95,7 +114,16 @@ class TemplateEngineTest {
         src.toFile().writeText("content")
 
         val dst = tempDir.resolve("deep/nested/dir/output.kt")
-        applySubs(src, dst, "A", "a", "B", "b")
+        applySubs(
+            src,
+            dst,
+            listOf(
+                "TemplateReplaceMe" to "A",
+                "templatereplaceme" to "a",
+                "ComponentReplaceme" to "B",
+                "componentreplaceme" to "b",
+            ),
+        )
 
         assertTrue(dst.toFile().exists())
     }

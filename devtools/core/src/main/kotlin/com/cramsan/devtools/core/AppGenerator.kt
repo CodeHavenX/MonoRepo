@@ -12,6 +12,8 @@ import kotlin.io.path.writeText
 
 private val TEMPLATE_EXTENSIONS = setOf("kt", "kts", "xml", "conf", "json", "yml", "html", "css")
 
+private val CORE_MODULES = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
+
 /**
  * Scaffolds a complete new app by copying the `templatereplaceme` template, substituting
  * all placeholder strings in file contents and file names, and wiring the new app into
@@ -38,12 +40,15 @@ fun generateApp(
     val dest = repoRoot.resolve(appName)
     require(!dest.exists()) { "Destination already exists: $dest" }
 
+    val subs = buildAppSubstitutions(appName, displayName, initialComponent)
+    val allModules = CORE_MODULES + platformModules(includeWasm, includeAndroid, includeJvm)
+
     copyTemplate(repoRoot, dest)
-    substituteFileContents(dest, appName, displayName, initialComponent)
-    renamePathComponents(dest, appName, displayName, initialComponent)
+    substituteFileContents(dest, subs)
+    renamePathComponents(dest, subs)
     removePlatformDirs(dest, includeWasm, includeAndroid, includeJvm)
-    updateSettingsGradle(repoRoot, appName, includeWasm, includeAndroid, includeJvm)
-    updateBuildGradle(repoRoot, appName, includeWasm, includeAndroid, includeJvm)
+    updateSettingsGradle(repoRoot, appName, allModules)
+    updateBuildGradle(repoRoot, appName, allModules)
 
     return GenerationResult(
         createdFiles = listOf(dest.toString()),
@@ -94,9 +99,7 @@ private fun buildAppSubstitutions(
     )
 }
 
-private fun substituteFileContents(dest: Path, appName: String, displayName: String, initialComponent: String) {
-    val subs = buildAppSubstitutions(appName, displayName, initialComponent)
-
+private fun substituteFileContents(dest: Path, subs: List<Pair<String, String>>) {
     Files.walk(dest).use { stream ->
         stream
             .filter { path ->
@@ -113,8 +116,7 @@ private fun substituteFileContents(dest: Path, appName: String, displayName: Str
     }
 }
 
-private fun renamePathComponents(dest: Path, appName: String, displayName: String, initialComponent: String) {
-    val subs = buildAppSubstitutions(appName, displayName, initialComponent)
+private fun renamePathComponents(dest: Path, subs: List<Pair<String, String>>) {
     val placeholders = subs.map { it.first }.toSet()
 
     val toRename = mutableListOf<Path>()
@@ -165,12 +167,8 @@ private fun platformModules(
 private fun updateSettingsGradle(
     repoRoot: Path,
     appName: String,
-    includeWasm: Boolean,
-    includeAndroid: Boolean,
-    includeJvm: Boolean,
+    allModules: List<String>,
 ) {
-    val coreModules = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
-    val allModules = coreModules + platformModules(includeWasm, includeAndroid, includeJvm)
     val block =
         buildString {
             append("\n")
@@ -182,12 +180,8 @@ private fun updateSettingsGradle(
 private fun updateBuildGradle(
     repoRoot: Path,
     appName: String,
-    includeWasm: Boolean,
-    includeAndroid: Boolean,
-    includeJvm: Boolean,
+    allModules: List<String>,
 ) {
-    val coreModules = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
-    val allModules = coreModules + platformModules(includeWasm, includeAndroid, includeJvm)
     val dependsBlock = allModules.joinToString("\n") { "    dependsOn(\"$appName:$it:release\")" }
     val marker = "    dependsOn(\"generateBuildArtifacts\")"
     val buildFile = repoRoot.resolve("build.gradle.kts")

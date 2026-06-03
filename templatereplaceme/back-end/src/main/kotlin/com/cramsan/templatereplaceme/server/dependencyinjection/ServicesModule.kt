@@ -1,13 +1,15 @@
 package com.cramsan.templatereplaceme.server.dependencyinjection
 
-import com.cramsan.templatereplaceme.server.service.PingPongService
+import com.cramsan.templatereplaceme.server.service.ComponentReplacemeService
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 /**
- * Class to initialize all the services level components.
+ * Registers all service-layer singletons with Koin.
+ *
+ * Add new services here using [singleOf].
  */
 internal val ServicesModule =
     module {
-        singleOf(::PingPongService)
+        singleOf(::ComponentReplacemeService)
     }

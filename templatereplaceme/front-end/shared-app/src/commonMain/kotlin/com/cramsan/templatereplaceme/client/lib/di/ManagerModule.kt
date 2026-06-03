@@ -5,14 +5,19 @@ import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.templatereplaceme.client.lib.features.main.MainDestination
 import com.cramsan.templatereplaceme.client.lib.managers.UserManager
 import com.cramsan.templatereplaceme.client.lib.managers.InitializerManager
-import com.cramsan.templatereplaceme.client.lib.managers.PingPongManager
+import com.cramsan.templatereplaceme.client.lib.managers.ComponentReplacemeManager
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
+/**
+ * Registers all front-end manager singletons with Koin.
+ *
+ * Add new managers here using [singleOf].
+ */
 internal val ManagerModule =
     module {
         singleOf(::InitializerManager)
-        singleOf(::PingPongManager)
+        singleOf(::ComponentReplacemeManager)
         singleOf(::PreferencesManager)
 
         // Example deep link handler for WASM testing: open http://localhost:8080/#type=demo

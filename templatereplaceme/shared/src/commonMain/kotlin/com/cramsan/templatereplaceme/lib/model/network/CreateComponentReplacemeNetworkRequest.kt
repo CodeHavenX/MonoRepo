@@ -6,13 +6,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Request model for a ping call.
+ * Network request body for creating a [ComponentReplaceme].
+ *
+ * Add fields here to carry data from the client to the backend.
+ * All fields must be annotated with [@SerialName] for stable JSON keys.
  */
 @NetworkModel
 @Serializable
-data class PingNetworkRequest(
-    @SerialName("first_name")
-    val firstName: String,
-    @SerialName("last_name")
-    val lastName: String,
+data class CreateComponentReplacemeNetworkRequest(
+    @SerialName("id")
+    val id: String,
 ) : RequestBody

@@ -6,9 +6,9 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CoroutineTest
-import com.cramsan.templatereplaceme.client.lib.models.PongModel
-import com.cramsan.templatereplaceme.client.lib.service.PingPongService
-import com.cramsan.templatereplaceme.lib.model.PingPong
+import com.cramsan.templatereplaceme.client.lib.models.ComponentReplacemeModel
+import com.cramsan.templatereplaceme.client.lib.service.ComponentReplacemeService
+import com.cramsan.templatereplaceme.lib.model.ComponentReplacemeId
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -19,33 +19,33 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * Tests for [PingPongManager].
+ * Tests for [ComponentReplacemeManager].
  */
-class PingPongManagerTest : CoroutineTest() {
+class ComponentReplacemeManagerTest : CoroutineTest() {
 
-    private lateinit var manager: PingPongManager
-    private lateinit var pingPongService: PingPongService
+    private lateinit var manager: ComponentReplacemeManager
+    private lateinit var componentreplacemeService: ComponentReplacemeService
     private lateinit var dependencies: ManagerDependencies
 
     @BeforeTest
     fun setup() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
-        pingPongService = mockk()
+        componentreplacemeService = mockk()
         dependencies = mockk(relaxed = true)
         every { dependencies.appScope } returns testCoroutineScope
         every { dependencies.dispatcherProvider } returns UnifiedDispatcherProvider(testCoroutineDispatcher)
-        manager = PingPongManager(dependencies, pingPongService)
+        manager = ComponentReplacemeManager(dependencies, componentreplacemeService)
     }
 
     @Test
-    fun `ping returns success when service succeeds`() = runCoroutineTest {
-        val pong = PongModel(id = PingPong("id-1"), firstName = "John", lastName = "Doe")
-        coEvery { pingPongService.ping("John", "Doe") } returns Result.success(pong)
+    fun `create returns success when service succeeds`() = runCoroutineTest {
+        val model = ComponentReplacemeModel(id = ComponentReplacemeId("id-1"))
+        coEvery { componentreplacemeService.create("id-1") } returns Result.success(model)
 
-        val result = manager.ping("John", "Doe")
+        val result = manager.create("id-1")
 
         assertTrue(result.isSuccess)
-        assertEquals(pong, result.getOrNull())
-        coVerify { pingPongService.ping("John", "Doe") }
+        assertEquals(model, result.getOrNull())
+        coVerify { componentreplacemeService.create("id-1") }
     }
 }

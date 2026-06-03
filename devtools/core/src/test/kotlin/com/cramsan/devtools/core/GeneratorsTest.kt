@@ -45,7 +45,7 @@ class GeneratorsTest {
         assertTrue(content.contains("edifikana"))
         assertTrue(content.contains("Property"))
         assertFalse(content.contains("templatereplaceme"))
-        assertFalse(content.contains("User"))
+        assertFalse(content.contains("ComponentReplaceme"))
     }
 
     // endregion
@@ -102,7 +102,7 @@ class GeneratorsTest {
                 "edifikana/back-end/src/main/kotlin/com/cramsan/edifikana/server/service/PropertyService.kt",
             )
         assertTrue(src.readText().contains("PropertyService"))
-        assertFalse(src.readText().contains("UserService"))
+        assertFalse(src.readText().contains("ComponentReplacemeService"))
     }
 
     // endregion
@@ -168,7 +168,7 @@ class GeneratorsTest {
                 "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/managers/PropertyManager.kt",
             )
         assertTrue(dest.readText().contains("PropertyManager"))
-        assertFalse(dest.readText().contains("UserManager"))
+        assertFalse(dest.readText().contains("ComponentReplacemeManager"))
     }
 
     // endregion
@@ -198,8 +198,8 @@ class GeneratorsTest {
 
         assertTrue(iface.readText().contains("AuthService"))
         assertTrue(impl.readText().contains("AuthServiceImpl"))
-        assertFalse(iface.readText().contains("UserService"))
-        assertFalse(impl.readText().contains("UserServiceImpl"))
+        assertFalse(iface.readText().contains("ComponentReplacemeService"))
+        assertFalse(impl.readText().contains("ComponentReplacemeServiceImpl"))
     }
 
     // endregion
@@ -364,44 +364,44 @@ class GeneratorsTest {
         val tmpl = "templatereplaceme"
         val base = "com/cramsan/templatereplaceme"
         createStub(
-            repoRoot.resolve("$tmpl/api/src/commonMain/kotlin/$base/api/UserApi.kt"),
-            "package com.cramsan.templatereplaceme.api\ninterface UserApi",
+            repoRoot.resolve("$tmpl/api/src/commonMain/kotlin/$base/api/ComponentReplacemeApi.kt"),
+            "package com.cramsan.templatereplaceme.api\nobject ComponentReplacemeApi",
         )
         createStub(
-            repoRoot.resolve("$tmpl/shared/src/commonMain/kotlin/$base/lib/model/network/CreateUserNetworkRequest.kt"),
-            "package com.cramsan.templatereplaceme.lib.model.network\ndata class CreateUserNetworkRequest(val templatereplaceme: String)",
+            repoRoot.resolve("$tmpl/shared/src/commonMain/kotlin/$base/lib/model/network/CreateComponentReplacemeNetworkRequest.kt"),
+            "package com.cramsan.templatereplaceme.lib.model.network\ndata class CreateComponentReplacemeNetworkRequest(val templatereplaceme: String)",
         )
         createStub(
-            repoRoot.resolve("$tmpl/shared/src/commonMain/kotlin/$base/lib/model/network/UserNetworkResponse.kt"),
-            "package com.cramsan.templatereplaceme.lib.model.network\ndata class UserNetworkResponse(val id: String)",
+            repoRoot.resolve("$tmpl/shared/src/commonMain/kotlin/$base/lib/model/network/ComponentReplacemeNetworkResponse.kt"),
+            "package com.cramsan.templatereplaceme.lib.model.network\ndata class ComponentReplacemeNetworkResponse(val id: String)",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/controller/UserController.kt"),
-            "package com.cramsan.templatereplaceme.server.controller\nclass UserController",
+            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/controller/ComponentReplacemeController.kt"),
+            "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplacemeController",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/test/kotlin/$base/server/controller/UserControllerTest.kt"),
-            "package com.cramsan.templatereplaceme.server.controller\nclass UserControllerTest",
+            repoRoot.resolve("$tmpl/back-end/src/test/kotlin/$base/server/controller/ComponentReplacemeControllerTest.kt"),
+            "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplacemeControllerTest",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/service/UserService.kt"),
-            "package com.cramsan.templatereplaceme.server.service\nclass UserService",
+            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/service/ComponentReplacemeService.kt"),
+            "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplacemeService",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/test/kotlin/$base/server/service/UserServiceTest.kt"),
-            "package com.cramsan.templatereplaceme.server.service\nclass UserServiceTest",
+            repoRoot.resolve("$tmpl/back-end/src/test/kotlin/$base/server/service/ComponentReplacemeServiceTest.kt"),
+            "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplacemeServiceTest",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/datastore/UserDatastore.kt"),
-            "package com.cramsan.templatereplaceme.server.datastore\ninterface UserDatastore",
+            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/datastore/ComponentReplacemeDatastore.kt"),
+            "package com.cramsan.templatereplaceme.server.datastore\ninterface ComponentReplacemeDatastore",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/datastore/impl/ExampleUserDatastore.kt"),
-            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ExampleUserDatastore : UserDatastore",
+            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/datastore/impl/ExampleComponentReplacemeDatastore.kt"),
+            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ExampleComponentReplacemeDatastore : ComponentReplacemeDatastore",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/test/kotlin/$base/server/datastore/impl/UserDatastoreImplTest.kt"),
-            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass UserDatastoreImplTest { val d = ExampleUserDatastore() }",
+            repoRoot.resolve("$tmpl/back-end/src/test/kotlin/$base/server/datastore/impl/ComponentReplacemeDatastoreImplTest.kt"),
+            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ComponentReplacemeDatastoreImplTest { val d = ExampleComponentReplacemeDatastore() }",
         )
     }
 
@@ -410,21 +410,21 @@ class GeneratorsTest {
         val base = "com/cramsan/templatereplaceme"
         createStub(
             repoRoot.resolve(
-                "$tmpl/front-end/shared-app/src/commonMain/kotlin/$base/client/lib/managers/UserManager.kt",
+                "$tmpl/front-end/shared-app/src/commonMain/kotlin/$base/client/lib/managers/ComponentReplacemeManager.kt",
             ),
-            "package com.cramsan.templatereplaceme.client.lib.managers\nclass UserManager",
+            "package com.cramsan.templatereplaceme.client.lib.managers\nclass ComponentReplacemeManager",
         )
         createStub(
             repoRoot.resolve(
-                "$tmpl/front-end/shared-app/src/commonMain/kotlin/$base/client/lib/service/UserService.kt",
+                "$tmpl/front-end/shared-app/src/commonMain/kotlin/$base/client/lib/service/ComponentReplacemeService.kt",
             ),
-            "package com.cramsan.templatereplaceme.client.lib.service\ninterface UserService",
+            "package com.cramsan.templatereplaceme.client.lib.service\ninterface ComponentReplacemeService",
         )
         createStub(
             repoRoot.resolve(
-                "$tmpl/front-end/shared-app/src/commonMain/kotlin/$base/client/lib/service/impl/UserServiceImpl.kt",
+                "$tmpl/front-end/shared-app/src/commonMain/kotlin/$base/client/lib/service/impl/ComponentReplacemeServiceImpl.kt",
             ),
-            "package com.cramsan.templatereplaceme.client.lib.service.impl\nclass UserServiceImpl : UserService",
+            "package com.cramsan.templatereplaceme.client.lib.service.impl\nclass ComponentReplacemeServiceImpl : ComponentReplacemeService",
         )
     }
 

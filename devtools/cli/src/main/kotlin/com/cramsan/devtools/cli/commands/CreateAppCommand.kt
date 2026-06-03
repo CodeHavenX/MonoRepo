@@ -4,6 +4,7 @@ import com.cramsan.devtools.cli.detectRepoRoot
 import com.cramsan.devtools.core.generateApp
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.defaultLazy
+import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
@@ -16,6 +17,10 @@ internal class CreateAppCommand : CliktCommand(name = "app") {
         "--display",
         help = "PascalCase display name used in code, e.g. MyApp",
     ).required()
+    private val initialComponent: String by option(
+        "--initial-component",
+        help = "PascalCase name for the starter component included in the new app, e.g. Sample",
+    ).default("Sample")
     private val noWasm: Boolean by option("--no-wasm", help = "Exclude the front-end/app-wasm module").flag()
     private val noAndroid: Boolean by option("--no-android", help = "Exclude the front-end/app-android module").flag()
     private val noJvm: Boolean by option("--no-jvm", help = "Exclude the front-end/app-jvm module").flag()
@@ -29,6 +34,7 @@ internal class CreateAppCommand : CliktCommand(name = "app") {
                 repoRoot = repoRoot,
                 appName = name,
                 displayName = display,
+                initialComponent = initialComponent,
                 includeWasm = !noWasm,
                 includeAndroid = !noAndroid,
                 includeJvm = !noJvm,

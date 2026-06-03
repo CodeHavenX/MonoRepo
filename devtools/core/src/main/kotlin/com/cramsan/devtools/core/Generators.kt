@@ -14,15 +14,15 @@ fun generateApi(
 
     val tmplApi =
         repoRoot.resolve(
-            "templatereplaceme/api/src/commonMain/kotlin/com/cramsan/templatereplaceme/api/UserApi.kt",
+            "templatereplaceme/api/src/commonMain/kotlin/com/cramsan/templatereplaceme/api/ComponentReplacemeApi.kt",
         )
     val tmplReq =
         repoRoot.resolve(
-            "templatereplaceme/shared/src/commonMain/kotlin/com/cramsan/templatereplaceme/lib/model/network/CreateUserNetworkRequest.kt",
+            "templatereplaceme/shared/src/commonMain/kotlin/com/cramsan/templatereplaceme/lib/model/network/CreateComponentReplacemeNetworkRequest.kt",
         )
     val tmplResp =
         repoRoot.resolve(
-            "templatereplaceme/shared/src/commonMain/kotlin/com/cramsan/templatereplaceme/lib/model/network/UserNetworkResponse.kt",
+            "templatereplaceme/shared/src/commonMain/kotlin/com/cramsan/templatereplaceme/lib/model/network/ComponentReplacemeNetworkResponse.kt",
         )
 
     val destApi = repoRoot.resolve("$app/api/src/commonMain/kotlin/com/cramsan/$app/api/${name}Api.kt")
@@ -34,6 +34,7 @@ fun generateApi(
         repoRoot.resolve(
             "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/${name}NetworkResponse.kt",
         )
+
 
     applySubs(tmplApi, destApi, appPascal, app, name, nameLower)
     applySubs(tmplReq, destReq, appPascal, app, name, nameLower)
@@ -64,11 +65,11 @@ fun generateController(
 
     val tmpl =
         repoRoot.resolve(
-            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/controller/UserController.kt",
+            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/controller/ComponentReplacemeController.kt",
         )
     val tmplTest =
         repoRoot.resolve(
-            "templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/controller/UserControllerTest.kt",
+            "templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/controller/ComponentReplacemeControllerTest.kt",
         )
 
     val dest = repoRoot.resolve("$app/back-end/src/main/kotlin/com/cramsan/$app/server/controller/${name}Controller.kt")
@@ -107,11 +108,11 @@ fun generateService(
 
     val tmpl =
         repoRoot.resolve(
-            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/service/UserService.kt",
+            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/service/ComponentReplacemeService.kt",
         )
     val tmplTest =
         repoRoot.resolve(
-            "templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/service/UserServiceTest.kt",
+            "templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/service/ComponentReplacemeServiceTest.kt",
         )
 
     val dest = repoRoot.resolve("$app/back-end/src/main/kotlin/com/cramsan/$app/server/service/${name}Service.kt")
@@ -149,15 +150,15 @@ fun generateDatastore(
 
     val tmplIface =
         repoRoot.resolve(
-            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/datastore/UserDatastore.kt",
+            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/datastore/ComponentReplacemeDatastore.kt",
         )
     val tmplImpl =
         repoRoot.resolve(
-            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/datastore/impl/ExampleUserDatastore.kt",
+            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/datastore/impl/ExampleComponentReplacemeDatastore.kt",
         )
     val tmplTest =
         repoRoot.resolve(
-            "templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/datastore/impl/UserDatastoreImplTest.kt",
+            "templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/datastore/impl/ComponentReplacemeDatastoreImplTest.kt",
         )
 
     val destIface =
@@ -205,7 +206,7 @@ fun generateManager(
 
     val tmpl =
         repoRoot.resolve(
-            "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/managers/UserManager.kt",
+            "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/managers/ComponentReplacemeManager.kt",
         )
     val dest =
         repoRoot.resolve(
@@ -238,11 +239,11 @@ fun generateFrontendService(
 
     val tmplIface =
         repoRoot.resolve(
-            "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/service/UserService.kt",
+            "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/service/ComponentReplacemeService.kt",
         )
     val tmplImpl =
         repoRoot.resolve(
-            "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/service/impl/UserServiceImpl.kt",
+            "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/service/impl/ComponentReplacemeServiceImpl.kt",
         )
 
     val destIface =

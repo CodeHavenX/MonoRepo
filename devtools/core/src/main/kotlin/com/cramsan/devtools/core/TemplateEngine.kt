@@ -18,8 +18,8 @@ fun toLowerCamel(input: String): String =
  * 1. `TemplateReplaceMe` → [appPascal]
  * 2. `templatereplaceme` → [app]
  * 3. Each entry in [extraSubs] (e.g. `"Example"` → provider name)
- * 4. `User` → [name]
- * 5. `user` → [nameLower]
+ * 4. `ComponentReplaceme` → [name]
+ * 5. `componentreplaceme` → [nameLower]
  */
 fun applySubs(
     src: Path,
@@ -37,7 +37,7 @@ fun applySubs(
     for ((from, to) in extraSubs) {
         content = content.replace(from, to)
     }
-    content = content.replace("User", name)
-    content = content.replace("user", nameLower)
+    content = content.replace("ComponentReplaceme", name)
+    content = content.replace("componentreplaceme", nameLower)
     dst.writeText(content)
 }

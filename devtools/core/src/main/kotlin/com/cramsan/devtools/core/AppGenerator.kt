@@ -19,6 +19,9 @@ private val TEMPLATE_EXTENSIONS = setOf("kt", "kts", "xml", "conf", "json", "yml
  *
  * @param appName lowercase app identifier, e.g. `"myapp"`
  * @param displayName PascalCase display name used in code, e.g. `"MyApp"`
+ * @param initialComponent PascalCase name for the starter component, e.g. `"Sample"`.
+ *   The template's `ComponentReplaceme`/`componentreplaceme` placeholders are replaced with this
+ *   value so that new apps start with real (non-placeholder) class names.
  * @param includeWasm whether to include the `front-end/app-wasm` module
  * @param includeAndroid whether to include the `front-end/app-android` module
  * @param includeJvm whether to include the `front-end/app-jvm` module
@@ -27,6 +30,7 @@ fun generateApp(
     repoRoot: Path,
     appName: String,
     displayName: String,
+    initialComponent: String = "Sample",
     includeWasm: Boolean = true,
     includeAndroid: Boolean = true,
     includeJvm: Boolean = true,
@@ -35,8 +39,8 @@ fun generateApp(
     require(!dest.exists()) { "Destination already exists: $dest" }
 
     copyTemplate(repoRoot, dest)
-    substituteFileContents(dest, appName, displayName)
-    renamePathComponents(dest, appName, displayName)
+    substituteFileContents(dest, appName, displayName, initialComponent)
+    renamePathComponents(dest, appName, displayName, initialComponent)
     removePlatformDirs(dest, includeWasm, includeAndroid, includeJvm)
     updateSettingsGradle(repoRoot, appName, includeWasm, includeAndroid, includeJvm)
     updateBuildGradle(repoRoot, appName, includeWasm, includeAndroid, includeJvm)
@@ -67,7 +71,7 @@ private fun copyTemplate(repoRoot: Path, dest: Path) {
     }
 }
 
-private fun substituteFileContents(dest: Path, appName: String, displayName: String) {
+private fun substituteFileContents(dest: Path, appName: String, displayName: String, initialComponent: String) {
     val appUpper = appName.uppercase().replace('-', '_')
     val appDash = appName.replace('_', '-')
     val appUnderscore = appName.replace('-', '_')
@@ -85,18 +89,21 @@ private fun substituteFileContents(dest: Path, appName: String, displayName: Str
                 content = content.replace("template_replace_me", appUnderscore)
                 content = content.replace("TemplateReplaceMe", displayName)
                 content = content.replace("templatereplaceme", appName)
+                content = content.replace("ComponentReplaceme", initialComponent)
+                content = content.replace("componentreplaceme", initialComponent.lowercase())
                 file.writeText(content)
             }
     }
 }
 
-private fun renamePathComponents(dest: Path, appName: String, displayName: String) {
+private fun renamePathComponents(dest: Path, appName: String, displayName: String, initialComponent: String) {
     val toRename = mutableListOf<Path>()
     Files.walk(dest).use { stream ->
         stream
             .filter { path ->
                 val fileName = path.fileName.toString()
-                "templatereplaceme" in fileName || "TemplateReplaceMe" in fileName
+                "templatereplaceme" in fileName || "TemplateReplaceMe" in fileName ||
+                    "ComponentReplaceme" in fileName
             }.forEach { toRename.add(it) }
     }
 
@@ -109,6 +116,7 @@ private fun renamePathComponents(dest: Path, appName: String, displayName: Strin
             fileName
                 .replace("templatereplaceme", appName)
                 .replace("TemplateReplaceMe", displayName)
+                .replace("ComponentReplaceme", initialComponent)
         if (fileName != newName) {
             Files.move(path, path.parent.resolve(newName))
         }

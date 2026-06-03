@@ -6,13 +6,13 @@ import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.file.readFileContent
-import com.cramsan.templatereplaceme.lib.model.PingPong
+import com.cramsan.templatereplaceme.lib.model.ComponentReplacemeId
 import com.cramsan.templatereplaceme.lib.serialization.createJson
 import com.cramsan.templatereplaceme.server.dependencyinjection.TestControllerModule
 import com.cramsan.templatereplaceme.server.dependencyinjection.TestServiceModule
 import com.cramsan.templatereplaceme.server.dependencyinjection.testApplicationModule
-import com.cramsan.templatereplaceme.server.service.PingPongService
-import com.cramsan.templatereplaceme.server.service.models.Pong
+import com.cramsan.templatereplaceme.server.service.ComponentReplacemeService
+import com.cramsan.templatereplaceme.server.service.models.ComponentReplaceme
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -28,7 +28,12 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class PongControllerTest :
+/**
+ * Integration test for [ComponentReplacemeController].
+ *
+ * Tests the HTTP layer end-to-end using a test Ktor application.
+ */
+class ComponentReplacemeControllerTest :
     CoroutineTest(),
     KoinTest {
     @BeforeTest
@@ -46,25 +51,16 @@ class PongControllerTest :
     }
 
     @Test
-    fun `test ping`() =
+    fun `test create`() =
         testBackEndApplication {
             // Arrange
-            val requestBody = readFileContent("requests/ping_request.json")
-            val expectedResponse = readFileContent("requests/pong_response.json")
-            val pingPongService = get<PingPongService>()
+            val requestBody = readFileContent("requests/componentreplaceme_request.json")
+            val expectedResponse = readFileContent("requests/componentreplaceme_response.json")
+            val componentreplacemeService = get<ComponentReplacemeService>()
             coEvery {
-                pingPongService.ping(
-                    firstName = "John",
-                    lastName = "Doe",
-                )
+                componentreplacemeService.create(id = "test-id")
             }.answers {
-                Result.success(
-                    Pong(
-                        id = PingPong("user123"),
-                        firstName = "John",
-                        lastName = "Doe",
-                    ),
-                )
+                Result.success(ComponentReplaceme(id = ComponentReplacemeId("test-id")))
             }
             val contextRetriever = get<ContextRetriever<Unit>>()
             coEvery {
@@ -75,7 +71,7 @@ class PongControllerTest :
 
             // Act
             val response =
-                client.post("ping") {
+                client.post("componentreplaceme") {
                     setBody(requestBody)
                     contentType(ContentType.Application.Json)
                 }

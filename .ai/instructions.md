@@ -53,12 +53,27 @@ edifikana/          # Main project
     app-jvm/        # JVM Desktop entry point
     app-wasm/       # WASM/Web entry point
 runasimi/           # Second project (same structure as edifikana)
-templatereplaceme/  # Template for creating new projects — use as reference implementation
+templatereplaceme/  # Pure template module — compiles but has no demo functionality (see below)
 ui-catalog/         # Shared UI component catalog
 gradle/             # Custom Gradle plugins/scripts for each KMP target type
 ```
 
 When adding a new module, also add it to `settings.gradle.kts` and the `releaseAll` task in the root `build.gradle.kts`.
+
+### templatereplaceme placeholder conventions
+
+`templatereplaceme/` is a **pure template module**: it compiles but carries no demo functionality. Every file in it serves as a source for the devtools component and app generators.
+
+Placeholder convention (do not rename without updating `Generators.kt` and `TemplateEngine.kt`):
+
+| Scope | PascalCase | lowercase | Replaced by |
+|---|---|---|---|
+| App level | `TemplateReplaceMe` | `templatereplaceme` | new app name |
+| Component level | `ComponentReplaceme` | `componentreplaceme` | component name (e.g., `Employee`) |
+| Feature level | `MainMenu` | `main.menu` | feature name (e.g., `AddProperty`) |
+| Activity level | `Main` | `main` | activity name (e.g., `Auth`) |
+
+Feature/activity templates live at: `templatereplaceme/front-end/shared-app/src/.../features/main/`
 
 **For more in-depth information look at: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Architecture/overview**
 

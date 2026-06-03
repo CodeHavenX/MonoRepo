@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">TemplateReplaceMe</string>
-    <string name="main_menu_screen_text_first_name">First Name</string>
-    <string name="main_menu_screen_text_last_name">Last Name</string>
-    <string name="main_menu_screen_text_ping_request">Ping!</string>
 </resources>

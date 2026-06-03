@@ -3,7 +3,7 @@ package com.cramsan.templatereplaceme.server
 import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
 import com.cramsan.framework.test.CoroutineTest
-import com.cramsan.templatereplaceme.server.datastore.impl.ExamplePingPongDatastore
+import com.cramsan.templatereplaceme.server.datastore.impl.ExampleComponentReplacemeDatastore
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -15,15 +15,15 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
- * Integration tests for the ping-pong datastore layer.
+ * Integration tests for the [ComponentReplaceme] datastore layer.
  *
- * These tests exercise [ExamplePingPongDatastore] directly. When migrating to a real backend,
- * swap [ExamplePingPongDatastore] for a real datastore implementation and load its module in
- * the [setUp] Koin context.
+ * These tests exercise [ExampleComponentReplacemeDatastore] directly. When migrating to a real
+ * backend, swap [ExampleComponentReplacemeDatastore] for the real implementation and load its
+ * module in the [setUp] Koin context.
  */
-class PingPongDatastoreIntegrationTest : CoroutineTest(), KoinTest {
+class ComponentReplacemeDatastoreIntegrationTest : CoroutineTest(), KoinTest {
 
-    private val datastore = ExamplePingPongDatastore()
+    private val datastore = ExampleComponentReplacemeDatastore()
 
     @BeforeTest
     fun setUp() {
@@ -41,18 +41,14 @@ class PingPongDatastoreIntegrationTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `ping returns success with the provided names`() = runCoroutineTest {
-        // Arrange
-
+    fun `create returns success with the provided id`() = runCoroutineTest {
         // Act
-        val result = datastore.ping(firstName = "John", lastName = "Doe")
+        val result = datastore.create(id = "test-id")
 
         // Assert
         assertTrue(result.isSuccess)
-        val pong = result.getOrNull()
-        assertNotNull(pong)
-        assertEquals("John", pong.firstName)
-        assertEquals("Doe", pong.lastName)
-        assertNotNull(pong.id)
+        val entity = result.getOrNull()
+        assertNotNull(entity)
+        assertEquals("test-id", entity.id.id)
     }
 }

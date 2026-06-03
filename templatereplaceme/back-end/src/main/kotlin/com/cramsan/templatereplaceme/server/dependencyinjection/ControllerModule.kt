@@ -1,17 +1,19 @@
 package com.cramsan.templatereplaceme.server.dependencyinjection
 
 import com.cramsan.framework.core.ktor.Controller
-import com.cramsan.templatereplaceme.server.controller.PingPongController
+import com.cramsan.templatereplaceme.server.controller.ComponentReplacemeController
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 /**
- * Class to initialize and bind the ktor components.
+ * Registers all [Controller] instances with Koin.
+ *
+ * Add new controllers here using [singleOf] bound to [Controller].
  */
 internal val ControllerModule =
     module {
-        singleOf(::PingPongController) {
+        singleOf(::ComponentReplacemeController) {
             bind<Controller>()
         }
     }

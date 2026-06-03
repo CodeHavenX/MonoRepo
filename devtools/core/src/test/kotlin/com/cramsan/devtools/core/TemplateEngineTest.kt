@@ -57,7 +57,7 @@ class TemplateEngineTest {
     fun `applySubs replaces all four standard placeholders`() {
         val src = tempDir.resolve("template.kt")
         src.toFile().writeText(
-            "package com.cramsan.templatereplaceme.api\nclass UserApi(val field: templatereplaceme) : TemplateReplaceMe { val x: user = User() }",
+            "package com.cramsan.templatereplaceme.api\nclass ComponentReplacemeApi(val field: templatereplaceme) : TemplateReplaceMe { val x: componentreplaceme = ComponentReplaceme() }",
         )
 
         val dst = tempDir.resolve("output.kt")
@@ -72,14 +72,14 @@ class TemplateEngineTest {
         assertTrue(content.contains("Property"))
         assertFalse(content.contains("templatereplaceme"))
         assertFalse(content.contains("TemplateReplaceMe"))
-        assertFalse(content.contains("UserApi"))
-        assertFalse(content.contains(": User()"))
+        assertFalse(content.contains("ComponentReplacemeApi"))
+        assertFalse(content.contains(": ComponentReplaceme()"))
     }
 
     @Test
     fun `applySubs applies extra substitutions between app and name subs`() {
         val src = tempDir.resolve("template.kt")
-        src.toFile().writeText("class ExampleUserDatastore : UserDatastore")
+        src.toFile().writeText("class ExampleComponentReplacemeDatastore : ComponentReplacemeDatastore")
 
         val dst = tempDir.resolve("output.kt")
         applySubs(src, dst, "Edifikana", "edifikana", "Property", "property", mapOf("Example" to "Supabase"))

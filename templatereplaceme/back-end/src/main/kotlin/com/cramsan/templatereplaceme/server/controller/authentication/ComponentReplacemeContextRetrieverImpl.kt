@@ -5,14 +5,17 @@ import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import io.ktor.server.application.ApplicationCall
 
 /**
- * Implementation of [ContextRetriever] that retrieves the client context from the [ApplicationCall].
+ * Retrieves the client authentication context from a [ComponentReplaceme] request.
+ *
+ * Replace the body of [getContext] with your real authentication logic
+ * (e.g., validating a JWT, looking up a session).
  */
-class PingPongContextRetrieverImpl : ContextRetriever<Unit> {
+class ComponentReplacemeContextRetrieverImpl : ContextRetriever<Unit> {
     /**
-     * Retrieve the client context from the given [applicationCall].
+     * Retrieves the client context from the given [applicationCall].
      */
     override suspend fun getContext(applicationCall: ApplicationCall): ClientContext<Unit> {
-        // TODO: Implement the real logic to retrieve the real user-context.
+        // TODO: Implement the real logic to retrieve the user-context.
         return ClientContext.UnauthenticatedClientContext()
     }
 }

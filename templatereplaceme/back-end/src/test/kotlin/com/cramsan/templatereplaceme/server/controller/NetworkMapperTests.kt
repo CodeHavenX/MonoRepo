@@ -1,27 +1,23 @@
 package com.cramsan.templatereplaceme.server.controller
 
-import com.cramsan.templatereplaceme.lib.model.PingPong
-import com.cramsan.templatereplaceme.server.service.models.Pong
+import com.cramsan.templatereplaceme.lib.model.ComponentReplacemeId
+import com.cramsan.templatereplaceme.server.service.models.ComponentReplaceme
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
+/**
+ * Tests for [NetworkMapper] extension functions.
+ */
 class NetworkMapperTests {
     @Test
-    fun `test pong network response`() {
+    fun `test componentreplaceme network response`() {
         // Arrange
-        val pong =
-            Pong(
-                id = PingPong("user123"),
-                firstName = "John",
-                lastName = "Doe",
-            )
+        val entity = ComponentReplaceme(id = ComponentReplacemeId("test-id"))
 
         // Act
-        val networkResponse = pong.toPongNetworkResponse()
+        val networkResponse = entity.toComponentReplacemeNetworkResponse()
 
         // Assert
-        assertEquals("user123", networkResponse.id)
-        assertEquals("John", networkResponse.firstName)
-        assertEquals("Doe", networkResponse.lastName)
+        assertEquals("test-id", networkResponse.id)
     }
 }

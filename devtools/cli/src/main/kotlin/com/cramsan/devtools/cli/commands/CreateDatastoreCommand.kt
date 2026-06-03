@@ -18,7 +18,7 @@ internal class CreateDatastoreCommand : CliktCommand(name = "datastore") {
         .defaultLazy { detectRepoRoot() }
 
     override fun run() {
-        val result = generateDatastore(repoRoot, name, app, provider)
+        val result = runGenerator { generateDatastore(repoRoot, name, app, provider) }
         printResult(result)
     }
 }

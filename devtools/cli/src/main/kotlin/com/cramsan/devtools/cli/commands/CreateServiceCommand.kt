@@ -17,7 +17,7 @@ internal class CreateServiceCommand : CliktCommand(name = "service") {
         .defaultLazy { detectRepoRoot() }
 
     override fun run() {
-        val result = generateService(repoRoot, name, app)
+        val result = runGenerator { generateService(repoRoot, name, app) }
         printResult(result)
     }
 }

@@ -17,7 +17,7 @@ internal class CreateFrontendServiceCommand : CliktCommand(name = "frontend-serv
         .defaultLazy { detectRepoRoot() }
 
     override fun run() {
-        val result = generateFrontendService(repoRoot, name, app)
+        val result = runGenerator { generateFrontendService(repoRoot, name, app) }
         printResult(result)
     }
 }

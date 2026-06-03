@@ -175,6 +175,11 @@ fun generateFeature(
     val app = normalizedParent.substringBefore("/")
     val appPascal = toPascal(app)
     val activityPackage = normalizedParent.substringAfterLast("/")
+    require(activityPackage != "features") {
+        "The --parent path '$parentRel' points to the features/ directory itself. " +
+            "It must point one level deeper, to the specific activity directory " +
+            "(e.g. .../features/auth, not .../features)."
+    }
     val activityName = toPascal(activityPackage)
     val featurePackage = featureName.lowercase()
 
@@ -248,6 +253,8 @@ fun generateActivity(
             "templatereplaceme" to app,
             "ActivityReplaceme" to activityName,
             "activityreplaceme" to activityPackage,
+            "FeatureReplaceme" to TEMPLATE_DEFAULT_FEATURE,
+            "featurereplaceme" to TEMPLATE_DEFAULT_FEATURE.lowercase(),
         )
 
     val fileMap =
@@ -299,6 +306,10 @@ private fun generateFromTemplates(
     checklist: List<String>,
     extraSubs: Map<String, String> = emptyMap(),
 ): GenerationResult {
+    require(repoRoot.resolve(app).toFile().isDirectory) {
+        "App '$app' not found at ${repoRoot.resolve(app)}. " +
+            "Run 'devtools create app --name $app' first, or check that --app matches an existing app directory."
+    }
     val appPascal = toPascal(app)
     val namePackage = toLowerCamel(name)
     // Order matters: app-level subs run first so they cannot be clobbered by component or extra

@@ -17,7 +17,7 @@ internal class CreateControllerCommand : CliktCommand(name = "controller") {
         .defaultLazy { detectRepoRoot() }
 
     override fun run() {
-        val result = generateController(repoRoot, name, app)
+        val result = runGenerator { generateController(repoRoot, name, app) }
         printResult(result)
     }
 }

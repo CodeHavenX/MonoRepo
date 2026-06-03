@@ -17,7 +17,7 @@ internal class CreateApiCommand : CliktCommand(name = "api") {
         .defaultLazy { detectRepoRoot() }
 
     override fun run() {
-        val result = generateApi(repoRoot, name, app)
+        val result = runGenerator { generateApi(repoRoot, name, app) }
         printResult(result)
     }
 }

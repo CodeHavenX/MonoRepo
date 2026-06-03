@@ -17,7 +17,7 @@ internal class CreateManagerCommand : CliktCommand(name = "manager") {
         .defaultLazy { detectRepoRoot() }
 
     override fun run() {
-        val result = generateManager(repoRoot, name, app)
+        val result = runGenerator { generateManager(repoRoot, name, app) }
         printResult(result)
     }
 }

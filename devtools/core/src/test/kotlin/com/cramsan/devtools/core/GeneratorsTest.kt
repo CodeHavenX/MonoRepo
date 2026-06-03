@@ -29,6 +29,14 @@ class GeneratorsTest {
     // region generateApi
 
     @Test
+    fun `generateApi fails when app directory does not exist`() {
+        val result = runCatching { generateApi(repoRoot, "Property", "nonexistentapp") }
+        assertTrue(result.isFailure)
+        val message = result.exceptionOrNull()?.message.orEmpty()
+        assertTrue(message.contains("nonexistentapp"), "Error should mention the missing app: $message")
+    }
+
+    @Test
     fun `generateApi creates all three files`() {
         val result = generateApi(repoRoot, "Property", "edifikana")
 
@@ -210,6 +218,16 @@ class GeneratorsTest {
         "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth"
 
     @Test
+    fun `generateFeature fails when parent path ends at the features root`() {
+        val featuresRoot =
+            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features"
+        val result = runCatching { generateFeature(repoRoot, "Login", featuresRoot) }
+        assertTrue(result.isFailure)
+        val message = result.exceptionOrNull()?.message.orEmpty()
+        assertTrue(message.contains("features"), "Error should mention features directory: $message")
+    }
+
+    @Test
     fun `generateFeature creates six files`() {
         val result = generateFeature(repoRoot, "AddProperty", featureParent)
 
@@ -315,6 +333,7 @@ class GeneratorsTest {
         assertFalse(content.contains("ActivityReplacemeActivityScreen"))
         assertFalse(content.contains("activityreplacemeNavGraph"))
         assertFalse(content.contains("FeatureReplacemeScreen"))
+        assertFalse(content.contains("FeatureReplacemeDestination"))
         assertFalse(content.contains("TemplateReplaceMeWindowNavGraphDestination"))
         assertTrue(content.contains("EdifikanáWindowNavGraphDestination"))
         assertTrue(content.contains("AuthNavGraphDestination"))
@@ -339,6 +358,25 @@ class GeneratorsTest {
         assertTrue(content.contains("TODO"))
         assertTrue(content.contains("AuthNavGraphDestination"))
         assertTrue(content.contains("EdifikanáWindowNavGraphDestination"))
+        assertFalse(content.contains("FeatureReplacemeDestination"))
+        assertTrue(content.contains("HomeDestination"))
+    }
+
+    @Test
+    fun `generateActivity replaces FeatureReplacemeDestination in activity screen startDestination`() {
+        generateActivity(
+            repoRoot,
+            "Auth",
+            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
+        )
+
+        val activityScreen =
+            repoRoot.resolve(
+                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthActivityScreen.kt",
+            )
+        val content = activityScreen.readText()
+        assertFalse(content.contains("FeatureReplacemeDestination"))
+        assertTrue(content.contains("HomeDestination"))
     }
 
     // endregion
@@ -351,6 +389,8 @@ class GeneratorsTest {
     }
 
     private fun createComponentStubs() {
+        // The app directory must exist before component generators can target it.
+        repoRoot.resolve("edifikana").createDirectories()
         createBackEndStubs()
         createFrontEndComponentStubs()
     }
@@ -462,7 +502,13 @@ class GeneratorsTest {
         )
         createStub(
             repoRoot.resolve("$base/ActivityReplacemeDestination.kt"),
-            "package $activityPkg\n// TODO: Add ActivityReplacemeNavGraphDestination to TemplateReplaceMeWindowNavGraphDestination sealed class.\nsealed class ActivityReplacemeDestination",
+            // Split long TODO comment across two lines to stay within max line length.
+            "package $activityPkg\n" +
+                "// TODO: Add ActivityReplacemeNavGraphDestination to\n" +
+                "// TemplateReplaceMeWindowNavGraphDestination sealed class.\n" +
+                "sealed class ActivityReplacemeDestination {\n" +
+                "    data object FeatureReplacemeDestination : ActivityReplacemeDestination()\n" +
+                "}",
         )
         createStub(
             repoRoot.resolve(

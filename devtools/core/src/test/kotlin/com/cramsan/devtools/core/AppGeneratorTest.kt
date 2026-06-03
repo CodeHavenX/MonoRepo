@@ -40,6 +40,18 @@ class AppGeneratorTest {
     }
 
     @Test
+    fun `generateApp fails when app name contains a hyphen`() {
+        val result = runCatching { generateApp(repoRoot, "my-app", "MyApp") }
+        assertTrue(result.isFailure)
+        val message = result.exceptionOrNull()?.message.orEmpty()
+        assertTrue(message.contains("hyphen"), "Error message should mention 'hyphen': $message")
+        assertTrue(
+            message.contains("myapp") || message.contains("my_app"),
+            "Error should suggest alternatives: $message",
+        )
+    }
+
+    @Test
     fun `generateApp substitutes all content placeholders`() {
         generateApp(repoRoot, "myapp", "MyApp")
 

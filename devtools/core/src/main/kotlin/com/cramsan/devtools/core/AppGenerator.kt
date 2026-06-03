@@ -14,8 +14,8 @@ private val TEMPLATE_EXTENSIONS = setOf("kt", "kts", "xml", "conf", "json", "yml
 
 private val CORE_MODULES = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
 
-private const val TEMPLATE_DEFAULT_FEATURE = "Home"
-private const val TEMPLATE_DEFAULT_ACTIVITY = "Main"
+internal const val TEMPLATE_DEFAULT_FEATURE = "Home"
+internal const val TEMPLATE_DEFAULT_ACTIVITY = "Main"
 
 /**
  * Scaffolds a complete new app by copying the `templatereplaceme` template, substituting
@@ -40,6 +40,10 @@ fun generateApp(
     includeAndroid: Boolean = true,
     includeJvm: Boolean = true,
 ): GenerationResult {
+    require(!appName.contains('-')) {
+        "App name '$appName' contains a hyphen, which is invalid in Kotlin package names. " +
+            "Use '${appName.replace("-", "")}' (no separator) or '${appName.replace('-', '_')}' (underscore) instead."
+    }
     val dest = repoRoot.resolve(appName)
     require(!dest.exists()) { "Destination already exists: $dest" }
 

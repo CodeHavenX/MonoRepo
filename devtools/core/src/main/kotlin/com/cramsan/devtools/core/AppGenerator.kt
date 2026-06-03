@@ -133,7 +133,8 @@ private fun renamePathComponents(dest: Path, appName: String, displayName: Strin
                 .replace("FeatureReplaceme", "Home")
                 .let { if (it == "featurereplaceme") "home" else it }
                 .replace("ActivityReplaceme", "Main")
-                .let { if (it == "activityreplaceme") "main" else it
+                .let {
+                    if (it == "activityreplaceme") "main" else it
                 }
         if (fileName != newName) {
             val target = path.parent.resolve(newName)

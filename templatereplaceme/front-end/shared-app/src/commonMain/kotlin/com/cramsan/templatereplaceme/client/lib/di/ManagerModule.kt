@@ -6,6 +6,7 @@ import com.cramsan.templatereplaceme.client.lib.features.main.MainDestination
 import com.cramsan.templatereplaceme.client.lib.managers.UserManager
 import com.cramsan.templatereplaceme.client.lib.managers.InitializerManager
 import com.cramsan.templatereplaceme.client.lib.managers.ComponentReplacemeManager
+import com.cramsan.templatereplaceme.client.lib.managers.InitializerManager
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 

@@ -13,8 +13,8 @@ import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplication
 import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeJvmMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.features.window.ComposableKoinContext
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowScreen
-import org.koin.compose.viewmodel.koinViewModel
 import org.koin.compose.scope.KoinScope
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 /**

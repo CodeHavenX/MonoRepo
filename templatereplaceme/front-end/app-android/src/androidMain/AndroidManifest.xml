@@ -18,7 +18,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:exported="true"
-            android:name="com.cramsan.templatereplaceme.client.lib.features.main.MainActivity"
+            android:name="com.cramsan.templatereplaceme.client.lib.features.activityreplaceme.MainActivity"
             android:windowSoftInputMode="adjustResize|stateVisible"
         >
             <intent-filter>

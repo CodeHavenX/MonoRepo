@@ -206,30 +206,24 @@ class GeneratorsTest {
 
     // region generateFeature
 
+    private val featureParent =
+        "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth"
+
     @Test
     fun `generateFeature creates six files`() {
-        val result =
-            generateFeature(
-                repoRoot,
-                "AddProperty",
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
-            )
+        val result = generateFeature(repoRoot, "AddProperty", featureParent)
 
         assertTrue(result.createdFiles.size == 6)
         result.createdFiles.forEach { assertTrue(Path.of(it).toFile().exists(), "Missing: $it") }
     }
 
     @Test
-    fun `generateFeature substitutes FeatureReplaceme and package placeholders`() {
-        generateFeature(
-            repoRoot,
-            "AddProperty",
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
-        )
+    fun `generateFeature substitutes all placeholders including activity package`() {
+        generateFeature(repoRoot, "AddProperty", featureParent)
 
         val screen =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/addproperty/AddPropertyScreen.kt",
+                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/addproperty/AddPropertyScreen.kt",
             )
         val content = screen.readText()
         assertTrue(content.contains("AddProperty"))
@@ -238,34 +232,28 @@ class GeneratorsTest {
         assertFalse(content.contains("FeatureReplaceme"))
         assertFalse(content.contains("featurereplaceme"))
         assertFalse(content.contains("templatereplaceme"))
+        assertFalse(content.contains("activityreplaceme"))
+        assertFalse(content.contains("ActivityReplaceme"))
     }
 
     @Test
     fun `generateFeature creates ScreenPreview file`() {
-        generateFeature(
-            repoRoot,
-            "AddProperty",
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
-        )
+        generateFeature(repoRoot, "AddProperty", featureParent)
 
         val preview =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/addproperty/AddPropertyScreenPreview.kt",
+                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/addproperty/AddPropertyScreenPreview.kt",
             )
         assertTrue(preview.toFile().exists())
     }
 
     @Test
     fun `generateFeature places ViewModelTest in jvmTest source set`() {
-        generateFeature(
-            repoRoot,
-            "AddProperty",
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
-        )
+        generateFeature(repoRoot, "AddProperty", featureParent)
 
         val vmTest =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/edifikana/client/lib/features/addproperty/AddPropertyViewModelTest.kt",
+                "edifikana/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/edifikana/client/lib/features/auth/addproperty/AddPropertyViewModelTest.kt",
             )
         assertTrue(vmTest.toFile().exists())
     }
@@ -326,10 +314,14 @@ class GeneratorsTest {
         assertFalse(content.contains("templatereplaceme"))
         assertFalse(content.contains("ActivityReplacemeActivityScreen"))
         assertFalse(content.contains("activityreplacemeNavGraph"))
+        assertFalse(content.contains("FeatureReplacemeScreen"))
+        assertFalse(content.contains("TemplateReplaceMeWindowNavGraphDestination"))
+        assertTrue(content.contains("EdifikanáWindowNavGraphDestination"))
+        assertTrue(content.contains("AuthNavGraphDestination"))
     }
 
     @Test
-    fun `generateActivity destination file contains AuthDestination`() {
+    fun `generateActivity destination file contains AuthDestination and TODO comment`() {
         generateActivity(
             repoRoot,
             "Auth",
@@ -344,6 +336,9 @@ class GeneratorsTest {
         assertTrue(content.contains("AuthDestination"))
         assertFalse(content.contains("ActivityReplacemeDestination"))
         assertFalse(content.contains("templatereplaceme"))
+        assertTrue(content.contains("TODO"))
+        assertTrue(content.contains("AuthNavGraphDestination"))
+        assertTrue(content.contains("EdifikanáWindowNavGraphDestination"))
     }
 
     // endregion
@@ -361,129 +356,119 @@ class GeneratorsTest {
     }
 
     private fun createBackEndStubs() {
-        val tmpl = "templatereplaceme"
-        val base = "com/cramsan/templatereplaceme"
         createStub(
-            repoRoot.resolve("$tmpl/api/src/commonMain/kotlin/$base/api/ComponentReplacemeApi.kt"),
+            repoRoot.resolve("devtools/templates/api/ComponentReplacemeApi.kt"),
             "package com.cramsan.templatereplaceme.api\nobject ComponentReplacemeApi",
         )
         createStub(
-            repoRoot.resolve(
-                "$tmpl/shared/src/commonMain/kotlin/$base/lib/model/network/CreateComponentReplacemeNetworkRequest.kt",
-            ),
+            repoRoot.resolve("devtools/templates/api/CreateComponentReplacemeNetworkRequest.kt"),
             "package com.cramsan.templatereplaceme.lib.model.network\ndata class CreateComponentReplacemeNetworkRequest(val templatereplaceme: String)",
         )
         createStub(
-            repoRoot.resolve(
-                "$tmpl/shared/src/commonMain/kotlin/$base/lib/model/network/ComponentReplacemeNetworkResponse.kt",
-            ),
+            repoRoot.resolve("devtools/templates/api/ComponentReplacemeNetworkResponse.kt"),
             "package com.cramsan.templatereplaceme.lib.model.network\ndata class ComponentReplacemeNetworkResponse(val id: String)",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/controller/ComponentReplacemeController.kt"),
+            repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeController.kt"),
             "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplacemeController",
         )
         createStub(
-            repoRoot.resolve(
-                "$tmpl/back-end/src/test/kotlin/$base/server/controller/ComponentReplacemeControllerTest.kt",
-            ),
+            repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeControllerTest.kt"),
             "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplacemeControllerTest",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/service/ComponentReplacemeService.kt"),
+            repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeService.kt"),
             "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplacemeService",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/test/kotlin/$base/server/service/ComponentReplacemeServiceTest.kt"),
+            repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeServiceTest.kt"),
             "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplacemeServiceTest",
         )
         createStub(
-            repoRoot.resolve("$tmpl/back-end/src/main/kotlin/$base/server/datastore/ComponentReplacemeDatastore.kt"),
+            repoRoot.resolve("devtools/templates/backend/datastore/ComponentReplacemeDatastore.kt"),
             "package com.cramsan.templatereplaceme.server.datastore\ninterface ComponentReplacemeDatastore",
         )
         createStub(
-            repoRoot.resolve(
-                "$tmpl/back-end/src/main/kotlin/$base/server/datastore/impl/ExampleComponentReplacemeDatastore.kt",
-            ),
+            repoRoot.resolve("devtools/templates/backend/datastore/impl/ExampleComponentReplacemeDatastore.kt"),
             "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ExampleComponentReplacemeDatastore : ComponentReplacemeDatastore",
         )
         createStub(
-            repoRoot.resolve(
-                "$tmpl/back-end/src/test/kotlin/$base/server/datastore/impl/ComponentReplacemeDatastoreImplTest.kt",
-            ),
+            repoRoot.resolve("devtools/templates/backend/datastore/impl/ComponentReplacemeDatastoreImplTest.kt"),
             "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ComponentReplacemeDatastoreImplTest { val d = ExampleComponentReplacemeDatastore() }",
         )
     }
 
     private fun createFrontEndComponentStubs() {
-        val tmpl = "templatereplaceme"
-        val base = "com/cramsan/templatereplaceme"
         createStub(
-            repoRoot.resolve(
-                "$tmpl/front-end/shared-app/src/commonMain/kotlin/$base/client/lib/managers/ComponentReplacemeManager.kt",
-            ),
+            repoRoot.resolve("devtools/templates/frontend/manager/ComponentReplacemeManager.kt"),
             "package com.cramsan.templatereplaceme.client.lib.managers\nclass ComponentReplacemeManager",
         )
         createStub(
-            repoRoot.resolve(
-                "$tmpl/front-end/shared-app/src/commonMain/kotlin/$base/client/lib/service/ComponentReplacemeService.kt",
-            ),
+            repoRoot.resolve("devtools/templates/frontend/service/ComponentReplacemeService.kt"),
             "package com.cramsan.templatereplaceme.client.lib.service\ninterface ComponentReplacemeService",
         )
         createStub(
-            repoRoot.resolve(
-                "$tmpl/front-end/shared-app/src/commonMain/kotlin/$base/client/lib/service/impl/ComponentReplacemeServiceImpl.kt",
-            ),
+            repoRoot.resolve("devtools/templates/frontend/service/impl/ComponentReplacemeServiceImpl.kt"),
             "package com.cramsan.templatereplaceme.client.lib.service.impl\nclass ComponentReplacemeServiceImpl : ComponentReplacemeService",
         )
     }
 
     private fun createFeatureTemplateStubs() {
         val featurePkg = "com.cramsan.templatereplaceme.client.lib.features.activityreplaceme.featurereplaceme"
-        val commonBase =
-            "templatereplaceme/front-end/shared-app/src/commonMain" +
-                "/kotlin/com/cramsan/templatereplaceme/client/lib/features/activityreplaceme/featurereplaceme"
-        val testBase =
-            "templatereplaceme/front-end/shared-app/src/jvmTest" +
-                "/kotlin/com/cramsan/templatereplaceme/client/lib/features/activityreplaceme/featurereplaceme"
+        val base = "devtools/templates/frontend/feature"
         createStub(
-            repoRoot.resolve("$commonBase/FeatureReplacemeScreen.kt"),
+            repoRoot.resolve("$base/FeatureReplacemeScreen.kt"),
             "package $featurePkg\nfun FeatureReplacemeScreen() {}",
         )
         createStub(
-            repoRoot.resolve("$commonBase/FeatureReplacemeEvent.kt"),
+            repoRoot.resolve("$base/FeatureReplacemeEvent.kt"),
             "package $featurePkg\nsealed class FeatureReplacemeEvent",
         )
         createStub(
-            repoRoot.resolve("$commonBase/FeatureReplacemeUIState.kt"),
+            repoRoot.resolve("$base/FeatureReplacemeUIState.kt"),
             "package $featurePkg\ndata class FeatureReplacemeUIState(val isLoading: Boolean)",
         )
         createStub(
-            repoRoot.resolve("$commonBase/FeatureReplacemeViewModel.kt"),
+            repoRoot.resolve("$base/FeatureReplacemeViewModel.kt"),
             "package $featurePkg\nclass FeatureReplacemeViewModel",
         )
         createStub(
-            repoRoot.resolve("$commonBase/FeatureReplacemeScreenPreview.kt"),
+            repoRoot.resolve("$base/FeatureReplacemeScreenPreview.kt"),
             "package $featurePkg\nfun FeatureReplacemeScreenPreview() {}",
         )
         createStub(
-            repoRoot.resolve("$testBase/FeatureReplacemeViewModelTest.kt"),
+            repoRoot.resolve("$base/FeatureReplacemeViewModelTest.kt"),
             "package $featurePkg\nclass FeatureReplacemeViewModelTest",
         )
     }
 
     private fun createActivityTemplateStubs() {
         val activityPkg = "com.cramsan.templatereplaceme.client.lib.features.activityreplaceme"
-        val base =
-            "templatereplaceme/front-end/shared-app/src/commonMain" +
-                "/kotlin/com/cramsan/templatereplaceme/client/lib/features/activityreplaceme"
+        val base = "devtools/templates/frontend/activity"
         createStub(
             repoRoot.resolve("$base/ActivityReplacemeActivityScreen.kt"),
-            "package $activityPkg\nfun NavGraphBuilder.activityreplacemeNavGraphNavigation() {}\nclass ActivityReplacemeActivityScreen",
+            """
+            package $activityPkg
+            import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowNavGraphDestination
+            fun NavGraphBuilder.activityreplacemeNavGraphNavigation() {
+                navigationGraph(
+                    graphDestination = TemplateReplaceMeWindowNavGraphDestination.ActivityReplacemeNavGraphDestination::class,
+                    startDestination = ActivityReplacemeDestination.FeatureReplacemeDestination,
+                ) {
+                    // TODO: add composable entries for each ActivityReplacemeDestination screen
+                }
+            }
+            """.trimIndent(),
         )
         createStub(
             repoRoot.resolve("$base/ActivityReplacemeDestination.kt"),
-            "package $activityPkg\nsealed class ActivityReplacemeDestination",
+            "package $activityPkg\n// TODO: Add ActivityReplacemeNavGraphDestination to TemplateReplaceMeWindowNavGraphDestination sealed class.\nsealed class ActivityReplacemeDestination",
+        )
+        createStub(
+            repoRoot.resolve(
+                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/window/EdifikanáWindowNavGraphDestination.kt",
+            ),
+            "package com.cramsan.edifikana.client.lib.features.window\nsealed class EdifikanáWindowNavGraphDestination {\n}",
         )
     }
 

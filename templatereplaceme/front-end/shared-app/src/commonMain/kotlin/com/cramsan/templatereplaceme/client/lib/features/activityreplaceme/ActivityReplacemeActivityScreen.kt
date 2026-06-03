@@ -2,9 +2,7 @@ package com.cramsan.templatereplaceme.client.lib.features.activityreplaceme
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import com.cramsan.framework.core.compose.navigation.navigationGraph
-import com.cramsan.templatereplaceme.client.lib.features.activityreplaceme.featurereplaceme.FeatureReplacemeScreen
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowNavGraphDestination
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KType
@@ -19,15 +17,10 @@ fun NavGraphBuilder.activityreplacemeNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {
     navigationGraph(
-        graphDestination = TemplateReplaceMeWindowNavGraphDestination.AuthNavGraphDestination::class,
+        graphDestination = TemplateReplaceMeWindowNavGraphDestination.ActivityReplacemeNavGraphDestination::class,
         startDestination = ActivityReplacemeDestination.FeatureReplacemeDestination,
         typeMap = typeMap,
     ) {
-        composable(
-            ActivityReplacemeDestination.FeatureReplacemeDestination::class,
-            typeMap = typeMap,
-        ) {
-            FeatureReplacemeScreen()
-        }
+        // TODO: add composable entries for each ActivityReplacemeDestination screen
     }
 }

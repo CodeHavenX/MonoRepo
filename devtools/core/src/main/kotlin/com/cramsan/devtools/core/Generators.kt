@@ -13,17 +13,11 @@ fun generateApi(
     val nameLower = toLowerCamel(name)
 
     val tmplApi =
-        repoRoot.resolve(
-            "templatereplaceme/api/src/commonMain/kotlin/com/cramsan/templatereplaceme/api/ComponentReplacemeApi.kt",
-        )
+        repoRoot.resolve("devtools/templates/api/ComponentReplacemeApi.kt")
     val tmplReq =
-        repoRoot.resolve(
-            "templatereplaceme/shared/src/commonMain/kotlin/com/cramsan/templatereplaceme/lib/model/network/CreateComponentReplacemeNetworkRequest.kt",
-        )
+        repoRoot.resolve("devtools/templates/api/CreateComponentReplacemeNetworkRequest.kt")
     val tmplResp =
-        repoRoot.resolve(
-            "templatereplaceme/shared/src/commonMain/kotlin/com/cramsan/templatereplaceme/lib/model/network/ComponentReplacemeNetworkResponse.kt",
-        )
+        repoRoot.resolve("devtools/templates/api/ComponentReplacemeNetworkResponse.kt")
 
     val destApi = repoRoot.resolve("$app/api/src/commonMain/kotlin/com/cramsan/$app/api/${name}Api.kt")
     val destReq =
@@ -63,13 +57,9 @@ fun generateController(
     val nameLower = toLowerCamel(name)
 
     val tmpl =
-        repoRoot.resolve(
-            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/controller/ComponentReplacemeController.kt",
-        )
+        repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeController.kt")
     val tmplTest =
-        repoRoot.resolve(
-            "templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/controller/ComponentReplacemeControllerTest.kt",
-        )
+        repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeControllerTest.kt")
 
     val dest = repoRoot.resolve("$app/back-end/src/main/kotlin/com/cramsan/$app/server/controller/${name}Controller.kt")
     val destTest =
@@ -106,13 +96,9 @@ fun generateService(
     val nameLower = toLowerCamel(name)
 
     val tmpl =
-        repoRoot.resolve(
-            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/service/ComponentReplacemeService.kt",
-        )
+        repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeService.kt")
     val tmplTest =
-        repoRoot.resolve(
-            "templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/service/ComponentReplacemeServiceTest.kt",
-        )
+        repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeServiceTest.kt")
 
     val dest = repoRoot.resolve("$app/back-end/src/main/kotlin/com/cramsan/$app/server/service/${name}Service.kt")
     val destTest =
@@ -148,17 +134,11 @@ fun generateDatastore(
     val nameLower = toLowerCamel(name)
 
     val tmplIface =
-        repoRoot.resolve(
-            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/datastore/ComponentReplacemeDatastore.kt",
-        )
+        repoRoot.resolve("devtools/templates/backend/datastore/ComponentReplacemeDatastore.kt")
     val tmplImpl =
-        repoRoot.resolve(
-            "templatereplaceme/back-end/src/main/kotlin/com/cramsan/templatereplaceme/server/datastore/impl/ExampleComponentReplacemeDatastore.kt",
-        )
+        repoRoot.resolve("devtools/templates/backend/datastore/impl/ExampleComponentReplacemeDatastore.kt")
     val tmplTest =
-        repoRoot.resolve(
-            "templatereplaceme/back-end/src/test/kotlin/com/cramsan/templatereplaceme/server/datastore/impl/ComponentReplacemeDatastoreImplTest.kt",
-        )
+        repoRoot.resolve("devtools/templates/backend/datastore/impl/ComponentReplacemeDatastoreImplTest.kt")
 
     val destIface =
         repoRoot.resolve(
@@ -204,9 +184,7 @@ fun generateManager(
     val nameLower = toLowerCamel(name)
 
     val tmpl =
-        repoRoot.resolve(
-            "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/managers/ComponentReplacemeManager.kt",
-        )
+        repoRoot.resolve("devtools/templates/frontend/manager/ComponentReplacemeManager.kt")
     val dest =
         repoRoot.resolve(
             "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/managers/${name}Manager.kt",
@@ -237,13 +215,9 @@ fun generateFrontendService(
     val nameLower = toLowerCamel(name)
 
     val tmplIface =
-        repoRoot.resolve(
-            "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/service/ComponentReplacemeService.kt",
-        )
+        repoRoot.resolve("devtools/templates/frontend/service/ComponentReplacemeService.kt")
     val tmplImpl =
-        repoRoot.resolve(
-            "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/service/impl/ComponentReplacemeServiceImpl.kt",
-        )
+        repoRoot.resolve("devtools/templates/frontend/service/impl/ComponentReplacemeServiceImpl.kt")
 
     val destIface =
         repoRoot.resolve(
@@ -274,14 +248,11 @@ fun generateFrontendService(
     )
 }
 
-private const val FEATURE_TMPL_COMMON =
-    "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/features/activityreplaceme/featurereplaceme"
+private const val FEATURE_TMPL_COMMON = "devtools/templates/frontend/feature"
 
-private const val FEATURE_TMPL_TEST =
-    "templatereplaceme/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/templatereplaceme/client/lib/features/activityreplaceme/featurereplaceme"
+private const val FEATURE_TMPL_TEST = "devtools/templates/frontend/feature"
 
-private const val ACTIVITY_TMPL_COMMON =
-    "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/features/activityreplaceme"
+private const val ACTIVITY_TMPL_COMMON = "devtools/templates/frontend/activity"
 
 /**
  * Generates a full Compose feature: Screen, Event, UIState, ViewModel, ScreenPreview, and ViewModelTest.
@@ -296,12 +267,15 @@ fun generateFeature(
     featureName: String,
     parentRel: String,
 ): GenerationResult {
-    val app = parentRel.substringBefore("/")
+    val normalizedParent = toRepoRelative(repoRoot, parentRel)
+    val app = normalizedParent.substringBefore("/")
     val appPascal = toPascal(app)
+    val activityPackage = normalizedParent.substringAfterLast("/")
+    val activityName = toPascal(activityPackage)
     val featurePackage = featureName.lowercase()
 
-    val commonDir = repoRoot.resolve("$parentRel/$featurePackage")
-    val testDir = repoRoot.resolve("${parentRel.replace("/commonMain/", "/jvmTest/")}/$featurePackage")
+    val commonDir = repoRoot.resolve("$normalizedParent/$featurePackage")
+    val testDir = repoRoot.resolve("${normalizedParent.replace("/commonMain/", "/jvmTest/")}/$featurePackage")
     val srcCommon = repoRoot.resolve(FEATURE_TMPL_COMMON)
     val srcTest = repoRoot.resolve(FEATURE_TMPL_TEST)
 
@@ -309,6 +283,8 @@ fun generateFeature(
         listOf(
             "TemplateReplaceMe" to appPascal,
             "templatereplaceme" to app,
+            "ActivityReplaceme" to activityName,
+            "activityreplaceme" to activityPackage,
             "FeatureReplaceme" to featureName,
             "featurereplaceme" to featurePackage,
         )
@@ -352,15 +328,19 @@ fun generateActivity(
     activityName: String,
     parentRel: String,
 ): GenerationResult {
-    val app = parentRel.substringBefore("/")
+    val normalizedParent = toRepoRelative(repoRoot, parentRel)
+    val app = normalizedParent.substringBefore("/")
     val appPascal = toPascal(app)
     val activityPackage = activityName.lowercase()
 
-    val activityDir = repoRoot.resolve("$parentRel/$activityPackage")
+    val activityDir = repoRoot.resolve("$normalizedParent/$activityPackage")
     val srcCommon = repoRoot.resolve(ACTIVITY_TMPL_COMMON)
+
+    val windowClass = findWindowNavGraphDestinationClass(repoRoot, app)
 
     val subs =
         listOf(
+            "TemplateReplaceMeWindowNavGraphDestination" to windowClass,
             "TemplateReplaceMe" to appPascal,
             "templatereplaceme" to app,
             "ActivityReplaceme" to activityName,
@@ -384,10 +364,28 @@ fun generateActivity(
         postGenerationChecklist =
         listOf(
             "# Register this nav graph within the root nav host (usually WindowNavigationHost).",
-            "# Add ${activityName}NavGraphDestination to ApplicationNavGraphDestination.",
+            "# Add ${activityName}NavGraphDestination to $windowClass sealed class.",
             "# Call ${activityPackage}NavGraphNavigation() in the root nav host.",
         ),
     )
+}
+
+private fun findWindowNavGraphDestinationClass(repoRoot: Path, app: String): String {
+    val windowDir =
+        repoRoot.resolve(
+            "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/features/window",
+        )
+    val file =
+        windowDir
+            .toFile()
+            .listFiles()
+            ?.firstOrNull { it.name.endsWith("WindowNavGraphDestination.kt") }
+    return file?.nameWithoutExtension ?: "${toPascal(app)}WindowNavGraphDestination"
+}
+
+private fun toRepoRelative(repoRoot: Path, parentRel: String): String {
+    val rootPrefix = repoRoot.toString().trimEnd('/') + "/"
+    return if (parentRel.startsWith(rootPrefix)) parentRel.removePrefix(rootPrefix) else parentRel
 }
 
 private fun applyOrderedSubs(src: Path, dst: Path, subs: List<Pair<String, String>>) {

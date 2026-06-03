@@ -21,4 +21,10 @@ sealed class TemplateReplaceMeWindowNavGraphDestination : NavigationGraphDestina
      */
     @Serializable
     data object AuthNavGraphDestination : TemplateReplaceMeWindowNavGraphDestination()
+
+    /**
+     * ActivityReplaceme navigation graph destination.
+     */
+    @Serializable
+    data object ActivityReplacemeNavGraphDestination : TemplateReplaceMeWindowNavGraphDestination()
 }

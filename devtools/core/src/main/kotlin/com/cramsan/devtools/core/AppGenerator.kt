@@ -80,10 +80,11 @@ private fun substituteFileContents(dest: Path, appName: String, displayName: Str
         stream
             .filter { path ->
                 path.isRegularFile() &&
-                    path.extension in TEMPLATE_EXTENSIONS &&
+                    (path.extension in TEMPLATE_EXTENSIONS || path.fileName.toString() == "Dockerfile") &&
                     !path.pathString.contains("/build/")
             }.forEach { file ->
                 var content = file.readText()
+                content = content.replace("TEMPLATE_REPLACE_ME", appUpper)
                 content = content.replace("TEMPLATEREPLACEME", appUpper)
                 content = content.replace("template-replace-me", appDash)
                 content = content.replace("template_replace_me", appUnderscore)
@@ -91,19 +92,30 @@ private fun substituteFileContents(dest: Path, appName: String, displayName: Str
                 content = content.replace("templatereplaceme", appName)
                 content = content.replace("ComponentReplaceme", initialComponent)
                 content = content.replace("componentreplaceme", initialComponent.lowercase())
+                content = content.replace("FeatureReplaceme", "Home")
+                content = content.replace("featurereplaceme", "home")
+                content = content.replace("ActivityReplaceme", "Main")
+                content = content.replace("activityreplaceme", "main")
                 file.writeText(content)
             }
     }
 }
 
+@Suppress("CyclomaticComplexMethod")
 private fun renamePathComponents(dest: Path, appName: String, displayName: String, initialComponent: String) {
     val toRename = mutableListOf<Path>()
     Files.walk(dest).use { stream ->
         stream
             .filter { path ->
                 val fileName = path.fileName.toString()
-                "templatereplaceme" in fileName || "TemplateReplaceMe" in fileName ||
-                    "ComponentReplaceme" in fileName
+                "templatereplaceme" in fileName ||
+                    "TemplateReplaceMe" in fileName ||
+                    "ComponentReplaceme" in fileName ||
+                    "FeatureReplaceme" in fileName ||
+                    fileName == "featurereplaceme" ||
+                    "ActivityReplaceme" in fileName ||
+                    fileName == "activityreplaceme" ||
+                    "componentreplaceme" in fileName
             }.forEach { toRename.add(it) }
     }
 
@@ -117,8 +129,20 @@ private fun renamePathComponents(dest: Path, appName: String, displayName: Strin
                 .replace("templatereplaceme", appName)
                 .replace("TemplateReplaceMe", displayName)
                 .replace("ComponentReplaceme", initialComponent)
+                .replace("componentreplaceme", initialComponent.lowercase())
+                .replace("FeatureReplaceme", "Home")
+                .let { if (it == "featurereplaceme") "home" else it }
+                .replace("ActivityReplaceme", "Main")
+                .let { if (it == "activityreplaceme") "main" else it
+                }
         if (fileName != newName) {
-            Files.move(path, path.parent.resolve(newName))
+            val target = path.parent.resolve(newName)
+            // If the target is an empty directory left over from a prior template cleanup,
+            // remove it so Files.move() can succeed.
+            if (target.toFile().isDirectory && target.toFile().list().isNullOrEmpty()) {
+                target.toFile().delete()
+            }
+            Files.move(path, target)
         }
     }
 }

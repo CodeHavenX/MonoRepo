@@ -15,9 +15,7 @@ import com.cramsan.templatereplaceme.server.service.models.ComponentReplaceme
  * @see ComponentReplacemeDatastore for persistence operations
  */
 @BackendService
-class ComponentReplacemeService(
-    private val componentreplacemeDatastore: ComponentReplacemeDatastore,
-) {
+class ComponentReplacemeService(private val componentreplacemeDatastore: ComponentReplacemeDatastore) {
     /**
      * Creates a new [ComponentReplaceme] entity with the given [id].
      *

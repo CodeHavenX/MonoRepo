@@ -3,8 +3,8 @@ package com.cramsan.devtools.cli.commands
 import com.cramsan.devtools.cli.detectRepoRoot
 import com.cramsan.devtools.core.generateApp
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.defaultLazy
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required

@@ -1,4 +1,4 @@
-package com.cramsan.templatereplaceme.client.lib.features.main.menu
+package com.cramsan.templatereplaceme.client.lib.features.activityreplaceme.featurereplaceme
 
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -15,11 +15,11 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 
 /**
- * Tests for [MainMenuViewModel].
+ * Tests for [FeatureReplacemeViewModel].
  */
-class MainMenuViewModelTest : CoroutineTest() {
+class FeatureReplacemeViewModelTest : CoroutineTest() {
 
-    private lateinit var viewModel: MainMenuViewModel
+    private lateinit var viewModel: FeatureReplacemeViewModel
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
@@ -40,7 +40,7 @@ class MainMenuViewModelTest : CoroutineTest() {
             applicationEventReceiver = applicationEventReceiver,
             windowEventReceiver = windowEventBus,
         )
-        viewModel = MainMenuViewModel(dependencies = dependencies)
+        viewModel = FeatureReplacemeViewModel(dependencies = dependencies)
     }
 
     @Test

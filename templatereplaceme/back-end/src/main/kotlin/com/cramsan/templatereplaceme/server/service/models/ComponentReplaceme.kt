@@ -8,6 +8,4 @@ import com.cramsan.templatereplaceme.lib.model.ComponentReplacemeId
  * This model is internal to the backend and never crosses the network boundary.
  * Network transfer uses [com.cramsan.templatereplaceme.lib.model.network.ComponentReplacemeNetworkResponse].
  */
-data class ComponentReplaceme(
-    val id: ComponentReplacemeId,
-)
+data class ComponentReplaceme(val id: ComponentReplacemeId)

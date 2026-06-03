@@ -1,4 +1,4 @@
-package com.cramsan.templatereplaceme.client.lib.features.main.menu
+package com.cramsan.templatereplaceme.client.lib.features.activityreplaceme.featurereplaceme
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,29 +13,30 @@ import com.cramsan.ui.components.LoadingAnimationOverlay
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * Main menu screen.
+ * Feature screen.
  *
- * Observes [MainMenuUIState] from [MainMenuViewModel] and forwards user interactions
- * back to the ViewModel as function calls. Replace this body with your feature's UI.
+ * Observes [FeatureReplacemeUIState] from [FeatureReplacemeViewModel] and forwards user
+ * interactions back to the ViewModel as function calls. Replace this body with your
+ * feature's UI.
  */
 @Composable
-fun MainMenuScreen(
-    viewModel: MainMenuViewModel = koinViewModel(),
+fun FeatureReplacemeScreen(
+    viewModel: FeatureReplacemeViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
-            MainMenuEvent.Noop -> Unit
+            FeatureReplacemeEvent.Noop -> Unit
         }
     }
 
-    MainMenuContent(uiState = uiState)
+    FeatureReplacemeContent(uiState = uiState)
 }
 
 @Composable
-internal fun MainMenuContent(
-    uiState: MainMenuUIState,
+internal fun FeatureReplacemeContent(
+    uiState: FeatureReplacemeUIState,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(modifier = modifier) { innerPadding ->

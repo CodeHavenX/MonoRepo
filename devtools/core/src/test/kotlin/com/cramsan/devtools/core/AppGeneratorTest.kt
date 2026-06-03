@@ -49,6 +49,9 @@ class AppGeneratorTest {
         assertTrue(content.contains("myapp"))
         assertFalse(content.contains("templatereplaceme"))
         assertFalse(content.contains("TemplateReplaceMe"))
+        assertFalse(content.contains("ComponentReplaceme"))
+        assertFalse(content.contains("MainMenu"))
+        assertFalse(content.contains("main.menu"))
     }
 
     @Test
@@ -136,17 +139,102 @@ class AppGeneratorTest {
         path.toFile().writeText(content)
     }
 
+    @Test
+    fun `generateApp substitutes ComponentReplaceme with initialComponent`() {
+        generateApp(repoRoot, "myapp", "MyApp", initialComponent = "Widget")
+
+        val file = repoRoot.resolve("myapp/src/main.kt")
+        val content = file.readText()
+        assertTrue(content.contains("Widget"))
+        assertTrue(content.contains("widget"))
+        assertFalse(content.contains("ComponentReplaceme"))
+        assertFalse(content.contains("componentreplaceme"))
+    }
+
+    @Test
+    fun `generateApp renames ComponentReplaceme files`() {
+        generateApp(repoRoot, "myapp", "MyApp", initialComponent = "Widget")
+
+        val renamed = repoRoot.resolve("myapp/src/WidgetController.kt")
+        val original = repoRoot.resolve("myapp/src/ComponentReplacemeController.kt")
+        assertTrue(renamed.toFile().exists())
+        assertFalse(original.toFile().exists())
+    }
+
+    @Test
+    fun `generateApp substitutes FeatureReplaceme with Home`() {
+        generateApp(repoRoot, "myapp", "MyApp")
+
+        val file = repoRoot.resolve("myapp/src/main.kt")
+        val content = file.readText()
+        assertTrue(content.contains("HomeScreen"))
+        assertTrue(content.contains("home"))
+        assertFalse(content.contains("FeatureReplaceme"))
+        assertFalse(content.contains("featurereplaceme"))
+    }
+
+    @Test
+    fun `generateApp substitutes ActivityReplaceme with Main`() {
+        generateApp(repoRoot, "myapp", "MyApp")
+
+        val file = repoRoot.resolve("myapp/src/main.kt")
+        val content = file.readText()
+        assertTrue(content.contains("MainNavGraph"))
+        assertFalse(content.contains("ActivityReplaceme"))
+        assertFalse(content.contains("activityreplaceme"))
+    }
+
+    @Test
+    fun `generateApp renames featurereplaceme directory to home`() {
+        generateApp(repoRoot, "myapp", "MyApp")
+
+        val renamedDir = repoRoot.resolve("myapp/features/main/home")
+        val originalDir = repoRoot.resolve("myapp/features/main/featurereplaceme")
+        assertTrue(renamedDir.toFile().isDirectory)
+        assertFalse(originalDir.toFile().exists())
+    }
+
+    @Test
+    fun `generateApp renames FeatureReplaceme files to Home`() {
+        generateApp(repoRoot, "myapp", "MyApp")
+
+        val renamed = repoRoot.resolve("myapp/features/main/home/HomeScreen.kt")
+        val original = repoRoot.resolve("myapp/features/main/featurereplaceme/FeatureReplacemeScreen.kt")
+        assertTrue(renamed.toFile().exists())
+        assertFalse(original.toFile().exists())
+    }
+
     private fun createTemplateStubs() {
         // A source file with all placeholder variants
         createStub(
             repoRoot.resolve("templatereplaceme/src/main.kt"),
-            "// TEMPLATEREPLACEME\n// template-replace-me\n// template_replace_me\npackage com.cramsan.templatereplaceme\nclass TemplateReplaceMe",
+            "// TEMPLATEREPLACEME\n// template-replace-me\n// template_replace_me\n" +
+                "package com.cramsan.templatereplaceme\n" +
+                "class TemplateReplaceMe\n" +
+                "class ComponentReplacemeController\n" +
+                "val componentreplaceme = ComponentReplaceme()\n" +
+                "fun FeatureReplacemeScreen() {}\n" +
+                "val pkg = \"featurereplaceme\"\n" +
+                "fun NavGraphBuilder.activityreplacemeNavGraphNavigation() {}\n" +
+                "val mainNavGraph = \"ActivityReplacemeNavGraph\"\n",
         )
 
         // A file whose name contains the placeholder — for rename testing
         createStub(
             repoRoot.resolve("templatereplaceme/src/TemplateReplaceMe.kt"),
             "class TemplateReplaceMe",
+        )
+
+        // A ComponentReplaceme file — for rename testing
+        createStub(
+            repoRoot.resolve("templatereplaceme/src/ComponentReplacemeController.kt"),
+            "class ComponentReplacemeController",
+        )
+
+        // Feature template files in the featurereplaceme directory — for rename/restructure testing
+        createStub(
+            repoRoot.resolve("templatereplaceme/features/main/featurereplaceme/FeatureReplacemeScreen.kt"),
+            "fun FeatureReplacemeScreen() {}",
         )
 
         // Minimal settings.gradle.kts with the marker the generator looks for

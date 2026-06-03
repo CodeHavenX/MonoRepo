@@ -35,7 +35,6 @@ fun generateApi(
             "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/${name}NetworkResponse.kt",
         )
 
-
     applySubs(tmplApi, destApi, appPascal, app, name, nameLower)
     applySubs(tmplReq, destReq, appPascal, app, name, nameLower)
     applySubs(tmplResp, destResp, appPascal, app, name, nameLower)
@@ -276,13 +275,13 @@ fun generateFrontendService(
 }
 
 private const val FEATURE_TMPL_COMMON =
-    "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/features/main/menu"
+    "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/features/activityreplaceme/featurereplaceme"
 
 private const val FEATURE_TMPL_TEST =
-    "templatereplaceme/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/templatereplaceme/client/lib/features/main/menu"
+    "templatereplaceme/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/templatereplaceme/client/lib/features/activityreplaceme/featurereplaceme"
 
 private const val ACTIVITY_TMPL_COMMON =
-    "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/features/main"
+    "templatereplaceme/front-end/shared-app/src/commonMain/kotlin/com/cramsan/templatereplaceme/client/lib/features/activityreplaceme"
 
 /**
  * Generates a full Compose feature: Screen, Event, UIState, ViewModel, ScreenPreview, and ViewModelTest.
@@ -310,18 +309,20 @@ fun generateFeature(
         listOf(
             "TemplateReplaceMe" to appPascal,
             "templatereplaceme" to app,
-            "MainMenu" to featureName,
-            "main.menu" to featurePackage,
+            "FeatureReplaceme" to featureName,
+            "featurereplaceme" to featurePackage,
         )
 
     val fileMap =
         listOf(
-            srcCommon.resolve("MainMenuScreen.kt") to commonDir.resolve("${featureName}Screen.kt"),
-            srcCommon.resolve("MainMenuEvent.kt") to commonDir.resolve("${featureName}Event.kt"),
-            srcCommon.resolve("MainMenuUIState.kt") to commonDir.resolve("${featureName}UIState.kt"),
-            srcCommon.resolve("MainMenuViewModel.kt") to commonDir.resolve("${featureName}ViewModel.kt"),
-            srcCommon.resolve("MainMenuScreenPreview.kt") to commonDir.resolve("${featureName}ScreenPreview.kt"),
-            srcTest.resolve("MainMenuViewModelTest.kt") to testDir.resolve("${featureName}ViewModelTest.kt"),
+            srcCommon.resolve("FeatureReplacemeScreen.kt") to commonDir.resolve("${featureName}Screen.kt"),
+            srcCommon.resolve("FeatureReplacemeEvent.kt") to commonDir.resolve("${featureName}Event.kt"),
+            srcCommon.resolve("FeatureReplacemeUIState.kt") to commonDir.resolve("${featureName}UIState.kt"),
+            srcCommon.resolve("FeatureReplacemeViewModel.kt") to commonDir.resolve("${featureName}ViewModel.kt"),
+            srcCommon.resolve(
+                "FeatureReplacemeScreenPreview.kt",
+            ) to commonDir.resolve("${featureName}ScreenPreview.kt"),
+            srcTest.resolve("FeatureReplacemeViewModelTest.kt") to testDir.resolve("${featureName}ViewModelTest.kt"),
         )
 
     fileMap.forEach { (src, dst) -> applyOrderedSubs(src, dst, subs) }
@@ -362,14 +363,18 @@ fun generateActivity(
         listOf(
             "TemplateReplaceMe" to appPascal,
             "templatereplaceme" to app,
-            "Main" to activityName,
-            "main" to activityPackage,
+            "ActivityReplaceme" to activityName,
+            "activityreplaceme" to activityPackage,
         )
 
     val fileMap =
         listOf(
-            srcCommon.resolve("MainActivityScreen.kt") to activityDir.resolve("${activityName}ActivityScreen.kt"),
-            srcCommon.resolve("MainDestination.kt") to activityDir.resolve("${activityName}Destination.kt"),
+            srcCommon.resolve(
+                "ActivityReplacemeActivityScreen.kt",
+            ) to activityDir.resolve("${activityName}ActivityScreen.kt"),
+            srcCommon.resolve(
+                "ActivityReplacemeDestination.kt",
+            ) to activityDir.resolve("${activityName}Destination.kt"),
         )
 
     fileMap.forEach { (src, dst) -> applyOrderedSubs(src, dst, subs) }

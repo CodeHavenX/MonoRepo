@@ -170,4 +170,21 @@ tasks.register("releaseAll") {
     dependsOn("devtools:core:release")
     dependsOn("devtools:cli:release")
     dependsOn("generateBuildArtifacts")
+    val repoDir: File = rootDir
+    doLast {
+        val process = ProcessBuilder("git", "diff", "--name-only")
+            .directory(repoDir)
+            .redirectErrorStream(true)
+            .start()
+        val modifiedFiles = process.inputStream.bufferedReader().readText().trim()
+        process.waitFor()
+        if (modifiedFiles.isNotEmpty()) {
+            throw GradleException(
+                "Uncommitted changes detected after releaseAll. " +
+                    "Detekt may have auto-corrected formatting issues. " +
+                    "Review and commit the following files:\n\n" +
+                    modifiedFiles.lines().joinToString("\n") { "  $it" }
+            )
+        }
+    }
 }

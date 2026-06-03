@@ -14,6 +14,9 @@ private val TEMPLATE_EXTENSIONS = setOf("kt", "kts", "xml", "conf", "json", "yml
 
 private val CORE_MODULES = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
 
+private const val TEMPLATE_DEFAULT_FEATURE = "Home"
+private const val TEMPLATE_DEFAULT_ACTIVITY = "Main"
+
 /**
  * Scaffolds a complete new app by copying the `templatereplaceme` template, substituting
  * all placeholder strings in file contents and file names, and wiring the new app into
@@ -44,6 +47,8 @@ fun generateApp(
     val allModules = CORE_MODULES + platformModules(includeWasm, includeAndroid, includeJvm)
 
     copyTemplate(repoRoot, dest)
+    // Contents must be substituted before paths are renamed — renaming first would produce
+    // paths that no longer match the walk used for content substitution.
     substituteFileContents(dest, subs)
     renamePathComponents(dest, subs)
     removePlatformDirs(dest, includeWasm, includeAndroid, includeJvm)
@@ -85,17 +90,15 @@ private fun buildAppSubstitutions(
     val appUpper = appName.uppercase().replace('-', '_')
     return listOf(
         "TEMPLATE_REPLACE_ME" to appUpper,
-        "TEMPLATEREPLACEME" to appUpper,
         "template-replace-me" to appName.replace('_', '-'),
-        "template_replace_me" to appName.replace('-', '_'),
         "TemplateReplaceMe" to displayName,
         "templatereplaceme" to appName,
         "ComponentReplaceme" to initialComponent,
         "componentreplaceme" to initialComponent.lowercase(),
-        "FeatureReplaceme" to "Home",
-        "featurereplaceme" to "home",
-        "ActivityReplaceme" to "Main",
-        "activityreplaceme" to "main",
+        "FeatureReplaceme" to TEMPLATE_DEFAULT_FEATURE,
+        "featurereplaceme" to TEMPLATE_DEFAULT_FEATURE.lowercase(),
+        "ActivityReplaceme" to TEMPLATE_DEFAULT_ACTIVITY,
+        "activityreplaceme" to TEMPLATE_DEFAULT_ACTIVITY.lowercase(),
     )
 }
 
@@ -107,11 +110,7 @@ private fun substituteFileContents(dest: Path, subs: List<Pair<String, String>>)
                     (path.extension in TEMPLATE_EXTENSIONS || path.fileName.toString() == "Dockerfile") &&
                     !path.pathString.contains("/build/")
             }.forEach { file ->
-                var content = file.readText()
-                for ((from, to) in subs) {
-                    content = content.replace(from, to)
-                }
-                file.writeText(content)
+                file.writeText(applySubsToContent(file.readText(), subs))
             }
     }
 }

@@ -14,6 +14,18 @@ fun toLowerCamel(input: String): String =
     input.replaceFirstChar(Char::lowercaseChar)
 
 /**
+ * Applies [subs] as ordered find-and-replace pairs to [content] and returns the result.
+ * Earlier entries take precedence because they are applied first.
+ */
+fun applySubsToContent(content: String, subs: List<Pair<String, String>>): String {
+    var result = content
+    for ((from, to) in subs) {
+        result = result.replace(from, to)
+    }
+    return result
+}
+
+/**
  * Copies [src] to [dst] and applies [subs] as ordered find-and-replace pairs.
  * Substitutions are applied in list order, so earlier entries take precedence over later ones.
  */
@@ -23,9 +35,5 @@ fun applySubs(
     subs: List<Pair<String, String>>,
 ) {
     dst.parent.createDirectories()
-    var content = src.readText()
-    for ((from, to) in subs) {
-        content = content.replace(from, to)
-    }
-    dst.writeText(content)
+    dst.writeText(applySubsToContent(src.readText(), subs))
 }

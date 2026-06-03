@@ -300,16 +300,19 @@ private fun generateFromTemplates(
     extraSubs: Map<String, String> = emptyMap(),
 ): GenerationResult {
     val appPascal = toPascal(app)
-    val nameLower = toLowerCamel(name)
+    val namePackage = toLowerCamel(name)
+    // Order matters: app-level subs run first so they cannot be clobbered by component or extra
+    // subs. Extra subs (e.g. provider name) are inserted between app and component entries
+    // intentionally so they can reference component placeholder text without conflicting.
     val subs =
         listOf(
             "TemplateReplaceMe" to appPascal,
             "templatereplaceme" to app,
         ) +
-            extraSubs.entries.map { it.toPair() } +
+            extraSubs.toList() +
             listOf(
                 "ComponentReplaceme" to name,
-                "componentreplaceme" to nameLower,
+                "componentreplaceme" to namePackage,
             )
     val resolved = filePairs.map { (t, d) -> repoRoot.resolve(t) to repoRoot.resolve(d) }
     resolved.forEach { (src, dst) -> applySubs(src, dst, subs) }

@@ -109,6 +109,32 @@ class TemplateEngineTest {
     }
 
     @Test
+    fun `applySubsToContent replaces all occurrences`() {
+        val result =
+            applySubsToContent(
+                "templatereplaceme.TemplateReplaceMe",
+                listOf(
+                    "TemplateReplaceMe" to "Edifikana",
+                    "templatereplaceme" to "edifikana",
+                ),
+            )
+        assertEquals("edifikana.Edifikana", result)
+    }
+
+    @Test
+    fun `applySubsToContent applies substitutions sequentially so later subs see earlier output`() {
+        val result =
+            applySubsToContent(
+                "ComponentReplaceme",
+                listOf(
+                    "ComponentReplaceme" to "Employee",
+                    "Employee" to "Person",
+                ),
+            )
+        assertEquals("Person", result)
+    }
+
+    @Test
     fun `applySubs creates intermediate directories`() {
         val src = tempDir.resolve("template.kt")
         src.toFile().writeText("content")

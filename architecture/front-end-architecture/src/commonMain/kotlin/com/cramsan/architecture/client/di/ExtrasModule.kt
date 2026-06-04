@@ -1,5 +1,6 @@
 package com.cramsan.architecture.client.di
 
+import com.cramsan.architecture.client.deeplink.DeepLinkManager
 import com.cramsan.architecture.client.features.debugsettings.DebugSettingsViewModel
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingRegistry
@@ -77,6 +78,8 @@ internal val ExtrasModule =
         }
 
         single { ManagerDependencies(get(), get()) }
+
+        single { DeepLinkManager() }
 
         single(named(ApplicationIdentifier.EVENT_BUS)) {
             EventBus<ApplicationEvent>()

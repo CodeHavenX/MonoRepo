@@ -60,11 +60,11 @@ fun FlyerCard(
                             )
                         },
                         colors =
-                            SuggestionChipDefaults.suggestionChipColors(
+                        SuggestionChipDefaults.suggestionChipColors(
                             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                             labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         ),
-                            border = null,
+                        border = null,
                     )
                 }
             }

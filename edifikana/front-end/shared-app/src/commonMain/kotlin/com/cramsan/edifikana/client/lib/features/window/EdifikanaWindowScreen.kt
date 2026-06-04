@@ -10,9 +10,12 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
@@ -57,12 +60,14 @@ fun EdifikanaWindowScreen(
     viewModel: EdifikanaWindowViewModel,
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     startDestination: EdifikanaNavGraphDestination = EdifikanaNavGraphDestination.SplashNavGraphDestination,
+    initialDeepLink: String? = null,
 ) {
     WindowsContent(
         eventHandler = eventHandler,
         viewModel = viewModel,
         applicationViewModel = applicationViewModel,
         startDestination = startDestination,
+        initialDeepLink = initialDeepLink,
     )
 }
 
@@ -72,10 +77,28 @@ private fun WindowsContent(
     viewModel: EdifikanaWindowViewModel,
     applicationViewModel: EdifikanaApplicationViewModel,
     eventHandler: EdifikanaMainScreenEventHandler,
+    initialDeepLink: String? = null,
 ) {
     val navController = rememberNavController()
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var pendingNavAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+
+    LaunchedEffect(navController.currentBackStackEntry, pendingNavAction) {
+        if (navController.currentBackStackEntry != null && pendingNavAction != null) {
+            pendingNavAction?.invoke()
+            pendingNavAction = null
+        }
+    }
+
+    val navigate: (() -> Unit) -> Unit = { action ->
+        if (navController.currentBackStackEntry != null) {
+            action()
+        } else {
+            pendingNavAction = action
+        }
+    }
 
     val applicationUIState by applicationViewModel.uiState.collectAsState()
 
@@ -92,9 +115,16 @@ private fun WindowsContent(
                     scope = this,
                     snackbarHostState = snackbarHostState,
                     viewModel = viewModel,
+                    navigate = navigate,
                     windowEvent = event.event,
                 )
             }
+        }
+    }
+
+    LaunchedEffect(initialDeepLink) {
+        if (initialDeepLink != null) {
+            viewModel.handleDeepLink(initialDeepLink)
         }
     }
 
@@ -127,6 +157,7 @@ private fun handleWindowEvent(
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
     viewModel: EdifikanaWindowViewModel,
+    navigate: (() -> Unit) -> Unit,
     windowEvent: EdifikanaWindowsEvent,
 ) {
     when (val event = windowEvent) {
@@ -147,32 +178,38 @@ private fun handleWindowEvent(
         }
 
         is EdifikanaWindowsEvent.NavigateToNavGraph -> {
-            handleNavigationEvent(
-                navController = navController,
-                event = event,
-            )
-            navController.navigate(event.destination)
+            navigate {
+                handleNavigationEvent(
+                    navController = navController,
+                    event = event,
+                )
+                navController.navigate(event.destination)
+            }
         }
 
         is EdifikanaWindowsEvent.NavigateToScreen -> {
-            handleNavigationEvent(
-                navController = navController,
-                event = event,
-            )
-            navController.navigate(event.destination)
+            navigate {
+                handleNavigationEvent(
+                    navController = navController,
+                    event = event,
+                )
+                navController.navigate(event.destination)
+            }
         }
 
         is EdifikanaWindowsEvent.NavigateBack -> {
-            navController.popBackStack()
+            navigate { navController.popBackStack() }
         }
 
         is EdifikanaWindowsEvent.CloseNavGraph -> {
-            val currentNavGraph =
-                navController.currentBackStack.value.reversed().find {
-                    it.destination.navigatorName == "navigation"
+            navigate {
+                val currentNavGraph =
+                    navController.currentBackStack.value.reversed().find {
+                        it.destination.navigatorName == "navigation"
+                    }
+                currentNavGraph?.destination?.route?.let {
+                    navController.popBackStack(it, inclusive = true)
                 }
-            currentNavGraph?.destination?.route?.let {
-                navController.popBackStack(it, inclusive = true)
             }
         }
 

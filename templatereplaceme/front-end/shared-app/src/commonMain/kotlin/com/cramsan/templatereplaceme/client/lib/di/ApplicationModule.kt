@@ -43,6 +43,7 @@ internal val ApplicationModule =
                     get(),
                     get(named(WindowIdentifier.EVENT_BUS)),
                     get(named(WindowIdentifier.DELEGATED_EVENT_BUS)),
+                    get(),
                 )
             }
         }

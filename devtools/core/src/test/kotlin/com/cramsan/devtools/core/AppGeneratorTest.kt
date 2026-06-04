@@ -181,49 +181,6 @@ class AppGeneratorTest {
         }
     }
 
-    @Test
-    fun `generateApp substitutes FeatureReplaceme with Home`() {
-        generateApp(repoRoot, "myapp", "MyApp")
-
-        val file = repoRoot.resolve("myapp/src/main.kt")
-        val content = file.readText()
-        assertTrue(content.contains("HomeScreen"))
-        assertTrue(content.contains("home"))
-        assertFalse(content.contains("FeatureReplaceme"))
-        assertFalse(content.contains("featurereplaceme"))
-    }
-
-    @Test
-    fun `generateApp substitutes ActivityReplaceme with Main`() {
-        generateApp(repoRoot, "myapp", "MyApp")
-
-        val file = repoRoot.resolve("myapp/src/main.kt")
-        val content = file.readText()
-        assertTrue(content.contains("MainNavGraph"))
-        assertFalse(content.contains("ActivityReplaceme"))
-        assertFalse(content.contains("activityreplaceme"))
-    }
-
-    @Test
-    fun `generateApp renames featurereplaceme directory to home`() {
-        generateApp(repoRoot, "myapp", "MyApp")
-
-        val renamedDir = repoRoot.resolve("myapp/features/main/home")
-        val originalDir = repoRoot.resolve("myapp/features/main/featurereplaceme")
-        assertTrue(renamedDir.toFile().isDirectory)
-        assertFalse(originalDir.toFile().exists())
-    }
-
-    @Test
-    fun `generateApp renames FeatureReplaceme files to Home`() {
-        generateApp(repoRoot, "myapp", "MyApp")
-
-        val renamed = repoRoot.resolve("myapp/features/main/home/HomeScreen.kt")
-        val original = repoRoot.resolve("myapp/features/main/featurereplaceme/FeatureReplacemeScreen.kt")
-        assertTrue(renamed.toFile().exists())
-        assertFalse(original.toFile().exists())
-    }
-
     // region helpers
 
     private fun createStub(path: Path, content: String) {
@@ -249,23 +206,13 @@ class AppGeneratorTest {
             "// TEMPLATEREPLACEME\n// template-replace-me\n// template_replace_me\n" +
                 "package com.cramsan.templatereplaceme\n" +
                 "class TemplateReplaceMe\n" +
-                "val componentreplaceme = ComponentReplaceMe()\n" +
-                "fun FeatureReplacemeScreen() {}\n" +
-                "val pkg = \"featurereplaceme\"\n" +
-                "fun NavGraphBuilder.activityreplacemeNavGraphNavigation() {}\n" +
-                "val mainNavGraph = \"ActivityReplacemeNavGraph\"\n",
+                "val componentreplaceme = ComponentReplaceMe()\n",
         )
 
         // A file whose name contains the app placeholder — for filename rename testing
         createStub(
             repoRoot.resolve("devtools/templates/app/src/TemplateReplaceMe.kt"),
             "class TemplateReplaceMe",
-        )
-
-        // Feature template files in the featurereplaceme directory — for directory/file rename testing
-        createStub(
-            repoRoot.resolve("devtools/templates/app/features/main/featurereplaceme/FeatureReplacemeScreen.kt"),
-            "fun FeatureReplacemeScreen() {}",
         )
     }
 

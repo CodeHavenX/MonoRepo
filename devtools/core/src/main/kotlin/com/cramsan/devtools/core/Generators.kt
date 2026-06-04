@@ -209,6 +209,11 @@ fun generateFeature(
             srcCommon.resolve("FeatureReplacemeViewModelTest.kt") to testDir.resolve("${featureName}ViewModelTest.kt"),
         )
 
+    val featureConflicts = fileMap.map { it.second }.filter { it.toFile().exists() }
+    require(featureConflicts.isEmpty()) {
+        "Output file(s) already exist. Delete them first or choose a different name:\n" +
+            featureConflicts.joinToString("\n") { "  $it" }
+    }
     fileMap.forEach { (src, dst) -> applySubs(src, dst, subs) }
 
     return GenerationResult(
@@ -252,6 +257,7 @@ fun generateActivity(
             "TemplateReplaceMe" to appPascal,
             "templatereplaceme" to app,
             "ActivityReplaceme" to activityName,
+            "activityReplaceme" to toLowerCamel(activityName),
             "activityreplaceme" to activityPackage,
             "FeatureReplaceme" to TEMPLATE_DEFAULT_FEATURE,
             "featurereplaceme" to TEMPLATE_DEFAULT_FEATURE.lowercase(),
@@ -267,6 +273,11 @@ fun generateActivity(
             ) to activityDir.resolve("${activityName}Destination.kt"),
         )
 
+    val activityConflicts = fileMap.map { it.second }.filter { it.toFile().exists() }
+    require(activityConflicts.isEmpty()) {
+        "Output file(s) already exist. Delete them first or choose a different name:\n" +
+            activityConflicts.joinToString("\n") { "  $it" }
+    }
     fileMap.forEach { (src, dst) -> applySubs(src, dst, subs) }
 
     return GenerationResult(
@@ -275,7 +286,7 @@ fun generateActivity(
         listOf(
             "# Register this nav graph within the root nav host (usually WindowNavigationHost).",
             "# Add ${activityName}NavGraphDestination to $windowClass sealed class.",
-            "# Call ${activityPackage}NavGraphNavigation() in the root nav host.",
+            "# Call ${toLowerCamel(activityName)}NavGraphNavigation() in the root nav host.",
         ),
     )
 }
@@ -326,6 +337,11 @@ private fun generateFromTemplates(
                 "componentreplaceme" to namePackage,
             )
     val resolved = filePairs.map { (t, d) -> repoRoot.resolve(t) to repoRoot.resolve(d) }
+    val conflicts = resolved.map { it.second }.filter { it.toFile().exists() }
+    require(conflicts.isEmpty()) {
+        "Output file(s) already exist. Delete them first or choose a different name:\n" +
+            conflicts.joinToString("\n") { "  $it" }
+    }
     resolved.forEach { (src, dst) -> applySubs(src, dst, subs) }
     return GenerationResult(
         createdFiles = resolved.map { it.second.toString() },

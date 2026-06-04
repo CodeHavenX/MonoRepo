@@ -29,7 +29,7 @@ import kotlinx.serialization.Serializable
  *
  * For destinations with custom types (e.g. value-class IDs), remember to supply
  * a matching `NavType` entry in the `typeMap` passed to
- * [activityreplacemeNavGraphNavigation].
+ * [activityReplacemeNavGraphNavigation].
  *
  * TODO: Replace `FeatureReplacemeDestination` with the real destinations for this activity.
  */

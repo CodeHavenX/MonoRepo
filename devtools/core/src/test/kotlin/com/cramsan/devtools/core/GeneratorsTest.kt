@@ -29,6 +29,16 @@ class GeneratorsTest {
     // region generateApi
 
     @Test
+    fun `generateController fails when output files already exist`() {
+        generateController(repoRoot, "Employee", "edifikana")
+
+        val result = runCatching { generateController(repoRoot, "Employee", "edifikana") }
+        assertTrue(result.isFailure)
+        val message = result.exceptionOrNull()?.message.orEmpty()
+        assertTrue(message.contains("already exist"), "Error should mention already exist: $message")
+    }
+
+    @Test
     fun `generateApi fails when app directory does not exist`() {
         val result = runCatching { generateApi(repoRoot, "Property", "nonexistentapp") }
         assertTrue(result.isFailure)
@@ -218,6 +228,16 @@ class GeneratorsTest {
         "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth"
 
     @Test
+    fun `generateFeature fails when output files already exist`() {
+        generateFeature(repoRoot, "AddProperty", featureParent)
+
+        val result = runCatching { generateFeature(repoRoot, "AddProperty", featureParent) }
+        assertTrue(result.isFailure)
+        val message = result.exceptionOrNull()?.message.orEmpty()
+        assertTrue(message.contains("already exist"), "Error should mention already exist: $message")
+    }
+
+    @Test
     fun `generateFeature fails when parent path ends at the features root`() {
         val featuresRoot =
             "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features"
@@ -332,6 +352,7 @@ class GeneratorsTest {
         assertFalse(content.contains("templatereplaceme"))
         assertFalse(content.contains("ActivityReplacemeActivityScreen"))
         assertFalse(content.contains("activityreplacemeNavGraph"))
+        assertTrue(content.contains("authNavGraphNavigation"))
         assertFalse(content.contains("FeatureReplacemeScreen"))
         assertFalse(content.contains("FeatureReplacemeDestination"))
         assertFalse(content.contains("TemplateReplaceMeWindowNavGraphDestination"))
@@ -377,6 +398,35 @@ class GeneratorsTest {
         val content = activityScreen.readText()
         assertFalse(content.contains("FeatureReplacemeDestination"))
         assertTrue(content.contains("HomeDestination"))
+    }
+
+    @Test
+    fun `generateActivity produces lowerCamelCase function name for multi-word activity`() {
+        generateActivity(
+            repoRoot,
+            "UserProfile",
+            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
+        )
+
+        val activityScreen =
+            repoRoot.resolve(
+                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/userprofile/UserProfileActivityScreen.kt",
+            )
+        val content = activityScreen.readText()
+        assertTrue(content.contains("userProfileNavGraphNavigation"))
+        assertFalse(content.contains("userprofileNavGraphNavigation"))
+    }
+
+    @Test
+    fun `generateActivity fails when output files already exist`() {
+        val parent =
+            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features"
+        generateActivity(repoRoot, "Auth", parent)
+
+        val result = runCatching { generateActivity(repoRoot, "Auth", parent) }
+        assertTrue(result.isFailure)
+        val message = result.exceptionOrNull()?.message.orEmpty()
+        assertTrue(message.contains("already exist"), "Error should mention already exist: $message")
     }
 
     // endregion
@@ -490,7 +540,7 @@ class GeneratorsTest {
             """
             package $activityPkg
             import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowNavGraphDestination
-            fun NavGraphBuilder.activityreplacemeNavGraphNavigation() {
+            fun NavGraphBuilder.activityReplacemeNavGraphNavigation() {
                 navigationGraph(
                     graphDestination = TemplateReplaceMeWindowNavGraphDestination.ActivityReplacemeNavGraphDestination::class,
                     startDestination = ActivityReplacemeDestination.FeatureReplacemeDestination,

@@ -14,7 +14,7 @@ import kotlin.reflect.KType
  * register all screens that belong to this activity:
  * ```
  * // Inside your NavHost composable:
- * activityreplacemeNavGraphNavigation(typeMap)
+ * activityReplacemeNavGraphNavigation(typeMap)
  * ```
  *
  * For each screen inside this activity:
@@ -33,12 +33,12 @@ import kotlin.reflect.KType
  * If any destination carries arguments, pass a populated [typeMap]:
  * ```
  * val typeMap = mapOf(typeOf<MyId>() to MyIdNavType)
- * activityreplacemeNavGraphNavigation(typeMap)
+ * activityReplacemeNavGraphNavigation(typeMap)
  * ```
  *
  * TODO: Add `composable` / `dialog` entries for each [ActivityReplacemeDestination] screen.
  */
-fun NavGraphBuilder.activityreplacemeNavGraphNavigation(
+fun NavGraphBuilder.activityReplacemeNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {
     navigationGraph(

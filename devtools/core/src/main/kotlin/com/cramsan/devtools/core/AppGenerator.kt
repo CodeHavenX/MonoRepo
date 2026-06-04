@@ -69,6 +69,16 @@ fun generateApp(
             "[ ] Add CI pipeline for $appName (e.g., .github/workflows/$appName.yml)",
             "[ ] Review and update DI modules in $appName/back-end/.../dependencyinjection/",
             "[ ] Review and update DI modules in $appName/front-end/shared-app/.../di/",
+            "",
+            "# NOTE: The initial component '$initialComponent' already occupies the following",
+            "# component slots. Using the same name with 'devtools create <type>' will fail",
+            "# with a file-already-exists error. Choose a different name for new components:",
+            "#   create controller  --name $initialComponent  (conflicts: ${initialComponent}Controller.kt)",
+            "#   create service     --name $initialComponent  (conflicts: ${initialComponent}Service.kt)",
+            "#   create datastore   --name $initialComponent  (conflicts: ${initialComponent}Datastore.kt)",
+            "#   create frontend-service --name $initialComponent  (conflicts: ${initialComponent}Service.kt, ${initialComponent}ServiceImpl.kt)",
+            "#   create manager     --name $initialComponent  (conflicts: ${initialComponent}Manager.kt)",
+            "#   create api         --name $initialComponent  (conflicts: ${initialComponent}Api.kt, ${initialComponent}NetworkResponse.kt)",
         ),
     )
 }

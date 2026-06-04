@@ -1,13 +1,13 @@
 ---
 name: create-activity
-description: "Create a new front-end activity (a nav graph grouping related screens, e.g. Auth) using the devtools CLI. Generates NavGraphNavigation.kt and Destination.kt."
+description: "Create a new front-end activity (a nav graph grouping related screens, e.g. Auth) using the devtools CLI. Generates ActivityScreen.kt and Destination.kt."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # Create Activity
 
 ## Purpose
-Scaffold a new front-end activity — a nav graph that groups a set of related feature screens (e.g. Auth groups SignIn, SignUp, PasswordReset). Generates two files: a `NavGraphNavigation.kt` with the `NavGraphBuilder` extension function, and a `Destination.kt` sealed class for the activity's internal routes.
+Scaffold a new front-end activity — a nav graph that groups a set of related feature screens (e.g. Auth groups SignIn, SignUp, PasswordReset). Generates two files: a `<Name>ActivityScreen.kt` with the `NavGraphBuilder` extension function, and a `<Name>Destination.kt` sealed class for the activity's internal routes.
 
 ## Step 1 — Gather information
 
@@ -25,7 +25,7 @@ Ask the user for:
 ```
 
 The CLI creates 2 files:
-- `<Name>NavGraphNavigation.kt` — `NavGraphBuilder` extension function that wires up the nav graph (commonMain)
+- `<Name>ActivityScreen.kt` — `NavGraphBuilder` extension function that wires up the nav graph (commonMain)
 - `<Name>Destination.kt` — sealed class of `Destination` subtypes for all screens in the activity (commonMain)
 
 ## Step 3 — Wire up the nav graph

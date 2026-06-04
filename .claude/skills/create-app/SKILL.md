@@ -34,3 +34,7 @@ Offer to run:
 ./gradlew :<appname>:front-end:shared-app:release --quiet
 ```
 to confirm the new modules compile correctly.
+
+> **Note:** `create app` modifies `settings.gradle.kts` and `build.gradle.kts`. The top-level
+> `releaseAll` task requires a clean git working tree and will fail until those changes are
+> committed. Use per-module `:appname:back-end:release` for local verification before committing.

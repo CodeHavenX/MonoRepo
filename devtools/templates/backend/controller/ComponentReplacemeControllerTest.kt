@@ -42,6 +42,9 @@ import kotlin.test.assertEquals
  * TODO: Add one test per API operation in [ComponentReplacemeApi]. Follow the
  *       Arrange / Act / Assert pattern shown in `test create` below.
  * TODO: Add tests for error cases (service throws, invalid request body, auth failure).
+ * TODO: Register this controller and its service mock in TestModule.kt:
+ *       - In TestControllerModule: `singleOf(::ComponentReplacemeController) { bind<Controller>() }`
+ *       - In TestServiceModule:    `single<ComponentReplacemeService> { mockk() }`
  */
 class ComponentReplacemeControllerTest :
     CoroutineTest(),

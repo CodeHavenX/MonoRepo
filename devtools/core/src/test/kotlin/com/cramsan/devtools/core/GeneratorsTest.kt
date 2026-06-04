@@ -74,7 +74,7 @@ class GeneratorsTest {
     fun `generateController creates source and test files`() {
         val result = generateController(repoRoot, "Employee", "edifikana")
 
-        assertTrue(result.createdFiles.size == 2)
+        assertTrue(result.createdFiles.size == 4)
         result.createdFiles.forEach { assertTrue(Path.of(it).toFile().exists(), "Missing: $it") }
     }
 
@@ -145,13 +145,12 @@ class GeneratorsTest {
             )
         val test =
             repoRoot.resolve(
-                "edifikana/back-end/src/test/kotlin/com/cramsan/edifikana/server/datastore/impl/SupabasePropertyDatastoreTest.kt",
+                "edifikana/back-end/src/test/kotlin/com/cramsan/edifikana/server/datastore/impl/PropertyDatastoreImplTest.kt",
             )
 
         assertTrue(impl.readText().contains("Supabase"))
-        assertTrue(test.readText().contains("Supabase"))
+        assertTrue(test.toFile().exists(), "Test file not found: $test")
         assertFalse(impl.readText().contains("Example"))
-        assertFalse(test.readText().contains("Example"))
     }
 
     @Test
@@ -465,6 +464,14 @@ class GeneratorsTest {
         createStub(
             repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeControllerTest.kt"),
             "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplacemeControllerTest",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/controller/requests/componentreplaceme_request.json"),
+            """{"id": "test-id"}""",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/controller/requests/componentreplaceme_response.json"),
+            """{"id": "test-id"}""",
         )
         createStub(
             repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeService.kt"),

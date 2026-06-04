@@ -40,6 +40,10 @@ fun generateController(
                 "$app/back-end/src/main/kotlin/com/cramsan/$app/server/controller/${name}Controller.kt",
             "devtools/templates/backend/controller/ComponentReplacemeControllerTest.kt" to
                 "$app/back-end/src/test/kotlin/com/cramsan/$app/server/controller/${name}ControllerTest.kt",
+            "devtools/templates/backend/controller/requests/componentreplaceme_request.json" to
+                "$app/back-end/src/test/resources/requests/${name.lowercase()}_request.json",
+            "devtools/templates/backend/controller/requests/componentreplaceme_response.json" to
+                "$app/back-end/src/test/resources/requests/${name.lowercase()}_response.json",
         ),
         checklist =
         listOf(
@@ -92,7 +96,7 @@ fun generateDatastore(
             "devtools/templates/backend/datastore/impl/ExampleComponentReplacemeDatastore.kt" to
                 "$app/back-end/src/main/kotlin/com/cramsan/$app/server/datastore/impl/${provider}${name}Datastore.kt",
             "devtools/templates/backend/datastore/impl/ComponentReplacemeDatastoreImplTest.kt" to
-                "$app/back-end/src/test/kotlin/com/cramsan/$app/server/datastore/impl/${provider}${name}DatastoreTest.kt",
+                "$app/back-end/src/test/kotlin/com/cramsan/$app/server/datastore/impl/${name}DatastoreImplTest.kt",
         ),
         checklist =
         listOf(

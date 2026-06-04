@@ -16,9 +16,4 @@ sealed class TemplateReplaceMeWindowNavGraphDestination : NavigationGraphDestina
     @Serializable
     data object SplashNavGraphDestination : TemplateReplaceMeWindowNavGraphDestination()
 
-    /**
-     * Auth navigation graph destination.
-     */
-    @Serializable
-    data object AuthNavGraphDestination : TemplateReplaceMeWindowNavGraphDestination()
 }

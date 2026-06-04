@@ -19,21 +19,6 @@ class SplashViewModel(dependencies: ViewModelDependencies) :
         SplashUIState.Initial,
         TAG,
     ) {
-    /**
-     * Navigate to the Main Screen after splash.
-     */
-    fun navigateToMainScreen() {
-        logI(TAG, "Navigating to Main Screen")
-        viewModelCoroutineScope.launch {
-            @Suppress("MagicNumber")
-            delay(1000) // Simulate loading time
-            emitWindowEvent(
-                TemplateReplaceMeWindowsEvent.NavigateToNavGraph(
-                    TemplateReplaceMeWindowNavGraphDestination.AuthNavGraphDestination,
-                ),
-            )
-        }
-    }
 
     companion object {
         private const val TAG = "SplashViewModel"

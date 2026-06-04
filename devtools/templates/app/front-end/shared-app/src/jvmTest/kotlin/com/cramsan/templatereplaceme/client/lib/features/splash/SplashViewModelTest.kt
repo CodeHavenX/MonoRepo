@@ -49,21 +49,4 @@ class SplashViewModelTest : CoroutineTest() {
     fun `initial ui state has isLoading true`() = runCoroutineTest {
         assertTrue(viewModel.uiState.value.isLoading)
     }
-
-    @Test
-    fun `navigateToMainScreen emits NavigateToNavGraph to AuthNavGraphDestination`() = runCoroutineTest {
-        turbineScope {
-            val turbine = windowEventBus.events.testIn(backgroundScope)
-
-            viewModel.navigateToMainScreen()
-
-            val event = turbine.awaitItem()
-            assertTrue(event is TemplateReplaceMeWindowsEvent.NavigateToNavGraph)
-            assertEquals(
-                TemplateReplaceMeWindowNavGraphDestination.AuthNavGraphDestination,
-                (event as TemplateReplaceMeWindowsEvent.NavigateToNavGraph).destination,
-            )
-            advanceUntilIdleAndAwaitComplete(turbine)
-        }
-    }
 }

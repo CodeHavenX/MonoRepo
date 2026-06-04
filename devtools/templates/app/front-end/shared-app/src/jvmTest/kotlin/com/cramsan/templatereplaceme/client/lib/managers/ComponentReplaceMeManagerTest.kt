@@ -6,9 +6,9 @@ import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CoroutineTest
-import com.cramsan.templatereplaceme.client.lib.models.ComponentReplacemeModel
-import com.cramsan.templatereplaceme.client.lib.service.ComponentReplacemeService
-import com.cramsan.templatereplaceme.lib.model.ComponentReplacemeId
+import com.cramsan.templatereplaceme.client.lib.models.ComponentReplaceMeModel
+import com.cramsan.templatereplaceme.client.lib.service.ComponentReplaceMeService
+import com.cramsan.templatereplaceme.lib.model.ComponentReplaceMeId
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -19,12 +19,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * Tests for [ComponentReplacemeManager].
+ * Tests for [ComponentReplaceMeManager].
  */
-class ComponentReplacemeManagerTest : CoroutineTest() {
+class ComponentReplaceMeManagerTest : CoroutineTest() {
 
-    private lateinit var manager: ComponentReplacemeManager
-    private lateinit var componentreplacemeService: ComponentReplacemeService
+    private lateinit var manager: ComponentReplaceMeManager
+    private lateinit var componentreplacemeService: ComponentReplaceMeService
     private lateinit var dependencies: ManagerDependencies
 
     @BeforeTest
@@ -34,12 +34,12 @@ class ComponentReplacemeManagerTest : CoroutineTest() {
         dependencies = mockk(relaxed = true)
         every { dependencies.appScope } returns testCoroutineScope
         every { dependencies.dispatcherProvider } returns UnifiedDispatcherProvider(testCoroutineDispatcher)
-        manager = ComponentReplacemeManager(dependencies, componentreplacemeService)
+        manager = ComponentReplaceMeManager(dependencies, componentreplacemeService)
     }
 
     @Test
     fun `create returns success when service succeeds`() = runCoroutineTest {
-        val model = ComponentReplacemeModel(id = ComponentReplacemeId("id-1"))
+        val model = ComponentReplaceMeModel(id = ComponentReplaceMeId("id-1"))
         coEvery { componentreplacemeService.create("id-1") } returns Result.success(model)
 
         val result = manager.create("id-1")

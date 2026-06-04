@@ -3,7 +3,7 @@ package com.cramsan.templatereplaceme.server
 import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
 import com.cramsan.framework.test.CoroutineTest
-import com.cramsan.templatereplaceme.server.datastore.impl.ExampleComponentReplacemeDatastore
+import com.cramsan.templatereplaceme.server.datastore.impl.ExampleComponentReplaceMeDatastore
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -15,15 +15,15 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
- * Integration tests for the [ComponentReplaceme] datastore layer.
+ * Integration tests for the [ComponentReplaceMe] datastore layer.
  *
- * These tests exercise [ExampleComponentReplacemeDatastore] directly. When migrating to a real
- * backend, swap [ExampleComponentReplacemeDatastore] for the real implementation and load its
+ * These tests exercise [ExampleComponentReplaceMeDatastore] directly. When migrating to a real
+ * backend, swap [ExampleComponentReplaceMeDatastore] for the real implementation and load its
  * module in the [setUp] Koin context.
  */
-class ComponentReplacemeDatastoreIntegrationTest : CoroutineTest(), KoinTest {
+class ComponentReplaceMeDatastoreIntegrationTest : CoroutineTest(), KoinTest {
 
-    private val datastore = ExampleComponentReplacemeDatastore()
+    private val datastore = ExampleComponentReplaceMeDatastore()
 
     @BeforeTest
     fun setUp() {

@@ -1,21 +1,21 @@
 package com.cramsan.templatereplaceme.client.lib.service.impl
 
-import com.cramsan.templatereplaceme.lib.model.ComponentReplacemeId
-import com.cramsan.templatereplaceme.lib.model.network.ComponentReplacemeNetworkResponse
+import com.cramsan.templatereplaceme.lib.model.ComponentReplaceMeId
+import com.cramsan.templatereplaceme.lib.model.network.ComponentReplaceMeNetworkResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * Tests for [ComponentReplacemeNetworkResponse.toComponentReplacemeModel].
+ * Tests for [ComponentReplaceMeNetworkResponse.toComponentReplaceMeModel].
  */
 class NetworkMapperTest {
 
     @Test
-    fun `toComponentReplacemeModel maps id correctly`() {
-        val response = ComponentReplacemeNetworkResponse(id = "id-123")
+    fun `toComponentReplaceMeModel maps id correctly`() {
+        val response = ComponentReplaceMeNetworkResponse(id = "id-123")
 
-        val model = response.toComponentReplacemeModel()
+        val model = response.toComponentReplaceMeModel()
 
-        assertEquals(ComponentReplacemeId("id-123"), model.id)
+        assertEquals(ComponentReplaceMeId("id-123"), model.id)
     }
 }

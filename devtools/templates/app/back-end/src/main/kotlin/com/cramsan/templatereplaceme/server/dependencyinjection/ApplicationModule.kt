@@ -3,7 +3,7 @@ package com.cramsan.templatereplaceme.server.dependencyinjection
 import com.cramsan.architecture.server.dependencyinjection.NamedDependency
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.templatereplaceme.lib.serialization.createJson
-import com.cramsan.templatereplaceme.server.controller.authentication.ComponentReplacemeContextRetrieverImpl
+import com.cramsan.templatereplaceme.server.controller.authentication.ComponentReplaceMeContextRetrieverImpl
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -24,7 +24,7 @@ internal val ApplicationModule =
             createJson()
         }
 
-        singleOf(::ComponentReplacemeContextRetrieverImpl) {
+        singleOf(::ComponentReplaceMeContextRetrieverImpl) {
             bind<ContextRetriever<Unit>>()
         }
     }

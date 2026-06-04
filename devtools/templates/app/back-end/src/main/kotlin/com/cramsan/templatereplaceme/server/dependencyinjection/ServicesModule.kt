@@ -1,6 +1,6 @@
 package com.cramsan.templatereplaceme.server.dependencyinjection
 
-import com.cramsan.templatereplaceme.server.service.ComponentReplacemeService
+import com.cramsan.templatereplaceme.server.service.ComponentReplaceMeService
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -11,5 +11,5 @@ import org.koin.dsl.module
  */
 internal val ServicesModule =
     module {
-        singleOf(::ComponentReplacemeService)
+        singleOf(::ComponentReplaceMeService)
     }

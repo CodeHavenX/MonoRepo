@@ -14,11 +14,11 @@ fun generateApi(
         app,
         filePairs =
         listOf(
-            "devtools/templates/api/ComponentReplacemeApi.kt" to
+            "devtools/templates/api/ComponentReplaceMeApi.kt" to
                 "$app/api/src/commonMain/kotlin/com/cramsan/$app/api/${name}Api.kt",
-            "devtools/templates/api/CreateComponentReplacemeNetworkRequest.kt" to
+            "devtools/templates/api/CreateComponentReplaceMeNetworkRequest.kt" to
                 "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/Create${name}NetworkRequest.kt",
-            "devtools/templates/api/ComponentReplacemeNetworkResponse.kt" to
+            "devtools/templates/api/ComponentReplaceMeNetworkResponse.kt" to
                 "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/${name}NetworkResponse.kt",
         ),
         checklist = listOf("[ ] Wire-up this Api with its respective Controller"),
@@ -36,9 +36,9 @@ fun generateController(
         app,
         filePairs =
         listOf(
-            "devtools/templates/backend/controller/ComponentReplacemeController.kt" to
+            "devtools/templates/backend/controller/ComponentReplaceMeController.kt" to
                 "$app/back-end/src/main/kotlin/com/cramsan/$app/server/controller/${name}Controller.kt",
-            "devtools/templates/backend/controller/ComponentReplacemeControllerTest.kt" to
+            "devtools/templates/backend/controller/ComponentReplaceMeControllerTest.kt" to
                 "$app/back-end/src/test/kotlin/com/cramsan/$app/server/controller/${name}ControllerTest.kt",
             "devtools/templates/backend/controller/requests/componentreplaceme_request.json" to
                 "$app/back-end/src/test/resources/requests/${name.lowercase()}_request.json",
@@ -66,9 +66,9 @@ fun generateService(
         app,
         filePairs =
         listOf(
-            "devtools/templates/backend/service/ComponentReplacemeService.kt" to
+            "devtools/templates/backend/service/ComponentReplaceMeService.kt" to
                 "$app/back-end/src/main/kotlin/com/cramsan/$app/server/service/${name}Service.kt",
-            "devtools/templates/backend/service/ComponentReplacemeServiceTest.kt" to
+            "devtools/templates/backend/service/ComponentReplaceMeServiceTest.kt" to
                 "$app/back-end/src/test/kotlin/com/cramsan/$app/server/service/${name}ServiceTest.kt",
         ),
         checklist =
@@ -91,11 +91,11 @@ fun generateDatastore(
         app,
         filePairs =
         listOf(
-            "devtools/templates/backend/datastore/ComponentReplacemeDatastore.kt" to
+            "devtools/templates/backend/datastore/ComponentReplaceMeDatastore.kt" to
                 "$app/back-end/src/main/kotlin/com/cramsan/$app/server/datastore/${name}Datastore.kt",
-            "devtools/templates/backend/datastore/impl/ExampleComponentReplacemeDatastore.kt" to
+            "devtools/templates/backend/datastore/impl/ExampleComponentReplaceMeDatastore.kt" to
                 "$app/back-end/src/main/kotlin/com/cramsan/$app/server/datastore/impl/${provider}${name}Datastore.kt",
-            "devtools/templates/backend/datastore/impl/ComponentReplacemeDatastoreImplTest.kt" to
+            "devtools/templates/backend/datastore/impl/ComponentReplaceMeDatastoreImplTest.kt" to
                 "$app/back-end/src/test/kotlin/com/cramsan/$app/server/datastore/impl/${name}DatastoreImplTest.kt",
         ),
         checklist =
@@ -118,7 +118,7 @@ fun generateManager(
         app,
         filePairs =
         listOf(
-            "devtools/templates/frontend/manager/ComponentReplacemeManager.kt" to
+            "devtools/templates/frontend/manager/ComponentReplaceMeManager.kt" to
                 "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/managers/${name}Manager.kt",
         ),
         checklist =
@@ -143,9 +143,9 @@ fun generateFrontendService(
         app,
         filePairs =
         listOf(
-            "devtools/templates/frontend/service/ComponentReplacemeService.kt" to
+            "devtools/templates/frontend/service/ComponentReplaceMeService.kt" to
                 "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/${name}Service.kt",
-            "devtools/templates/frontend/service/impl/ComponentReplacemeServiceImpl.kt" to
+            "devtools/templates/frontend/service/impl/ComponentReplaceMeServiceImpl.kt" to
                 "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/impl/${name}ServiceImpl.kt",
         ),
         checklist =
@@ -337,7 +337,7 @@ private fun generateFromTemplates(
         ) +
             extraSubs.toList() +
             listOf(
-                "ComponentReplaceme" to name,
+                "ComponentReplaceMe" to name,
                 "componentreplaceme" to namePackage,
             )
     val resolved = filePairs.map { (t, d) -> repoRoot.resolve(t) to repoRoot.resolve(d) }

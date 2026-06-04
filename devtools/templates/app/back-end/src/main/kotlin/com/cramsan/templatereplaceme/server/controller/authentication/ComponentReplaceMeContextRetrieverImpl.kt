@@ -5,12 +5,12 @@ import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import io.ktor.server.application.ApplicationCall
 
 /**
- * Retrieves the client authentication context from a [ComponentReplaceme] request.
+ * Retrieves the client authentication context from a [ComponentReplaceMe] request.
  *
  * Replace the body of [getContext] with your real authentication logic
  * (e.g., validating a JWT, looking up a session).
  */
-class ComponentReplacemeContextRetrieverImpl : ContextRetriever<Unit> {
+class ComponentReplaceMeContextRetrieverImpl : ContextRetriever<Unit> {
     /**
      * Retrieves the client context from the given [applicationCall].
      */

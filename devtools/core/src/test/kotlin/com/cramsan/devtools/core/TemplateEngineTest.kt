@@ -57,7 +57,7 @@ class TemplateEngineTest {
     fun `applySubs replaces all four standard placeholders`() {
         val src = tempDir.resolve("template.kt")
         src.toFile().writeText(
-            "package com.cramsan.templatereplaceme.api\nclass ComponentReplacemeApi(val field: templatereplaceme) : TemplateReplaceMe { val x: componentreplaceme = ComponentReplaceme() }",
+            "package com.cramsan.templatereplaceme.api\nclass ComponentReplaceMeApi(val field: templatereplaceme) : TemplateReplaceMe { val x: componentreplaceme = ComponentReplaceMe() }",
         )
 
         val dst = tempDir.resolve("output.kt")
@@ -67,7 +67,7 @@ class TemplateEngineTest {
             listOf(
                 "TemplateReplaceMe" to "Edifikana",
                 "templatereplaceme" to "edifikana",
-                "ComponentReplaceme" to "Property",
+                "ComponentReplaceMe" to "Property",
                 "componentreplaceme" to "property",
             ),
         )
@@ -81,14 +81,14 @@ class TemplateEngineTest {
         assertTrue(content.contains("Property"))
         assertFalse(content.contains("templatereplaceme"))
         assertFalse(content.contains("TemplateReplaceMe"))
-        assertFalse(content.contains("ComponentReplacemeApi"))
-        assertFalse(content.contains(": ComponentReplaceme()"))
+        assertFalse(content.contains("ComponentReplaceMeApi"))
+        assertFalse(content.contains(": ComponentReplaceMe()"))
     }
 
     @Test
     fun `applySubs applies extra substitutions between app and name subs`() {
         val src = tempDir.resolve("template.kt")
-        src.toFile().writeText("class ExampleComponentReplacemeDatastore : ComponentReplacemeDatastore")
+        src.toFile().writeText("class ExampleComponentReplaceMeDatastore : ComponentReplaceMeDatastore")
 
         val dst = tempDir.resolve("output.kt")
         applySubs(
@@ -98,7 +98,7 @@ class TemplateEngineTest {
                 "TemplateReplaceMe" to "Edifikana",
                 "templatereplaceme" to "edifikana",
                 "Example" to "Supabase",
-                "ComponentReplaceme" to "Property",
+                "ComponentReplaceMe" to "Property",
                 "componentreplaceme" to "property",
             ),
         )
@@ -125,9 +125,9 @@ class TemplateEngineTest {
     fun `applySubsToContent applies substitutions sequentially so later subs see earlier output`() {
         val result =
             applySubsToContent(
-                "ComponentReplaceme",
+                "ComponentReplaceMe",
                 listOf(
-                    "ComponentReplaceme" to "Employee",
+                    "ComponentReplaceMe" to "Employee",
                     "Employee" to "Person",
                 ),
             )
@@ -146,7 +146,7 @@ class TemplateEngineTest {
             listOf(
                 "TemplateReplaceMe" to "A",
                 "templatereplaceme" to "a",
-                "ComponentReplaceme" to "B",
+                "ComponentReplaceMe" to "B",
                 "componentreplaceme" to "b",
             ),
         )

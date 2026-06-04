@@ -1,7 +1,7 @@
 package com.cramsan.templatereplaceme.client.lib.di
 
-import com.cramsan.templatereplaceme.client.lib.service.ComponentReplacemeService
-import com.cramsan.templatereplaceme.client.lib.service.impl.ComponentReplacemeServiceImpl
+import com.cramsan.templatereplaceme.client.lib.service.ComponentReplaceMeService
+import com.cramsan.templatereplaceme.client.lib.service.impl.ComponentReplaceMeServiceImpl
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -13,7 +13,7 @@ import org.koin.dsl.module
  */
 internal val ServiceModule =
     module {
-        singleOf(::ComponentReplacemeServiceImpl) {
-            bind<ComponentReplacemeService>()
+        singleOf(::ComponentReplaceMeServiceImpl) {
+            bind<ComponentReplaceMeService>()
         }
     }

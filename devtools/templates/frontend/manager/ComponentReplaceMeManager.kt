@@ -4,11 +4,11 @@ import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
 import com.cramsan.framework.logging.logI
-import com.cramsan.templatereplaceme.client.lib.models.ComponentReplacemeModel
-import com.cramsan.templatereplaceme.client.lib.service.ComponentReplacemeService
+import com.cramsan.templatereplaceme.client.lib.models.ComponentReplaceMeModel
+import com.cramsan.templatereplaceme.client.lib.service.ComponentReplaceMeService
 
 /**
- * Coordinates [ComponentReplaceme] operations for ViewModels.
+ * Coordinates [ComponentReplaceMe] operations for ViewModels.
  *
  * The manager layer sits between ViewModels and Services. It is responsible for:
  * - Cross-cutting concerns: error handling via [getOrCatch], logging, caching.
@@ -16,18 +16,18 @@ import com.cramsan.templatereplaceme.client.lib.service.ComponentReplacemeServic
  * - Hiding network/storage details from the ViewModel layer.
  *
  * Rules:
- * - No HTTP or database code here — delegate to [ComponentReplacemeService].
+ * - No HTTP or database code here — delegate to [ComponentReplaceMeService].
  * - No UI logic here — that belongs in the ViewModel.
  * - No business logic — that belongs in the back-end Service layer.
  *
  * Registration checklist:
- * - TODO: Add `singleOf(::ComponentReplacemeManager)` to ManagerModule.kt.
+ * - TODO: Add `singleOf(::ComponentReplaceMeManager)` to ManagerModule.kt.
  *
  * Example usage in a ViewModel:
  * ```
  * class MyViewModel(
  *     dependencies: ViewModelDependencies,
- *     private val componentreplacemeManager: ComponentReplacemeManager,
+ *     private val componentreplacemeManager: ComponentReplaceMeManager,
  * ) : BaseViewModel<...>(...) {
  *     fun loadItem(id: String) {
  *         viewModelCoroutineScope.launch {
@@ -42,23 +42,23 @@ import com.cramsan.templatereplaceme.client.lib.service.ComponentReplacemeServic
  * TODO: Add functions for the domain operations this manager exposes to ViewModels.
  */
 @FrontendManager
-class ComponentReplacemeManager(
+class ComponentReplaceMeManager(
     private val dependencies: ManagerDependencies,
-    private val componentreplacemeService: ComponentReplacemeService,
+    private val componentreplacemeService: ComponentReplaceMeService,
 ) {
     /**
-     * Creates a new [ComponentReplaceme] entity.
+     * Creates a new [ComponentReplaceMe] entity.
      *
      * @param id The identifier for the new entity.
-     * @return A [Result] containing the [ComponentReplacemeModel] or an error.
+     * @return A [Result] containing the [ComponentReplaceMeModel] or an error.
      */
-    suspend fun create(id: String): Result<ComponentReplacemeModel> =
+    suspend fun create(id: String): Result<ComponentReplaceMeModel> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "Creating componentreplaceme with id=$id")
             componentreplacemeService.create(id).getOrThrow()
         }
 
     companion object {
-        private const val TAG = "ComponentReplacemeManager"
+        private const val TAG = "ComponentReplaceMeManager"
     }
 }

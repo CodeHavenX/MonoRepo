@@ -63,7 +63,7 @@ class GeneratorsTest {
         assertTrue(content.contains("edifikana"))
         assertTrue(content.contains("Property"))
         assertFalse(content.contains("templatereplaceme"))
-        assertFalse(content.contains("ComponentReplaceme"))
+        assertFalse(content.contains("ComponentReplaceMe"))
     }
 
     // endregion
@@ -120,7 +120,7 @@ class GeneratorsTest {
                 "edifikana/back-end/src/main/kotlin/com/cramsan/edifikana/server/service/PropertyService.kt",
             )
         assertTrue(src.readText().contains("PropertyService"))
-        assertFalse(src.readText().contains("ComponentReplacemeService"))
+        assertFalse(src.readText().contains("ComponentReplaceMeService"))
     }
 
     // endregion
@@ -185,7 +185,7 @@ class GeneratorsTest {
                 "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/managers/PropertyManager.kt",
             )
         assertTrue(dest.readText().contains("PropertyManager"))
-        assertFalse(dest.readText().contains("ComponentReplacemeManager"))
+        assertFalse(dest.readText().contains("ComponentReplaceMeManager"))
     }
 
     // endregion
@@ -215,8 +215,8 @@ class GeneratorsTest {
 
         assertTrue(iface.readText().contains("AuthService"))
         assertTrue(impl.readText().contains("AuthServiceImpl"))
-        assertFalse(iface.readText().contains("ComponentReplacemeService"))
-        assertFalse(impl.readText().contains("ComponentReplacemeServiceImpl"))
+        assertFalse(iface.readText().contains("ComponentReplaceMeService"))
+        assertFalse(impl.readText().contains("ComponentReplaceMeServiceImpl"))
     }
 
     // endregion
@@ -446,24 +446,24 @@ class GeneratorsTest {
 
     private fun createBackEndStubs() {
         createStub(
-            repoRoot.resolve("devtools/templates/api/ComponentReplacemeApi.kt"),
-            "package com.cramsan.templatereplaceme.api\nobject ComponentReplacemeApi",
+            repoRoot.resolve("devtools/templates/api/ComponentReplaceMeApi.kt"),
+            "package com.cramsan.templatereplaceme.api\nobject ComponentReplaceMeApi",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/api/CreateComponentReplacemeNetworkRequest.kt"),
-            "package com.cramsan.templatereplaceme.lib.model.network\ndata class CreateComponentReplacemeNetworkRequest(val templatereplaceme: String)",
+            repoRoot.resolve("devtools/templates/api/CreateComponentReplaceMeNetworkRequest.kt"),
+            "package com.cramsan.templatereplaceme.lib.model.network\ndata class CreateComponentReplaceMeNetworkRequest(val templatereplaceme: String)",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/api/ComponentReplacemeNetworkResponse.kt"),
-            "package com.cramsan.templatereplaceme.lib.model.network\ndata class ComponentReplacemeNetworkResponse(val id: String)",
+            repoRoot.resolve("devtools/templates/api/ComponentReplaceMeNetworkResponse.kt"),
+            "package com.cramsan.templatereplaceme.lib.model.network\ndata class ComponentReplaceMeNetworkResponse(val id: String)",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeController.kt"),
-            "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplacemeController",
+            repoRoot.resolve("devtools/templates/backend/controller/ComponentReplaceMeController.kt"),
+            "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplaceMeController",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeControllerTest.kt"),
-            "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplacemeControllerTest",
+            repoRoot.resolve("devtools/templates/backend/controller/ComponentReplaceMeControllerTest.kt"),
+            "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplaceMeControllerTest",
         )
         createStub(
             repoRoot.resolve("devtools/templates/backend/controller/requests/componentreplaceme_request.json"),
@@ -474,39 +474,39 @@ class GeneratorsTest {
             """{"id": "test-id"}""",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeService.kt"),
-            "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplacemeService",
+            repoRoot.resolve("devtools/templates/backend/service/ComponentReplaceMeService.kt"),
+            "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplaceMeService",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeServiceTest.kt"),
-            "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplacemeServiceTest",
+            repoRoot.resolve("devtools/templates/backend/service/ComponentReplaceMeServiceTest.kt"),
+            "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplaceMeServiceTest",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/backend/datastore/ComponentReplacemeDatastore.kt"),
-            "package com.cramsan.templatereplaceme.server.datastore\ninterface ComponentReplacemeDatastore",
+            repoRoot.resolve("devtools/templates/backend/datastore/ComponentReplaceMeDatastore.kt"),
+            "package com.cramsan.templatereplaceme.server.datastore\ninterface ComponentReplaceMeDatastore",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/backend/datastore/impl/ExampleComponentReplacemeDatastore.kt"),
-            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ExampleComponentReplacemeDatastore : ComponentReplacemeDatastore",
+            repoRoot.resolve("devtools/templates/backend/datastore/impl/ExampleComponentReplaceMeDatastore.kt"),
+            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ExampleComponentReplaceMeDatastore : ComponentReplaceMeDatastore",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/backend/datastore/impl/ComponentReplacemeDatastoreImplTest.kt"),
-            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ComponentReplacemeDatastoreImplTest { val d = ExampleComponentReplacemeDatastore() }",
+            repoRoot.resolve("devtools/templates/backend/datastore/impl/ComponentReplaceMeDatastoreImplTest.kt"),
+            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ComponentReplaceMeDatastoreImplTest { val d = ExampleComponentReplaceMeDatastore() }",
         )
     }
 
     private fun createFrontEndComponentStubs() {
         createStub(
-            repoRoot.resolve("devtools/templates/frontend/manager/ComponentReplacemeManager.kt"),
-            "package com.cramsan.templatereplaceme.client.lib.managers\nclass ComponentReplacemeManager",
+            repoRoot.resolve("devtools/templates/frontend/manager/ComponentReplaceMeManager.kt"),
+            "package com.cramsan.templatereplaceme.client.lib.managers\nclass ComponentReplaceMeManager",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/frontend/service/ComponentReplacemeService.kt"),
-            "package com.cramsan.templatereplaceme.client.lib.service\ninterface ComponentReplacemeService",
+            repoRoot.resolve("devtools/templates/frontend/service/ComponentReplaceMeService.kt"),
+            "package com.cramsan.templatereplaceme.client.lib.service\ninterface ComponentReplaceMeService",
         )
         createStub(
-            repoRoot.resolve("devtools/templates/frontend/service/impl/ComponentReplacemeServiceImpl.kt"),
-            "package com.cramsan.templatereplaceme.client.lib.service.impl\nclass ComponentReplacemeServiceImpl : ComponentReplacemeService",
+            repoRoot.resolve("devtools/templates/frontend/service/impl/ComponentReplaceMeServiceImpl.kt"),
+            "package com.cramsan.templatereplaceme.client.lib.service.impl\nclass ComponentReplaceMeServiceImpl : ComponentReplaceMeService",
         )
     }
 

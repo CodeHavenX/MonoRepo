@@ -1,12 +1,12 @@
 package com.cramsan.templatereplaceme.client.lib.service.impl
 
-import com.cramsan.templatereplaceme.client.lib.models.ComponentReplacemeModel
-import com.cramsan.templatereplaceme.lib.model.ComponentReplacemeId
-import com.cramsan.templatereplaceme.lib.model.network.ComponentReplacemeNetworkResponse
+import com.cramsan.templatereplaceme.client.lib.models.ComponentReplaceMeModel
+import com.cramsan.templatereplaceme.lib.model.ComponentReplaceMeId
+import com.cramsan.templatereplaceme.lib.model.network.ComponentReplaceMeNetworkResponse
 
 /**
- * Maps a [ComponentReplacemeNetworkResponse] network model to a [ComponentReplacemeModel] domain model.
+ * Maps a [ComponentReplaceMeNetworkResponse] network model to a [ComponentReplaceMeModel] domain model.
  */
-fun ComponentReplacemeNetworkResponse.toComponentReplacemeModel(): ComponentReplacemeModel {
-    return ComponentReplacemeModel(id = ComponentReplacemeId(this.id))
+fun ComponentReplaceMeNetworkResponse.toComponentReplaceMeModel(): ComponentReplaceMeModel {
+    return ComponentReplaceMeModel(id = ComponentReplaceMeId(this.id))
 }

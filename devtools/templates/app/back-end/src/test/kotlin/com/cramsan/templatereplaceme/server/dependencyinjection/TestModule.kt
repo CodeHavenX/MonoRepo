@@ -2,8 +2,8 @@ package com.cramsan.templatereplaceme.server.dependencyinjection
 
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
-import com.cramsan.templatereplaceme.server.controller.ComponentReplacemeController
-import com.cramsan.templatereplaceme.server.service.ComponentReplacemeService
+import com.cramsan.templatereplaceme.server.controller.ComponentReplaceMeController
+import com.cramsan.templatereplaceme.server.service.ComponentReplaceMeService
 import io.mockk.mockk
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
@@ -24,12 +24,12 @@ internal fun testApplicationModule(json: Json) =
  */
 internal val TestControllerModule =
     module {
-        singleOf(::ComponentReplacemeController) {
+        singleOf(::ComponentReplaceMeController) {
             bind<Controller>()
         }
     }
 
 internal val TestServiceModule =
     module {
-        single<ComponentReplacemeService> { mockk() }
+        single<ComponentReplaceMeService> { mockk() }
     }

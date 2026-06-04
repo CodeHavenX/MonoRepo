@@ -8,21 +8,21 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
- * Unit tests for [ExampleComponentReplacemeDatastore].
+ * Unit tests for [ExampleComponentReplaceMeDatastore].
  *
- * When you replace [ExampleComponentReplacemeDatastore] with a real implementation,
- * create a matching `<Provider>ComponentReplacemeDatastoreTest` that follows this same pattern.
+ * When you replace [ExampleComponentReplaceMeDatastore] with a real implementation,
+ * create a matching `<Provider>ComponentReplaceMeDatastoreTest` that follows this same pattern.
  * Integration tests that require a live database should extend this to a separate
  * `integTest` source set.
  *
- * TODO: Add tests for all operations defined in [ComponentReplacemeDatastore].
+ * TODO: Add tests for all operations defined in [ComponentReplaceMeDatastore].
  */
-class ComponentReplacemeDatastoreImplTest : CoroutineTest() {
-    private lateinit var datastore: ExampleComponentReplacemeDatastore
+class ComponentReplaceMeDatastoreImplTest : CoroutineTest() {
+    private lateinit var datastore: ExampleComponentReplaceMeDatastore
 
     @BeforeTest
     fun setUp() {
-        datastore = ExampleComponentReplacemeDatastore()
+        datastore = ExampleComponentReplaceMeDatastore()
     }
 
     @Test

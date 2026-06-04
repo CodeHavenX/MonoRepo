@@ -4,13 +4,13 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
 /**
- * Strongly-typed ID wrapper for [ComponentReplaceme] entities.
+ * Strongly-typed ID wrapper for [ComponentReplaceMe] entities.
  *
  * Using a value class instead of a raw [String] prevents accidentally mixing IDs from
  * different entity types at compile time.
  */
 @JvmInline
 @Serializable
-value class ComponentReplacemeId(val id: String) {
+value class ComponentReplaceMeId(val id: String) {
     override fun toString(): String = id
 }

@@ -6,11 +6,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Network response body returned for [ComponentReplaceme] operations.
+ * Network response body returned for [ComponentReplaceMe] operations.
  *
  * All fields must use `@SerialName` for stable JSON keys that survive refactoring.
  *
- * TODO: Add fields for the data the backend returns about a [ComponentReplaceme], e.g.:
+ * TODO: Add fields for the data the backend returns about a [ComponentReplaceMe], e.g.:
  * ```
  * @SerialName("id")         val id: String,
  * @SerialName("name")       val name: String,
@@ -19,7 +19,7 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class ComponentReplacemeNetworkResponse(
+data class ComponentReplaceMeNetworkResponse(
     @SerialName("id")
     val id: String,
 ) : ResponseBody

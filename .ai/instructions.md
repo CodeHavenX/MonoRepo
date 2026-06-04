@@ -69,7 +69,7 @@ Placeholder convention (do not rename without updating `Generators.kt` and `Temp
 | Scope | PascalCase | lowercase | Replaced by |
 |---|---|---|---|
 | App level | `TemplateReplaceMe` | `templatereplaceme` | new app name |
-| Component level | `ComponentReplaceme` | `componentreplaceme` | component name (e.g., `Employee`) |
+| Component level | `ComponentReplaceMe` | `componentreplaceme` | component name (e.g., `Employee`) |
 | Feature level | `MainMenu` | `main.menu` | feature name (e.g., `AddProperty`) |
 | Activity level | `Main` | `main` | activity name (e.g., `Auth`) |
 

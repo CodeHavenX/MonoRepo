@@ -1,13 +1,13 @@
 package com.cramsan.templatereplaceme.server.controller
 
 import com.cramsan.framework.annotations.NetworkModel
-import com.cramsan.templatereplaceme.lib.model.network.ComponentReplacemeNetworkResponse
-import com.cramsan.templatereplaceme.server.service.models.ComponentReplaceme
+import com.cramsan.templatereplaceme.lib.model.network.ComponentReplaceMeNetworkResponse
+import com.cramsan.templatereplaceme.server.service.models.ComponentReplaceMe
 
 /**
- * Maps a [ComponentReplaceme] domain model to a [ComponentReplacemeNetworkResponse] network model.
+ * Maps a [ComponentReplaceMe] domain model to a [ComponentReplaceMeNetworkResponse] network model.
  */
 @NetworkModel
-fun ComponentReplaceme.toComponentReplacemeNetworkResponse(): ComponentReplacemeNetworkResponse {
-    return ComponentReplacemeNetworkResponse(id = id.id)
+fun ComponentReplaceMe.toComponentReplaceMeNetworkResponse(): ComponentReplaceMeNetworkResponse {
+    return ComponentReplaceMeNetworkResponse(id = id.id)
 }

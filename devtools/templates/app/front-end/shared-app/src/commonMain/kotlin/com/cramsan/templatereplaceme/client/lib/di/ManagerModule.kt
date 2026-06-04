@@ -18,7 +18,7 @@ import org.koin.dsl.module
 internal val ManagerModule =
     module {
         singleOf(::InitializerManager)
-        singleOf(::ComponentReplacemeManager)
+        singleOf(::ComponentReplaceMeManager)
         singleOf(::PreferencesManager)
 
         // Example deep link handler for WASM testing: open http://localhost:8080/#type=demo

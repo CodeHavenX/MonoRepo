@@ -24,7 +24,7 @@ internal const val TEMPLATE_DEFAULT_FEATURE = "Home"
  * @param appName lowercase app identifier, e.g. `"myapp"`
  * @param displayName PascalCase display name used in code, e.g. `"MyApp"`
  * @param initialComponent PascalCase name for the starter component, e.g. `"Sample"`.
- *   The template's `ComponentReplaceme`/`componentreplaceme` placeholders are replaced with this
+ *   The template's `ComponentReplaceMe`/`componentreplaceme` placeholders are replaced with this
  *   value so that new apps start with real (non-placeholder) class names.
  * @param includeWasm whether to include the `front-end/app-wasm` module
  * @param includeAndroid whether to include the `front-end/app-android` module
@@ -70,12 +70,7 @@ fun generateApp(
         createdFiles = listOf(dest.toString()),
         postGenerationChecklist =
         listOf(
-            "[ ] Update Dockerfile image name in $appName/back-end/",
-            "[ ] Configure docker-compose credentials for $appName",
-            "[ ] Set Supabase/backend credentials in config files",
-            "[ ] Add CI pipeline for $appName (e.g., .github/workflows/$appName.yml)",
-            "[ ] Review and update DI modules in $appName/back-end/.../dependencyinjection/",
-            "[ ] Review and update DI modules in $appName/front-end/shared-app/.../di/",
+            "[ ] Do a gradle sync in your IDE to load all the new modules",
             "",
             "# NOTE: The initial component '$initialComponent' already occupies the following",
             "# component slots. Using the same name with 'devtools create <type>' will fail",
@@ -114,7 +109,7 @@ private fun buildAppSubstitutions(
         "template-replace-me" to appName.replace('_', '-'),
         "TemplateReplaceMe" to displayName,
         "templatereplaceme" to appName,
-        "ComponentReplaceme" to initialComponent,
+        "ComponentReplaceMe" to initialComponent,
         "componentreplaceme" to initialComponent.lowercase(),
     )
 }

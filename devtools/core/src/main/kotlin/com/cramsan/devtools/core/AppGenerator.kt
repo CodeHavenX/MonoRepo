@@ -15,7 +15,6 @@ private val TEMPLATE_EXTENSIONS = setOf("kt", "kts", "xml", "conf", "json", "yml
 private val CORE_MODULES = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
 
 internal const val TEMPLATE_DEFAULT_FEATURE = "Home"
-internal const val TEMPLATE_DEFAULT_ACTIVITY = "Main"
 
 /**
  * Scaffolds a complete new app by copying the `templatereplaceme` template, substituting
@@ -117,10 +116,6 @@ private fun buildAppSubstitutions(
         "templatereplaceme" to appName,
         "ComponentReplaceme" to initialComponent,
         "componentreplaceme" to initialComponent.lowercase(),
-        "FeatureReplaceme" to TEMPLATE_DEFAULT_FEATURE,
-        "featurereplaceme" to TEMPLATE_DEFAULT_FEATURE.lowercase(),
-        "ActivityReplaceme" to TEMPLATE_DEFAULT_ACTIVITY,
-        "activityreplaceme" to TEMPLATE_DEFAULT_ACTIVITY.lowercase(),
     )
 }
 

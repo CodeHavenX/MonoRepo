@@ -1,4 +1,4 @@
-package com.cramsan.templatereplaceme.client.lib.features.activityreplaceme
+package com.cramsan.templatereplaceme.client.lib.features.main
 
 import android.content.Intent
 import android.os.Bundle

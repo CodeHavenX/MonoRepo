@@ -20,7 +20,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationMainScreenEventHandler
-import com.cramsan.templatereplaceme.client.lib.features.activityreplaceme.activityreplacemeNavGraphNavigation
 import com.cramsan.templatereplaceme.client.lib.features.splash.splashNavGraphNavigation
 import com.cramsan.templatereplaceme.client.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
@@ -237,7 +236,6 @@ private fun WindowNavigationHost(
         exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {
         splashNavGraphNavigation(typeMap)
-        activityreplacemeNavGraphNavigation(typeMap)
     }
 }
 

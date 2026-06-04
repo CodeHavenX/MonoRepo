@@ -146,11 +146,6 @@ class AppGeneratorTest {
         assertTrue(result.postGenerationChecklist.isNotEmpty())
     }
 
-    private fun createStub(path: Path, content: String) {
-        path.parent.createDirectories()
-        path.toFile().writeText(content)
-    }
-
     @Test
     fun `generateApp substitutes ComponentReplaceme with initialComponent`() {
         generateApp(repoRoot, "myapp", "MyApp", initialComponent = "Widget")
@@ -164,13 +159,26 @@ class AppGeneratorTest {
     }
 
     @Test
-    fun `generateApp renames ComponentReplaceme files`() {
+    fun `generateApp delegates initial component to sub-generators`() {
         generateApp(repoRoot, "myapp", "MyApp", initialComponent = "Widget")
 
-        val renamed = repoRoot.resolve("myapp/src/WidgetController.kt")
-        val original = repoRoot.resolve("myapp/src/ComponentReplacemeController.kt")
-        assertTrue(renamed.toFile().exists())
-        assertFalse(original.toFile().exists())
+        // Each delegated generator places its output at the standard package path
+        val controllerPath =
+            "myapp/back-end/src/main/kotlin/com/cramsan/myapp/server/controller/WidgetController.kt"
+        val servicePath =
+            "myapp/back-end/src/main/kotlin/com/cramsan/myapp/server/service/WidgetService.kt"
+        val datastorePath =
+            "myapp/back-end/src/main/kotlin/com/cramsan/myapp/server/datastore/WidgetDatastore.kt"
+        val frontendServicePath =
+            "myapp/front-end/shared-app/src/commonMain/kotlin/com/cramsan/myapp/client/lib/service/WidgetService.kt"
+        val managerPath =
+            "myapp/front-end/shared-app/src/commonMain/kotlin/com/cramsan/myapp/client/lib/managers/WidgetManager.kt"
+        val apiPath =
+            "myapp/api/src/commonMain/kotlin/com/cramsan/myapp/api/WidgetApi.kt"
+
+        listOf(controllerPath, servicePath, datastorePath, frontendServicePath, managerPath, apiPath).forEach {
+            assertTrue(repoRoot.resolve(it).toFile().exists(), "Missing delegated file: $it")
+        }
     }
 
     @Test
@@ -216,14 +224,31 @@ class AppGeneratorTest {
         assertFalse(original.toFile().exists())
     }
 
+    // region helpers
+
+    private fun createStub(path: Path, content: String) {
+        path.parent.createDirectories()
+        path.toFile().writeText(content)
+    }
+
     private fun createTemplateStubs() {
-        // A source file with all placeholder variants
+        createAppSkeletonStubs()
+        createBackendGeneratorStubs()
+        createFrontendGeneratorStubs()
+        createGradleStubs()
+    }
+
+    /**
+     * Skeleton stubs in devtools/templates/app/ — app-level boilerplate that is copied
+     * directly (no delegation to component generators).
+     */
+    private fun createAppSkeletonStubs() {
+        // A source file with all placeholder variants — for content substitution testing
         createStub(
-            repoRoot.resolve("templatereplaceme/src/main.kt"),
+            repoRoot.resolve("devtools/templates/app/src/main.kt"),
             "// TEMPLATEREPLACEME\n// template-replace-me\n// template_replace_me\n" +
                 "package com.cramsan.templatereplaceme\n" +
                 "class TemplateReplaceMe\n" +
-                "class ComponentReplacemeController\n" +
                 "val componentreplaceme = ComponentReplaceme()\n" +
                 "fun FeatureReplacemeScreen() {}\n" +
                 "val pkg = \"featurereplaceme\"\n" +
@@ -231,24 +256,86 @@ class AppGeneratorTest {
                 "val mainNavGraph = \"ActivityReplacemeNavGraph\"\n",
         )
 
-        // A file whose name contains the placeholder — for rename testing
+        // A file whose name contains the app placeholder — for filename rename testing
         createStub(
-            repoRoot.resolve("templatereplaceme/src/TemplateReplaceMe.kt"),
+            repoRoot.resolve("devtools/templates/app/src/TemplateReplaceMe.kt"),
             "class TemplateReplaceMe",
         )
 
-        // A ComponentReplaceme file — for rename testing
+        // Feature template files in the featurereplaceme directory — for directory/file rename testing
         createStub(
-            repoRoot.resolve("templatereplaceme/src/ComponentReplacemeController.kt"),
-            "class ComponentReplacemeController",
-        )
-
-        // Feature template files in the featurereplaceme directory — for rename/restructure testing
-        createStub(
-            repoRoot.resolve("templatereplaceme/features/main/featurereplaceme/FeatureReplacemeScreen.kt"),
+            repoRoot.resolve("devtools/templates/app/features/main/featurereplaceme/FeatureReplacemeScreen.kt"),
             "fun FeatureReplacemeScreen() {}",
         )
+    }
 
+    private fun createBackendGeneratorStubs() {
+        createStub(
+            repoRoot.resolve("devtools/templates/api/ComponentReplacemeApi.kt"),
+            "package com.cramsan.templatereplaceme.api\nobject ComponentReplacemeApi",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/api/ComponentReplacemeNetworkResponse.kt"),
+            "package com.cramsan.templatereplaceme.lib.model.network\ndata class ComponentReplacemeNetworkResponse(val id: String)",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/api/CreateComponentReplacemeNetworkRequest.kt"),
+            "package com.cramsan.templatereplaceme.lib.model.network\ndata class CreateComponentReplacemeNetworkRequest(val id: String)",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeController.kt"),
+            "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplacemeController",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/controller/ComponentReplacemeControllerTest.kt"),
+            "package com.cramsan.templatereplaceme.server.controller\nclass ComponentReplacemeControllerTest",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/controller/requests/componentreplaceme_request.json"),
+            """{"id": "test-id"}""",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/controller/requests/componentreplaceme_response.json"),
+            """{"id": "test-id"}""",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeService.kt"),
+            "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplacemeService",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/service/ComponentReplacemeServiceTest.kt"),
+            "package com.cramsan.templatereplaceme.server.service\nclass ComponentReplacemeServiceTest",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/datastore/ComponentReplacemeDatastore.kt"),
+            "package com.cramsan.templatereplaceme.server.datastore\ninterface ComponentReplacemeDatastore",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/datastore/impl/ExampleComponentReplacemeDatastore.kt"),
+            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ExampleComponentReplacemeDatastore",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/backend/datastore/impl/ComponentReplacemeDatastoreImplTest.kt"),
+            "package com.cramsan.templatereplaceme.server.datastore.impl\nclass ComponentReplacemeDatastoreImplTest",
+        )
+    }
+
+    private fun createFrontendGeneratorStubs() {
+        createStub(
+            repoRoot.resolve("devtools/templates/frontend/service/ComponentReplacemeService.kt"),
+            "package com.cramsan.templatereplaceme.client.lib.service\ninterface ComponentReplacemeService",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/frontend/service/impl/ComponentReplacemeServiceImpl.kt"),
+            "package com.cramsan.templatereplaceme.client.lib.service.impl\nclass ComponentReplacemeServiceImpl",
+        )
+        createStub(
+            repoRoot.resolve("devtools/templates/frontend/manager/ComponentReplacemeManager.kt"),
+            "package com.cramsan.templatereplaceme.client.lib.managers\nclass ComponentReplacemeManager",
+        )
+    }
+
+    private fun createGradleStubs() {
         // Minimal settings.gradle.kts with the marker the generator looks for
         createStub(
             repoRoot.resolve("settings.gradle.kts"),
@@ -261,4 +348,6 @@ class AppGeneratorTest {
             "tasks.register(\"releaseAll\") {\n    dependsOn(\"generateBuildArtifacts\")\n}\n",
         )
     }
+
+    // endregion
 }

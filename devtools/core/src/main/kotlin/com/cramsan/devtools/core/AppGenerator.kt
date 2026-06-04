@@ -55,6 +55,14 @@ fun generateApp(
     // paths that no longer match the walk used for content substitution.
     substituteFileContents(dest, subs)
     renamePathComponents(dest, subs)
+    // Delegate per-component file generation to the existing generators so that the
+    // app skeleton only contains app-level boilerplate, not component-level templates.
+    generateApi(repoRoot, initialComponent, appName)
+    generateController(repoRoot, initialComponent, appName)
+    generateService(repoRoot, initialComponent, appName)
+    generateDatastore(repoRoot, initialComponent, appName, "Example")
+    generateFrontendService(repoRoot, initialComponent, appName)
+    generateManager(repoRoot, initialComponent, appName)
     removePlatformDirs(dest, includeWasm, includeAndroid, includeJvm)
     updateSettingsGradle(repoRoot, appName, allModules)
     updateBuildGradle(repoRoot, appName, allModules)
@@ -84,7 +92,7 @@ fun generateApp(
 }
 
 private fun copyTemplate(repoRoot: Path, dest: Path) {
-    repoRoot.resolve("templatereplaceme").toFile().copyRecursively(dest.toFile())
+    repoRoot.resolve("devtools/templates/app").toFile().copyRecursively(dest.toFile())
     // Collect build artifact directories first, then delete to avoid mutating
     // the directory tree while the walk stream is still open.
     val buildDirs =

@@ -105,12 +105,3 @@ include("devtools:core")
 include("devtools:cli")
 
 include("detekt-rules")
-
-include("inventory:api")
-include("inventory:shared")
-include("inventory:back-end")
-include("inventory:front-end:shared-app")
-include("inventory:front-end:shared-ui")
-include("inventory:front-end:app-android")
-include("inventory:front-end:app-jvm")
-include("inventory:front-end:app-wasm")

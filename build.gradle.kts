@@ -160,14 +160,7 @@ tasks.register("releaseAll") {
     dependsOn("detekt-rules:release")
     dependsOn("devtools:core:release")
     dependsOn("devtools:cli:release")
-    dependsOn("inventory:api:release")
-    dependsOn("inventory:shared:release")
-    dependsOn("inventory:back-end:release")
-    dependsOn("inventory:front-end:shared-app:release")
-    dependsOn("inventory:front-end:shared-ui:release")
-    dependsOn("inventory:front-end:app-android:release")
-    dependsOn("inventory:front-end:app-jvm:release")
-    dependsOn("inventory:front-end:app-wasm:release")
+
     dependsOn("generateBuildArtifacts")
     val repoDir: File = rootDir
     doLast {

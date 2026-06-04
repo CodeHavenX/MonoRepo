@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Join Organization</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+      <div class="top-bar">
+        <a href="my-organizations.html" class="top-bar__back">&#8592; Back</a>
+        <span class="top-bar__title">Join Organization</span>
+        <div class="top-bar__actions"></div>
+      </div>
+
+      <div class="screen-content screen-content--no-nav">
+        <div class="px-4 pt-6 pb-6">
+
+          <p class="text-body text-secondary mb-6">
+            Enter the invite code from the email you received to join an existing organization.
+          </p>
+
+          <div class="form-group">
+            <label class="form-label" for="invite-code">Invite Code</label>
+            <input class="input" type="text" id="invite-code" placeholder="e.g. SUNRISE-XK9M"
+              autocomplete="off"
+              style="text-transform: uppercase; letter-spacing: 3px; font-size: var(--font-size-h3); font-weight: 600; text-align: center;">
+            <div class="form-hint">Invite codes are case-insensitive and expire after 7 days.</div>
+          </div>
+
+          <!-- Preview card: shown after a valid code is entered (static mockup state) -->
+          <div class="card mb-6" style="border: 1px solid var(--color-primary-300); background: var(--color-primary-50);">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <div class="org-card__icon">&#x1F3E2;</div>
+              <div>
+                <div class="text-body text-bold">Sunrise Property Management</div>
+                <div class="text-small text-secondary mt-1">
+                  Invited as <span class="badge badge-neutral" style="margin-left: 4px;">Staff</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <a href="dashboard.html" class="btn btn-primary btn--full-width">Join Organization</a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

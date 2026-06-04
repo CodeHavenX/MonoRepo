@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Transfer Ownership</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+    <div class="screen">
+      <div class="top-bar">
+        <a href="organization-detail.html" class="top-bar__back">&#8592; Back</a>
+        <span class="top-bar__title">Transfer Ownership</span>
+        <div class="top-bar__actions"></div>
+      </div>
+
+      <div class="screen-content screen-content--no-nav">
+        <div class="px-4 pt-4 pb-6">
+
+          <div class="card mb-4" style="background: var(--color-warning-100); border-color: var(--color-warning-500);">
+            <div class="text-small" style="color: #92400E;">
+              <strong>This cannot be undone.</strong> The new owner will have full control of the organization. You will become an Admin.
+            </div>
+          </div>
+
+          <p class="text-body text-secondary mb-4">
+            Select an Admin to become the new owner of <strong>Sunrise Property Management</strong>:
+          </p>
+
+          <!-- Admin list (radio-style selection) -->
+          <div class="list-group mb-6" id="owner-list">
+
+            <div class="list-item" data-member="jane" onclick="selectMember(this)" style="cursor: pointer;">
+              <div class="avatar avatar--md">JS</div>
+              <div class="list-item__content">
+                <div class="list-item__title">Jane Smith</div>
+                <div class="list-item__subtitle">Admin &middot; jane.smith@example.com</div>
+              </div>
+              <div class="list-item__trailing selection-check" style="display: none; color: var(--color-primary-600); font-size: 22px;">&#10003;</div>
+            </div>
+
+            <div class="list-item" data-member="bob" onclick="selectMember(this)" style="cursor: pointer;">
+              <div class="avatar avatar--md">BR</div>
+              <div class="list-item__content">
+                <div class="list-item__title">Bob Rodriguez</div>
+                <div class="list-item__subtitle">Admin &middot; bob.r@example.com</div>
+              </div>
+              <div class="list-item__trailing selection-check" style="display: none; color: var(--color-primary-600); font-size: 22px;">&#10003;</div>
+            </div>
+
+          </div>
+
+          <a href="organization-detail.html" class="btn btn-primary btn--full-width mb-3" id="btn-transfer-stay">
+            Transfer &amp; Stay as Admin
+          </a>
+          <a href="my-organizations.html" class="btn btn-danger btn--full-width" id="btn-transfer-leave">
+            Transfer &amp; Leave Organization
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectMember(el) {
+      document.querySelectorAll('#owner-list .list-item').forEach(item => {
+        item.querySelector('.selection-check').style.display = 'none';
+        item.style.background = '';
+      });
+      el.querySelector('.selection-check').style.display = 'flex';
+      el.style.background = 'var(--color-primary-50)';
+    }
+  </script>
+</body>
+</html>

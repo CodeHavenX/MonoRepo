@@ -12,9 +12,7 @@
 
       <!-- Top Bar -->
       <div class="top-bar">
-        <a href="my-organizations.html" class="top-bar__back">
-          &#8592;
-        </a>
+        <a href="my-organizations.html" class="top-bar__back">&#8592;</a>
         <span class="top-bar__title">Organization Details</span>
         <div class="top-bar__actions"></div>
       </div>
@@ -39,7 +37,7 @@
           <div class="card mb-6">
             <div class="info-row">
               <span class="info-row__label">Your Role</span>
-              <span class="info-row__value">Admin</span>
+              <span class="info-row__value">Owner</span>
             </div>
             <div class="info-row">
               <span class="info-row__label">Members</span>
@@ -55,17 +53,54 @@
             </div>
           </div>
 
-          <!-- Divider -->
+          <!-- Owner Actions (only visible to Owner) -->
+          <div class="list-group mb-4">
+            <a href="transfer-ownership.html" class="list-item">
+              <div class="list-item__icon" style="background: var(--color-warning-100); color: var(--color-warning-500);">&#128257;</div>
+              <div class="list-item__content">
+                <div class="list-item__title">Transfer Ownership</div>
+                <div class="list-item__subtitle">Assign a new owner and step down</div>
+              </div>
+              <div class="list-item__trailing">&rsaquo;</div>
+            </a>
+          </div>
+
           <div class="divider"></div>
 
           <!-- Leave Organization Button -->
-          <button class="btn btn-danger btn--full-width">
+          <button class="btn btn-danger btn--full-width" onclick="showLeaveConfirm()">
             Leave Organization
           </button>
 
         </div>
       </div>
+
     </div>
   </div>
+
+  <!-- Leave Organization Confirmation Modal -->
+  <div id="leave-modal" class="modal-overlay" style="display: none;" onclick="hideLeaveConfirm(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal__title">Leave Organization?</div>
+      <div class="modal__body">
+        You will lose access to all properties and data in <strong>Sunrise Property Management</strong>. This action cannot be undone.
+      </div>
+      <div class="modal__actions">
+        <button class="btn btn-secondary" onclick="hideLeaveConfirm()">Cancel</button>
+        <a href="my-organizations.html" class="btn btn-danger">Leave</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showLeaveConfirm() {
+      document.getElementById('leave-modal').style.display = 'flex';
+    }
+    function hideLeaveConfirm(e) {
+      if (!e || e.target === document.getElementById('leave-modal')) {
+        document.getElementById('leave-modal').style.display = 'none';
+      }
+    }
+  </script>
 </body>
 </html>

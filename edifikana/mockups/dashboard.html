@@ -35,19 +35,20 @@
               <div class="metric-card__value">8</div>
               <div class="metric-card__label">Pending Tasks</div>
             </a>
-            <div class="metric-card metric-card--error">
+            <a href="payment-list.html" class="metric-card metric-card--error metric-card--clickable">
               <div class="metric-card__value">3</div>
               <div class="metric-card__label">Overdue Payments</div>
-            </div>
+            </a>
           </div>
 
           <!-- Pending Tasks Section -->
           <div class="section-header">
             <span>Pending Tasks</span>
+            <a href="task-list.html" class="text-small text-link">See all</a>
           </div>
 
-          <div class="flex-col gap-3 mt-2">
-            <a href="task-detail.html" class="task-card task-card--high card--clickable" style="display:block; text-decoration:none; color:inherit;">
+          <div class="flex-col gap-3 mt-2 mb-6">
+            <a href="task-detail.html" class="task-card task-card--high" style="display:block; text-decoration:none; color:inherit;">
               <div class="task-card__title">Fix AC - Unit 204</div>
               <div class="task-card__meta">
                 <span class="badge badge-error" style="margin-right:8px;">High</span>
@@ -55,7 +56,7 @@
               </div>
             </a>
 
-            <a href="task-detail.html" class="task-card task-card--medium card--clickable" style="display:block; text-decoration:none; color:inherit;">
+            <a href="task-detail.html" class="task-card task-card--medium" style="display:block; text-decoration:none; color:inherit;">
               <div class="task-card__title">Replace light bulbs - Lobby</div>
               <div class="task-card__meta">
                 <span class="badge badge-warning" style="margin-right:8px;">Medium</span>
@@ -63,11 +64,47 @@
               </div>
             </a>
 
-            <a href="task-detail.html" class="task-card task-card--low card--clickable" style="display:block; text-decoration:none; color:inherit;">
+            <a href="task-detail.html" class="task-card task-card--low" style="display:block; text-decoration:none; color:inherit;">
               <div class="task-card__title">Inspect fire extinguisher</div>
               <div class="task-card__meta">
-                <span class="badge badge-success" style="margin-right:8px;">Low</span>
+                <span class="badge badge-neutral" style="margin-right:8px;">Low</span>
                 Due: Mar 5
+              </div>
+            </a>
+          </div>
+
+          <!-- Recent Activity Feed -->
+          <div class="section-header">
+            <span>Recent Activity</span>
+          </div>
+
+          <div class="list-group mt-2">
+            <a href="task-detail.html" class="list-item">
+              <div class="list-item__icon" style="background: var(--color-success-100); color: var(--color-success-500);">&#10003;</div>
+              <div class="list-item__content">
+                <div class="list-item__title">Task completed</div>
+                <div class="list-item__subtitle">Pool pump inspection &middot; John M &middot; 2h ago</div>
+              </div>
+            </a>
+            <a href="request-review.html" class="list-item">
+              <div class="list-item__icon" style="background: var(--color-warning-100); color: var(--color-warning-500);">&#128221;</div>
+              <div class="list-item__content">
+                <div class="list-item__title">New maintenance request</div>
+                <div class="list-item__subtitle">Unit 305 &middot; Leaking pipe &middot; 4h ago</div>
+              </div>
+            </a>
+            <a href="unit-detail.html" class="list-item">
+              <div class="list-item__icon" style="background: var(--color-info-100); color: var(--color-info-500);">&#128100;</div>
+              <div class="list-item__content">
+                <div class="list-item__title">New occupant added</div>
+                <div class="list-item__subtitle">Unit 101 &middot; Maria S &middot; Yesterday</div>
+              </div>
+            </a>
+            <a href="financial-overview.html" class="list-item">
+              <div class="list-item__icon" style="background: var(--color-error-100); color: var(--color-error-500);">&#36;</div>
+              <div class="list-item__content">
+                <div class="list-item__title">Payment overdue</div>
+                <div class="list-item__subtitle">Unit 204 &middot; Rent Mar 2025 &middot; Yesterday</div>
               </div>
             </a>
           </div>
@@ -75,8 +112,24 @@
         </div>
       </div>
 
-      <!-- FAB -->
-      <a href="add-task.html" class="fab" aria-label="Add task">+</a>
+      <!-- FAB with speed dial -->
+      <div id="fab-container" style="position: fixed; bottom: 80px; right: calc(50% - 187px + 16px); z-index: 150; display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+        <!-- Speed dial options -->
+        <div id="fab-menu" style="display: none; flex-direction: column; align-items: flex-end; gap: 10px;">
+          <a href="add-property.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+            <span style="background: var(--color-surface); border-radius: var(--radius-md); padding: 6px 14px; font-size: var(--font-size-small); font-weight: 600; color: var(--color-text-primary); box-shadow: var(--shadow-md); white-space: nowrap;">Add Property</span>
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--color-primary-600); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; box-shadow: var(--shadow-md);">&#9962;</div>
+          </a>
+          <a href="add-task.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+            <span style="background: var(--color-surface); border-radius: var(--radius-md); padding: 6px 14px; font-size: var(--font-size-small); font-weight: 600; color: var(--color-text-primary); box-shadow: var(--shadow-md); white-space: nowrap;">Add Task</span>
+            <div style="width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--color-primary-600); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; box-shadow: var(--shadow-md);">&#9745;</div>
+          </a>
+        </div>
+        <!-- Main FAB -->
+        <button onclick="toggleFabMenu()" aria-label="Quick actions"
+          style="width: 56px; height: 56px; border-radius: 9999px; background: var(--color-primary-600); color: white; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--shadow-lg); cursor: pointer; border: none; transition: transform 150ms ease-out;"
+          id="fab-btn">+</button>
+      </div>
 
       <!-- Bottom Navigation -->
       <nav class="bottom-nav">
@@ -88,5 +141,25 @@
 
     </div>
   </div>
+
+  <script>
+    function toggleFabMenu() {
+      const menu = document.getElementById('fab-menu');
+      const btn = document.getElementById('fab-btn');
+      const open = menu.style.display !== 'none' && menu.style.display !== '';
+      if (open) {
+        menu.style.display = 'none';
+        btn.style.transform = 'rotate(0deg)';
+      } else {
+        menu.style.display = 'flex';
+        btn.style.transform = 'rotate(45deg)';
+      }
+    }
+
+    // Adjust FAB right position on smaller screens
+    if (window.innerWidth <= 407) {
+      document.getElementById('fab-container').style.right = '16px';
+    }
+  </script>
 </body>
 </html>

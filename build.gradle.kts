@@ -150,15 +150,6 @@ tasks.register("releaseAll") {
     dependsOn("architecture:back-end-architecture-test:release")
     dependsOn("architecture:front-end-architecture:release")
 
-    dependsOn("templatereplaceme:back-end:release")
-    dependsOn("templatereplaceme:shared:release")
-    dependsOn("templatereplaceme:api:release")
-    dependsOn("templatereplaceme:front-end:shared-ui:release")
-    dependsOn("templatereplaceme:front-end:shared-app:release")
-    dependsOn("templatereplaceme:front-end:app-wasm:release")
-    dependsOn("templatereplaceme:front-end:app-android:release")
-    dependsOn("templatereplaceme:front-end:app-jvm:release")
-
     dependsOn("flyerboard:back-end:release")
     dependsOn("flyerboard:shared:release")
     dependsOn("flyerboard:api:release")
@@ -169,6 +160,14 @@ tasks.register("releaseAll") {
     dependsOn("detekt-rules:release")
     dependsOn("devtools:core:release")
     dependsOn("devtools:cli:release")
+    dependsOn("inventory:api:release")
+    dependsOn("inventory:shared:release")
+    dependsOn("inventory:back-end:release")
+    dependsOn("inventory:front-end:shared-app:release")
+    dependsOn("inventory:front-end:shared-ui:release")
+    dependsOn("inventory:front-end:app-android:release")
+    dependsOn("inventory:front-end:app-jvm:release")
+    dependsOn("inventory:front-end:app-wasm:release")
     dependsOn("generateBuildArtifacts")
     val repoDir: File = rootDir
     doLast {

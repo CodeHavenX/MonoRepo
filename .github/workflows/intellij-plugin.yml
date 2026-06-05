@@ -1,10 +1,6 @@
 name: Build and Publish IntelliJ Plugin
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'intellij-plugin/**'
   workflow_dispatch:
 
 permissions:

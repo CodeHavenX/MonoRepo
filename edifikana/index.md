@@ -23,15 +23,15 @@ following [mockups](mockups/index.html).
 
 ## Screen Inventory
 
-53 screens total. Issue links reference [github.com/CodeHavenX/MonoRepo](https://github.com/CodeHavenX/MonoRepo/issues).
+55 screens total. Issue links reference [github.com/CodeHavenX/MonoRepo](https://github.com/CodeHavenX/MonoRepo/issues).
 
-**MVP scope:** 36 screens · **Deferred:** 17 screens · **No mockup yet (MVP):** 2 screens
+**MVP scope:** 38 screens · **Deferred:** 17 screens · **No mockup yet (MVP):** 2 screens
 
 ---
 
-## MVP Screens (36)
+## MVP Screens (38)
 
-### Authentication (7)
+### Authentication (9)
 
 | Screen | Issue | Med-fi mock | Hi-fi mock |
 |--------|-------|-------------|------------|
@@ -41,7 +41,9 @@ following [mockups](mockups/index.html).
 | Password Reset | [#390](https://github.com/CodeHavenX/MonoRepo/issues/390) | [password-reset.html](mockups/password-reset.html) | — |
 | Password Reset Confirmation | [#390](https://github.com/CodeHavenX/MonoRepo/issues/390) | [password-reset-confirmation.html](mockups/password-reset-confirmation.html) | — |
 | Set New Password | [#496](https://github.com/CodeHavenX/MonoRepo/issues/496) | [set-new-password.html](mockups/set-new-password.html) | — |
-| Invitation Accept | [#391](https://github.com/CodeHavenX/MonoRepo/issues/391) | [invitation-accept.html](mockups/invitation-accept.html) | — |
+| Invitation Accept (unauthenticated) | [#391](https://github.com/CodeHavenX/MonoRepo/issues/391) | [invitation-accept.html](mockups/invitation-accept.html) | — |
+| Invitation Accept (authenticated) | [#391](https://github.com/CodeHavenX/MonoRepo/issues/391) | [invitation-accept-authenticated.html](mockups/invitation-accept-authenticated.html) | — |
+| Invitation Accept (error) | [#391](https://github.com/CodeHavenX/MonoRepo/issues/391) | [invitation-accept-error.html](mockups/invitation-accept-error.html) | — |
 
 ### Organization Management (6)
 

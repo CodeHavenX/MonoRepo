@@ -1345,6 +1345,211 @@ img {
   color: var(--color-text-secondary);
 }
 
+/* ==========================================================================
+   Responsive / Adaptive Layout
+   Breakpoints: md ≥ 768px (tablet), lg ≥ 1024px (desktop)
+   Strategy: mobile-first — base styles are mobile, media queries layer up.
+   ========================================================================== */
+
+:root {
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --sidebar-width: 240px;
+  --content-max-width: 900px;
+}
+
+/* ---------- Responsive viewport ---------- */
+@media (min-width: 768px) {
+  .mobile-viewport {
+    max-width: 768px;
+    box-shadow: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mobile-viewport {
+    max-width: 100%;
+    background-color: var(--color-bg-warm);
+  }
+}
+
+/* ---------- App layout shell (sidebar + content, desktop only) ---------- */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+@media (min-width: 1024px) {
+  .app-layout {
+    flex-direction: row;
+  }
+
+  .app-layout > .screen {
+    flex: 1;
+    min-width: 0;
+    max-width: var(--content-max-width);
+  }
+}
+
+/* ---------- Sidebar navigation (desktop only) ---------- */
+.sidebar-nav {
+  display: none;
+}
+
+.sidebar-nav__logo {
+  font-size: var(--font-size-h2);
+  font-weight: 700;
+  color: var(--color-primary-600);
+  padding: var(--space-6) var(--space-4) var(--space-4);
+  letter-spacing: -0.3px;
+}
+
+.sidebar-nav__section {
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--space-4) var(--space-4) var(--space-2);
+}
+
+.sidebar-nav__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  min-height: var(--touch-target-min);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background var(--transition-quick), color var(--transition-quick);
+}
+
+.sidebar-nav__item:hover {
+  background-color: var(--color-bg-warm);
+  color: var(--color-primary-600);
+  text-decoration: none;
+}
+
+.sidebar-nav__item--active {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary-600);
+  font-weight: 600;
+}
+
+.sidebar-nav__icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: var(--color-surface);
+    border-right: 1px solid var(--color-border-light);
+    padding: 0 var(--space-3) var(--space-6);
+  }
+}
+
+/* ---------- Bottom nav: hide on desktop ---------- */
+@media (min-width: 1024px) {
+  .bottom-nav {
+    display: none;
+  }
+
+  .screen-content {
+    padding-bottom: var(--space-6);
+  }
+}
+
+/* ---------- Top bar: subtle border on desktop ---------- */
+@media (min-width: 1024px) {
+  .top-bar {
+    border-bottom: 1px solid var(--color-border-light);
+    background-color: var(--color-surface);
+  }
+}
+
+/* ---------- FAB: reposition for desktop (no 375px calc) ---------- */
+@media (min-width: 1024px) {
+  .fab {
+    right: 32px;
+    bottom: 32px;
+  }
+}
+
+/* ---------- Grid: expand columns on wider screens ---------- */
+@media (min-width: 768px) {
+  .grid-2 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-2 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Fixed 2-column grid for screens where 2 cols is always correct */
+.grid-2-fixed {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+/* ---------- Auth shell: widen form on desktop ---------- */
+@media (min-width: 1024px) {
+  .auth-layout {
+    background-color: var(--color-bg-warm);
+    min-height: 100vh;
+  }
+
+  .auth-form {
+    max-width: 440px;
+  }
+}
+
+/* ---------- Tab bar: no horizontal scroll on desktop ---------- */
+@media (min-width: 1024px) {
+  .tab-bar {
+    overflow-x: visible;
+  }
+
+  .tab {
+    flex: none;
+    padding: var(--space-3) var(--space-6);
+  }
+}
+
+/* ---------- Bottom sheet: centred modal on desktop ---------- */
+@media (min-width: 1024px) {
+  .bottom-sheet {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: var(--radius-xl);
+    max-width: 480px;
+    padding-bottom: var(--space-6);
+  }
+
+  .bottom-sheet__handle {
+    display: none;
+  }
+}
+
 /* ---------- Simple Tab Switching JS Helper ---------- */
 /* Add to each page's script:
    document.querySelectorAll('.tab').forEach(tab => {

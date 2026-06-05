@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Delete Property</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+  <div class="app-layout">
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav__logo">Edifikana</div>
+      <a href="dashboard.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#9750;</span> Dashboard</a>
+      <a href="property-list.html" class="sidebar-nav__item sidebar-nav__item--active"><span class="sidebar-nav__icon">&#9962;</span> Properties</a>
+      <a href="task-list.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#9745;</span> Tasks</a>
+      <a href="settings.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#8943;</span> More</a>
+    </nav>
+
+    <div class="screen">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <a href="property-detail.html" class="top-bar__back">&#8592; Back</a>
+        <span class="top-bar__title">Delete Property</span>
+        <div class="top-bar__actions"></div>
+      </div>
+
+      <div class="screen-content screen-content--no-nav" style="padding-bottom: var(--space-6);">
+        <div class="px-4 pt-6 pb-6">
+
+          <!-- Property being deleted -->
+          <div class="card mb-6">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <div class="list-item__icon" style="background: var(--color-error-100); color: var(--color-error-500); font-size: 24px;">&#9962;</div>
+              <div>
+                <div class="text-body text-bold">Sunset Apartments</div>
+                <div class="text-small text-secondary">123 Sunset Blvd, Downtown</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Warning: active tasks block deletion -->
+          <div class="card mb-6" style="background: var(--color-error-100); border-color: var(--color-error-500);">
+            <div style="display: flex; gap: var(--space-3); align-items: flex-start;">
+              <span style="font-size: 20px; flex-shrink: 0;">&#9888;</span>
+              <div>
+                <div class="text-body text-bold" style="color: #991B1B; margin-bottom: var(--space-1);">Cannot delete — active tasks exist</div>
+                <div class="text-small" style="color: #7F1D1D;">
+                  This property has <strong>3 open tasks</strong>. Resolve or cancel all tasks before deleting the property.
+                </div>
+                <a href="task-list.html" class="text-small text-link" style="display: inline-block; margin-top: var(--space-2);">View active tasks &rsaquo;</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- What will be deleted -->
+          <div class="section-header px-0 mb-3">
+            <span>This will permanently delete</span>
+          </div>
+          <div class="list-group mb-6">
+            <div class="list-item" style="cursor: default;">
+              <div class="list-item__icon" style="background: var(--color-error-100); color: var(--color-error-500);">&#9962;</div>
+              <div class="list-item__content">
+                <div class="list-item__title">Property record</div>
+                <div class="list-item__subtitle">All property details and address</div>
+              </div>
+            </div>
+            <div class="list-item" style="cursor: default;">
+              <div class="list-item__icon" style="background: var(--color-error-100); color: var(--color-error-500);">&#9948;</div>
+              <div class="list-item__content">
+                <div class="list-item__title">All units (4)</div>
+                <div class="list-item__subtitle">Unit details and associated data</div>
+              </div>
+            </div>
+            <div class="list-item" style="cursor: default;">
+              <div class="list-item__icon" style="background: var(--color-error-100); color: var(--color-error-500);">&#127981;</div>
+              <div class="list-item__content">
+                <div class="list-item__title">Common areas (3)</div>
+                <div class="list-item__subtitle">Pool, Gym, Lobby</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions — delete button disabled because active tasks exist -->
+          <button class="btn btn-danger btn--full-width mb-3" disabled style="opacity: 0.4; cursor: not-allowed;">
+            Delete Property
+          </button>
+          <a href="property-detail.html" class="btn btn-secondary btn--full-width">Cancel</a>
+
+        </div>
+      </div>
+
+      <!-- Bottom Navigation -->
+      <nav class="bottom-nav">
+        <a href="dashboard.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9750;</span>Dashboard</a>
+        <a href="property-list.html" class="bottom-nav__item bottom-nav__item--active"><span class="bottom-nav__icon">&#9962;</span>Properties</a>
+        <a href="task-list.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9745;</span>Tasks</a>
+        <a href="settings.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#8943;</span>More</a>
+      </nav>
+
+    </div>
+    </div>
+  </div>
+</body>
+</html>

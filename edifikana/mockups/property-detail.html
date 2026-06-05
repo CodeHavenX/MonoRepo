@@ -25,6 +25,7 @@
         <span class="top-bar__title">Sunset Apartments</span>
         <div class="top-bar__actions">
           <a href="add-property.html" class="top-bar__icon-btn" aria-label="Edit property">&#9998;</a>
+          <a href="delete-property.html" class="top-bar__icon-btn" aria-label="Delete property" style="color: var(--color-error-500);">&#128465;</a>
         </div>
       </div>
 
@@ -40,7 +41,6 @@
         <div class="tab-bar">
           <button class="tab tab--active" data-tab="tab-units">Units</button>
           <button class="tab" data-tab="tab-common-areas">Common Areas</button>
-          <button class="tab" data-tab="tab-documents">Documents</button>
         </div>
 
         <!-- Units Tab -->
@@ -124,27 +124,8 @@
               <div class="list-item__trailing">&rsaquo;</div>
             </a>
           </div>
-        </div>
-
-        <!-- Documents Tab -->
-        <div id="tab-documents" class="tab-panel">
-          <div class="list-group mx-4 mt-4">
-            <a href="document-viewer.html" class="list-item">
-              <div class="list-item__icon">&#128196;</div>
-              <div class="list-item__content">
-                <div class="list-item__title">Building Insurance</div>
-                <div class="list-item__subtitle">Uploaded Jan 15, 2025</div>
-              </div>
-              <div class="list-item__trailing">&rsaquo;</div>
-            </a>
-            <a href="document-viewer.html" class="list-item">
-              <div class="list-item__icon">&#128196;</div>
-              <div class="list-item__content">
-                <div class="list-item__title">Property Deed</div>
-                <div class="list-item__subtitle">Uploaded Dec 3, 2024</div>
-              </div>
-              <div class="list-item__trailing">&rsaquo;</div>
-            </a>
+          <div class="px-4 mt-4">
+            <a href="add-common-area.html" class="btn btn-secondary btn--full-width">+ Add Common Area</a>
           </div>
         </div>
 

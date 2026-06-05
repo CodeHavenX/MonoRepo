@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana - Add Common Area</title>
+  <link rel="stylesheet" href="styles/common.css">
+</head>
+<body>
+  <div class="mobile-viewport">
+  <div class="app-layout">
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav__logo">Edifikana</div>
+      <a href="dashboard.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#9750;</span> Dashboard</a>
+      <a href="property-list.html" class="sidebar-nav__item sidebar-nav__item--active"><span class="sidebar-nav__icon">&#9962;</span> Properties</a>
+      <a href="task-list.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#9745;</span> Tasks</a>
+      <a href="settings.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#8943;</span> More</a>
+    </nav>
+
+    <div class="screen">
+
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <a href="property-detail.html" class="top-bar__back">&#8592; Cancel</a>
+        <span class="top-bar__title">Add Common Area</span>
+        <div class="top-bar__actions"></div>
+      </div>
+
+      <div class="screen-content">
+        <div class="px-4 pt-4 pb-6">
+
+          <!-- Context label -->
+          <div class="text-small text-secondary mb-4">Sunset Apartments</div>
+
+          <div class="form-group">
+            <label class="form-label" for="area-name">Name</label>
+            <input class="input" type="text" id="area-name" placeholder="e.g. Pool, Gym, Rooftop" autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="area-type">Type</label>
+            <select class="select" id="area-type">
+              <option value="" disabled selected>Select type&hellip;</option>
+              <option value="pool">Pool</option>
+              <option value="gym">Gym / Fitness Center</option>
+              <option value="lobby">Lobby</option>
+              <option value="parking">Parking</option>
+              <option value="laundry">Laundry Room</option>
+              <option value="rooftop">Rooftop / Terrace</option>
+              <option value="courtyard">Courtyard / Garden</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="area-description">Description <span class="text-muted">(optional)</span></label>
+            <textarea class="textarea" id="area-description" placeholder="Notes about capacity, hours, rules&hellip;" rows="3"></textarea>
+          </div>
+
+          <div class="divider"></div>
+
+          <a href="property-detail.html" class="btn btn-primary btn--full-width mb-3">Save Common Area</a>
+          <a href="property-detail.html" class="btn btn-secondary btn--full-width">Cancel</a>
+
+        </div>
+      </div>
+
+      <!-- Bottom Navigation -->
+      <nav class="bottom-nav">
+        <a href="dashboard.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9750;</span>Dashboard</a>
+        <a href="property-list.html" class="bottom-nav__item bottom-nav__item--active"><span class="bottom-nav__icon">&#9962;</span>Properties</a>
+        <a href="task-list.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9745;</span>Tasks</a>
+        <a href="settings.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#8943;</span>More</a>
+      </nav>
+
+    </div>
+  </div>
+  </div>
+</body>
+</html>

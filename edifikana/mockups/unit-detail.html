@@ -9,7 +9,7 @@
 <body>
   <div class="mobile-viewport">
   <div class="app-layout">
-        <nav class="sidebar-nav">
+    <nav class="sidebar-nav">
       <div class="sidebar-nav__logo">Edifikana</div>
       <a href="dashboard.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#9750;</span> Dashboard</a>
       <a href="property-list.html" class="sidebar-nav__item sidebar-nav__item--active"><span class="sidebar-nav__icon">&#9962;</span> Properties</a>
@@ -17,13 +17,15 @@
       <a href="settings.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#8943;</span> More</a>
     </nav>
 
-<div class="screen">
+    <div class="screen">
 
       <!-- Top Bar -->
       <div class="top-bar">
         <a href="property-detail.html" class="top-bar__back">&larr;</a>
         <span class="top-bar__title">Unit 204</span>
-        <div class="top-bar__actions"></div>
+        <div class="top-bar__actions">
+          <a href="add-unit.html" class="top-bar__icon-btn" aria-label="Edit unit">&#9998;</a>
+        </div>
       </div>
 
       <div class="screen-content">
@@ -33,14 +35,10 @@
           <p class="text-small text-secondary">Sunset Apartments &middot; 2 bed &middot; 1 bath &middot; 850 sqft</p>
         </div>
 
-        <!-- Tab Bar -->
+        <!-- Tab Bar — Info + Tasks only (Occupants, Financials, Guests, Docs deferred) -->
         <div class="tab-bar">
           <button class="tab tab--active" data-tab="tab-info">Info</button>
-          <button class="tab" data-tab="tab-occupants">Occupants</button>
-          <button class="tab" data-tab="tab-financials">Financials</button>
-          <button class="tab" data-tab="tab-guests">Guests</button>
           <button class="tab" data-tab="tab-tasks">Tasks</button>
-          <button class="tab" data-tab="tab-docs">Docs</button>
         </div>
 
         <!-- Info Tab -->
@@ -73,120 +71,24 @@
           </div>
         </div>
 
-        <!-- Occupants Tab -->
-        <div id="tab-occupants" class="tab-panel">
-          <div class="list-group mx-4 mt-4">
-            <a href="occupant-detail.html" class="list-item">
-              <div class="avatar avatar--md">JD</div>
-              <div class="list-item__content">
-                <div class="list-item__title">John Doe</div>
-                <div class="list-item__subtitle">Primary tenant &middot; Since Jan 2024</div>
-              </div>
-              <div class="list-item__trailing">&rsaquo;</div>
-            </a>
-            <a href="occupant-detail.html" class="list-item">
-              <div class="avatar avatar--md">JD</div>
-              <div class="list-item__content">
-                <div class="list-item__title">Jane Doe</div>
-                <div class="list-item__subtitle">Co-tenant &middot; Since Jan 2024</div>
-              </div>
-              <div class="list-item__trailing">&rsaquo;</div>
-            </a>
-          </div>
-          <div class="px-4 mt-4">
-            <a href="add-occupant.html" class="btn btn-secondary btn--full-width">+ Add Occupant</a>
-          </div>
-        </div>
-
-        <!-- Financials Tab -->
-        <div id="tab-financials" class="tab-panel">
-          <div class="card mx-4 mt-4">
-            <div class="text-small text-secondary mb-1">Monthly Rent</div>
-            <div class="text-h2 text-primary mb-3">$1,850.00</div>
-            <div class="divider"></div>
-            <div class="info-row">
-              <span class="info-row__label">March 2025</span>
-              <span class="badge badge-warning">Pending</span>
-            </div>
-            <div class="info-row">
-              <span class="info-row__label">February 2025</span>
-              <span class="badge badge-success">Paid</span>
-            </div>
-            <div class="info-row">
-              <span class="info-row__label">January 2025</span>
-              <span class="badge badge-success">Paid</span>
-            </div>
-          </div>
-          <div class="px-4 mt-4">
-            <a href="financial-overview.html" class="btn btn-text btn--full-width">View Full Financial History</a>
-          </div>
-        </div>
-
-        <!-- Guests Tab -->
-        <div id="tab-guests" class="tab-panel">
-          <div class="px-4 mt-4">
-            <div class="section-header p-0 mb-3">
-              <span>Current Guests</span>
-            </div>
-            <div class="list-group mb-4">
-              <a href="guest-detail.html" class="list-item">
-                <div class="avatar avatar--md">RS</div>
-                <div class="list-item__content">
-                  <div class="list-item__title">Robert Smith</div>
-                  <div class="list-item__subtitle">Checked in: Mar 1, 2025</div>
-                </div>
-                <div class="list-item__trailing">&rsaquo;</div>
-              </a>
-              <a href="guest-detail.html" class="list-item">
-                <div class="avatar avatar--md">AL</div>
-                <div class="list-item__content">
-                  <div class="list-item__title">Amy Lee</div>
-                  <div class="list-item__subtitle">Checked in: Mar 2, 2025</div>
-                </div>
-                <div class="list-item__trailing">&rsaquo;</div>
-              </a>
-            </div>
-            <a href="guest-checkin.html" class="btn btn-primary btn--full-width">Check In Guest</a>
-          </div>
-        </div>
-
         <!-- Tasks Tab -->
         <div id="tab-tasks" class="tab-panel">
           <div class="px-4 mt-4 flex-col gap-3">
             <a href="task-detail.html" class="task-card task-card--high" style="display:block; text-decoration:none; color:inherit;">
-              <div class="task-card__title">Fix AC Unit</div>
-              <div class="task-card__meta">High &middot; Due: Today &middot; Assigned: John M</div>
+              <div class="flex-between mb-1">
+                <div class="task-card__title">Fix AC Unit</div>
+                <span class="badge badge-error">High</span>
+              </div>
+              <div class="task-card__meta">Due: Today &middot; Assigned: John M</div>
             </a>
             <a href="task-detail.html" class="task-card task-card--medium" style="display:block; text-decoration:none; color:inherit;">
-              <div class="task-card__title">Replace bathroom faucet</div>
-              <div class="task-card__meta">Medium &middot; Due: Mar 10 &middot; Unassigned</div>
+              <div class="flex-between mb-1">
+                <div class="task-card__title">Replace bathroom faucet</div>
+                <span class="badge badge-warning">Medium</span>
+              </div>
+              <div class="task-card__meta">Due: Mar 10 &middot; Unassigned</div>
             </a>
             <a href="add-task.html" class="btn btn-secondary btn--full-width mt-2">+ Add Task</a>
-          </div>
-        </div>
-
-        <!-- Docs Tab -->
-        <div id="tab-docs" class="tab-panel">
-          <div class="list-group mx-4 mt-4">
-            <a href="document-viewer.html" class="list-item">
-              <div class="list-item__icon">&#128196;</div>
-              <div class="list-item__content">
-                <div class="list-item__title">Lease Agreement</div>
-                <div class="list-item__subtitle">PDF &middot; Uploaded Jan 5, 2024</div>
-              </div>
-              <div class="list-item__trailing">&rsaquo;</div>
-            </a>
-            <a href="document-viewer.html" class="list-item">
-              <div class="list-item__icon">&#128196;</div>
-              <div class="list-item__content">
-                <div class="list-item__title">Move-in Inspection</div>
-                <div class="list-item__subtitle">PDF &middot; Uploaded Jan 8, 2024</div>
-              </div>
-              <div class="list-item__trailing">&rsaquo;</div>
-            </a>
-          </div>
-          <div class="px-4 mt-4">
-            <a href="upload-document.html" class="btn btn-secondary btn--full-width">Upload Document</a>
           </div>
         </div>
 
@@ -201,10 +103,9 @@
       </nav>
 
     </div>
-    </div>
-</div>
+  </div>
+  </div>
 
-  <!-- Tab Switching Script -->
   <script>
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {

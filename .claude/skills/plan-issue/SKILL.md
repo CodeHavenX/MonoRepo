@@ -92,14 +92,11 @@ Grep: "TODO" in the feature-relevant path
 
 ### For Frontend Issues (Screen / ViewModel / UIState / Event)
 
-1. Find the closest existing Screen in the same feature section:
-   ```
-   Glob: edifikana/front-end/shared-app/src/commonMain/**/<section>/**/*Screen.kt
-   ```
-2. Read the Screen, ViewModel, UIState, and Event for that feature.
-3. Check the navigation router for how routes are registered.
-4. Check the DI module for how the ViewModel is registered with Koin.
-5. Check `.idea/fileTemplates/` for scaffold templates.
+1. Read the Screen, ViewModel, UIState, and Event for that feature.
+2. Ensure we have a mock for the requested screen. We cannot do an implementation plan for a screen withouth midium or high fidelity mocks.
+2. Check the navigation router for how routes are registered.
+3. Check the DI module for how the ViewModel is registered with Koin.
+4. Check the existing `/create-*` skills to create an initial component and follow the guidelines to wire it up.
 
 ### For Shared Models / API Contracts
 

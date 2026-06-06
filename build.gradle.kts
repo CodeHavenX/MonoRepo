@@ -164,7 +164,7 @@ tasks.register("releaseAll") {
     dependsOn("generateBuildArtifacts")
     val repoDir: File = rootDir
     doLast {
-        val process = ProcessBuilder("git", "diff", "--name-only")
+        val process = ProcessBuilder("git", "status", "--porcelain")
             .directory(repoDir)
             .redirectErrorStream(true)
             .start()

@@ -30,6 +30,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.framework.configuration.PropertyValue
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.PasswordOutlinedTextField
 import com.cramsan.ui.components.ScreenLayout
@@ -73,10 +74,10 @@ fun DebugScreen(
 
     DebugContent(
         uiState,
-        bufferChanges = { key: SettingKey<*>, value: Any ->
+        bufferChanges = { key: SettingKey<*>, value: PropertyValue ->
             viewModel.bufferChanges(key, value)
         },
-        saveChanges = { key: SettingKey<*>, value: Any ->
+        saveChanges = { key: SettingKey<*>, value: PropertyValue ->
             viewModel.saveValue(key, value)
         },
         onCloseSelected = { viewModel.navigateBack() },
@@ -91,8 +92,8 @@ fun DebugScreen(
 internal fun DebugContent(
     content: DebugUIModelUI,
     modifier: Modifier = Modifier,
-    bufferChanges: (SettingKey<*>, Any) -> Unit,
-    saveChanges: (key: SettingKey<*>, value: Any) -> Unit,
+    bufferChanges: (SettingKey<*>, PropertyValue) -> Unit,
+    saveChanges: (key: SettingKey<*>, value: PropertyValue) -> Unit,
     onAction: (Field.ActionField) -> Unit,
     onCloseSelected: () -> Unit,
 ) {
@@ -162,7 +163,7 @@ private fun LabelRow(label: Field.Label, modifier: Modifier) {
 private fun BooleanRow(
     field: Field.BooleanField,
     modifier: Modifier,
-    onValueChanged: (SettingKey<*>, Boolean) -> Unit,
+    onValueChanged: (SettingKey<*>, PropertyValue.BooleanValue) -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Row(
@@ -172,7 +173,7 @@ private fun BooleanRow(
                 interactionSource = interactionSource,
                 enabled = field.enabled,
                 indication = ripple(),
-                onClick = { onValueChanged(field.key, !field.value) },
+                onClick = { onValueChanged(field.key, PropertyValue.BooleanValue(!field.value)) },
             ).then(modifier),
         horizontalArrangement = Arrangement.spacedBy(Padding.SMALL),
         verticalAlignment = Alignment.CenterVertically,
@@ -215,8 +216,8 @@ private fun BooleanRow(
 private fun StringRow(
     field: Field.StringField,
     modifier: Modifier,
-    onValueChanged: (SettingKey<*>, String) -> Unit,
-    saveChanges: (SettingKey<*>, String) -> Unit,
+    onValueChanged: (SettingKey<*>, PropertyValue.StringValue) -> Unit,
+    saveChanges: (SettingKey<*>, PropertyValue.StringValue) -> Unit,
 ) {
     var stringValue by remember(field.value) { mutableStateOf(field.value) }
     var hasValueChanged by remember { mutableStateOf(false) }
@@ -226,7 +227,7 @@ private fun StringRow(
             .fillMaxWidth()
             .hasLostFocus {
                 if (hasValueChanged) {
-                    saveChanges(field.key, stringValue)
+                    saveChanges(field.key, PropertyValue.StringValue(stringValue))
                     hasValueChanged = false
                 }
             }
@@ -242,7 +243,7 @@ private fun StringRow(
                 onValueChange = {
                     hasValueChanged = true
                     stringValue = it
-                    onValueChanged(field.key, it)
+                    onValueChanged(field.key, PropertyValue.StringValue(it))
                 },
             )
         } else {
@@ -254,7 +255,7 @@ private fun StringRow(
                 onValueChange = {
                     hasValueChanged = true
                     stringValue = it
-                    onValueChanged(field.key, it)
+                    onValueChanged(field.key, PropertyValue.StringValue(it))
                 },
             )
         }

@@ -1356,6 +1356,7 @@ img {
   --breakpoint-lg: 1024px;
   --sidebar-width: 240px;
   --content-max-width: 900px;
+  --content-narrow-width: 560px;
 }
 
 /* ---------- Responsive viewport ---------- */
@@ -1530,6 +1531,29 @@ img {
   .tab {
     flex: none;
     padding: var(--space-3) var(--space-6);
+  }
+}
+
+/* ---------- Narrow content container (forms, detail views, settings) ---------- */
+.content-narrow {
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .content-narrow {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .content-narrow {
+    max-width: var(--content-narrow-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
   }
 }
 

@@ -1,5 +1,7 @@
 package com.cramsan.framework.configuration
 
+import kotlin.jvm.JvmInline
+
 /**
  * Represents the type of a property value.
  */
@@ -28,24 +30,28 @@ sealed class PropertyValueType {
 /**
  * Represents a property value.
  */
-sealed class PropertyValue {
+sealed interface PropertyValue {
     /**
      * Represents a String property value.
      */
-    data class StringValue(val string: String) : PropertyValue()
+    @JvmInline
+    value class StringValue(val string: String) : PropertyValue
 
     /**
      * Represents an Int property value.
      */
-    data class IntValue(val integer: Int) : PropertyValue()
+    @JvmInline
+    value class IntValue(val integer: Int) : PropertyValue
 
     /**
      * Represents a Long property value.
      */
-    data class LongValue(val long: Long) : PropertyValue()
+    @JvmInline
+    value class LongValue(val long: Long) : PropertyValue
 
     /**
      * Represents a Boolean property value.
      */
-    data class BooleanValue(val boolean: Boolean) : PropertyValue()
+    @JvmInline
+    value class BooleanValue(val boolean: Boolean) : PropertyValue
 }

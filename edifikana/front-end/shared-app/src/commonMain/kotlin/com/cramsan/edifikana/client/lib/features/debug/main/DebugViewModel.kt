@@ -11,7 +11,6 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.configuration.PropertyValue
-import com.cramsan.framework.configuration.PropertyValueType
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.halt.HaltUtil
@@ -56,15 +55,14 @@ class DebugViewModel(
     /**
      * Save the value of the field.
      */
-    fun saveValue(key: SettingKey<*>, value: Any) {
+    fun saveValue(key: SettingKey<*>, value: PropertyValue) {
         viewModelCoroutineScope.launch {
             saveValueImpl(key, value)
         }
     }
 
-    private suspend fun saveValueImpl(key: SettingKey<*>, value: Any) {
-        val propertyValue = getPropertyValue(key, value)
-        preferencesManager.updatePreference(key, propertyValue)
+    private suspend fun saveValueImpl(key: SettingKey<*>, value: PropertyValue) {
+        preferencesManager.updatePreference(key, value)
         bufferedKey = null
         bufferedValue = null
         logI(TAG, "Debug key $key changed to $value")
@@ -74,29 +72,21 @@ class DebugViewModel(
         )
     }
 
-    private fun getPropertyValue(key: SettingKey<*>, value: Any): PropertyValue {
-        return when (key.type) {
-            is PropertyValueType.StringType -> {
-                PropertyValue.StringValue((value as String).trim())
-            }
+    private fun asPropertyValue(value: String): PropertyValue {
+        return PropertyValue.StringValue(value.trim())
+    }
 
-            is PropertyValueType.BooleanType -> {
-                PropertyValue.BooleanValue(value as Boolean)
-            }
-
-            else -> {
-                error("Unsupported key type: ${key.type} for key: $key")
-            }
-        }
+    private fun asPropertyValue(value: Boolean): PropertyValue {
+        return PropertyValue.BooleanValue(value)
     }
 
     /**
      * Buffer changes to be saved later. This is useful for data that changes frequently and we
      * dont want to save on each change. A common example is a text field or a dial.
      */
-    fun bufferChanges(key: SettingKey<*>, value: Any) {
+    fun bufferChanges(key: SettingKey<*>, value: PropertyValue) {
         this.bufferedKey = key
-        this.bufferedValue = getPropertyValue(key, value)
+        this.bufferedValue = value
     }
 
     /**

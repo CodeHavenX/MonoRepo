@@ -8,15 +8,26 @@
 </head>
 <body>
   <div class="mobile-viewport">
+  <div class="app-layout">
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav__logo">Edifikana</div>
+      <a href="dashboard.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#9750;</span> Dashboard</a>
+      <a href="property-list.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#9962;</span> Properties</a>
+      <a href="task-list.html" class="sidebar-nav__item"><span class="sidebar-nav__icon">&#9745;</span> Tasks</a>
+      <a href="settings.html" class="sidebar-nav__item sidebar-nav__item--active"><span class="sidebar-nav__icon">&#8943;</span> More</a>
+    </nav>
+
     <div class="screen">
+
+      <!-- Top Bar -->
       <div class="top-bar">
         <a href="organization-detail.html" class="top-bar__back">&#8592; Back</a>
         <span class="top-bar__title">Transfer Ownership</span>
         <div class="top-bar__actions"></div>
       </div>
 
-      <div class="screen-content screen-content--no-nav">
-        <div class="px-4 pt-4 pb-6">
+      <div class="screen-content">
+        <div class="content-narrow pt-4 pb-6">
 
           <div class="card mb-4" style="background: var(--color-warning-100); border-color: var(--color-warning-500);">
             <div class="text-small" style="color: #92400E;">
@@ -60,7 +71,17 @@
 
         </div>
       </div>
+
+      <!-- Bottom Navigation -->
+      <nav class="bottom-nav">
+        <a href="dashboard.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9750;</span>Dashboard</a>
+        <a href="property-list.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9962;</span>Properties</a>
+        <a href="task-list.html" class="bottom-nav__item"><span class="bottom-nav__icon">&#9745;</span>Tasks</a>
+        <a href="settings.html" class="bottom-nav__item bottom-nav__item--active"><span class="bottom-nav__icon">&#8943;</span>More</a>
+      </nav>
+
     </div>
+  </div>
   </div>
 
   <script>

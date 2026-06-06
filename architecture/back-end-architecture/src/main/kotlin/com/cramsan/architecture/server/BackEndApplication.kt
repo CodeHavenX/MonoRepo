@@ -7,6 +7,7 @@ import com.cramsan.architecture.server.settings.BackEndApplicationSettingKey
 import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
+import com.cramsan.framework.core.ktor.configureOpenApiEndpoint
 import com.cramsan.framework.logging.logI
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
@@ -57,6 +58,7 @@ fun Application.startKtor() =
         val controllerList: List<Controller> by inject()
 
         configureHealthEndpoint()
+        configureOpenApiEndpoint()
         configureEntryPoints(controllerList)
         startApplication()
     }

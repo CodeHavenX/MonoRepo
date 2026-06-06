@@ -108,3 +108,7 @@ build-artifacts.txt
 .claude/settings.local.json
 edifikana/.claude/settings.local.json
 .mcp.json
+
+# swagger
+.swagger-codegen
+.swagger-codegen-ignore

@@ -16,6 +16,9 @@ import com.cramsan.framework.networkapi.Api
 import com.cramsan.framework.networkapi.Operation
 import com.cramsan.framework.networkapi.OperationHandler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.openapi.buildJsonSchema
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receive
 import io.ktor.server.request.uri
@@ -23,8 +26,10 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.RoutingCall
+import io.ktor.server.routing.openapi.describe
 import io.ktor.server.routing.route
 import io.ktor.util.reflect.TypeInfo
+import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
 
@@ -100,7 +105,7 @@ object OperationHandler {
      * @param contextRetriever A suspend function to retrieve the context from the [ApplicationCall].
      * @param block A suspend function that processes the request and returns an [HttpResponse].
      */
-    @OptIn(InternalSerializationApi::class)
+    @OptIn(InternalSerializationApi::class, ExperimentalKtorApi::class)
     @Suppress("LongMethod", "ThrowsCount")
     private fun <
         RequestType : RequestBody,
@@ -117,92 +122,178 @@ object OperationHandler {
         ) -> HttpResponse<ResponseType>,
     ) {
         val handler = this.toOperationHandler()
-        route.route(handler.path, handler.method) {
-            handle {
-                logV(
-                    tag = "OperationHandler",
-                    message = "Handling operation %s",
-                    this.call.request.uri,
-                )
-                val contextResult =
-                    runCatching {
-                        contextRetriever(call)
+        route
+            .route(handler.path, handler.method) {
+                handle {
+                    logV(
+                        tag = "OperationHandler",
+                        message = "Handling operation %s",
+                        this.call.request.uri,
+                    )
+                    val contextResult =
+                        runCatching {
+                            contextRetriever(call)
+                        }
+                    if (contextResult.isFailure) {
+                        call.validateClientError(
+                            tag = TAG,
+                            exception =
+                            ClientRequestExceptions.UnauthorizedException(
+                                "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}",
+                            ),
+                        )
+                        return@handle
                     }
-                if (contextResult.isFailure) {
-                    call.validateClientError(
-                        tag = TAG,
-                        exception =
-                        ClientRequestExceptions.UnauthorizedException(
-                            "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}",
-                        ),
-                    )
-                    return@handle
-                }
-                val paramResult = getPathParam(handler, call)
-                if (paramResult.isFailure) {
-                    call.validateClientError(
-                        tag = TAG,
-                        exception = ClientRequestExceptions.InvalidRequestException("Invalid path parameter"),
-                    )
-                    return@handle
-                }
-                val param = paramResult.getOrThrow()
+                    val paramResult = getPathParam(handler, call)
+                    if (paramResult.isFailure) {
+                        call.validateClientError(
+                            tag = TAG,
+                            exception = ClientRequestExceptions.InvalidRequestException("Invalid path parameter"),
+                        )
+                        return@handle
+                    }
+                    val param = paramResult.getOrThrow()
 
-                val queryParamResult = getQueryParam(handler, call)
-                if (queryParamResult.isFailure) {
-                    call.validateClientError(
-                        tag = TAG,
-                        exception = ClientRequestExceptions.InvalidRequestException("Invalid query parameters"),
-                    )
-                    return@handle
-                }
-                val queryParams = queryParamResult.getOrThrow()
+                    val queryParamResult = getQueryParam(handler, call)
+                    if (queryParamResult.isFailure) {
+                        call.validateClientError(
+                            tag = TAG,
+                            exception = ClientRequestExceptions.InvalidRequestException("Invalid query parameters"),
+                        )
+                        return@handle
+                    }
+                    val queryParams = queryParamResult.getOrThrow()
 
-                val context = contextResult.getOrThrow()
+                    val context = contextResult.getOrThrow()
 
-                val responseResult =
-                    runCatching {
-                        val body =
-                            if (handler.requestBodyType == NoRequestBody::class) {
-                                NoRequestBody as RequestType
-                            } else if (handler.requestBodyType == BytesRequestBody::class) {
-                                BytesRequestBody(call.receive<ByteArray>()) as RequestType
-                            } else {
-                                call.receive(handler.requestBodyType)
+                    val responseResult =
+                        runCatching {
+                            val body =
+                                if (handler.requestBodyType == NoRequestBody::class) {
+                                    NoRequestBody as RequestType
+                                } else if (handler.requestBodyType == BytesRequestBody::class) {
+                                    BytesRequestBody(call.receive<ByteArray>()) as RequestType
+                                } else {
+                                    call.receive(handler.requestBodyType)
+                                }
+                            call.run {
+                                val operationRequest: OperationRequest<
+                                    RequestType,
+                                    QueryParamType,
+                                    PathParamType,
+                                    Context,
+                                    > =
+                                    OperationRequest(
+                                        requestBody = body,
+                                        queryParam = queryParams,
+                                        pathParam = param,
+                                        context = context,
+                                    )
+                                block(operationRequest)
                             }
-                        call.run {
-                            val operationRequest: OperationRequest<
-                                RequestType,
-                                QueryParamType,
-                                PathParamType,
-                                Context,
-                                > =
-                                OperationRequest(
-                                    requestBody = body,
-                                    queryParam = queryParams,
-                                    pathParam = param,
-                                    context = context,
-                                )
-                            block(operationRequest)
+                        }
+
+                    if (responseResult.isFailure) {
+                        call.validateClientError(
+                            tag = TAG,
+                            result = responseResult,
+                        )
+                        return@handle
+                    }
+
+                    val response = responseResult.getOrThrow()
+                    call.response.status(response.status)
+                    if (handler.responseBodyType != NoResponseBody::class) {
+                        call.respond(response.body, TypeInfo(handler.responseBodyType))
+                    } else {
+                        call.respond(Unit)
+                    }
+                }
+            }.rounteDescription(method, handler, apiPath)
+    }
+}
+
+@OptIn(InternalSerializationApi::class)
+@Suppress("LongMethod")
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > Route.rounteDescription(
+    method: HttpMethod,
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+    apiPath: String,
+): Route {
+    return describe {
+        operationId =
+            buildList {
+                add(method.value.lowercase())
+                addAll(apiPath.split("/").filter { it.isNotEmpty() })
+                val cleanSubPath = handler.path.replace("{", "").replace("}", "")
+                addAll(cleanSubPath.split("/").filter { it.isNotEmpty() })
+            }.joinToString("-")
+        tag(apiPath.split("/").firstOrNull { it.isNotEmpty() } ?: "api")
+
+        val hasPathParam = handler.pathParamType != NoPathParam::class
+        val hasQueryParams = handler.queryParamType != NoQueryParam::class
+
+        if (hasPathParam || hasQueryParams) {
+            parameters {
+                if (hasPathParam) {
+                    path(handler.param ?: "param") {
+                        required = true
+                        schema =
+                            handler.pathParamType
+                                .serializer()
+                                .descriptor
+                                .buildJsonSchema(visiting = mutableSetOf())
+                    }
+                }
+                if (hasQueryParams) {
+                    val queryDescriptor = handler.queryParamType.serializer().descriptor
+                    for (i in 0 until queryDescriptor.elementsCount) {
+                        val elementName = queryDescriptor.getElementName(i)
+                        val elementDescriptor = queryDescriptor.getElementDescriptor(i)
+                        val isRequired = !queryDescriptor.isElementOptional(i) && !elementDescriptor.isNullable
+                        query(elementName) {
+                            required = isRequired
+                            schema = elementDescriptor.buildJsonSchema(visiting = mutableSetOf())
                         }
                     }
-
-                if (responseResult.isFailure) {
-                    call.validateClientError(
-                        tag = TAG,
-                        result = responseResult,
-                    )
-                    return@handle
-                }
-
-                val response = responseResult.getOrThrow()
-                call.response.status(response.status)
-                if (handler.responseBodyType != NoResponseBody::class) {
-                    call.respond(response.body, TypeInfo(handler.responseBodyType))
-                } else {
-                    call.respond(Unit)
                 }
             }
+        }
+
+        if (handler.requestBodyType != NoRequestBody::class && handler.requestBodyType != BytesRequestBody::class) {
+            requestBody {
+                required = true
+                schema =
+                    handler.requestBodyType
+                        .serializer()
+                        .descriptor
+                        .buildJsonSchema(visiting = mutableSetOf())
+            }
+        } else if (handler.requestBodyType == BytesRequestBody::class) {
+            requestBody {
+                required = true
+            }
+        }
+
+        responses {
+            if (handler.responseBodyType != NoResponseBody::class) {
+                HttpStatusCode.OK {
+                    schema =
+                        handler.responseBodyType
+                            .serializer()
+                            .descriptor
+                            .buildJsonSchema(visiting = mutableSetOf())
+                }
+            } else {
+                HttpStatusCode.NoContent {}
+            }
+            HttpStatusCode.Unauthorized {}
+            HttpStatusCode.BadRequest {}
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.cramsan.framework.core.ktor
 
 import com.cramsan.framework.logging.EventLoggerInterface
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStarted
@@ -9,11 +10,15 @@ import io.ktor.server.application.ApplicationStopPreparing
 import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.application.ApplicationStopping
 import io.ktor.server.application.ServerReady
+import io.ktor.server.plugins.openapi.openAPI
+import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.head
+import io.ktor.server.routing.openapi.OpenApiDocSource
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import io.ktor.server.routing.routingRoot
 
 /**
  * Initialize monitoring
@@ -54,6 +59,27 @@ fun Application.configureHealthEndpoint() {
             head {
                 call.respond(HttpStatusCode.OK, "OK")
             }
+        }
+    }
+}
+
+/**
+ * Configure the OpenApi endpoint
+ * https://ktor.io/docs/server-openapi.html
+ */
+fun Application.configureOpenApiEndpoint() {
+    routing {
+        openAPI(path = "openapi") {
+            source =
+                OpenApiDocSource.Routing {
+                    routingRoot.descendants()
+                }
+        }
+        swaggerUI("swaggerUI") {
+            source =
+                OpenApiDocSource.Routing(ContentType.Application.Json) {
+                    routingRoot.descendants()
+                }
         }
     }
 }

@@ -15,6 +15,7 @@ import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.provideRoborazziContext
 import com.github.takahirom.roborazzi.registerRoborazziActivityToRobolectricIfNeeded
 import io.github.classgraph.ClassGraph
+import io.github.classgraph.ScanResult
 import org.junit.rules.RuleChain
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
@@ -35,7 +36,7 @@ import sergio.sastre.composable.preview.scanner.jvm.JvmAnnotationScanner
  * For each variant, the `widthDp` from the corresponding `@Preview` annotation is applied as a
  * Robolectric qualifier via [RuntimeEnvironment.setQualifiers], and the `name` is used as the
  * screenshot filename suffix. Both values are read at test-parameter-build time via ClassGraph so
- * that [PreviewAnnotations.kt] remains the single source of truth for dimensions.
+ * that PreviewAnnotations.kt remains the single source of truth for dimensions.
  *
  * Sources:
  *  - https://github.com/CodeHavenX/MonoRepo/issues/113#issuecomment-2784480774
@@ -75,7 +76,8 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
      * [AndroidKMPreviewTestParameter] per preview × variant combination.
      *
      * Variants (qualifier + name suffix) are derived from the `@Preview` annotations present on
-     * each multipreview annotation class, so [PreviewAnnotations.kt] is the single source of truth.
+     * each multipreview annotation class via a single ClassGraph scan, so
+     * PreviewAnnotations.kt is the single source of truth.
      */
     override fun testParameters(): List<JUnit4TestParameter<JvmAnnotationInfo>> {
         val options = options()
@@ -95,18 +97,25 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
             .map { it.declaringClass to it.methodName }
             .toSet()
 
-        val deviceVariants = buildVariantsFor("com.cramsan.ui.preview.DevicePreviews")
-        val devicePreviews = devicePreviewFunctions
-            .flatMap { preview -> deviceVariants.map { (qualifier, suffix) -> Triple(preview, qualifier, suffix) } }
-
         val singleVariantAnnotations = listOf(
             "com.cramsan.ui.preview.ScreenPreviews",
             "com.cramsan.ui.preview.ComponentPreviews",
         )
 
+        val allAnnotationClasses = listOf("com.cramsan.ui.preview.DevicePreviews") + singleVariantAnnotations
+        val variantMap = ClassGraph()
+            .enableAnnotationInfo()
+            .acceptClasses(*allAnnotationClasses.toTypedArray())
+            .scan()
+            .use { scanResult -> allAnnotationClasses.associateWith { buildVariantsFrom(scanResult, it) } }
+
+        val deviceVariants = variantMap.getValue("com.cramsan.ui.preview.DevicePreviews")
+        val devicePreviews = devicePreviewFunctions
+            .flatMap { preview -> deviceVariants.map { (qualifier, suffix) -> Triple(preview, qualifier, suffix) } }
+
         val singleVariantPreviews = singleVariantAnnotations
             .flatMap { annotationName ->
-                val variants = buildVariantsFor(annotationName)
+                val variants = variantMap.getValue(annotationName)
                 JvmAnnotationScanner(annotationName)
                     .scanPackageTrees(*packages)
                     .includePrivatePreviews()
@@ -159,37 +168,57 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
     }
 
     /**
-     * Reads the `@Preview` annotations on [annotationClassName] via ClassGraph (which can read
-     * BINARY-retained annotations from class files) and returns one `(qualifier, nameSuffix)` pair
-     * per annotation instance.
+     * Reads the `@Preview` annotations on [annotationClassName] via a single-class ClassGraph scan
+     * and returns one `(qualifier, nameSuffix)` pair per annotation instance.
      *
-     * ClassGraph automatically unwraps Kotlin's repeatable-annotation containers, so multiple
-     * `@Preview` entries on the same annotation class are returned as individual items.
-     *
-     * If no `@Preview` annotations are found (e.g. a bare `@Preview` with all defaults), a single
-     * `("", "")` pair is returned so the function still produces one default variant.
+     * Prefer calling [buildVariantsFrom] with a shared [ScanResult] inside [testParameters] to
+     * avoid redundant classpath traversals. This overload is provided as a convenience entry point
+     * for tests.
      */
-    private fun buildVariantsFor(annotationClassName: String): List<Pair<String, String>> =
+    internal fun buildVariantsFor(annotationClassName: String): List<Pair<String, String>> =
         ClassGraph()
             .enableAnnotationInfo()
             .acceptClasses(annotationClassName)
             .scan()
-            .use { scanResult ->
-                val classInfo = scanResult.getClassInfo(annotationClassName)
-                    ?: return@use listOf("" to "")
-                val variants = PREVIEW_ANNOTATION_NAMES.flatMap { previewName ->
-                    classInfo.annotationInfo
-                        .filter { it.name == previewName }
-                        .map { annotation ->
-                            val params = annotation.parameterValues
-                            val widthDp = params.getValue("widthDp") as? Int ?: -1
-                            val name = params.getValue("name") as? String ?: ""
-                            val qualifier = if (widthDp > 0) "+w${widthDp}dp" else ""
-                            qualifier to name
-                        }
+            .use { buildVariantsFrom(it, annotationClassName) }
+
+    /**
+     * Extracts `(qualifier, nameSuffix)` pairs from the `@Preview` annotations present on
+     * [annotationClassName] inside an already-open [scanResult].
+     *
+     * ClassGraph reads BINARY-retained annotations from class files and automatically unwraps
+     * Kotlin repeatable-annotation containers, so multiple `@Preview` entries return as individual
+     * items. Both the `org.jetbrains.compose` and `androidx.compose` annotation class names are
+     * checked because the Compose Multiplatform compiler maps the former to the latter on Android.
+     *
+     * Returns `[("", "")]` — a single default variant — and logs a warning if the annotation class
+     * is not on the classpath or carries no `@Preview` annotations.
+     */
+    private fun buildVariantsFrom(
+        scanResult: ScanResult,
+        annotationClassName: String,
+    ): List<Pair<String, String>> {
+        val classInfo = scanResult.getClassInfo(annotationClassName) ?: run {
+            Logger.warn("$annotationClassName not found on classpath; using single default variant")
+            return listOf("" to "")
+        }
+        val variants = PREVIEW_ANNOTATION_NAMES.flatMap { previewName ->
+            classInfo.annotationInfo
+                .filter { it.name == previewName }
+                .map { annotation ->
+                    val params = annotation.parameterValues
+                    val widthDp = params.getValue("widthDp") as? Int ?: -1
+                    val name = params.getValue("name") as? String ?: ""
+                    val qualifier = if (widthDp > 0) "+w${widthDp}dp" else ""
+                    qualifier to name
                 }
-                variants.ifEmpty { listOf("" to "") }
-            }
+        }
+        if (variants.isEmpty()) {
+            Logger.warn("No @Preview annotations found on $annotationClassName; using single default variant")
+            return listOf("" to "")
+        }
+        return variants
+    }
 
     private fun setupAndroidContextProvider() {
         val type = findAndroidContextProvider() ?: return

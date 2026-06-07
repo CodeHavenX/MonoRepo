@@ -97,7 +97,7 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
         val singleVariantAnnotations = listOf(
             "com.cramsan.ui.preview.ScreenPreviews",
             "com.cramsan.ui.preview.ComponentPreviews",
-        ) + LEGACY_PREVIEW_ANNOTATIONS
+        )
 
         val singleVariantPreviews = singleVariantAnnotations
             .map { JvmAnnotationScanner(it) }
@@ -121,12 +121,6 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
             PreviewVariant.Phone,
             PreviewVariant.Tablet,
             PreviewVariant.Desktop,
-        )
-
-        /** Legacy `@Preview` annotation class names scanned for backwards compatibility. */
-        val LEGACY_PREVIEW_ANNOTATIONS = listOf(
-            "org.jetbrains.compose.ui.tooling.preview.Preview",
-            "androidx.compose.ui.tooling.preview.Preview",
         )
     }
 

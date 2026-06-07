@@ -2,7 +2,7 @@ package com.cramsan.templatereplaceme.client.lib.features.activityreplaceme.feat
 
 import androidx.compose.runtime.Composable
 import com.cramsan.templatereplaceme.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Compose preview for [FeatureReplacemeContent].
@@ -11,11 +11,16 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  *
  * Example:
  * ```
- * @Preview
+ * @ScreenPreviews
  * @Composable
  * private fun FeatureReplacemeScreenLoadingPreview() =
  *     AppTheme { FeatureReplacemeContent(uiState = FeatureReplacemeUIState(isLoading = true)) }
  * ```
+ * We have our own wrappers to generate Previews, so we discourage the usage of the native @Preview annotations. Instead
+ * we recommend using the following:
+ *  - @ScreenPreviews: It is used for generating a preview(s) for a complete screen.
+ *  - @ComponentPreviews: It is used for generating a preview(s) for a sub-component such as a button, list item, etc.
+ *  - @DevicePreviews: It is used for generating a set of previews to represent multiple device form factors.
  */
 @ScreenPreviews
 @Composable

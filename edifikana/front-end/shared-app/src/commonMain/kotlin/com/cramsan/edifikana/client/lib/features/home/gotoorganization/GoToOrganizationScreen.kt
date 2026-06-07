@@ -9,8 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
-import com.cramsan.edifikana.client.lib.features.home.drawer.SelectableDrawerItem
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -22,21 +20,20 @@ import org.koin.compose.viewmodel.koinViewModel
 /**
  * GoToOrganization screen.
  *
- * This function provides the boilerplate needed to wire up the screen within the rest of the
- * application. This includes observing the view model's state and event flows and rendering the screen.
+ * Displayed when the current user has no properties configured. Provides a prompt to navigate
+ * to the organization management view to create or join a property.
  */
 @Composable
 fun GoToOrganizationScreen(
+    onNavigateToOrganization: () -> Unit = {},
     modifier: Modifier = Modifier,
-    managementViewModel: DrawerViewModel = koinViewModel(),
     viewModel: GoToOrganizationViewModel = koinViewModel(),
 ) {
-    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
-        // Call this feature's viewModel
+        // Reserved for future viewModel calls
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        // Call this feature's viewModel
+        // Reserved for future viewModel calls
     }
 
     ObserveViewModelEvents(viewModel) { event ->
@@ -45,16 +42,14 @@ fun GoToOrganizationScreen(
         }
     }
 
-    // Render the screen
     GoToOrganizationContent(
-        modifier,
-    ) {
-        managementViewModel.selectDrawerItem(SelectableDrawerItem.Organization)
-    }
+        modifier = modifier,
+        onNavigateToOrganizationsClicked = onNavigateToOrganization,
+    )
 }
 
 /**
- * Content of the GoToOrganization.
+ * Content of the GoToOrganization screen.
  */
 @Composable
 internal fun GoToOrganizationContent(
@@ -62,9 +57,7 @@ internal fun GoToOrganizationContent(
     onNavigateToOrganizationsClicked: () -> Unit,
 ) {
     Box(
-        modifier =
-        modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
         ScreenLayout(

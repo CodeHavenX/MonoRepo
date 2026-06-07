@@ -5,23 +5,19 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Apartment
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -34,46 +30,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
 import com.cramsan.edifikana.client.lib.features.home.eventlog.EventLogScreen
 import com.cramsan.edifikana.client.lib.features.home.gotoorganization.GoToOrganizationScreen
-import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
-import edifikana_lib.account_screen_title
-import edifikana_lib.app_name
-import edifikana_lib.edifikana_string_event_log
-import edifikana_lib.home_screen_account_description
-import edifikana_lib.home_screen_notifications_description
 import edifikana_lib.home_screen_property_dropdown_description
 import edifikana_lib.home_screen_property_dropdown_selected_description
-import edifikana_lib.home_screen_settings_description
-import edifikana_lib.two_pager
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * Home screen.
+ * Property home screen.
  *
- * This function provides the boilerplate needed to wire up the screen within the rest of the
- * application. This includes observing the view model's state and event flows and rendering the screen.
+ * Displays a property selector and the event log for the selected property.
+ * Used as the content for the Properties shell tab.
  */
 @Composable
 fun PropertyHomeScreen(
-    managementViewModel: DrawerViewModel = koinViewModel(),
+    onNavigateToOrganization: () -> Unit = {},
+    modifier: Modifier = Modifier,
     viewModel: PropertyHomeViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.loadContent()
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        // Call this feature's viewModel
+        // Reserved for future viewModel calls
     }
 
     ObserveViewModelEvents(viewModel) { event ->
@@ -83,95 +69,36 @@ fun PropertyHomeScreen(
     }
 
     PropertyHomeScreenContent(
-        uiState,
-        onAccountButtonClicked = { viewModel.navigateToAccount() },
+        uiState = uiState,
         onPropertySelected = { viewModel.selectProperty(it) },
-        onTabSelected = { viewModel.selectTab(it) },
-        onNotificationsButtonSelected = { viewModel.navigateToNotifications() },
-        onNavigationIconSelected = { managementViewModel.toggleNavigationState() },
-        onSettingsSelected = { viewModel.navigateToSettings() },
+        onNavigateToOrganization = onNavigateToOrganization,
+        modifier = modifier,
     )
 }
 
-private val BottomBarDestinationUiModels =
-    listOf<BottomBarDestinationUiModel>(
-        BottomBarDestinationUiModel(
-            Tabs.EventLog,
-            Res.drawable.two_pager,
-            Res.string.edifikana_string_event_log,
-            isStartDestination = true,
-        ),
-    /*
-    BottomBarDestinationUiModel(
-        Tabs.TimeCard,
-        Res.drawable.schedule,
-        Res.string.string_assistance,
-    ),
-     */
-    )
-
+/**
+ * Content of the Property Home screen.
+ */
 @Composable
 internal fun PropertyHomeScreenContent(
     uiState: PropertyHomeUIModel,
-    modifier: Modifier = Modifier,
-    onAccountButtonClicked: () -> Unit,
-    onNavigationIconSelected: () -> Unit,
     onPropertySelected: (PropertyId) -> Unit,
-    onTabSelected: (Tabs) -> Unit,
-    onNotificationsButtonSelected: () -> Unit,
-    onSettingsSelected: () -> Unit,
+    onNavigateToOrganization: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            EdifikanaTopBar(
-                title = stringResource(Res.string.app_name),
-                navigationIcon = Icons.Default.Menu,
-                onNavigationIconSelected = onNavigationIconSelected,
-            ) {
-                // Property dropdown
-                if (uiState.availableProperties.isNotEmpty()) {
-                    PropertyDropDown(
-                        label = uiState.label,
-                        list = uiState.availableProperties,
-                        onPropertySelected = onPropertySelected,
-                    )
-                }
-
-                // Account button
-                AccountDropDown(
-                    onAccountSelected = onAccountButtonClicked,
-                    onNotificationsSelected = onNotificationsButtonSelected,
-                    onSettingsSelected = onSettingsSelected,
-                )
-            }
-        },
-        bottomBar = {
-            if (uiState.availableProperties.isNotEmpty()) {
-                NavigationBar {
-                    BottomBarDestinationUiModels.forEach { dest ->
-                        val selected = dest.destination == uiState.selectedTab
-                        val label = stringResource(dest.text)
-
-                        NavigationBarItem(
-                            onClick = {
-                                onTabSelected(dest.destination)
-                            },
-                            icon = {
-                                Icon(painterResource(dest.icon), contentDescription = label)
-                            },
-                            label = { Text(label) },
-                            selected = selected,
-                        )
-                    }
-                }
-            }
-        },
-    ) { innerPadding ->
-        // Render the screen
+    Column(modifier = modifier.fillMaxSize()) {
+        if (uiState.availableProperties.isNotEmpty()) {
+            PropertyDropDown(
+                label = uiState.label,
+                list = uiState.availableProperties,
+                onPropertySelected = onPropertySelected,
+                modifier = Modifier.padding(horizontal = Padding.MEDIUM, vertical = Padding.X_SMALL),
+            )
+        }
         HomeContent(
-            modifier = Modifier.padding(innerPadding),
-            uiState,
+            uIModel = uiState,
+            onNavigateToOrganization = onNavigateToOrganization,
+            modifier = Modifier.weight(1f),
         )
     }
 }
@@ -237,65 +164,13 @@ private fun PropertyDropDown(
     }
 }
 
-/**
- * A simple dropdown menu that shows a list of accounts and notifications.
- */
-@Composable
-fun AccountDropDown(
-    modifier: Modifier = Modifier,
-    onAccountSelected: () -> Unit,
-    onNotificationsSelected: () -> Unit,
-    onSettingsSelected: () -> Unit,
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = modifier,
-    ) {
-        IconButton(onClick = { expanded = !expanded }) {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = stringResource(Res.string.home_screen_account_description),
-            )
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.account_screen_title)) },
-                onClick = {
-                    onAccountSelected()
-                    expanded = false
-                },
-            )
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.home_screen_settings_description)) },
-                onClick = {
-                    onSettingsSelected()
-                    expanded = false
-                },
-            )
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.home_screen_notifications_description)) },
-                onClick = {
-                    onNotificationsSelected()
-                    expanded = false
-                },
-            )
-        }
-    }
-}
-
-/**
- * Content of the AccountEdit screen.
- */
 @Composable
 private fun HomeContent(
-    modifier: Modifier,
     uIModel: PropertyHomeUIModel,
+    onNavigateToOrganization: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Crossfade(uIModel) {
+    Crossfade(uIModel, modifier = modifier) {
         val selectedTab = it.selectedTab
         val propertyId = it.propertyId
         when (selectedTab) {
@@ -305,7 +180,7 @@ private fun HomeContent(
 
             Tabs.GoToOrganization -> {
                 GoToOrganizationScreen(
-                    modifier,
+                    onNavigateToOrganization = onNavigateToOrganization,
                 )
             }
 
@@ -313,7 +188,6 @@ private fun HomeContent(
                 if (propertyId != null) {
                     EventLogScreen(
                         propertyId = propertyId,
-                        modifier = modifier,
                     )
                 }
             }

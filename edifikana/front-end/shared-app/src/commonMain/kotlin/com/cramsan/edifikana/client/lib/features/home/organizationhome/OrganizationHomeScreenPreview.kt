@@ -30,6 +30,5 @@ private fun OrganizationHomeScreenPreview() =
                 selectedOrgId = OrganizationId("org-1"),
             ),
             onTabSelected = {},
-            onNavigationIconSelected = {},
         )
     }

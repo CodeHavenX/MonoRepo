@@ -13,6 +13,7 @@ import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationVi
 import com.cramsan.edifikana.client.lib.features.debug.main.DebugViewModel
 import com.cramsan.edifikana.client.lib.features.debug.screenselector.ScreenSelectorViewModel
 import com.cramsan.edifikana.client.lib.features.home.addproperty.AddPropertyViewModel
+import com.cramsan.edifikana.client.lib.features.home.appshell.AppShellViewModel
 import com.cramsan.edifikana.client.lib.features.home.drawer.DrawerViewModel
 import com.cramsan.edifikana.client.lib.features.home.employeeoverview.EmployeeOverviewViewModel
 import com.cramsan.edifikana.client.lib.features.home.eventlog.EventLogViewModel
@@ -41,6 +42,7 @@ internal val ViewModelModule =
             viewModelOf(::PropertyHomeViewModel)
             viewModelOf(::OtpValidationViewModel)
             viewModelOf(::AddPropertyViewModel)
+            viewModelOf(::AppShellViewModel)
             viewModelOf(::OrganizationHomeViewModel)
             viewModelOf(::NotificationsViewModel)
             viewModelOf(::SplashViewModel)

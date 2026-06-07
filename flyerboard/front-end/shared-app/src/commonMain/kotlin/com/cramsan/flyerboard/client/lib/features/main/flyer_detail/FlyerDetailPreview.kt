@@ -40,10 +40,10 @@ private fun FlyerDetailApprovedPreview() =
                     id = FlyerId("1"),
                     title = "Community Cleanup Day — Riverside Park",
                     description =
-                        "Join us for our monthly community cleanup at Riverside Park! We'll be gathering" +
+                    "Join us for our monthly community cleanup at Riverside Park! We'll be gathering" +
                         " near the north entrance to pick up litter, trim overgrown paths, and ensure our favorite" +
                         " local spot stays beautiful for everyone.",
-                        fileUrl = null,
+                    fileUrl = null,
                     status = FlyerStatus.APPROVED,
                     expiresAt = "May 1",
                     uploaderId = UserId("user1"),

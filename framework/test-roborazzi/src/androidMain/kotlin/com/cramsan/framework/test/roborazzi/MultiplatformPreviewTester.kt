@@ -18,13 +18,22 @@ import org.junit.rules.RuleChain
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 import org.robolectric.Robolectric
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.util.Logger
 import sergio.sastre.composable.preview.scanner.jvm.JvmAnnotationInfo
 import sergio.sastre.composable.preview.scanner.jvm.JvmAnnotationScanner
 
 /**
- * This tester class will be loaded by Roborazzi to generate the tests for the Compose Previews in Android and Common
- * source-sets.
+ * Roborazzi tester that renders Compose previews from Android and common source-sets.
+ *
+ * Three annotation classes are scanned:
+ * - `@DevicePreviews` — three variants: Phone / Tablet / Desktop
+ * - `@ScreenPreviews` — one variant: Default
+ * - `@ComponentPreviews` — one variant: Default
+ *
+ * For each `@DevicePreviews` variant, [PreviewVariant.qualifier] is applied via
+ * [RuntimeEnvironment.setQualifiers] before the composable is rendered, making screen-width-based
+ * layout logic behave correctly inside the preview.
  *
  * Sources:
  *  - https://github.com/CodeHavenX/MonoRepo/issues/113#issuecomment-2784480774
@@ -32,6 +41,11 @@ import sergio.sastre.composable.preview.scanner.jvm.JvmAnnotationScanner
  */
 @OptIn(ExperimentalRoborazziApi::class, InternalRoborazziApi::class)
 class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmAnnotationInfo>> {
+
+    /**
+     * Returns tester options configured with a [RoborazziActivity]-backed compose rule and the
+     * variant-aware [TestWatcher] rule chain required by [test].
+     */
     override fun options(): ComposePreviewTester.Options = super.options().copy(
         testLifecycleOptions = ComposePreviewTester.Options.JUnit4TestLifecycleOptions(
             composeRuleFactory = {
@@ -53,54 +67,98 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
         )
     )
 
+    /**
+     * Scans for [com.cramsan.ui.preview.DevicePreviews], [com.cramsan.ui.preview.ScreenPreviews],
+     * and [com.cramsan.ui.preview.ComponentPreviews] functions and returns one
+     * [AndroidKMPreviewTestParameter] per preview × variant combination.
+     */
     override fun testParameters(): List<JUnit4TestParameter<JvmAnnotationInfo>> {
         val options = options()
-        val annotations = listOf(
+        val composeRuleFactory = (
+            options.testLifecycleOptions as
+                ComposePreviewTester.Options.JUnit4TestLifecycleOptions
+            ).composeRuleFactory
+
+        val packages = options.scanOptions.packages.toTypedArray()
+
+        val devicePreviewFunctions = JvmAnnotationScanner("com.cramsan.ui.preview.DevicePreviews")
+            .scanPackageTrees(*packages)
+            .includePrivatePreviews()
+            .getPreviews()
+
+        val devicePreviews = devicePreviewFunctions
+            .flatMap { preview -> DEVICE_VARIANTS.map { variant -> preview to variant } }
+
+        val singleVariantAnnotations = listOf(
             "com.cramsan.ui.preview.ScreenPreviews",
             "com.cramsan.ui.preview.ComponentPreviews",
-            "org.jetbrains.compose.ui.tooling.preview.Preview",
-            "androidx.compose.ui.tooling.preview.Preview",
         )
-        return annotations.map { JvmAnnotationScanner(it) }
-            .map {
-                it
-                    .scanPackageTrees(*options.scanOptions.packages.toTypedArray())
+
+        val singleVariantPreviews = singleVariantAnnotations
+            .map { JvmAnnotationScanner(it) }
+            .flatMap { scanner ->
+                scanner
+                    .scanPackageTrees(*packages)
                     .includePrivatePreviews()
                     .getPreviews()
             }
-            .flatten()
-            .map {
-                AndroidKMPreviewTestParameter(
-                    (
-                        options.testLifecycleOptions as
-                            ComposePreviewTester.Options.JUnit4TestLifecycleOptions
-                        ).composeRuleFactory,
-                    it
-                )
-            }
+            .map { preview -> preview to PreviewVariant.Default }
+
+        return (devicePreviews + singleVariantPreviews).map { (preview, variant) ->
+            AndroidKMPreviewTestParameter(composeRuleFactory, preview, variant)
+        }
     }
 
+    internal companion object {
+        /** Variants applied to each `@DevicePreviews` function. */
+        val DEVICE_VARIANTS = listOf(
+            PreviewVariant.Phone,
+            PreviewVariant.Tablet,
+            PreviewVariant.Desktop,
+        )
+    }
+
+    /**
+     * Renders a single preview variant and captures its screenshot.
+     *
+     * [testParameter] must be an [AndroidKMPreviewTestParameter]; every instance produced by
+     * [testParameters] satisfies this requirement.  Passing any other [JUnit4TestParameter]
+     * subtype will throw [IllegalArgumentException] with a descriptive message.
+     */
     override fun test(testParameter: JUnit4TestParameter<JvmAnnotationInfo>) {
-        // Setting the context to be able to access resources
         setupAndroidContextProvider()
 
-        val preview = testParameter.preview
-        testParameter.composeTestRule.setContent {
-            preview()
+        val param = testParameter as? AndroidKMPreviewTestParameter
+            ?: error(
+                "test() requires AndroidKMPreviewTestParameter but received " +
+                    "${testParameter::class.simpleName}. " +
+                    "Ensure testParameters() is the sole source of test parameters.",
+            )
+
+        // Apply Robolectric qualifiers for this variant (e.g. night mode, screen width).
+        if (param.variant.qualifier.isNotEmpty()) {
+            RuntimeEnvironment.setQualifiers(param.variant.qualifier)
         }
 
-        val roborazziContext = provideRoborazziContext()
-        val outputDir = roborazziContext.outputDirectory
-        val filename = "${preview.declaringClass}_${preview.methodName}"
-        val filepath = "$outputDir/$filename.${roborazziContext.imageExtension}"
+        try {
+            param.composeTestRule.setContent { param.preview() }
 
-        testParameter.composeTestRule.onRoot()
-            .captureRoboImage(filepath)
+            val roborazziContext = provideRoborazziContext()
+            val outputDir = roborazziContext.outputDirectory
+            val suffix = if (param.variant.nameSuffix.isEmpty()) "" else "_${param.variant.nameSuffix}"
+            val filename = "${param.preview.declaringClass}_${param.preview.methodName}$suffix"
+            val filepath = "$outputDir/$filename.${roborazziContext.imageExtension}"
+
+            param.composeTestRule.onRoot().captureRoboImage(filepath)
+        } finally {
+            // Reset qualifiers so state does not bleed into the next test.
+            if (param.variant.qualifier.isNotEmpty()) {
+                RuntimeEnvironment.setQualifiers("")
+            }
+        }
     }
 
     // https://youtrack.jetbrains.com/issue/CMP-6612/Support-non-compose-UI-tests-with-resources
-    // Configures Compose's AndroidContextProvider to access resources in tests.
-    // See https://youtrack.jetbrains.com/issue/CMP-6612
     private fun setupAndroidContextProvider() {
         val type = findAndroidContextProvider() ?: return
         Robolectric.setupContentProvider(type)
@@ -113,8 +171,6 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
             Class.forName(providerClassName) as Class<ContentProvider>
         } catch (_: ClassNotFoundException) {
             Logger.debug("Class not found: $providerClassName")
-            // Tests that don't depend on Compose will not have the provider class in classpath and will get
-            // ClassNotFoundException. Skip configuring the provider for them.
             null
         }
     }

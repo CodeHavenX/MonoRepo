@@ -9,18 +9,24 @@ import sergio.sastre.composable.preview.scanner.core.preview.ComposablePreview
 import sergio.sastre.composable.preview.scanner.jvm.JvmAnnotationInfo
 
 /**
- * This is a parameter to generate a test for the Android Compose Test Rule.
+ * Test parameter for a single preview rendering.
+ *
+ * [variant] controls which Robolectric qualifiers are applied before rendering and which suffix
+ * is appended to the screenshot filename. Defaults to [PreviewVariant.Default] (no overrides)
+ * for bare `@Preview` functions.
  */
 @OptIn(ExperimentalRoborazziApi::class)
 data class AndroidKMPreviewTestParameter(
     override val composeTestRuleFactory: () -> AndroidComposeTestRule<ActivityScenarioRule<out ComponentActivity>, *>,
     override val preview: ComposablePreview<JvmAnnotationInfo>,
+    val variant: PreviewVariant,
 ) : ComposePreviewTester.TestParameter.JUnit4TestParameter<JvmAnnotationInfo>(composeTestRuleFactory, preview) {
 
     /**
-     * This is used as a mechanism to set the name of the test.
+     * Used as the test name and as the Roborazzi `--tests` filter key.
      */
     override fun toString(): String {
-        return "${preview.declaringClass}:${preview.methodName}"
+        val suffix = if (variant.nameSuffix.isEmpty()) "" else "_${variant.nameSuffix}"
+        return "${preview.declaringClass}:${preview.methodName}$suffix"
     }
 }

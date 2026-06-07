@@ -25,6 +25,8 @@ class ArchitectureConfigValidationTest {
               ArchitectureNamingRule:
                 active: true
                 namingSuffixes: []
+              NoDirectPreviewAnnotationRule:
+                active: true
             """.trimIndent().reader(),
         )
 

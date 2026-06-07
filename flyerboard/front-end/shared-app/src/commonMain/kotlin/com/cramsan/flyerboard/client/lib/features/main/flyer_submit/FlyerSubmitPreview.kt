@@ -2,12 +2,12 @@ package com.cramsan.flyerboard.client.lib.features.main.flyer_submit
 
 import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the Flyer Submit screen with all fields blank and no file selected.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerSubmitEmptyPreview() =
     AppTheme(dynamicColor = false) {
@@ -25,7 +25,7 @@ private fun FlyerSubmitEmptyPreview() =
 /**
  * Preview for the Flyer Submit screen with a file name displayed.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerSubmitWithFilePreview() =
     AppTheme(dynamicColor = false) {
@@ -50,7 +50,7 @@ private fun FlyerSubmitWithFilePreview() =
 /**
  * Preview for the Flyer Submit screen while the submission is in progress.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerSubmitSavingPreview() =
     AppTheme(dynamicColor = false) {
@@ -75,7 +75,7 @@ private fun FlyerSubmitSavingPreview() =
 /**
  * Preview for the Flyer Submit screen with an error message visible.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerSubmitErrorPreview() =
     AppTheme(dynamicColor = false) {

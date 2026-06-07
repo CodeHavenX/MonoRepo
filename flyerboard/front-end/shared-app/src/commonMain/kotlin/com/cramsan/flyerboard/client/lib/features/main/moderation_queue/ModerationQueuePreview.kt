@@ -7,7 +7,6 @@ import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.ui.preview.ScreenPreviews
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val samplePendingFlyers =
     listOf(
@@ -35,7 +34,7 @@ private val samplePendingFlyers =
         ),
     )
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun ModerationQueueLoadingPreview() =
     AppTheme(dynamicColor = false) {

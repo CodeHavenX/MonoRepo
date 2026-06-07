@@ -17,7 +17,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  *     AppTheme { FeatureReplacemeContent(uiState = FeatureReplacemeUIState(isLoading = true)) }
  * ```
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun FeatureReplacemeScreenPreview() =
     AppTheme {

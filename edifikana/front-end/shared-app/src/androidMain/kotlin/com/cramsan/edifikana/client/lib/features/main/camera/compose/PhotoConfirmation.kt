@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.ui.components.EdifikanaImage
 import com.cramsan.edifikana.client.ui.components.ImageSource
+import com.cramsan.ui.preview.ScreenPreviews
 import edifikana_lib.Res
 import edifikana_lib.edifikana_string_cancel
 import edifikana_lib.edifikana_string_confirm
@@ -66,9 +67,7 @@ fun PhotoConfirmation(
     }
 }
 
-@Preview(
-    showBackground = true,
-)
+@ScreenPreviews
 @Composable
 private fun PreviewPhotoConfirmation() {
     PhotoConfirmation(

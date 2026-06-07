@@ -9,7 +9,6 @@ import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.ui.preview.ScreenPreviews
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Preview for the Home feature screen.
@@ -47,50 +46,6 @@ private fun PropertyHomeScreenPreview() {
 @Composable
 @ScreenPreviews
 private fun AccountDropDownPreview() {
-    AppTheme {
-        Box(Modifier.size(200.dp))
-        AccountDropDown(
-            Modifier,
-            {},
-            {},
-            {},
-        )
-    }
-}
-
-@Preview(locale = "es")
-@Composable
-private fun PropertyHomeScreenPreview_ES() {
-    AppTheme {
-        PropertyHomeScreenContent(
-            uiState =
-            PropertyHomeUIModel(
-                label = "Cenit, Barranco",
-                availableProperties =
-                listOf(
-                    PropertyUiModel(
-                        propertyId = PropertyId("property-1"),
-                        name = "Cenit",
-                        selected = true,
-                    ),
-                ),
-                selectedTab = Tabs.None,
-                propertyId = PropertyId("property-1"),
-                orgId = OrganizationId("org-1"),
-            ),
-            onAccountButtonClicked = {},
-            onPropertySelected = {},
-            onTabSelected = {},
-            onNotificationsButtonSelected = {},
-            onNavigationIconSelected = {},
-            onSettingsSelected = {},
-        )
-    }
-}
-
-@Composable
-@Preview(locale = "es")
-private fun AccountDropDownPreview_ES() {
     AppTheme {
         Box(Modifier.size(200.dp))
         AccountDropDown(

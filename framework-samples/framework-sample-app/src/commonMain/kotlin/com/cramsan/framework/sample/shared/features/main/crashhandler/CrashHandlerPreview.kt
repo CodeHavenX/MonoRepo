@@ -1,9 +1,9 @@
 package com.cramsan.framework.sample.shared.features.main.crashhandler
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun CrashHandlerScreenPreview() {
     CrashHandlerContent(

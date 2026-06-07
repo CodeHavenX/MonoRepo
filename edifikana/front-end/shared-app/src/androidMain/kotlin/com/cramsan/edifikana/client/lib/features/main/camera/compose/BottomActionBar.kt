@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cramsan.ui.preview.ComponentPreviews
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Bottom action bar for the camera preview.
@@ -54,7 +56,7 @@ fun BottomActionBar(
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun PreviewBottomActionBar() {
     BottomActionBar(

@@ -14,6 +14,6 @@ class ArchitectureRuleSetProvider : RuleSetProvider {
     override fun instance(): RuleSet =
         RuleSet(
             ruleSetId,
-            listOf(::AnnotationCallerRestrictionRule, ::ArchitectureNamingRule),
+            listOf(::AnnotationCallerRestrictionRule, ::ArchitectureNamingRule, ::NoDirectPreviewAnnotationRule),
         )
 }

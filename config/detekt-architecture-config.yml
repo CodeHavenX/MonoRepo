@@ -25,3 +25,5 @@ architecture:
       - 'Service:FrontendService,BackendService'
       - 'Controller:BackendController'
       - 'Datastore:BackendDatastore'
+  NoDirectPreviewAnnotationRule:
+    active: true

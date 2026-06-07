@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cramsan.ui.preview.ScreenPreviews
 import edifikana_lib.Res
 import edifikana_lib.edifikana_string_cancel
 import edifikana_lib.edifikana_string_permissions_camera
@@ -66,9 +67,7 @@ fun PermissionDeniedScreen(
     }
 }
 
-@Preview(
-    showBackground = true,
-)
+@ScreenPreviews
 @Composable
 private fun PreviewPermissionDeniedScreen() {
     PermissionDeniedScreen(

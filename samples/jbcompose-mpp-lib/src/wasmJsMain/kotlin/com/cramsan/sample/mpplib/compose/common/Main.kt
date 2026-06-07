@@ -1,7 +1,7 @@
 package com.cramsan.sample.mpplib.compose.common
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Main view for the application.
@@ -14,7 +14,7 @@ fun MainView() {
 /**
  * Preview for the main view.
  */
-@Preview
+@ScreenPreviews
 @Composable
 fun AppPreview() {
     Content()

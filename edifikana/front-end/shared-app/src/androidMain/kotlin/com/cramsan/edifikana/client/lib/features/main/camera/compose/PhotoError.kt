@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cramsan.ui.preview.ScreenPreviews
 import edifikana_lib.Res
 import edifikana_lib.edifikana_string_cancel
 import org.jetbrains.compose.resources.stringResource
@@ -49,9 +50,7 @@ fun PhotoErrorScreen(
     }
 }
 
-@Preview(
-    showBackground = true,
-)
+@ScreenPreviews
 @Composable
 private fun PreviewPhotoConfirmation() {
     PhotoErrorScreen("Hubo un error") {}

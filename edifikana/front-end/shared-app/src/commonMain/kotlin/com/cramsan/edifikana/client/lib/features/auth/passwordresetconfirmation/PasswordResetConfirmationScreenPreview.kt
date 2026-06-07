@@ -1,9 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.auth.passwordresetconfirmation
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
-@Preview
+@ScreenPreviews
 @Composable
 internal fun PasswordResetConfirmationContentPreview() {
     PasswordResetConfirmationContent(
@@ -14,7 +14,7 @@ internal fun PasswordResetConfirmationContentPreview() {
     )
 }
 
-@Preview
+@ScreenPreviews
 @Composable
 internal fun PasswordResetConfirmationContentWithErrorPreview() {
     PasswordResetConfirmationContent(
@@ -29,7 +29,7 @@ internal fun PasswordResetConfirmationContentWithErrorPreview() {
     )
 }
 
-@Preview
+@ScreenPreviews
 @Composable
 internal fun PasswordResetConfirmationContentLoadingPreview() {
     PasswordResetConfirmationContent(

@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edifikana — App Shell Reference</title>
+  <link rel="stylesheet" href="styles/common.css">
+  <style>
+    /* ============================================================
+       Reference-page styles — only used in app-shell.html
+       ============================================================ */
+
+    body {
+      background-color: var(--color-bg-warm);
+    }
+
+    .ref-page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-6) 80px;
+    }
+
+    /* Breadcrumb */
+    .ref-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+      font-size: var(--font-size-small);
+    }
+
+    .ref-nav__sep { color: var(--color-text-muted); }
+    .ref-nav__current { color: var(--color-text-secondary); }
+
+    /* Page header */
+    .ref-page-header {
+      margin-bottom: var(--space-12);
+      padding-bottom: var(--space-6);
+      border-bottom: 2px solid var(--color-border-light);
+    }
+
+    .ref-page-header__eyebrow {
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--color-primary-500);
+      margin-bottom: var(--space-2);
+    }
+
+    .ref-page-header h1 {
+      font-size: var(--font-size-display);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: var(--line-height-display);
+      margin-bottom: var(--space-3);
+    }
+
+    .ref-page-header p {
+      font-size: var(--font-size-body);
+      color: var(--color-text-secondary);
+      max-width: 640px;
+      line-height: var(--line-height-body);
+    }
+
+    /* Sections */
+    .ref-section { margin-bottom: var(--space-12); }
+
+    .ref-section__title {
+      font-size: var(--font-size-h1);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border-light);
+      margin-bottom: 0;
+    }
+
+    .ref-section__intro {
+      font-size: var(--font-size-body);
+      color: var(--color-text-secondary);
+      margin: var(--space-4) 0 var(--space-6);
+      max-width: 640px;
+      line-height: var(--line-height-body);
+    }
+
+    /* Annotation badge — monospaced class name label */
+    .ann {
+      display: inline-flex;
+      align-items: center;
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+      padding: 3px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+    }
+
+    .ann--red    { background: #CC3300; }
+    .ann--blue   { background: var(--color-primary-600); }
+    .ann--green  { background: #16A34A; }
+    .ann--purple { background: #7C3AED; }
+    .ann--amber  { background: #D97706; }
+    .ann--teal   { background: #0891B2; }
+    .ann--pink   { background: #DB2777; }
+    .ann--gray   { background: var(--color-text-muted); }
+
+    /* Annotation zone — banner row inside a structural element */
+    .ann-zone {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    /* Preview mode — forces full shell visible at any viewport width */
+    .ann-preview-wrap {
+      border: 2px solid var(--color-border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--color-bg-cream);
+      margin-bottom: var(--space-4);
+    }
+
+    .ann-preview-wrap .mobile-viewport {
+      max-width: 100% !important;
+      box-shadow: none !important;
+      background: var(--color-bg-cream) !important;
+    }
+
+    .ann-preview-wrap .app-layout {
+      flex-direction: row !important;
+    }
+
+    .ann-preview-wrap .app-layout > .screen {
+      flex: 1 !important;
+      min-width: 0 !important;
+      max-width: none !important;
+    }
+
+    .ann-preview-wrap .screen {
+      min-height: auto !important;
+    }
+
+    /* Force sidebar visible in preview */
+    .ann-preview-wrap .sidebar-nav {
+      display: flex !important;
+    }
+
+    /* Make bottom-nav inline (not fixed) for preview */
+    .ann-preview-wrap .bottom-nav {
+      position: relative !important;
+      bottom: auto !important;
+      left: auto !important;
+      transform: none !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      height: auto !important;
+      padding-bottom: var(--space-2) !important;
+    }
+
+    /* Remove bottom-nav padding from screen-content in preview */
+    .ann-preview-wrap .screen-content {
+      padding-bottom: 0 !important;
+      min-height: 140px;
+    }
+
+    /* Hide FAB in preview — shown as annotation zone row instead */
+    .ann-preview-wrap .fab {
+      display: none !important;
+    }
+
+    /* Legend */
+    .ann-legend {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border-light);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ann-legend-badge {
+      padding: var(--space-3) var(--space-4);
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--color-border-light);
+      background: var(--color-bg-cream);
+    }
+
+    .ann-legend-desc {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-small);
+      color: var(--color-text-secondary);
+      line-height: 1.55;
+      border-bottom: 1px solid var(--color-border-light);
+    }
+
+    .ann-legend-badge:last-of-type,
+    .ann-legend-desc:last-of-type {
+      border-bottom: none;
+    }
+
+    /* Inline code */
+    code {
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      background: var(--color-bg-warm-dark);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--color-primary-600);
+    }
+
+    /* Reference table */
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-size-small);
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border-light);
+    }
+
+    .ref-table th {
+      text-align: left;
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-bg-warm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      border-bottom: 1px solid var(--color-border-light);
+      font-size: var(--font-size-caption);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .ref-table td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--color-border-light);
+      vertical-align: top;
+      color: var(--color-text-primary);
+      line-height: 1.5;
+    }
+
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table tr:hover td { background: var(--color-bg-cream); }
+
+    /* Code block */
+    .ref-code {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: var(--space-6);
+      border-radius: var(--radius-lg);
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+      tab-size: 2;
+    }
+
+    .kw-tag     { color: #cba6f7; }
+    .kw-attr    { color: #89dceb; }
+    .kw-val     { color: #a6e3a1; }
+    .kw-class   { color: #89b4fa; }
+    .kw-comment { color: #6c7086; font-style: italic; }
+
+    /* Callout */
+    .ref-callout {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      border: 1px solid;
+      font-size: var(--font-size-small);
+      line-height: 1.55;
+      margin-bottom: var(--space-4);
+    }
+
+    .ref-callout--warning {
+      background: var(--color-warning-100);
+      border-color: var(--color-warning-500);
+      color: #92400E;
+    }
+
+    .ref-callout--info {
+      background: var(--color-info-100);
+      border-color: var(--color-info-500);
+      color: #164E63;
+    }
+
+    .ref-callout__icon { font-size: 20px; flex-shrink: 0; }
+
+    /* Shell type cards */
+    .shell-type-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .shell-type-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border-light);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .shell-type-card__eyebrow {
+      font-size: var(--font-size-caption);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-1);
+    }
+
+    .shell-type-card h3 {
+      font-size: var(--font-size-h3);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-3);
+    }
+
+    .shell-type-card p {
+      font-size: var(--font-size-small);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-3);
+      line-height: 1.55;
+    }
+
+    .shell-type-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .shell-type-card ul li {
+      font-size: var(--font-size-small);
+      color: var(--color-text-secondary);
+      padding: 3px 0 3px 16px;
+      position: relative;
+    }
+
+    .shell-type-card ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--color-primary-400);
+    }
+
+    /* Checklist */
+    .ref-checklist {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border-light);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      list-style: none;
+      padding: 0;
+    }
+
+    .ref-checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--font-size-body);
+      color: var(--color-text-primary);
+      border-bottom: 1px solid var(--color-border-light);
+      line-height: 1.5;
+    }
+
+    .ref-checklist li:last-child { border-bottom: none; }
+
+    .ref-checklist li::before {
+      content: '☐';
+      font-size: 18px;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+
+    /* Outer-layer annotation pills below the preview */
+    .ann-outer-row {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-5);
+    }
+  </style>
+</head>
+<body>
+  <div class="ref-page">
+
+    <!-- Breadcrumb -->
+    <nav class="ref-nav">
+      <a href="index.html">All Mockups</a>
+      <span class="ref-nav__sep">›</span>
+      <span class="ref-nav__current">App Shell Reference</span>
+    </nav>
+
+    <!-- Page header -->
+    <header class="ref-page-header">
+      <div class="ref-page-header__eyebrow">Reference Document</div>
+      <h1>App Shell</h1>
+      <p>The structural shell shared by every authenticated screen in the Edifikana app. This document covers the DOM structure, each layer's role, breakpoint behavior, active-state rules, shell type classification, and common mistakes to avoid.</p>
+    </header>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         §1  Shell Anatomy
+    ═══════════════════════════════════════════════════════════ -->
+    <section class="ref-section">
+      <h2 class="ref-section__title">Shell Anatomy</h2>
+      <p class="ref-section__intro">Every authenticated screen nests seven structural layers. The preview below forces all layers visible simultaneously — in production the sidebar is hidden on mobile/tablet and the bottom nav is hidden on desktop.</p>
+
+      <!-- Annotated live shell preview -->
+      <div class="ann-preview-wrap">
+        <div class="mobile-viewport">
+          <div class="app-layout">
+
+            <!-- .sidebar-nav -->
+            <nav class="sidebar-nav" style="border-right: 2px dashed rgba(64,95,145,0.35);">
+              <div class="ann-zone" style="background: rgba(64,95,145,0.06); border-bottom-color: rgba(64,95,145,0.25);">
+                <span class="ann ann--blue">.sidebar-nav</span>
+                <span>desktop only (≥1024px)</span>
+              </div>
+              <div class="sidebar-nav__logo">Edifikana</div>
+              <a href="dashboard.html" class="sidebar-nav__item sidebar-nav__item--active">
+                <span class="sidebar-nav__icon">&#9750;</span> Dashboard
+              </a>
+              <a href="property-list.html" class="sidebar-nav__item">
+                <span class="sidebar-nav__icon">&#9962;</span> Properties
+              </a>
+              <a href="task-list.html" class="sidebar-nav__item">
+                <span class="sidebar-nav__icon">&#9745;</span> Tasks
+              </a>
+              <a href="settings.html" class="sidebar-nav__item">
+                <span class="sidebar-nav__icon">&#8943;</span> More
+              </a>
+            </nav>
+
+            <!-- .screen -->
+            <div class="screen">
+
+              <!-- .top-bar -->
+              <div class="top-bar" style="border-bottom: 2px dashed rgba(22,163,74,0.35); flex-direction: column; align-items: flex-start; padding-bottom: var(--space-2);">
+                <div class="ann-zone" style="width: 100%; margin: 0; background: rgba(22,163,74,0.06); border-bottom-color: rgba(22,163,74,0.25);">
+                  <span class="ann ann--green">.top-bar</span>
+                  <span>sticky · always visible · z-index 100 · min-height 56px</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-top: var(--space-2);">
+                  <span class="top-bar__title">Screen Title</span>
+                  <button class="top-bar__icon-btn" aria-label="Example action">&#128276;</button>
+                </div>
+              </div>
+
+              <!-- .screen-content -->
+              <div class="screen-content" style="border-left: 3px solid rgba(124,58,237,0.2);">
+                <div class="ann-zone" style="margin: 0; background: rgba(124,58,237,0.05); border-bottom-color: rgba(124,58,237,0.25);">
+                  <span class="ann ann--purple">.screen-content</span>
+                  <span>flex: 1 · overflow-y: auto · padding-bottom: 80px (mobile) / 24px (desktop)</span>
+                </div>
+                <div class="px-4" style="padding-top: var(--space-4);">
+                  <div style="border: 1px dashed var(--color-border-light); border-radius: var(--radius-md); padding: var(--space-6); text-align: center; color: var(--color-text-muted); font-size: var(--font-size-small);">
+                    Your screen content here
+                  </div>
+                </div>
+              </div>
+
+              <!-- .fab annotation row (actual FAB hidden in preview via CSS) -->
+              <div class="ann-zone" style="margin: 0; background: rgba(217,119,6,0.05); border-top: 1px dashed rgba(217,119,6,0.3); border-bottom: 1px dashed rgba(217,119,6,0.3);">
+                <span class="ann ann--amber">.fab</span>
+                <span>optional · position: fixed · sits above bottom nav on mobile · right: 32px; bottom: 32px on desktop</span>
+              </div>
+
+              <!-- .bottom-nav -->
+              <nav class="bottom-nav" style="border-top: 2px dashed rgba(219,39,119,0.35);">
+                <div class="ann-zone" style="width: 100%; margin: 0; background: rgba(219,39,119,0.05); border-bottom-color: rgba(219,39,119,0.25);">
+                  <span class="ann ann--pink">.bottom-nav</span>
+                  <span>mobile/tablet only · position: fixed · z-index 200 · height 64px</span>
+                </div>
+                <div style="display: flex; justify-content: space-around; width: 100%; padding: var(--space-1) 0 var(--space-2);">
+                  <a href="dashboard.html" class="bottom-nav__item bottom-nav__item--active">
+                    <span class="bottom-nav__icon">&#9750;</span>
+                    <span>Dashboard</span>
+                  </a>
+                  <a href="property-list.html" class="bottom-nav__item">
+                    <span class="bottom-nav__icon">&#9962;</span>
+                    <span>Properties</span>
+                  </a>
+                  <a href="task-list.html" class="bottom-nav__item">
+                    <span class="bottom-nav__icon">&#9745;</span>
+                    <span>Tasks</span>
+                  </a>
+                  <a href="settings.html" class="bottom-nav__item">
+                    <span class="bottom-nav__icon">&#8943;</span>
+                    <span>More</span>
+                  </a>
+                </div>
+              </nav>
+
+            </div><!-- /.screen -->
+          </div><!-- /.app-layout -->
+        </div><!-- /.mobile-viewport -->
+      </div><!-- /.ann-preview-wrap -->
+
+      <!-- Outer container annotations (can't label these inside the preview due to overflow) -->
+      <div class="ann-outer-row">
+        <span class="ann ann--gray">.mobile-viewport — outermost, max-width: 375px → 768px → 100%</span>
+        <span class="ann ann--red">.app-layout — flex: column (mobile) → row (desktop)</span>
+        <span class="ann ann--teal">.screen — flex: 1, max-width: 900px on desktop</span>
+      </div>
+
+      <!-- Legend -->
+      <div class="ann-legend">
+
+        <div class="ann-legend-badge"><span class="ann ann--gray">.mobile-viewport</span></div>
+        <div class="ann-legend-desc">Outermost container. Controls the visible frame width: 375px on mobile (phone frame shadow), 768px on tablet (no shadow), 100% on desktop. On desktop the background switches to <code>bg-warm</code> to show page background around the constrained content column.</div>
+
+        <div class="ann-legend-badge"><span class="ann ann--red">.app-layout</span></div>
+        <div class="ann-legend-desc">Primary layout engine. <code>flex-direction: column</code> on mobile/tablet — the sidebar is hidden so this is invisible. Switches to <code>flex-direction: row</code> on desktop, placing the sidebar to the left. <strong>Must wrap every authenticated screen — without it the sidebar never appears on desktop.</strong></div>
+
+        <div class="ann-legend-badge"><span class="ann ann--teal">.screen</span></div>
+        <div class="ann-legend-desc">The main content column. Takes <code>flex: 1</code> inside <code>.app-layout</code>. On desktop, constrained to <code>max-width: 900px</code> (<code>--content-max-width</code>) so content doesn't stretch to full page width.</div>
+
+        <div class="ann-legend-badge"><span class="ann ann--blue">.sidebar-nav</span></div>
+        <div class="ann-legend-desc"><code>display: none</code> on mobile and tablet. Appears on desktop (≥1024px) as a 240px wide sticky column with <code>height: 100vh</code> and white background. Use <code>.sidebar-nav__item--active</code> on the item matching the current section.</div>
+
+        <div class="ann-legend-badge"><span class="ann ann--green">.top-bar</span></div>
+        <div class="ann-legend-desc">Always visible. <code>position: sticky; top: 0; z-index: 100</code>. Minimum height 56px. Two patterns: <code>.top-bar__title</code> for primary tab screens, <code>.top-bar__back</code> for detail and form screens. Gains a subtle bottom border on desktop.</div>
+
+        <div class="ann-legend-badge"><span class="ann ann--purple">.screen-content</span></div>
+        <div class="ann-legend-desc">The scrollable body. <code>flex: 1; overflow-y: auto</code>. Has <code>padding-bottom: 80px</code> on mobile/tablet to clear the fixed bottom nav. On desktop drops to 24px. Use <code>.screen-content--no-nav</code> when the screen deliberately omits the bottom nav — this removes the 80px gap.</div>
+
+        <div class="ann-legend-badge"><span class="ann ann--amber">.fab</span></div>
+        <div class="ann-legend-desc">Optional floating action button. <code>position: fixed; z-index: 150</code>. On mobile sits 80px above the bottom nav. On desktop repositions to <code>right: 32px; bottom: 32px</code>. Omit entirely when the screen has no primary creation action.</div>
+
+        <div class="ann-legend-badge"><span class="ann ann--pink">.bottom-nav</span></div>
+        <div class="ann-legend-desc">Mobile/tablet tab bar. <code>position: fixed; bottom: 0; z-index: 200; height: 64px</code>. Respects <code>env(safe-area-inset-bottom)</code> for notched devices. Hidden on desktop — the sidebar replaces it. Use <code>.bottom-nav__item--active</code> on the same section as <code>.sidebar-nav__item--active</code>.</div>
+
+      </div><!-- /.ann-legend -->
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         §2  DOM Structure Template
+    ═══════════════════════════════════════════════════════════ -->
+    <section class="ref-section">
+      <h2 class="ref-section__title">DOM Structure Template</h2>
+      <p class="ref-section__intro">Copy this template verbatim for every new App Shell screen. Replace the content inside <code>.screen-content</code> and set the correct <code>--active</code> modifier in both nav elements before anything else.</p>
+
+      <pre class="ref-code"><span class="kw-tag">&lt;div</span> <span class="kw-attr">class</span>=<span class="kw-val">"mobile-viewport"</span><span class="kw-tag">&gt;</span>
+  <span class="kw-tag">&lt;div</span> <span class="kw-attr">class</span>=<span class="kw-val">"app-layout"</span><span class="kw-tag">&gt;</span>
+
+    <span class="kw-comment">&lt;!-- Desktop sidebar — hidden on mobile/tablet --&gt;</span>
+    <span class="kw-tag">&lt;nav</span> <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav"</span><span class="kw-tag">&gt;</span>
+      <span class="kw-tag">&lt;div</span> <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav__logo"</span><span class="kw-tag">&gt;</span>Edifikana<span class="kw-tag">&lt;/div&gt;</span>
+      <span class="kw-tag">&lt;a</span> <span class="kw-attr">href</span>=<span class="kw-val">"dashboard.html"</span>    <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav__item sidebar-nav__item--active"</span><span class="kw-tag">&gt;</span> <span class="kw-comment">&lt;!-- set active section --&gt;</span>
+        <span class="kw-tag">&lt;span</span> <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav__icon"</span><span class="kw-tag">&gt;</span>&#9750;<span class="kw-tag">&lt;/span&gt;</span> Dashboard
+      <span class="kw-tag">&lt;/a&gt;</span>
+      <span class="kw-tag">&lt;a</span> <span class="kw-attr">href</span>=<span class="kw-val">"property-list.html"</span> <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav__item"</span><span class="kw-tag">&gt;</span>
+        <span class="kw-tag">&lt;span</span> <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav__icon"</span><span class="kw-tag">&gt;</span>&#9962;<span class="kw-tag">&lt;/span&gt;</span> Properties
+      <span class="kw-tag">&lt;/a&gt;</span>
+      <span class="kw-tag">&lt;a</span> <span class="kw-attr">href</span>=<span class="kw-val">"task-list.html"</span>     <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav__item"</span><span class="kw-tag">&gt;</span>
+        <span class="kw-tag">&lt;span</span> <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav__icon"</span><span class="kw-tag">&gt;</span>&#9745;<span class="kw-tag">&lt;/span&gt;</span> Tasks
+      <span class="kw-tag">&lt;/a&gt;</span>
+      <span class="kw-tag">&lt;a</span> <span class="kw-attr">href</span>=<span class="kw-val">"settings.html"</span>      <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav__item"</span><span class="kw-tag">&gt;</span>
+        <span class="kw-tag">&lt;span</span> <span class="kw-attr">class</span>=<span class="kw-val">"sidebar-nav__icon"</span><span class="kw-tag">&gt;</span>&#8943;<span class="kw-tag">&lt;/span&gt;</span> More
+      <span class="kw-tag">&lt;/a&gt;</span>
+    <span class="kw-tag">&lt;/nav&gt;</span>
+
+    <span class="kw-tag">&lt;div</span> <span class="kw-attr">class</span>=<span class="kw-val">"screen"</span><span class="kw-tag">&gt;</span>
+
+      <span class="kw-comment">&lt;!-- Use top-bar__title for primary tabs, top-bar__back for detail/form screens --&gt;</span>
+      <span class="kw-tag">&lt;div</span> <span class="kw-attr">class</span>=<span class="kw-val">"top-bar"</span><span class="kw-tag">&gt;</span>
+        <span class="kw-tag">&lt;span</span> <span class="kw-attr">class</span>=<span class="kw-val">"top-bar__title"</span><span class="kw-tag">&gt;</span>Screen Title<span class="kw-tag">&lt;/span&gt;</span>
+        <span class="kw-tag">&lt;div</span> <span class="kw-attr">class</span>=<span class="kw-val">"top-bar__actions"</span><span class="kw-tag">&gt;</span><span class="kw-comment">&lt;!-- icon buttons --&gt;</span><span class="kw-tag">&lt;/div&gt;</span>
+      <span class="kw-tag">&lt;/div&gt;</span>
+
+      <span class="kw-comment">&lt;!-- Scrollable content body --&gt;</span>
+      <span class="kw-tag">&lt;div</span> <span class="kw-attr">class</span>=<span class="kw-val">"screen-content"</span><span class="kw-tag">&gt;</span>
+        <span class="kw-tag">&lt;div</span> <span class="kw-attr">class</span>=<span class="kw-val">"px-4 pb-6"</span><span class="kw-tag">&gt;</span>
+          <span class="kw-comment">&lt;!-- YOUR CONTENT HERE --&gt;</span>
+        <span class="kw-tag">&lt;/div&gt;</span>
+      <span class="kw-tag">&lt;/div&gt;</span>
+
+      <span class="kw-comment">&lt;!-- Optional FAB — omit entirely if the screen has no primary creation action --&gt;</span>
+      <span class="kw-tag">&lt;a</span> <span class="kw-attr">href</span>=<span class="kw-val">"#"</span> <span class="kw-attr">class</span>=<span class="kw-val">"fab"</span><span class="kw-tag">&gt;</span>+<span class="kw-tag">&lt;/a&gt;</span>
+
+      <span class="kw-comment">&lt;!-- Bottom nav — hidden on desktop --&gt;</span>
+      <span class="kw-tag">&lt;nav</span> <span class="kw-attr">class</span>=<span class="kw-val">"bottom-nav"</span><span class="kw-tag">&gt;</span>
+        <span class="kw-tag">&lt;a</span> <span class="kw-attr">href</span>=<span class="kw-val">"dashboard.html"</span>    <span class="kw-attr">class</span>=<span class="kw-val">"bottom-nav__item bottom-nav__item--active"</span><span class="kw-tag">&gt;</span> <span class="kw-comment">&lt;!-- must match sidebar --&gt;</span>
+          <span class="kw-tag">&lt;span</span> <span class="kw-attr">class</span>=<span class="kw-val">"bottom-nav__icon"</span><span class="kw-tag">&gt;</span>&#9750;<span class="kw-tag">&lt;/span&gt;</span><span class="kw-tag">&lt;span&gt;</span>Dashboard<span class="kw-tag">&lt;/span&gt;</span>
+        <span class="kw-tag">&lt;/a&gt;</span>
+        <span class="kw-tag">&lt;a</span> <span class="kw-attr">href</span>=<span class="kw-val">"property-list.html"</span> <span class="kw-attr">class</span>=<span class="kw-val">"bottom-nav__item"</span><span class="kw-tag">&gt;</span>
+          <span class="kw-tag">&lt;span</span> <span class="kw-attr">class</span>=<span class="kw-val">"bottom-nav__icon"</span><span class="kw-tag">&gt;</span>&#9962;<span class="kw-tag">&lt;/span&gt;</span><span class="kw-tag">&lt;span&gt;</span>Properties<span class="kw-tag">&lt;/span&gt;</span>
+        <span class="kw-tag">&lt;/a&gt;</span>
+        <span class="kw-tag">&lt;a</span> <span class="kw-attr">href</span>=<span class="kw-val">"task-list.html"</span>     <span class="kw-attr">class</span>=<span class="kw-val">"bottom-nav__item"</span><span class="kw-tag">&gt;</span>
+          <span class="kw-tag">&lt;span</span> <span class="kw-attr">class</span>=<span class="kw-val">"bottom-nav__icon"</span><span class="kw-tag">&gt;</span>&#9745;<span class="kw-tag">&lt;/span&gt;</span><span class="kw-tag">&lt;span&gt;</span>Tasks<span class="kw-tag">&lt;/span&gt;</span>
+        <span class="kw-tag">&lt;/a&gt;</span>
+        <span class="kw-tag">&lt;a</span> <span class="kw-attr">href</span>=<span class="kw-val">"settings.html"</span>      <span class="kw-attr">class</span>=<span class="kw-val">"bottom-nav__item"</span><span class="kw-tag">&gt;</span>
+          <span class="kw-tag">&lt;span</span> <span class="kw-attr">class</span>=<span class="kw-val">"bottom-nav__icon"</span><span class="kw-tag">&gt;</span>&#8943;<span class="kw-tag">&lt;/span&gt;</span><span class="kw-tag">&lt;span&gt;</span>More<span class="kw-tag">&lt;/span&gt;</span>
+        <span class="kw-tag">&lt;/a&gt;</span>
+      <span class="kw-tag">&lt;/nav&gt;</span>
+
+    <span class="kw-tag">&lt;/div&gt;</span><span class="kw-comment">&lt;!-- /.screen --&gt;</span>
+  <span class="kw-tag">&lt;/div&gt;</span><span class="kw-comment">&lt;!-- /.app-layout --&gt;</span>
+<span class="kw-tag">&lt;/div&gt;</span><span class="kw-comment">&lt;!-- /.mobile-viewport --&gt;</span></pre>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         §3  Active State Rules
+    ═══════════════════════════════════════════════════════════ -->
+    <section class="ref-section">
+      <h2 class="ref-section__title">Active State Rules</h2>
+      <p class="ref-section__intro">The active nav item must be marked in <strong>both</strong> the sidebar and the bottom nav — they are two surfaces for the same navigation state. A mismatch causes different tabs to highlight depending on the user's screen size.</p>
+
+      <div class="ref-callout ref-callout--warning">
+        <span class="ref-callout__icon">⚠️</span>
+        <div>
+          <strong>Rule:</strong> Add <code>.sidebar-nav__item--active</code> and <code>.bottom-nav__item--active</code> to the <em>same destination href</em> in each nav block. If the current screen lives under Tasks, both the sidebar Tasks link and the bottom nav Tasks item must carry their respective active modifier — never just one.
+        </div>
+      </div>
+
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Current screen or section</th>
+            <th>Active sidebar href</th>
+            <th>Active bottom-nav href</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Dashboard</td>
+            <td><code>dashboard.html</code></td>
+            <td><code>dashboard.html</code></td>
+          </tr>
+          <tr>
+            <td>Property List, Property Detail, Unit List, Unit Detail, Common Area Detail, Add/Edit Property, Add/Edit Unit</td>
+            <td><code>property-list.html</code></td>
+            <td><code>property-list.html</code></td>
+          </tr>
+          <tr>
+            <td>Task List, Task Detail, Add/Edit Task, Request Review</td>
+            <td><code>task-list.html</code></td>
+            <td><code>task-list.html</code></td>
+          </tr>
+          <tr>
+            <td>Settings, Profile, Edit Profile, Change Password, Team Management, Notifications, Documents, My Organizations, Organization Detail, Create Organization, Join Organization, Delete Account</td>
+            <td><code>settings.html</code></td>
+            <td><code>settings.html</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         §4  Top Bar Variants
+    ═══════════════════════════════════════════════════════════ -->
+    <section class="ref-section">
+      <h2 class="ref-section__title">Top Bar Variants</h2>
+      <p class="ref-section__intro">Choose the top-bar pattern based on the screen's position in the navigation hierarchy.</p>
+
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Pattern</th>
+            <th>When to use</th>
+            <th>HTML</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Title bar</strong></td>
+            <td>Primary nav destinations: Dashboard, Property List, Task List, Settings (the four tab screens)</td>
+            <td><code>&lt;span class="top-bar__title"&gt;Title&lt;/span&gt;</code></td>
+          </tr>
+          <tr>
+            <td><strong>Back bar</strong></td>
+            <td>Detail screens, form screens, and settings sub-screens that sit below a primary tab</td>
+            <td><code>&lt;a href="parent.html" class="top-bar__back"&gt;&#8592; Label&lt;/a&gt;</code></td>
+          </tr>
+          <tr>
+            <td><strong>Icon actions</strong></td>
+            <td>Any bar — add trailing icon buttons alongside either pattern above</td>
+            <td><code>&lt;div class="top-bar__actions"&gt;&lt;button class="top-bar__icon-btn"&gt;…&lt;/button&gt;&lt;/div&gt;</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         §5  Breakpoint Behavior
+    ═══════════════════════════════════════════════════════════ -->
+    <section class="ref-section">
+      <h2 class="ref-section__title">Breakpoint Behavior</h2>
+      <p class="ref-section__intro">All shell adaptations happen through CSS media queries — no JavaScript required. Resize this browser window to see the transitions live.</p>
+
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Mobile &lt;768px</th>
+            <th>Tablet 768–1023px</th>
+            <th>Desktop ≥1024px</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Viewport max-width</strong></td>
+            <td>375px (phone frame + shadow)</td>
+            <td>768px (no frame shadow)</td>
+            <td>100%</td>
+          </tr>
+          <tr>
+            <td><strong>app-layout direction</strong></td>
+            <td>column</td>
+            <td>column</td>
+            <td><strong>row</strong> — sidebar left</td>
+          </tr>
+          <tr>
+            <td><strong>sidebar-nav</strong></td>
+            <td>Hidden (<code>display: none</code>)</td>
+            <td>Hidden</td>
+            <td><strong>Visible</strong> — 240px sticky column</td>
+          </tr>
+          <tr>
+            <td><strong>bottom-nav</strong></td>
+            <td>Visible, fixed bottom</td>
+            <td>Visible, fixed bottom</td>
+            <td><strong>Hidden</strong> (<code>display: none</code>)</td>
+          </tr>
+          <tr>
+            <td><strong>screen-content padding-bottom</strong></td>
+            <td>80px (clears bottom nav)</td>
+            <td>80px</td>
+            <td>24px (<code>--space-6</code>)</td>
+          </tr>
+          <tr>
+            <td><strong>top-bar border</strong></td>
+            <td>None</td>
+            <td>None</td>
+            <td>1px bottom border added</td>
+          </tr>
+          <tr>
+            <td><strong>top-bar background</strong></td>
+            <td><code>bg-cream</code></td>
+            <td><code>bg-cream</code></td>
+            <td><code>surface</code> (white)</td>
+          </tr>
+          <tr>
+            <td><strong>FAB position</strong></td>
+            <td>16px from right edge of phone frame</td>
+            <td>Same</td>
+            <td><code>right: 32px; bottom: 32px</code></td>
+          </tr>
+          <tr>
+            <td><strong>grid-2 columns</strong></td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td><strong>bottom-sheet</strong></td>
+            <td>Slides from bottom</td>
+            <td>Slides from bottom</td>
+            <td>Centered modal (<code>top: 50%; left: 50%</code>)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         §6  Screen Type Classification
+    ═══════════════════════════════════════════════════════════ -->
+    <section class="ref-section">
+      <h2 class="ref-section__title">Screen Type Classification</h2>
+      <p class="ref-section__intro">Not all screens use the full App Shell. Choose the correct shell for the screen's context before writing any markup.</p>
+
+      <div class="shell-type-grid">
+
+        <div class="shell-type-card" style="border-top: 4px solid var(--color-primary-600);">
+          <div class="shell-type-card__eyebrow">Type 1 — Most screens</div>
+          <h3>App Shell</h3>
+          <p>All authenticated screens within the main navigation. Use the full template: <code>.app-layout</code> + <code>.sidebar-nav</code> + <code>.bottom-nav</code>. Mark the active section in both nav elements.</p>
+          <ul>
+            <li>Dashboard</li>
+            <li>Property List / Detail</li>
+            <li>Unit List / Detail, Common Area</li>
+            <li>Task List / Detail, Request Review</li>
+            <li>Settings and all sub-screens</li>
+            <li>My Organizations, Org Detail</li>
+            <li>Profile, Team Management, Notifications</li>
+          </ul>
+        </div>
+
+        <div class="shell-type-card" style="border-top: 4px solid var(--color-success-500);">
+          <div class="shell-type-card__eyebrow">Type 2 — Pre-auth</div>
+          <h3>Auth (No Shell)</h3>
+          <p>Screens shown before or outside the main navigation. No sidebar, no bottom nav. Use <code>.auth-layout</code> inside <code>.mobile-viewport &gt; .screen</code> to center content vertically.</p>
+          <ul>
+            <li>Sign In</li>
+            <li>Sign Up</li>
+            <li>Password Reset</li>
+            <li>OTP Validation</li>
+            <li>Set New Password</li>
+            <li>Invitation Accept</li>
+          </ul>
+        </div>
+
+        <div class="shell-type-card" style="border-top: 4px solid var(--color-warning-500);">
+          <div class="shell-type-card__eyebrow">Type 3 — Post-auth setup</div>
+          <h3>Setup Flow (Partial)</h3>
+          <p>Post-auth screens before the user has an active org context. Use <code>.mobile-viewport &gt; .screen</code> with no <code>.app-layout</code>. Use <code>.screen-content--no-nav</code> and <code>.top-bar__back</code>.</p>
+          <ul>
+            <li>Organization Picker (post-login, multi-org)</li>
+            <li>Create Organization (first time, no org yet)</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="ref-callout ref-callout--info" style="margin-top: var(--space-4);">
+        <span class="ref-callout__icon">ℹ️</span>
+        <div>
+          <strong>Organization screens reached from Settings are App Shell screens.</strong> Create Organization, Join Organization, and Organization Detail accessed via Settings → My Organizations use the full <code>.app-layout</code> shell with "More" as the active tab — not the Setup Flow partial shell.
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         §7  Common Mistakes
+    ═══════════════════════════════════════════════════════════ -->
+    <section class="ref-section">
+      <h2 class="ref-section__title">Common Mistakes</h2>
+
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Mistake</th>
+            <th>Symptom</th>
+            <th>Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Missing <code>.app-layout</code></td>
+            <td>No sidebar on desktop; content stretches full width</td>
+            <td>Wrap <code>.sidebar-nav</code> + <code>.screen</code> in <code>&lt;div class="app-layout"&gt;</code></td>
+          </tr>
+          <tr>
+            <td>Missing <code>.sidebar-nav</code></td>
+            <td>Sidebar column absent even when <code>.app-layout</code> is present</td>
+            <td>Add <code>&lt;nav class="sidebar-nav"&gt;</code> as the first child of <code>.app-layout</code></td>
+          </tr>
+          <tr>
+            <td>Mismatched active states</td>
+            <td>Different tab highlighted on mobile vs desktop</td>
+            <td>Set <code>--active</code> on the same destination in both nav elements</td>
+          </tr>
+          <tr>
+            <td><code>.screen-content</code> without <code>--no-nav</code> on a no-nav screen</td>
+            <td>80px empty gap at the bottom on mobile</td>
+            <td>Use <code>.screen-content--no-nav</code> when the screen has no <code>.bottom-nav</code></td>
+          </tr>
+          <tr>
+            <td><code>.screen-content--no-nav</code> on a primary tab screen</td>
+            <td>Content overlaps the fixed bottom nav on mobile</td>
+            <td>Use plain <code>.screen-content</code> on all four primary tab screens</td>
+          </tr>
+          <tr>
+            <td>Hardcoded hex colours or raw pixel values</td>
+            <td>Mismatches design tokens; breaks future theming</td>
+            <td>Use <code>var(--color-*)</code>, <code>var(--radius-*)</code>, <code>var(--space-*)</code>, <code>var(--shadow-*)</code></td>
+          </tr>
+          <tr>
+            <td>FAB on a read-only or list-only screen with no creation action</td>
+            <td>Confusing affordance — user expects a create action</td>
+            <td>Omit <code>.fab</code> entirely; only include it when there is a primary creation action</td>
+          </tr>
+          <tr>
+            <td>Using <code>.auth-layout</code> structure for an authenticated screen</td>
+            <td>No sidebar, no bottom nav on a screen that needs them</td>
+            <td>Use the full App Shell template with <code>.app-layout</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         §8  New Screen Checklist
+    ═══════════════════════════════════════════════════════════ -->
+    <section class="ref-section">
+      <h2 class="ref-section__title">New Screen Checklist</h2>
+      <p class="ref-section__intro">Self-verify each item before marking a screen mockup complete.</p>
+
+      <ul class="ref-checklist">
+        <li>Correct shell type applied — App Shell, Auth, or Setup Flow</li>
+        <li><code>.app-layout</code> wraps <code>.sidebar-nav</code> + <code>.screen</code> (App Shell only)</li>
+        <li><code>.sidebar-nav</code> present with the correct <code>--active</code> item (App Shell only)</li>
+        <li><code>.bottom-nav</code> present with the correct <code>--active</code> item (App Shell only)</li>
+        <li>Sidebar and bottom-nav active items point to the same destination href</li>
+        <li><code>.screen-content</code> vs <code>.screen-content--no-nav</code> chosen correctly</li>
+        <li>Top-bar pattern is correct — <code>.top-bar__title</code> for primary tabs, <code>.top-bar__back</code> for detail and form screens</li>
+        <li>No hardcoded hex colours — all colour values use <code>var(--color-*)</code> tokens</li>
+        <li>No raw pixel values for spacing, radius, or shadow — use <code>var(--space-*)</code>, <code>var(--radius-*)</code>, <code>var(--shadow-*)</code></li>
+        <li>All <code>href</code> values point to real <code>.html</code> files, or <code>#</code> with an explanatory HTML comment</li>
+        <li>FAB included only when the screen has a clear primary creation action</li>
+        <li>All distinct use-cases modelled — empty state, happy path, and error state as applicable</li>
+      </ul>
+    </section>
+
+  </div><!-- /.ref-page -->
+</body>
+</html>

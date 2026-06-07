@@ -82,10 +82,16 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
 
         val packages = options.scanOptions.packages.toTypedArray()
 
-        val devicePreviews = JvmAnnotationScanner("com.cramsan.ui.preview.DevicePreviews")
+        val devicePreviewFunctions = JvmAnnotationScanner("com.cramsan.ui.preview.DevicePreviews")
             .scanPackageTrees(*packages)
             .includePrivatePreviews()
             .getPreviews()
+
+        val devicePreviewKeys = devicePreviewFunctions
+            .map { it.declaringClass to it.methodName }
+            .toSet()
+
+        val devicePreviews = devicePreviewFunctions
             .flatMap { preview -> DEVICE_VARIANTS.map { variant -> preview to variant } }
 
         val singleVariantAnnotations = listOf(
@@ -101,6 +107,7 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
                     .includePrivatePreviews()
                     .getPreviews()
             }
+            .filter { preview -> (preview.declaringClass to preview.methodName) !in devicePreviewKeys }
             .map { preview -> preview to PreviewVariant.Default }
 
         return (devicePreviews + singleVariantPreviews).map { (preview, variant) ->

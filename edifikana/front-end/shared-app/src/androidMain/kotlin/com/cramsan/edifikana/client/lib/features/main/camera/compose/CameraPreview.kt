@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -55,6 +56,7 @@ fun CameraPreview(
     // 1
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val isInspectionMode = LocalInspectionMode.current
 
     val preview = androidx.camera.core.Preview.Builder().build()
     val previewView = remember { PreviewView(context) }
@@ -66,6 +68,9 @@ fun CameraPreview(
 
     // 2
     LaunchedEffect(lensFacing) {
+        // CameraX cannot initialize under Robolectric or IDE preview — skip to avoid
+        // FutureGarbageCollectedException during looper drain.
+        if (isInspectionMode) return@LaunchedEffect
         val cameraProvider = context.getCameraProvider()
         cameraProvider.unbindAll()
 

@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the EmployeeOverview feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun EmployeeOverviewScreenPreview() {
     AppTheme {
@@ -41,7 +41,7 @@ private fun EmployeeOverviewScreenPreview() {
     }
 }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun EmployeeOverviewScreenPreview_ES() {
     AppTheme {

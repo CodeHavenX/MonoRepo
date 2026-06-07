@@ -2,9 +2,12 @@ package com.cramsan.flyerboard.client.lib.features.main.flyer_edit
 
 import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
-@Preview
+/**
+ * Preview for the Flyer Edit screen with content loaded.
+ */
+@ScreenPreviews
 @Composable
 private fun FlyerEditScreenPreview() =
     AppTheme {
@@ -27,7 +30,10 @@ private fun FlyerEditScreenPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Flyer Edit screen in loading state.
+ */
+@ScreenPreviews
 @Composable
 private fun FlyerEditScreenLoadingPreview() =
     AppTheme {
@@ -42,7 +48,10 @@ private fun FlyerEditScreenLoadingPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Flyer Edit screen while saving.
+ */
+@ScreenPreviews
 @Composable
 private fun FlyerEditScreenSavingPreview() =
     AppTheme {
@@ -65,7 +74,7 @@ private fun FlyerEditScreenSavingPreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerEditNoFilePreview() =
     AppTheme {
@@ -88,7 +97,7 @@ private fun FlyerEditNoFilePreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerEditWithFilePreview() =
     AppTheme {

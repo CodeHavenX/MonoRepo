@@ -27,9 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import com.cramsan.edifikana.client.ui.theme.AppTheme
+import com.cramsan.ui.preview.ComponentPreviews
 import com.cramsan.ui.theme.Padding
 import com.cramsan.ui.theme.Size
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * A card representing an option with a title, description, and icon.
@@ -105,7 +105,7 @@ fun OptionCard(
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun OptionCardPreview_Disabled_Card() =
     AppTheme {
@@ -122,7 +122,7 @@ private fun OptionCardPreview_Disabled_Card() =
         )
     }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun OptionCardPreview_Enabled_Card() =
     AppTheme {

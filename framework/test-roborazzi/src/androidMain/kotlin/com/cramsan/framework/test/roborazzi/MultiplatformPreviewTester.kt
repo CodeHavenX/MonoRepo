@@ -56,8 +56,10 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
     override fun testParameters(): List<JUnit4TestParameter<JvmAnnotationInfo>> {
         val options = options()
         val annotations = listOf(
+            "com.cramsan.ui.preview.ScreenPreviews",
+            "com.cramsan.ui.preview.ComponentPreviews",
             "org.jetbrains.compose.ui.tooling.preview.Preview",
-            "androidx.compose.ui.tooling.preview.Preview"
+            "androidx.compose.ui.tooling.preview.Preview",
         )
         return annotations.map { JvmAnnotationScanner(it) }
             .map {

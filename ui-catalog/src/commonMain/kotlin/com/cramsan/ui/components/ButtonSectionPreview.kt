@@ -6,9 +6,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun ButtonSectionPreview() =
     MaterialTheme {

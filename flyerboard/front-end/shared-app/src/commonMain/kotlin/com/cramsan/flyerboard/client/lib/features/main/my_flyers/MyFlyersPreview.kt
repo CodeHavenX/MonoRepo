@@ -6,7 +6,7 @@ import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 private val mixedFlyers =
     listOf(
@@ -82,7 +82,7 @@ private val archivedOnlyFlyers =
         ),
     )
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun MyFlyersLoadingPreview() =
     AppTheme(dynamicColor = false) {
@@ -95,10 +95,10 @@ private fun MyFlyersLoadingPreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
-private fun MyFlyersEmptyPreview() =
-    AppTheme(dynamicColor = false) {
+private fun MyFlyersScreenPreview() =
+    AppTheme {
         MyFlyersContent(
             uiState = MyFlyersUIState.Empty,
             onNavigateBack = {},
@@ -108,10 +108,13 @@ private fun MyFlyersEmptyPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the My Flyers screen in loading state.
+ */
+@ScreenPreviews
 @Composable
-private fun MyFlyersWithFlyersPreview() =
-    AppTheme(dynamicColor = false) {
+private fun MyFlyersScreenLoadingPreview() =
+    AppTheme {
         MyFlyersContent(
             uiState = MyFlyersUIState.Content(flyers = mixedFlyers),
             onNavigateBack = {},
@@ -121,10 +124,13 @@ private fun MyFlyersWithFlyersPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the My Flyers screen in empty state.
+ */
+@ScreenPreviews
 @Composable
-private fun MyFlyersArchivedOnlyPreview() =
-    AppTheme(dynamicColor = false) {
+private fun MyFlyersScreenEmptyPreview() =
+    AppTheme {
         MyFlyersContent(
             uiState = MyFlyersUIState.Content(flyers = archivedOnlyFlyers),
             onNavigateBack = {},

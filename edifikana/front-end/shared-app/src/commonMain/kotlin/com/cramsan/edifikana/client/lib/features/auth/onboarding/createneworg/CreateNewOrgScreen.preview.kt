@@ -2,12 +2,12 @@ package com.cramsan.edifikana.client.lib.features.auth.onboarding.createneworg
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the CreateNewOrg feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun CreateNewOrgScreenPreview() {
     AppTheme {
@@ -30,7 +30,7 @@ private fun CreateNewOrgScreenPreview() {
 /**
  * Preview for the CreateNewOrg feature screen with content.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun CreateNewOrgScreenWithContentPreview() {
     AppTheme {
@@ -50,7 +50,7 @@ private fun CreateNewOrgScreenWithContentPreview() {
     }
 }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun CreateNewOrgScreenPreview_ES() {
     AppTheme {
@@ -70,7 +70,7 @@ private fun CreateNewOrgScreenPreview_ES() {
     }
 }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun CreateNewOrgScreenWithContentPreview_ES() {
     AppTheme {

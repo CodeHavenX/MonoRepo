@@ -31,9 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.ui.resources.PropertyIcons
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaTextFieldPreview() {
     AppTheme {
@@ -83,7 +83,7 @@ private fun EdifikanaTextFieldPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaPasswordTextFieldPreview() {
     AppTheme {
@@ -124,7 +124,7 @@ private fun EdifikanaPasswordTextFieldPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaButtonsPreview() {
     AppTheme {
@@ -156,7 +156,7 @@ private fun EdifikanaButtonsPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaListItemPreview() {
     AppTheme {
@@ -220,7 +220,7 @@ private fun EdifikanaListItemPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaTopAndBottomNavigationPreview() {
     AppTheme {
@@ -265,7 +265,7 @@ private fun EdifikanaTopAndBottomNavigationPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaFloatingActionButtonPreview() {
     AppTheme {
@@ -286,7 +286,7 @@ private fun EdifikanaFloatingActionButtonPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaTextButtonPreview() {
     AppTheme {
@@ -313,7 +313,7 @@ private fun EdifikanaTextButtonPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaAvatarPreview() {
     AppTheme {
@@ -343,7 +343,7 @@ private fun EdifikanaAvatarPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaProfileHeaderPreview() {
     AppTheme {
@@ -384,7 +384,7 @@ private fun EdifikanaProfileHeaderPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaSectionHeaderPreview() {
     AppTheme {
@@ -407,7 +407,7 @@ private fun EdifikanaSectionHeaderPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaAccountInfoItemPreview() {
     AppTheme {
@@ -444,7 +444,7 @@ private fun EdifikanaAccountInfoItemPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaImageSelectorPreview() {
     AppTheme {
@@ -515,7 +515,7 @@ private fun EdifikanaImageSelectorPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaImageSelectorWithUploadPreview() {
     AppTheme {
@@ -591,7 +591,7 @@ private fun EdifikanaImageSelectorWithUploadPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaImageSelectorWithCustomImagePreview() {
     AppTheme {
@@ -659,7 +659,7 @@ private fun EdifikanaImageSelectorWithCustomImagePreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaImageSelectorGridOverflowPreview() {
     AppTheme {
@@ -710,7 +710,7 @@ private fun EdifikanaImageSelectorGridOverflowPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaImageSelectorGridEmptyPreview() {
     AppTheme {
@@ -750,7 +750,7 @@ private fun EdifikanaImageSelectorGridEmptyPreview() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun EdifikanaComponentsFullPreview() {
     AppTheme {

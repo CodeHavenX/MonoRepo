@@ -9,9 +9,9 @@ import androidx.compose.ui.unit.dp
 import com.cramsan.framework.core.compose.ui.ColorPreviewer
 import com.cramsan.framework.core.compose.ui.ShapePreviewer
 import com.cramsan.framework.core.compose.ui.TypographyPreviewer
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun ThemeColorPreviewer() {
     AppTheme {
@@ -23,7 +23,7 @@ private fun ThemeColorPreviewer() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun ThemeShapePreviewer() {
     AppTheme {
@@ -35,7 +35,7 @@ private fun ThemeShapePreviewer() {
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun ThemeTypographyPreviewer() {
     AppTheme {

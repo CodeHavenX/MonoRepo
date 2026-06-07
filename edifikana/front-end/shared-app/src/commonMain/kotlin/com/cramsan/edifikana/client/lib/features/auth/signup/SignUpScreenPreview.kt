@@ -5,12 +5,12 @@ package com.cramsan.edifikana.client.lib.features.auth.signup
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the SignUp screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun SignUpScreenSuccessPreview() =
     AppTheme {
@@ -37,7 +37,7 @@ private fun SignUpScreenSuccessPreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun SignUpScreenFailurePreview() =
     AppTheme {

@@ -3,12 +3,12 @@ package com.cramsan.edifikana.client.lib.features.home.propertiesoverview
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.property.PropertyId
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the PropertiesOverview feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun PropertiesOverviewScreenPreview() {
     AppTheme {
@@ -36,7 +36,7 @@ private fun PropertiesOverviewScreenPreview() {
     }
 }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun PropertiesOverviewScreenPreview_Empty_ES() {
     AppTheme {
@@ -50,7 +50,7 @@ private fun PropertiesOverviewScreenPreview_Empty_ES() {
     }
 }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun PropertiesOverviewScreenPreview_ES() {
     AppTheme {

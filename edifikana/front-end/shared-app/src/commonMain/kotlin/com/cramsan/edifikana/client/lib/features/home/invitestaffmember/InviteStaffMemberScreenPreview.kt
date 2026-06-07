@@ -3,12 +3,12 @@ package com.cramsan.edifikana.client.lib.features.home.invitestaffmember
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.user.UserRole
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the InviteStaffMember feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun InviteStaffMemberScreenPreview() =
     AppTheme {
@@ -29,7 +29,7 @@ private fun InviteStaffMemberScreenPreview() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun InviteStaffMemberScreenPreview_ES() =
     AppTheme {

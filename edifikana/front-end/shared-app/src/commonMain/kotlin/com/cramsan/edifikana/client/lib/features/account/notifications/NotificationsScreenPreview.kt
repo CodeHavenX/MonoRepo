@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.notification.NotificationId
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the Notifications feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun NotificationsScreenPreview() =
     AppTheme {
@@ -51,7 +51,7 @@ private fun NotificationsScreenPreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun NotificationsScreenEmptyPreview() =
     AppTheme {
@@ -70,7 +70,7 @@ private fun NotificationsScreenEmptyPreview() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun NotificationsScreenPreview_ES() =
     AppTheme {
@@ -105,7 +105,7 @@ private fun NotificationsScreenPreview_ES() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun NotificationsScreenEmptyPreview_ES() =
     AppTheme {

@@ -2,12 +2,15 @@ package com.cramsan.flyerboard.client.lib.features.auth.sign_up
 
 import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
-@Preview
+/**
+ * Preview for the Sign Up screen.
+ */
+@ScreenPreviews
 @Composable
-private fun SignUpEmptyPreview() =
-    AppTheme(dynamicColor = false) {
+private fun SignUpScreenPreview() =
+    AppTheme {
         SignUpContent(
             uiState = SignUpUIState.Initial,
             onFirstNameChanged = {},
@@ -20,10 +23,13 @@ private fun SignUpEmptyPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Sign Up screen in loading state.
+ */
+@ScreenPreviews
 @Composable
-private fun SignUpFilledPreview() =
-    AppTheme(dynamicColor = false) {
+private fun SignUpScreenLoadingPreview() =
+    AppTheme {
         SignUpContent(
             uiState =
             SignUpUIState(

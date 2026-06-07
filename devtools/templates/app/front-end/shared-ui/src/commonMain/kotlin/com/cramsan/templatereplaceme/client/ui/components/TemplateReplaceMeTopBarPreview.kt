@@ -2,10 +2,10 @@ package com.cramsan.templatereplaceme.client.ui.components
 
 import androidx.compose.runtime.Composable
 import com.cramsan.templatereplaceme.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
 @Composable
-@Preview
+@ComponentPreviews
 private fun TemplateReplaceMeTopBarPreview() =
     AppTheme {
         TemplateReplaceMeTopBar(

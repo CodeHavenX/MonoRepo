@@ -1,9 +1,9 @@
 package com.cramsan.runasimi.client.ui.components.card
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun CardPreview_Front() {
     Card(
@@ -13,7 +13,7 @@ private fun CardPreview_Front() {
     )
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun CardPreview_Back() {
     Card(

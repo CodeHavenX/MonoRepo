@@ -2,9 +2,9 @@ package com.cramsan.edifikana.client.lib.features.account.account
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun AccountScreenPreview() =
     AppTheme {
@@ -31,7 +31,7 @@ private fun AccountScreenPreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun AccountScreenPreview_Editable() =
     AppTheme {
@@ -58,7 +58,7 @@ private fun AccountScreenPreview_Editable() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun AccountScreenPreview_Loading() =
     AppTheme {
@@ -85,7 +85,7 @@ private fun AccountScreenPreview_Loading() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun AccountScreenPreview_ES() =
     AppTheme {
@@ -112,7 +112,7 @@ private fun AccountScreenPreview_ES() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun AccountScreenPreview_Editable_ES() =
     AppTheme {

@@ -8,12 +8,13 @@ import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.ui.preview.ScreenPreviews
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * Preview for the Home feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun PropertyHomeScreenPreview() {
     AppTheme {
@@ -44,7 +45,7 @@ private fun PropertyHomeScreenPreview() {
 }
 
 @Composable
-@Preview
+@ScreenPreviews
 private fun AccountDropDownPreview() {
     AppTheme {
         Box(Modifier.size(200.dp))

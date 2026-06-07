@@ -5,13 +5,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import com.cramsan.framework.core.compose.Dialog
+import com.cramsan.ui.preview.ComponentPreviews
 import edifikana_lib.Res
 import edifikana_lib.edifikana_string_cancel
 import edifikana_lib.join_org_dialog_confirm_button
 import edifikana_lib.join_org_dialog_message
 import edifikana_lib.join_org_dialog_title
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * A confirmation dialog that asks the user if they want to accept an
@@ -51,7 +51,7 @@ class JoinOrgConfirmationDialog(private val onConfirm: () -> Unit, private val o
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun JoinOrgConfirmationDialogPreview() {
     JoinOrgConfirmationDialog(
@@ -60,7 +60,7 @@ private fun JoinOrgConfirmationDialogPreview() {
     ).Content()
 }
 
-@Preview(locale = "es")
+@ComponentPreviews
 @Composable
 private fun JoinOrgConfirmationDialogPreview_ES() {
     JoinOrgConfirmationDialog(

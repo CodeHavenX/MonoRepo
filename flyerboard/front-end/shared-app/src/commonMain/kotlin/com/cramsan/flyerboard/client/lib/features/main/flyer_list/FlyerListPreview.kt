@@ -6,7 +6,7 @@ import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 private val sampleFlyers =
     listOf(
@@ -34,7 +34,7 @@ private val sampleFlyers =
         ),
     )
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerListScreenPreview() =
     AppTheme(dynamicColor = false) {
@@ -46,10 +46,13 @@ private fun FlyerListScreenPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Flyer List screen with content.
+ */
+@ScreenPreviews
 @Composable
 private fun FlyerListScreenAuthenticatedPreview() =
-    AppTheme(dynamicColor = false) {
+    AppTheme {
         FlyerListContent(
             uiState = FlyerListUIState.Content(flyers = sampleFlyers),
             isAuthenticated = true,
@@ -58,10 +61,13 @@ private fun FlyerListScreenAuthenticatedPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Flyer List screen in loading state.
+ */
+@ScreenPreviews
 @Composable
 private fun FlyerListScreenLoadingPreview() =
-    AppTheme(dynamicColor = false) {
+    AppTheme {
         FlyerListContent(
             uiState = FlyerListUIState.Loading,
             isAuthenticated = false,
@@ -70,10 +76,13 @@ private fun FlyerListScreenLoadingPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Flyer List screen in empty state.
+ */
+@ScreenPreviews
 @Composable
 private fun FlyerListScreenEmptyPreview() =
-    AppTheme(dynamicColor = false) {
+    AppTheme {
         FlyerListContent(
             uiState = FlyerListUIState.Empty,
             isAuthenticated = false,

@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.cramsan.architecture.client.settings.SettingKey
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the Debug feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun DebugScreenPreview() =
     AppTheme {

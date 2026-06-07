@@ -3,12 +3,12 @@ package com.cramsan.edifikana.client.lib.features.home.addproperty
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the AddProperty feature screen - Default state.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun AddPropertyScreenPreview() =
     AppTheme {
@@ -30,7 +30,7 @@ private fun AddPropertyScreenPreview() =
 /**
  * Preview for the AddProperty feature screen - Uploading state.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun AddPropertyScreenUploadingPreview() =
     AppTheme {
@@ -52,7 +52,7 @@ private fun AddPropertyScreenUploadingPreview() =
 /**
  * Preview for the AddProperty feature screen - With uploaded custom image.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun AddPropertyScreenWithCustomImagePreview() =
     AppTheme {
@@ -74,7 +74,7 @@ private fun AddPropertyScreenWithCustomImagePreview() =
 /**
  * Preview for the AddProperty feature screen - Upload error state.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun AddPropertyScreenUploadErrorPreview() =
     AppTheme {
@@ -93,7 +93,7 @@ private fun AddPropertyScreenUploadErrorPreview() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun AddPropertyScreenPreview_ES() =
     AppTheme {
@@ -112,7 +112,7 @@ private fun AddPropertyScreenPreview_ES() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun AddPropertyScreenUploadingPreview_ES() =
     AppTheme {

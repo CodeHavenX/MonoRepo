@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationUIState
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.ui.components.themetoggle.SelectedTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the SignInV2 screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun SignInScreenPreview() =
     AppTheme {
@@ -44,7 +44,7 @@ private fun SignInScreenPreview() =
  * SignIn preview when user chooses to Contine with Password.
  * Button should change from default preview
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun SignInContentPreview() =
     AppTheme {

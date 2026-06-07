@@ -2,9 +2,9 @@ package com.cramsan.flyerboard.client.ui.components
 
 import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun SearchBarEmptyPreview() =
     AppTheme {
@@ -15,7 +15,7 @@ private fun SearchBarEmptyPreview() =
         )
     }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun SearchBarWithTextPreview() =
     AppTheme {

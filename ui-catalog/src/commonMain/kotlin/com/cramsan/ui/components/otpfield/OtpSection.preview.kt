@@ -1,16 +1,16 @@
 package com.cramsan.ui.components.otpfield
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
 @Composable
-@Preview
+@ComponentPreviews
 fun OtpSectionPreviewEmpty() {
     OtpSection(otpCode = "", onValueChanged = {})
 }
 
 @Composable
-@Preview
+@ComponentPreviews
 fun OtpSectionPreviewFull() {
     OtpSection(otpCode = "123456", onValueChanged = {})
 }

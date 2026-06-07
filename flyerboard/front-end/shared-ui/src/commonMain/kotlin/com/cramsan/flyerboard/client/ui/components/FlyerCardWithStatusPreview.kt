@@ -3,9 +3,9 @@ package com.cramsan.flyerboard.client.ui.components
 import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerStatus
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun ApprovedPreview() =
     AppTheme {
@@ -19,7 +19,7 @@ private fun ApprovedPreview() =
         )
     }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun PendingPreview() =
     AppTheme {
@@ -32,7 +32,7 @@ private fun PendingPreview() =
         )
     }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun RejectedPreview() =
     AppTheme {
@@ -45,7 +45,7 @@ private fun RejectedPreview() =
         )
     }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun ArchivedPreview() =
     AppTheme {

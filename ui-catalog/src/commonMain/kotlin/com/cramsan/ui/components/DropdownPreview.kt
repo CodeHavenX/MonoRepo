@@ -3,9 +3,9 @@ package com.cramsan.ui.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun DropdownPreviewCollapsed() {
     Dropdown(
@@ -17,7 +17,7 @@ private fun DropdownPreviewCollapsed() {
     ) {}
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun DropdownPreviewExpanded() {
     Dropdown(

@@ -5,9 +5,9 @@ import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
 import com.cramsan.edifikana.lib.model.unit.UnitId
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun EventLogScreenPreview_Loading() =
     AppTheme {
@@ -21,7 +21,7 @@ private fun EventLogScreenPreview_Loading() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun EventLogScreenPreview_Empty() =
     AppTheme {
@@ -35,7 +35,7 @@ private fun EventLogScreenPreview_Empty() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun EventLogScreenPreview_WithEvents() =
     AppTheme {
@@ -91,7 +91,7 @@ private fun EventLogScreenPreview_WithEvents() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun EventLogScreenPreview_Empty_ES() =
     AppTheme {
@@ -105,7 +105,7 @@ private fun EventLogScreenPreview_Empty_ES() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun EventLogScreenPreview_WithEvents_ES() =
     AppTheme {
@@ -141,7 +141,7 @@ private fun EventLogScreenPreview_WithEvents_ES() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun EventLogScreenPreview_SingleEvent() =
     AppTheme {

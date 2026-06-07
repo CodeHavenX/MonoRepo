@@ -27,12 +27,12 @@ import sergio.sastre.composable.preview.scanner.jvm.JvmAnnotationScanner
  * Roborazzi tester that renders Compose previews from Android and common source-sets.
  *
  * Three annotation classes are scanned:
- * - `@ScreenPreviews` — four variants: mobile/desktop × light/dark
- * - `@ComponentPreviews` — two variants: light/dark
- * - `@Preview` (legacy) — one variant with no qualifier overrides
+ * - `@DevicePreviews` — three variants: Phone / Tablet / Desktop
+ * - `@ScreenPreviews` — one variant: Default
+ * - `@ComponentPreviews` — one variant: Default
  *
- * For each variant, [PreviewVariant.qualifier] is applied via [RuntimeEnvironment.setQualifiers]
- * before the composable is rendered, making `isSystemInDarkTheme()` and screen-width-based
+ * For each `@DevicePreviews` variant, [PreviewVariant.qualifier] is applied via
+ * [RuntimeEnvironment.setQualifiers] before the composable is rendered, making screen-width-based
  * layout logic behave correctly inside the preview.
  *
  * Sources:
@@ -69,8 +69,7 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
 
     /**
      * Scans for [com.cramsan.ui.preview.DevicePreviews], [com.cramsan.ui.preview.ScreenPreviews],
-     * [com.cramsan.ui.preview.ComponentPreviews], and legacy
-     * [androidx.compose.ui.tooling.preview.Preview] functions and returns one
+     * and [com.cramsan.ui.preview.ComponentPreviews] functions and returns one
      * [AndroidKMPreviewTestParameter] per preview × variant combination.
      */
     override fun testParameters(): List<JUnit4TestParameter<JvmAnnotationInfo>> {
@@ -86,10 +85,6 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
             .scanPackageTrees(*packages)
             .includePrivatePreviews()
             .getPreviews()
-
-        val devicePreviewKeys = devicePreviewFunctions
-            .map { it.declaringClass to it.methodName }
-            .toSet()
 
         val devicePreviews = devicePreviewFunctions
             .flatMap { preview -> DEVICE_VARIANTS.map { variant -> preview to variant } }
@@ -107,7 +102,6 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
                     .includePrivatePreviews()
                     .getPreviews()
             }
-            .filter { preview -> (preview.declaringClass to preview.methodName) !in devicePreviewKeys }
             .map { preview -> preview to PreviewVariant.Default }
 
         return (devicePreviews + singleVariantPreviews).map { (preview, variant) ->

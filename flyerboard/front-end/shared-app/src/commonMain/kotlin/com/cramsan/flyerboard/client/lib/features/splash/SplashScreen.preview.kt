@@ -1,14 +1,18 @@
 package com.cramsan.flyerboard.client.lib.features.splash
 
 import androidx.compose.runtime.Composable
-import com.cramsan.flyerboard.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
-@Preview
+/**
+ * Preview for the Splash feature screen.
+ */
+@ScreenPreviews
 @Composable
-private fun SplashPreview() =
-    AppTheme(dynamicColor = false) {
-        SplashContent(
-            content = SplashUIState(isLoading = true),
-        )
-    }
+private fun SplashScreenPreview() {
+    SplashContent(
+        content =
+        SplashUIState(
+            isLoading = true,
+        ),
+    )
+}

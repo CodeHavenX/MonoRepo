@@ -3,10 +3,10 @@ package com.cramsan.edifikana.client.lib.features.account.changepassword
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.framework.core.SecureStringAccess
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
 @OptIn(SecureStringAccess::class)
-@Preview
+@ComponentPreviews
 @Composable
 private fun ChangePasswordDialogPreview() =
     AppTheme {
@@ -28,7 +28,7 @@ private fun ChangePasswordDialogPreview() =
     }
 
 @OptIn(SecureStringAccess::class)
-@Preview(locale = "es")
+@ComponentPreviews
 @Composable
 private fun ChangePasswordDialogPreview_ES() =
     AppTheme {

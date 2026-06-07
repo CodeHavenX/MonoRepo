@@ -1,12 +1,12 @@
 package com.cramsan.edifikana.client.lib.features.debug.screenselector
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the ScreenSelector feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun ScreenSelectorScreenPreview() {
     ScreenSelectorContent(

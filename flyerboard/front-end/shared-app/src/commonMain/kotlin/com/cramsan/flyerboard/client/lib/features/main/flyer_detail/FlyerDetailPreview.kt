@@ -6,9 +6,9 @@ import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerDetailLoadingPreview() =
     AppTheme(dynamicColor = false) {
@@ -18,7 +18,7 @@ private fun FlyerDetailLoadingPreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerDetailNotFoundPreview() =
     AppTheme(dynamicColor = false) {
@@ -28,7 +28,7 @@ private fun FlyerDetailNotFoundPreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerDetailApprovedPreview() =
     AppTheme(dynamicColor = false) {
@@ -39,8 +39,11 @@ private fun FlyerDetailApprovedPreview() =
                 FlyerModel(
                     id = FlyerId("1"),
                     title = "Community Cleanup Day — Riverside Park",
-                    description = "Join us for our monthly community cleanup at Riverside Park! We'll be gathering near the north entrance to pick up litter, trim overgrown paths, and ensure our favorite local spot stays beautiful for everyone.",
-                    fileUrl = null,
+                    description =
+                        "Join us for our monthly community cleanup at Riverside Park! We'll be gathering" +
+                        " near the north entrance to pick up litter, trim overgrown paths, and ensure our favorite" +
+                        " local spot stays beautiful for everyone.",
+                        fileUrl = null,
                     status = FlyerStatus.APPROVED,
                     expiresAt = "May 1",
                     uploaderId = UserId("user1"),
@@ -52,7 +55,7 @@ private fun FlyerDetailApprovedPreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun FlyerDetailRejectedPreview() =
     AppTheme(dynamicColor = false) {

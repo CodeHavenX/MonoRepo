@@ -3,9 +3,9 @@ package com.cramsan.edifikana.client.lib.features.home.drawer
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
-@Preview
+@ScreenPreviews
 @Composable
 fun DrawerScreenPreview() {
     DrawerContent(

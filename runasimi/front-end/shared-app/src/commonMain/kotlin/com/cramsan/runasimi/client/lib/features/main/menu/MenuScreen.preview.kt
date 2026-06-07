@@ -4,12 +4,12 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import com.cramsan.runasimi.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the Menu feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun MenuScreenPreview() {
     AppTheme {

@@ -3,12 +3,12 @@ package com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.invite.InviteId
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the SelectOrg screen with no invites.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun SelectOrgScreenPreviewNoInvites() =
     AppTheme {
@@ -23,7 +23,7 @@ private fun SelectOrgScreenPreviewNoInvites() =
 /**
  * Preview for the SelectOrg screen with existing invites.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun SelectOrgScreenPreviewWithInvites() =
     AppTheme {
@@ -48,7 +48,7 @@ private fun SelectOrgScreenPreviewWithInvites() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun SelectOrgScreenPreviewNoInvites_ES() =
     AppTheme {
@@ -60,7 +60,7 @@ private fun SelectOrgScreenPreviewNoInvites_ES() =
         )
     }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun SelectOrgScreenPreviewWithInvites_ES() =
     AppTheme {

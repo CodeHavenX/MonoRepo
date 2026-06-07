@@ -2,9 +2,9 @@ package com.cramsan.flyerboard.client.ui.components
 
 import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun FlyerCardWithImageAndExpiryPreview() =
     AppTheme(dynamicColor = false) {
@@ -17,7 +17,7 @@ private fun FlyerCardWithImageAndExpiryPreview() =
         )
     }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun FlyerCardNoExpiryPreview() =
     AppTheme(dynamicColor = false) {

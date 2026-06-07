@@ -6,7 +6,7 @@ import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 private val sampleArchivedFlyers =
     listOf(
@@ -34,10 +34,13 @@ private val sampleArchivedFlyers =
         ),
     )
 
-@Preview
+/**
+ * Preview for the Archive screen with content.
+ */
+@ScreenPreviews
 @Composable
-private fun ArchiveLoadingPreview() =
-    AppTheme(dynamicColor = false) {
+private fun ArchiveScreenPreview() =
+    AppTheme {
         ArchiveContent(
             uiState = ArchiveUIState.Loading(),
             onNavigateBack = {},
@@ -46,10 +49,13 @@ private fun ArchiveLoadingPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Archive screen in loading state.
+ */
+@ScreenPreviews
 @Composable
-private fun ArchiveEmptyPreview() =
-    AppTheme(dynamicColor = false) {
+private fun ArchiveScreenLoadingPreview() =
+    AppTheme {
         ArchiveContent(
             uiState = ArchiveUIState.Empty(),
             onNavigateBack = {},
@@ -58,10 +64,13 @@ private fun ArchiveEmptyPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Archive screen in empty state.
+ */
+@ScreenPreviews
 @Composable
-private fun ArchiveWithResultsPreview() =
-    AppTheme(dynamicColor = false) {
+private fun ArchiveScreenEmptyPreview() =
+    AppTheme {
         ArchiveContent(
             uiState = ArchiveUIState.Content(flyers = sampleArchivedFlyers),
             onNavigateBack = {},
@@ -70,7 +79,7 @@ private fun ArchiveWithResultsPreview() =
         )
     }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun ArchiveWithQueryPreview() =
     AppTheme(dynamicColor = false) {

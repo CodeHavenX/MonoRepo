@@ -5,12 +5,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import com.cramsan.framework.core.compose.Dialog
+import com.cramsan.ui.preview.ComponentPreviews
 import edifikana_lib.Res
 import edifikana_lib.edifikana_string_cancel
 import edifikana_lib.edifikana_string_sign_out
 import edifikana_lib.sign_out_onboarding_dialog_message
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
  * A confirmation dialog that asks the user if they want to sign out
@@ -50,7 +50,7 @@ class SignOutConfirmationDialog(private val onConfirm: () -> Unit, private val o
     }
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun SignOutConfirmationDialogPreview() {
     SignOutConfirmationDialog(
@@ -59,7 +59,7 @@ private fun SignOutConfirmationDialogPreview() {
     ).Content()
 }
 
-@Preview(locale = "es")
+@ComponentPreviews
 @Composable
 private fun SignOutConfirmationDialogPreview_ES() {
     SignOutConfirmationDialog(

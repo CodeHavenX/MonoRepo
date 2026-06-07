@@ -3,12 +3,12 @@ package com.cramsan.runasimi.client.lib.features.main.verbs
 import androidx.compose.runtime.Composable
 import com.cramsan.runasimi.client.lib.manager.Content
 import com.cramsan.runasimi.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the Verbs feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun VerbsScreenPreview() {
     AppTheme {

@@ -20,6 +20,10 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.animation)
             implementation(compose.materialIconsExtended)
+            // Skip self-reference when building the ui-preview module itself.
+            if (project.path != ":framework:ui-preview") {
+                implementation(project(":framework:ui-preview"))
+            }
         }
     }
 }

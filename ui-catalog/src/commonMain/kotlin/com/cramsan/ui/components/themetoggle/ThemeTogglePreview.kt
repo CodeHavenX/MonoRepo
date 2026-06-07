@@ -1,22 +1,22 @@
 package com.cramsan.ui.components.themetoggle
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
 @Composable
-@Preview
+@ComponentPreviews
 fun ThemeTogglePreviewLight() {
     ThemeToggle(selectedTheme = SelectedTheme.LIGHT, onThemeSelected = {})
 }
 
 @Composable
-@Preview
+@ComponentPreviews
 fun ThemeTogglePreviewDark() {
     ThemeToggle(selectedTheme = SelectedTheme.DARK, onThemeSelected = {})
 }
 
 @Composable
-@Preview
+@ComponentPreviews
 fun ThemeTogglePreviewSystemDefault() {
     ThemeToggle(selectedTheme = SelectedTheme.SYSTEM_DEFAULT, onThemeSelected = {})
 }

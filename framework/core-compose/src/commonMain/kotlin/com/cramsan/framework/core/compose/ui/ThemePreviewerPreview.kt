@@ -1,21 +1,21 @@
 package com.cramsan.framework.core.compose.ui
 
 import androidx.compose.runtime.Composable
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ComponentPreviews
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun ThemeColorPreviewer() {
     ColorPreviewer()
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun ThemeShapePreviewer() {
     ShapePreviewer()
 }
 
-@Preview
+@ComponentPreviews
 @Composable
 private fun ThemeTypographyPreviewer() {
     TypographyPreviewer()

@@ -2,12 +2,12 @@ package com.cramsan.edifikana.client.lib.features.home.gotoorganization
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the GoToOrganization feature screen.
  */
-@Preview
+@ScreenPreviews
 @Composable
 private fun GoToOrganizationScreenPreview() {
     AppTheme {
@@ -15,7 +15,7 @@ private fun GoToOrganizationScreenPreview() {
     }
 }
 
-@Preview(locale = "es")
+@ScreenPreviews
 @Composable
 private fun GoToOrganizationScreenPreview_ES() {
     AppTheme {

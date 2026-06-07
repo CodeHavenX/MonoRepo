@@ -6,6 +6,7 @@ import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.ui.preview.ScreenPreviews
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val samplePendingFlyers =
@@ -49,7 +50,10 @@ private fun ModerationQueueLoadingPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Moderation Queue screen with content.
+ */
+@ScreenPreviews
 @Composable
 private fun ModerationQueueEmptyPreview() =
     AppTheme(dynamicColor = false) {
@@ -64,10 +68,13 @@ private fun ModerationQueueEmptyPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Moderation Queue screen in loading state.
+ */
+@ScreenPreviews
 @Composable
-private fun ModerationQueueWithFlyersPreview() =
-    AppTheme(dynamicColor = false) {
+private fun ModerationQueueScreenLoadingPreview() =
+    AppTheme {
         ModerationQueueContent(
             uiState = ModerationQueueUIState.Content(flyers = samplePendingFlyers),
             onNavigateBack = {},
@@ -79,10 +86,13 @@ private fun ModerationQueueWithFlyersPreview() =
         )
     }
 
-@Preview
+/**
+ * Preview for the Moderation Queue screen in empty state.
+ */
+@ScreenPreviews
 @Composable
-private fun ModerationQueueRejectDialogPreview() =
-    AppTheme(dynamicColor = false) {
+private fun ModerationQueueScreenEmptyPreview() =
+    AppTheme {
         ModerationQueueContent(
             uiState =
             ModerationQueueUIState.Content(

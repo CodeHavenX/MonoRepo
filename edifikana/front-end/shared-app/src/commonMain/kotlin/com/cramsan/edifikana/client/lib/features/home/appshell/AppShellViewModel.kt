@@ -25,6 +25,10 @@ class AppShellViewModel(dependencies: ViewModelDependencies) :
      * Select an app shell tab.
      */
     fun selectTab(tab: AppShellTab) {
+        if (tab == AppShellTab.More) {
+            navigateToSettings()
+            return
+        }
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(selectedTab = tab) }
         }

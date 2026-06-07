@@ -13,7 +13,6 @@ private fun AppShellTasksPreview() {
             onTabSelected = {},
             onAccountSelected = {},
             onNotificationsSelected = {},
-            onSettingsSelected = {},
         )
     }
 }
@@ -27,7 +26,6 @@ private fun AppShellMobileMorePreview() {
             onTabSelected = {},
             onAccountSelected = {},
             onNotificationsSelected = {},
-            onSettingsSelected = {},
         )
     }
 }

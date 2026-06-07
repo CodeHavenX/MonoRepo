@@ -10,13 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Apartment
-import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,9 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -42,11 +38,9 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.theme.LARGE_SCREEN_BREAK
 import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
-import edifikana_lib.account_screen_title
 import edifikana_lib.app_name
 import edifikana_lib.home_screen_account_description
 import edifikana_lib.home_screen_notifications_description
-import edifikana_lib.home_screen_settings_description
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -68,7 +62,6 @@ fun AppShellScreen(
         onTabSelected = { viewModel.selectTab(it) },
         onAccountSelected = { viewModel.navigateToAccount() },
         onNotificationsSelected = { viewModel.navigateToNotifications() },
-        onSettingsSelected = { viewModel.navigateToSettings() },
         modifier = modifier,
     )
 }
@@ -82,7 +75,6 @@ internal fun AppShellContent(
     onTabSelected: (AppShellTab) -> Unit,
     onAccountSelected: () -> Unit,
     onNotificationsSelected: () -> Unit,
-    onSettingsSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(modifier = modifier) {
@@ -99,7 +91,6 @@ internal fun AppShellContent(
                     onTabSelected = onTabSelected,
                     onAccountSelected = onAccountSelected,
                     onNotificationsSelected = onNotificationsSelected,
-                    onSettingsSelected = onSettingsSelected,
                     showBottomBar = false,
                     modifier = Modifier.weight(1f),
                 )
@@ -110,7 +101,6 @@ internal fun AppShellContent(
                 onTabSelected = onTabSelected,
                 onAccountSelected = onAccountSelected,
                 onNotificationsSelected = onNotificationsSelected,
-                onSettingsSelected = onSettingsSelected,
                 showBottomBar = true,
                 modifier = Modifier.fillMaxSize(),
             )
@@ -124,23 +114,28 @@ private fun AppShellScaffold(
     onTabSelected: (AppShellTab) -> Unit,
     onAccountSelected: () -> Unit,
     onNotificationsSelected: () -> Unit,
-    onSettingsSelected: () -> Unit,
     showBottomBar: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val appName = stringResource(Res.string.app_name)
     Scaffold(
         modifier = modifier,
         topBar = {
             EdifikanaTopBar(
-                title = appName,
+                title = uiState.selectedTab.label,
                 navigationIcon = null,
             ) {
-                AccountDropDown(
-                    onAccountSelected = onAccountSelected,
-                    onNotificationsSelected = onNotificationsSelected,
-                    onSettingsSelected = onSettingsSelected,
-                )
+                IconButton(onClick = onNotificationsSelected) {
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = stringResource(Res.string.home_screen_notifications_description),
+                    )
+                }
+                IconButton(onClick = onAccountSelected) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = stringResource(Res.string.home_screen_account_description),
+                    )
+                }
             }
         },
         bottomBar = {
@@ -250,56 +245,6 @@ private fun AppShellTabContent(
     }
 }
 
-/**
- * Account dropdown menu for accessing account, notifications, and settings.
- */
-@Composable
-internal fun AccountDropDown(
-    modifier: Modifier = Modifier,
-    onAccountSelected: () -> Unit,
-    onNotificationsSelected: () -> Unit,
-    onSettingsSelected: () -> Unit,
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = modifier,
-    ) {
-        IconButton(onClick = { expanded = !expanded }) {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = stringResource(Res.string.home_screen_account_description),
-            )
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.account_screen_title)) },
-                onClick = {
-                    onAccountSelected()
-                    expanded = false
-                },
-            )
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.home_screen_settings_description)) },
-                onClick = {
-                    onSettingsSelected()
-                    expanded = false
-                },
-            )
-            DropdownMenuItem(
-                text = { Text(stringResource(Res.string.home_screen_notifications_description)) },
-                onClick = {
-                    onNotificationsSelected()
-                    expanded = false
-                },
-            )
-        }
-    }
-}
-
 private val AppShellTab.label: String
     get() =
         when (this) {
@@ -314,6 +259,6 @@ private val AppShellTab.icon: ImageVector
         when (this) {
             AppShellTab.Dashboard -> Icons.Default.Dashboard
             AppShellTab.Properties -> Icons.Default.Apartment
-            AppShellTab.Tasks -> Icons.Default.Assignment
+            AppShellTab.Tasks -> Icons.AutoMirrored.Filled.Assignment
             AppShellTab.More -> Icons.Default.MoreHoriz
         }

@@ -1,11 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.home.propertyhome
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.cramsan.edifikana.client.lib.features.home.appshell.AccountDropDown
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
@@ -36,20 +31,6 @@ private fun PropertyHomeScreenPreview() {
             ),
             onPropertySelected = {},
             onNavigateToOrganization = {},
-        )
-    }
-}
-
-@Composable
-@ScreenPreviews
-private fun AccountDropDownPreview() {
-    AppTheme {
-        Box(Modifier.size(200.dp))
-        AccountDropDown(
-            Modifier,
-            {},
-            {},
-            {},
         )
     }
 }

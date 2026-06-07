@@ -25,4 +25,5 @@ dependencies {
     implementation("io.github.sergio-sastre.ComposablePreviewScanner:android:$composablePreviewScannerVersion")
     implementation("io.github.sergio-sastre.ComposablePreviewScanner:jvm:$composablePreviewScannerVersion")
     implementation("io.github.takahirom.roborazzi:roborazzi-compose-preview-scanner-support:_")
+    implementation("io.github.classgraph:classgraph:_")
 }

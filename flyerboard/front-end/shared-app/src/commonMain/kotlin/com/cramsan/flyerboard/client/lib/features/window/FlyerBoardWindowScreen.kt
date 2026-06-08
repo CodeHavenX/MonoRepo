@@ -33,12 +33,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cramsan.architecture.client.features.debugsettings.debugSettingsNavGraph
+import com.cramsan.architecture.client.navigation.BrowserNavigator
 import com.cramsan.flyerboard.client.lib.features.application.FlyerBoardApplicationMainScreenEventHandler
 import com.cramsan.flyerboard.client.lib.features.auth.authNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
 import com.cramsan.flyerboard.client.lib.features.main.mainNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.splash.SplashScreen
-import com.cramsan.flyerboard.client.lib.navigation.BrowserNavigator
+import com.cramsan.flyerboard.client.lib.navigation.flyerBoardEntryToPath
 import com.cramsan.flyerboard.client.lib.navigation.pathToDestination
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -81,7 +82,7 @@ private fun WindowsContent(
     val browserNavigator = remember { BrowserNavigator() }
 
     LaunchedEffect(Unit) {
-        browserNavigator.attach(navController)
+        browserNavigator.attach(navController, ::flyerBoardEntryToPath)
         browserNavigator.getInitialPath()?.let { path ->
             navController.navigate(pathToDestination(path))
         }

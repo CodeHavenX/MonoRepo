@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cramsan.architecture.client.features.debugsettings.debugSettingsNavGraph
+import com.cramsan.architecture.client.navigation.BrowserNavigator
 import com.cramsan.edifikana.client.lib.features.account.accountNavGraph
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
 import com.cramsan.edifikana.client.lib.features.auth.authNavGraphNavigation
@@ -36,6 +37,8 @@ import com.cramsan.edifikana.client.lib.navigation.OrganizationIdNavType
 import com.cramsan.edifikana.client.lib.navigation.PropertyIdNavType
 import com.cramsan.edifikana.client.lib.navigation.TimeCardEventIdNavType
 import com.cramsan.edifikana.client.lib.navigation.UserIdNavType
+import com.cramsan.edifikana.client.lib.navigation.edifikanaEntryToPath
+import com.cramsan.edifikana.client.lib.navigation.edifikanaPathToDestination
 import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
@@ -60,14 +63,12 @@ fun EdifikanaWindowScreen(
     viewModel: EdifikanaWindowViewModel,
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     startDestination: EdifikanaNavGraphDestination = EdifikanaNavGraphDestination.SplashNavGraphDestination,
-    initialDeepLink: String? = null,
 ) {
     WindowsContent(
         eventHandler = eventHandler,
         viewModel = viewModel,
         applicationViewModel = applicationViewModel,
         startDestination = startDestination,
-        initialDeepLink = initialDeepLink,
     )
 }
 
@@ -77,9 +78,9 @@ private fun WindowsContent(
     viewModel: EdifikanaWindowViewModel,
     applicationViewModel: EdifikanaApplicationViewModel,
     eventHandler: EdifikanaMainScreenEventHandler,
-    initialDeepLink: String? = null,
 ) {
     val navController = rememberNavController()
+    val browserNavigator = remember { BrowserNavigator() }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -97,6 +98,15 @@ private fun WindowsContent(
             action()
         } else {
             pendingNavAction = action
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        browserNavigator.attach(navController, ::edifikanaEntryToPath)
+        browserNavigator.getInitialPath()?.let { path ->
+            edifikanaPathToDestination(path)?.let { destination ->
+                navigate { navController.navigate(destination) }
+            }
         }
     }
 
@@ -119,12 +129,6 @@ private fun WindowsContent(
                     windowEvent = event.event,
                 )
             }
-        }
-    }
-
-    LaunchedEffect(initialDeepLink) {
-        if (initialDeepLink != null) {
-            viewModel.handleDeepLink(initialDeepLink)
         }
     }
 

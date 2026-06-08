@@ -1,5 +1,8 @@
 package com.cramsan.flyerboard.client.lib.navigation
 
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.toRoute
 import com.cramsan.flyerboard.client.lib.features.auth.AuthDestination
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
 import com.cramsan.framework.core.compose.navigation.Destination
@@ -43,3 +46,49 @@ fun pathToDestination(path: String): Destination =
             MainDestination.FlyerListDestination
         }
     }
+
+/**
+ * Converts the current [NavBackStackEntry] to a canonical URL path for FlyerBoard.
+ * Returns null for destinations that should not update the browser URL (nav-graph
+ * containers or the splash screen).
+ */
+fun flyerBoardEntryToPath(entry: NavBackStackEntry): String? {
+    val destination = entry.destination
+    return when {
+        destination.hasRoute<MainDestination.FlyerListDestination>() -> {
+            "/"
+        }
+
+        destination.hasRoute<MainDestination.FlyerDetailDestination>() -> {
+            "/flyer/${entry.toRoute<MainDestination.FlyerDetailDestination>().flyerId}"
+        }
+
+        destination.hasRoute<MainDestination.ArchiveDestination>() -> {
+            "/archive"
+        }
+
+        destination.hasRoute<MainDestination.MyFlyersDestination>() -> {
+            "/my-flyers"
+        }
+
+        destination.hasRoute<MainDestination.FlyerEditDestination>() -> {
+            "/my-flyers/edit/${entry.toRoute<MainDestination.FlyerEditDestination>().flyerId}"
+        }
+
+        destination.hasRoute<MainDestination.ModerationQueueDestination>() -> {
+            "/moderation"
+        }
+
+        destination.hasRoute<AuthDestination.SignInDestination>() -> {
+            "/sign-in"
+        }
+
+        destination.hasRoute<AuthDestination.SignUpDestination>() -> {
+            "/sign-up"
+        }
+
+        else -> {
+            null
+        }
+    }
+}

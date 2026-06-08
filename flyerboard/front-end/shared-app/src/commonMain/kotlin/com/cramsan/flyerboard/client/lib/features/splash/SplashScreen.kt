@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
@@ -33,6 +34,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun SplashScreen(
+    initialDestination: Destination? = null,
     modifier: Modifier = Modifier,
     viewModel: SplashViewModel = koinViewModel(),
 ) {
@@ -40,7 +42,7 @@ fun SplashScreen(
 
     // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.navigateToMainScreen()
+        viewModel.navigateToMainScreen(initialDestination)
     }
 
     ObserveViewModelEvents(viewModel) { event ->

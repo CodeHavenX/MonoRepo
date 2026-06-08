@@ -9,6 +9,7 @@ plugins {
     id("com.cramsan.kotlin-mpp-common")
     id("com.cramsan.kotlin-mpp-android-lib")
     id("com.cramsan.kotlin-mpp-jvm")
+    id("com.cramsan.kotlin-mpp-ios")
     id("com.cramsan.kotlin-mpp-wasm")
 }
 

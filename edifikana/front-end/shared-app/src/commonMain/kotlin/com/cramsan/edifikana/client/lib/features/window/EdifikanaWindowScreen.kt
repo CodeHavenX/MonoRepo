@@ -47,6 +47,7 @@ import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.user.UserId
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import kotlinx.coroutines.CoroutineScope
@@ -82,6 +83,14 @@ private fun WindowsContent(
     val navController = rememberNavController()
     val browserNavigator = remember { BrowserNavigator() }
 
+    // Resolve the initial deep-link destination once at composition time. This is passed to
+    // SplashScreen so that enforceAuth() can navigate directly there after a successful
+    // auth check, avoiding the race where Splash's navigation overwrites the target page.
+    val initialDestination =
+        remember {
+            browserNavigator.getInitialPath()?.let { edifikanaPathToDestination(it) }
+        }
+
     val snackbarHostState = remember { SnackbarHostState() }
 
     var pendingNavAction by remember { mutableStateOf<(() -> Unit)?>(null) }
@@ -102,8 +111,10 @@ private fun WindowsContent(
     }
 
     LaunchedEffect(Unit) {
-        browserNavigator.attach(navController, ::edifikanaEntryToPath)
-        browserNavigator.getInitialPath()?.let { path ->
+        browserNavigator.attach(
+            navController,
+            ::edifikanaEntryToPath,
+        ) { path ->
             edifikanaPathToDestination(path)?.let { destination ->
                 navigate { navController.navigate(destination) }
             }
@@ -150,6 +161,7 @@ private fun WindowsContent(
             WindowNavigationHost(
                 navHostController = navController,
                 startDestination = startDestination,
+                initialDestination = initialDestination,
             )
         }
     }
@@ -266,6 +278,7 @@ private suspend fun handleSnackbarEvent(
 private fun WindowNavigationHost(
     navHostController: NavHostController,
     startDestination: EdifikanaNavGraphDestination,
+    initialDestination: Destination? = null,
 ) {
     val typeMap =
         remember {
@@ -286,7 +299,7 @@ private fun WindowNavigationHost(
         exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {
         composable(EdifikanaNavGraphDestination.SplashNavGraphDestination::class) {
-            SplashScreen()
+            SplashScreen(initialDestination = initialDestination)
         }
         authNavGraphNavigation(typeMap)
         accountNavGraph(typeMap)

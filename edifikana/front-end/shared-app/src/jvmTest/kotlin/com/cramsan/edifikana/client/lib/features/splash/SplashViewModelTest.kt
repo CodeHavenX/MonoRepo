@@ -10,6 +10,7 @@ import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
@@ -102,6 +103,29 @@ class SplashViewModelTest : CoroutineTest() {
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.HomeNavGraphDestination
                 )
+            )
+        }
+    }
+
+    @Test
+    fun `test enforceAuth when signed in with initial destination navigates to that destination`() = runCoroutineTest {
+        val initialDestination = mockk<Destination>()
+        coEvery { authManager.isSignedIn() } returns Result.success(true)
+        coEvery { organizationManager.getOrganizations() } returns Result.success(listOf(mockk()))
+
+        viewModel.enforceAuth(initialDestination)
+
+        assertTrue(exceptionHandler.exceptions.isEmpty())
+        coVerify {
+            windowEventBus.push(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.HomeNavGraphDestination,
+                )
+            )
+        }
+        coVerify {
+            windowEventBus.push(
+                EdifikanaWindowsEvent.NavigateToScreen(initialDestination)
             )
         }
     }

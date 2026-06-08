@@ -42,6 +42,7 @@ import com.cramsan.flyerboard.client.lib.features.splash.SplashScreen
 import com.cramsan.flyerboard.client.lib.navigation.flyerBoardEntryToPath
 import com.cramsan.flyerboard.client.lib.navigation.pathToDestination
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import flyerboard_lib.Res
 import flyerboard_lib.nav_archive
@@ -81,9 +82,18 @@ private fun WindowsContent(
     val navController = rememberNavController()
     val browserNavigator = remember { BrowserNavigator() }
 
+    // Resolve the initial deep-link destination once at composition time so that SplashScreen
+    // can navigate directly there after the main graph loads, avoiding the race where Splash's
+    // clearStack navigation overwrites the target.
+    val initialDestination: Destination? = remember {
+        browserNavigator.getInitialPath()?.let { pathToDestination(it) }
+    }
+
     LaunchedEffect(Unit) {
-        browserNavigator.attach(navController, ::flyerBoardEntryToPath)
-        browserNavigator.getInitialPath()?.let { path ->
+        browserNavigator.attach(
+            navController,
+            ::flyerBoardEntryToPath,
+        ) { path ->
             navController.navigate(pathToDestination(path))
         }
     }
@@ -170,6 +180,7 @@ private fun WindowsContent(
                 navHostController = navController,
                 startDestination = startDestination,
                 isAuthenticated = isAuthenticated,
+                initialDestination = initialDestination,
                 onSignIn = {
                     navController.navigate(FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination)
                 },
@@ -317,6 +328,7 @@ private fun WindowNavigationHost(
     onSignIn: () -> Unit,
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
+    initialDestination: Destination? = null,
 ) {
     val typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> =
         remember {
@@ -331,7 +343,7 @@ private fun WindowNavigationHost(
         exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {
         composable(FlyerBoardWindowNavGraphDestination.SplashNavGraphDestination::class) {
-            SplashScreen()
+            SplashScreen(initialDestination = initialDestination)
         }
         authNavGraphNavigation(typeMap)
         mainNavGraphNavigation(

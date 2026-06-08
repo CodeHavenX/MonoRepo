@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -18,17 +19,21 @@ import org.koin.compose.viewmodel.koinViewModel
  *
  * This function provides the boilerplate needed to wire up the screen within the rest of the
  * application. This includes observing the view model's state and event flows and rendering the screen.
+ *
+ * If [initialDestination] is non-null, it is forwarded to [SplashViewModel.enforceAuth] so that
+ * the app navigates directly to that destination after a successful auth check.
  */
 @Composable
 fun SplashScreen(
     modifier: Modifier = Modifier,
+    initialDestination: Destination? = null,
     viewModel: SplashViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.enforceAuth()
+        viewModel.enforceAuth(initialDestination)
     }
 
     ObserveViewModelEvents(viewModel) { event ->

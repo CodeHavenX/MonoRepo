@@ -8,6 +8,7 @@ import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.logging.logI
 import com.cramsan.framework.logging.logW
 import kotlinx.coroutines.launch
@@ -36,8 +37,10 @@ class SplashViewModel(
 
     /**
      * Enforce the authentication state and route the user to the right screen.
+     * If [initialDestination] is non-null and auth succeeds, navigates to that destination
+     * on top of the Home nav graph instead of stopping at the default hub screen.
      */
-    fun enforceAuth() =
+    fun enforceAuth(initialDestination: Destination? = null) =
         viewModelCoroutineScope.launch {
             val result = authManager.isSignedIn()
             if (result.isFailure) {
@@ -53,16 +56,19 @@ class SplashViewModel(
                     if (orgs.isNullOrEmpty()) {
                         navigateToOnboardingScreen()
                     } else {
-                        navigateToMainScreen()
+                        navigateToMainScreen(initialDestination)
                     }
                 }
             }
         }
 
-    private suspend fun navigateToMainScreen() {
+    private suspend fun navigateToMainScreen(initialDestination: Destination? = null) {
         emitWindowEvent(
             EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.HomeNavGraphDestination),
         )
+        if (initialDestination != null) {
+            emitWindowEvent(EdifikanaWindowsEvent.NavigateToScreen(initialDestination))
+        }
     }
 
     private suspend fun navigateToSignInScreen() {

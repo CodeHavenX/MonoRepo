@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.client.lib.di
 
 import com.cramsan.edifikana.client.lib.service.DownloadStrategy
+import com.cramsan.edifikana.client.lib.service.FileService
+import com.cramsan.edifikana.client.lib.service.FileServiceImpl
 import com.cramsan.edifikana.client.lib.service.WasmDownloadStrategy
 import com.cramsan.edifikana.client.lib.utils.IODependencies
 import org.koin.core.module.dsl.singleOf
@@ -13,5 +15,9 @@ internal actual val ManagerPlatformModule =
 
         single<DownloadStrategy> {
             WasmDownloadStrategy()
+        }
+
+        single<FileService> {
+            FileServiceImpl(get())
         }
     }

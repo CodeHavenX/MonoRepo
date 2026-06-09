@@ -4,8 +4,6 @@ import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.ViewModelUIState
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
 
 /**
  * Home UI model. You can use one or multiple models to represent
@@ -31,17 +29,7 @@ data class PropertyHomeUIModel(
 }
 
 /**
- * UI model for the bottom bar.
- */
-data class BottomBarDestinationUiModel(
-    val destination: Tabs,
-    val icon: DrawableResource,
-    val text: StringResource,
-    val isStartDestination: Boolean = false,
-)
-
-/**
- * UI model for the bottom bar.
+ * Navigation tabs within the property home view.
  */
 enum class Tabs {
     None,

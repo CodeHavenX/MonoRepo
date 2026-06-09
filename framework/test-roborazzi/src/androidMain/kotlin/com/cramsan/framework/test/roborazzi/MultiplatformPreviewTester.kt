@@ -14,6 +14,8 @@ import com.github.takahirom.roborazzi.RoborazziActivity
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.provideRoborazziContext
 import com.github.takahirom.roborazzi.registerRoborazziActivityToRobolectricIfNeeded
+import io.github.classgraph.ClassGraph
+import io.github.classgraph.ScanResult
 import org.junit.rules.RuleChain
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
@@ -27,13 +29,14 @@ import sergio.sastre.composable.preview.scanner.jvm.JvmAnnotationScanner
  * Roborazzi tester that renders Compose previews from Android and common source-sets.
  *
  * Three annotation classes are scanned:
- * - `@DevicePreviews` — three variants: Phone / Tablet / Desktop
- * - `@ScreenPreviews` — one variant: Default
- * - `@ComponentPreviews` — one variant: Default
+ * - `@DevicePreviews` — variants derived from its `@Preview` annotations (Phone, Tablet, Desktop)
+ * - `@ScreenPreviews` — one variant derived from its single `@Preview` annotation
+ * - `@ComponentPreviews` — one variant derived from its single `@Preview` annotation
  *
- * For each `@DevicePreviews` variant, [PreviewVariant.qualifier] is applied via
- * [RuntimeEnvironment.setQualifiers] before the composable is rendered, making screen-width-based
- * layout logic behave correctly inside the preview.
+ * For each variant, the `widthDp` from the corresponding `@Preview` annotation is applied as a
+ * Robolectric qualifier via [RuntimeEnvironment.setQualifiers], and the `name` is used as the
+ * screenshot filename suffix. Both values are read at test-parameter-build time via ClassGraph so
+ * that PreviewAnnotations.kt remains the single source of truth for dimensions.
  *
  * Sources:
  *  - https://github.com/CodeHavenX/MonoRepo/issues/113#issuecomment-2784480774
@@ -71,6 +74,10 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
      * Scans for [com.cramsan.ui.preview.DevicePreviews], [com.cramsan.ui.preview.ScreenPreviews],
      * and [com.cramsan.ui.preview.ComponentPreviews] functions and returns one
      * [AndroidKMPreviewTestParameter] per preview × variant combination.
+     *
+     * Variants (qualifier + name suffix) are derived from the `@Preview` annotations present on
+     * each multipreview annotation class via a single ClassGraph scan, so
+     * PreviewAnnotations.kt is the single source of truth.
      */
     override fun testParameters(): List<JUnit4TestParameter<JvmAnnotationInfo>> {
         val options = options()
@@ -86,36 +93,40 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
             .includePrivatePreviews()
             .getPreviews()
 
-        val devicePreviews = devicePreviewFunctions
-            .flatMap { preview -> DEVICE_VARIANTS.map { variant -> preview to variant } }
+        val devicePreviewKeys = devicePreviewFunctions
+            .map { it.declaringClass to it.methodName }
+            .toSet()
 
         val singleVariantAnnotations = listOf(
             "com.cramsan.ui.preview.ScreenPreviews",
             "com.cramsan.ui.preview.ComponentPreviews",
         )
 
+        val allAnnotationClasses = listOf("com.cramsan.ui.preview.DevicePreviews") + singleVariantAnnotations
+        val variantMap = ClassGraph()
+            .enableAnnotationInfo()
+            .acceptClasses(*allAnnotationClasses.toTypedArray())
+            .scan()
+            .use { scanResult -> allAnnotationClasses.associateWith { buildVariantsFrom(scanResult, it) } }
+
+        val deviceVariants = variantMap.getValue("com.cramsan.ui.preview.DevicePreviews")
+        val devicePreviews = devicePreviewFunctions
+            .flatMap { preview -> deviceVariants.map { (qualifier, suffix) -> Triple(preview, qualifier, suffix) } }
+
         val singleVariantPreviews = singleVariantAnnotations
-            .map { JvmAnnotationScanner(it) }
-            .flatMap { scanner ->
-                scanner
+            .flatMap { annotationName ->
+                val variants = variantMap.getValue(annotationName)
+                JvmAnnotationScanner(annotationName)
                     .scanPackageTrees(*packages)
                     .includePrivatePreviews()
                     .getPreviews()
+                    .filter { preview -> (preview.declaringClass to preview.methodName) !in devicePreviewKeys }
+                    .flatMap { preview -> variants.map { (qualifier, suffix) -> Triple(preview, qualifier, suffix) } }
             }
-            .map { preview -> preview to PreviewVariant.Default }
 
-        return (devicePreviews + singleVariantPreviews).map { (preview, variant) ->
-            AndroidKMPreviewTestParameter(composeRuleFactory, preview, variant)
+        return (devicePreviews + singleVariantPreviews).map { (preview, qualifier, suffix) ->
+            AndroidKMPreviewTestParameter(composeRuleFactory, preview, qualifier, suffix)
         }
-    }
-
-    internal companion object {
-        /** Variants applied to each `@DevicePreviews` function. */
-        val DEVICE_VARIANTS = listOf(
-            PreviewVariant.Phone,
-            PreviewVariant.Tablet,
-            PreviewVariant.Desktop,
-        )
     }
 
     /**
@@ -135,9 +146,8 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
                     "Ensure testParameters() is the sole source of test parameters.",
             )
 
-        // Apply Robolectric qualifiers for this variant (e.g. night mode, screen width).
-        if (param.variant.qualifier.isNotEmpty()) {
-            RuntimeEnvironment.setQualifiers(param.variant.qualifier)
+        if (param.qualifier.isNotEmpty()) {
+            RuntimeEnvironment.setQualifiers(param.qualifier)
         }
 
         try {
@@ -145,20 +155,71 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
 
             val roborazziContext = provideRoborazziContext()
             val outputDir = roborazziContext.outputDirectory
-            val suffix = if (param.variant.nameSuffix.isEmpty()) "" else "_${param.variant.nameSuffix}"
+            val suffix = if (param.nameSuffix.isEmpty()) "" else "_${param.nameSuffix}"
             val filename = "${param.preview.declaringClass}_${param.preview.methodName}$suffix"
             val filepath = "$outputDir/$filename.${roborazziContext.imageExtension}"
 
             param.composeTestRule.onRoot().captureRoboImage(filepath)
         } finally {
-            // Reset qualifiers so state does not bleed into the next test.
-            if (param.variant.qualifier.isNotEmpty()) {
+            if (param.qualifier.isNotEmpty()) {
                 RuntimeEnvironment.setQualifiers("")
             }
         }
     }
 
-    // https://youtrack.jetbrains.com/issue/CMP-6612/Support-non-compose-UI-tests-with-resources
+    /**
+     * Reads the `@Preview` annotations on [annotationClassName] via a single-class ClassGraph scan
+     * and returns one `(qualifier, nameSuffix)` pair per annotation instance.
+     *
+     * Prefer calling [buildVariantsFrom] with a shared [ScanResult] inside [testParameters] to
+     * avoid redundant classpath traversals. This overload is provided as a convenience entry point
+     * for tests.
+     */
+    internal fun buildVariantsFor(annotationClassName: String): List<Pair<String, String>> =
+        ClassGraph()
+            .enableAnnotationInfo()
+            .acceptClasses(annotationClassName)
+            .scan()
+            .use { buildVariantsFrom(it, annotationClassName) }
+
+    /**
+     * Extracts `(qualifier, nameSuffix)` pairs from the `@Preview` annotations present on
+     * [annotationClassName] inside an already-open [scanResult].
+     *
+     * ClassGraph reads BINARY-retained annotations from class files and automatically unwraps
+     * Kotlin repeatable-annotation containers, so multiple `@Preview` entries return as individual
+     * items. Both the `org.jetbrains.compose` and `androidx.compose` annotation class names are
+     * checked because the Compose Multiplatform compiler maps the former to the latter on Android.
+     *
+     * Returns `[("", "")]` — a single default variant — and logs a warning if the annotation class
+     * is not on the classpath or carries no `@Preview` annotations.
+     */
+    private fun buildVariantsFrom(
+        scanResult: ScanResult,
+        annotationClassName: String,
+    ): List<Pair<String, String>> {
+        val classInfo = scanResult.getClassInfo(annotationClassName) ?: run {
+            Logger.warn("$annotationClassName not found on classpath; using single default variant")
+            return listOf("" to "")
+        }
+        val variants = PREVIEW_ANNOTATION_NAMES.flatMap { previewName ->
+            classInfo.annotationInfo
+                .filter { it.name == previewName }
+                .map { annotation ->
+                    val params = annotation.parameterValues
+                    val widthDp = params.getValue("widthDp") as? Int ?: -1
+                    val name = params.getValue("name") as? String ?: ""
+                    val qualifier = if (widthDp > 0) "+w${widthDp}dp" else ""
+                    qualifier to name
+                }
+        }
+        if (variants.isEmpty()) {
+            Logger.warn("No @Preview annotations found on $annotationClassName; using single default variant")
+            return listOf("" to "")
+        }
+        return variants
+    }
+
     private fun setupAndroidContextProvider() {
         val type = findAndroidContextProvider() ?: return
         Robolectric.setupContentProvider(type)
@@ -173,5 +234,14 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
             Logger.debug("Class not found: $providerClassName")
             null
         }
+    }
+
+    companion object {
+        // Both annotation class names are checked because the Compose Multiplatform compiler maps
+        // org.jetbrains.compose.ui.tooling.preview.Preview to the androidx equivalent on Android.
+        private val PREVIEW_ANNOTATION_NAMES = listOf(
+            "org.jetbrains.compose.ui.tooling.preview.Preview",
+            "androidx.compose.ui.tooling.preview.Preview",
+        )
     }
 }

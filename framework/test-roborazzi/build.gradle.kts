@@ -13,6 +13,10 @@ val composablePreviewScannerVersion = versionFor("version.io.github.sergio-sastr
 
 android {
     namespace = "com.cramsan.framework.test.roborazzi"
+
+    dependencies {
+        testImplementation(project(":framework:ui-preview"))
+    }
 }
 
 dependencies {
@@ -25,4 +29,5 @@ dependencies {
     implementation("io.github.sergio-sastre.ComposablePreviewScanner:android:$composablePreviewScannerVersion")
     implementation("io.github.sergio-sastre.ComposablePreviewScanner:jvm:$composablePreviewScannerVersion")
     implementation("io.github.takahirom.roborazzi:roborazzi-compose-preview-scanner-support:_")
+    implementation("io.github.classgraph:classgraph:_")
 }

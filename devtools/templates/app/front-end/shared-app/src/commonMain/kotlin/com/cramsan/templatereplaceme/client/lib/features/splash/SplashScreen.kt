@@ -29,6 +29,7 @@ data object SplashDestination : Destination
  */
 @Composable
 fun SplashScreen(
+    initialDestination: Destination? = null,
     modifier: Modifier = Modifier,
     viewModel: SplashViewModel = koinViewModel(),
 ) {
@@ -36,7 +37,7 @@ fun SplashScreen(
 
     // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.navigateToMainScreen()
+        viewModel.navigateToMainScreen(initialDestination)
     }
 
     ObserveViewModelEvents(viewModel) { event ->

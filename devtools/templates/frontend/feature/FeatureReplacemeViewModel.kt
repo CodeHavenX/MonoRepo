@@ -27,14 +27,23 @@ import com.cramsan.framework.core.compose.ViewModelDependencies
  * }
  * ```
  *
- * Example — emitting a navigation event:
+ * Example — navigating to another screen or back (replace `<App>` with this app's window
+ * events class, e.g. `ExampleAppWindowsEvent`):
  * ```
- * fun onItemClicked(id: String) {
+ * fun onItemClicked() {
  *     viewModelCoroutineScope.launch {
- *         emitEvent(FeatureReplacemeEvent.NavigateToDetails(id))
+ *         emitWindowEvent(<App>WindowsEvent.NavigateToScreen(ActivityReplacemeDestination.SomeDestination))
+ *     }
+ * }
+ *
+ * fun onBackClicked() {
+ *     viewModelCoroutineScope.launch {
+ *         emitWindowEvent(<App>WindowsEvent.NavigateBack)
  *     }
  * }
  * ```
+ * `emitWindowEvent` is provided by [BaseViewModel]. Use [FeatureReplacemeEvent] / [emitEvent]
+ * only for local one-shot side effects (snackbars, dialogs) — not for navigation.
  *
  * Registration checklist:
  * - TODO: Add `viewModelOf(::FeatureReplacemeViewModel)` to ViewModelModule.kt (or the

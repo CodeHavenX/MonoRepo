@@ -22,8 +22,11 @@ import com.cramsan.framework.core.compose.ViewModelEvent
  * ```
  * data class NavigateToDetails(val id: String) : FeatureReplacemeEvent()
  * data object ShowSuccessSnackbar : FeatureReplacemeEvent()
- * data object NavigateBack : FeatureReplacemeEvent()
  * ```
+ *
+ * Note: Cross-screen navigation (going to another screen, going back) does NOT belong here —
+ * see the "navigating to another screen or back" example in [FeatureReplacemeViewModel]'s KDoc
+ * for the `emitWindowEvent` pattern.
  */
 sealed class FeatureReplacemeEvent : ViewModelEvent {
     /** Placeholder — remove once real events are added. */

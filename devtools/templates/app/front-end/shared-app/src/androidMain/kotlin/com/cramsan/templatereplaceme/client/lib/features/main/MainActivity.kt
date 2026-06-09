@@ -8,7 +8,6 @@ import androidx.compose.runtime.LaunchedEffect
 import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationViewModel
 import androidx.lifecycle.lifecycleScope
-import com.cramsan.templatereplaceme.client.lib.features.application.TemplateReplaceMeApplicationMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.features.window.ComposableKoinContext
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowScreen
 import com.cramsan.templatereplaceme.client.lib.features.window.TemplateReplaceMeWindowViewModel

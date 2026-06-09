@@ -22,19 +22,48 @@ Ask the user for:
 ./scripts/devtools create app --name <appname> --display <DisplayName> [--no-wasm] [--no-android] [--no-jvm]
 ```
 
-## Step 3 — Display the post-generation checklist
+## Step 3 — Review the CLI output
 
-The script prints a checklist to stdout. Display it to the user verbatim so they know what manual steps remain (Dockerfile image name, docker-compose credentials, Supabase key, CI pipeline).
+The CLI prints a short naming-conflict notice — **not** a full checklist. It identifies component
+names already occupied by the initial `Sample` component so future `devtools create <type>` calls
+don't accidentally overwrite them. Display it to the user verbatim but explain that the real
+post-generation checklist is below.
 
-## Step 4 — Optional verification
+## Step 4 — Create your first activity
 
-Offer to run:
+This manual step is **required** before the app is functional: the freshly generated app has only
+a splash screen. Create at least one activity that holds your
+real screens — run `/create-activity` with:
+
 ```bash
-./gradlew :<appname>:back-end:release --quiet
+./scripts/devtools create activity --name <ActivityName> \
+  --parent <appname>/front-end/shared-app/src/commonMain/kotlin/com/cramsan/<appname>/client/lib/features
+```
+
+Then follow `/create-activity`'s post-generation checklist in full — it covers wiring the nav
+graph into `<AppName>WindowNavGraphDestination`, registering `PathNavigation.kt`, and (since this
+is the app's first activity) updating `SplashViewModel.navigateToMainScreen`.
+
+⚠️ Until `SplashViewModel` is updated, the app will hang on the splash screen indefinitely.
+
+## Step 5 — Platform exclusion notes
+
+`--no-android` / `--no-jvm` / `--no-wasm` only remove the standalone `app-android` / `app-jvm` /
+`app-wasm` entry-point modules. The `front-end/shared-app` module's `build.gradle.kts`
+unconditionally configures all three KMP targets (Android, JVM, WASM) and requires `actual`
+implementations for each `expect` declaration in `commonMain` (e.g. `DatabaseModule`,
+`ManagerPlatformModule`, `ServicePlatformModule`, `ViewModelPlatformModule`,
+`ComposableKoinContext`). The `androidMain` / `jvmMain` / `wasmJsMain` source sets in
+`shared-app/src/` are therefore always kept, even when the corresponding standalone app module is
+excluded.
+
+## Step 6 — Verify compilation
+
+```bash
 ./gradlew :<appname>:front-end:shared-app:release --quiet
 ```
-to confirm the new modules compile correctly.
 
 > **Note:** `create app` modifies `settings.gradle.kts` and `build.gradle.kts`. The top-level
 > `releaseAll` task requires a clean git working tree and will fail until those changes are
-> committed. Use per-module `:appname:back-end:release` for local verification before committing.
+> committed. Use per-module `:<appname>:front-end:shared-app:release` for local verification
+> before committing.

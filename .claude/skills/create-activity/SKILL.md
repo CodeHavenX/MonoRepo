@@ -30,15 +30,25 @@ The CLI creates 2 files:
 
 ## Step 3 — Wire up the nav graph
 
-The generator prints a checklist. The key steps are:
+The CLI prints a full checklist with ready-to-paste snippets — follow it exactly. It covers:
 
-1. **Add `<Name>NavGraphDestination` to `ApplicationNavGraphDestination`** sealed class so the app-wide router knows about this activity.
-2. **Call `<name>NavGraphNavigation()`** inside the root nav host (usually `WindowNavigationHost`).
-3. **Add destination entries** to `<Name>Destination` for each feature screen you will create inside this activity.
+1. Adding `<Name>NavGraphDestination` to `<App>WindowNavGraphDestination` and calling
+   `<name>NavGraphNavigation(typeMap)` from `WindowNavigationHost`.
+2. Wiring `PathNavigation.kt` (WASM / URL routing) for this activity's destinations.
+3. Updating `SplashViewModel.navigateToMainScreen` if this is the app's first activity.
+   ⚠️ Without this the app will hang on the splash screen indefinitely.
+4. The placeholder cleanup from Step 4 below, once a real feature exists.
 
 ## Step 4 — Add feature screens
 
-Use `/create-feature` to scaffold each screen inside the activity. Set `--parent` to the newly created activity package directory (e.g. `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth`).
+Use `/create-feature` to scaffold each screen inside the activity. Set `--parent` to the newly
+created activity package directory (e.g.
+`edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth`).
+
+⚠️ The generated `<Name>Destination.kt` ships with a placeholder `PlaceholderDestination` (and
+`PlaceholderDestination`-based `startDestination` in `<Name>ActivityScreen.kt`). The checklist
+printed in Step 3 covers removing it once your first real feature exists — don't try to "reuse"
+the placeholder by giving your feature the same name, replace it instead.
 
 ## Step 5 — Verify compilation
 

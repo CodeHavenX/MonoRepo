@@ -14,7 +14,7 @@ private val TEMPLATE_EXTENSIONS = setOf("kt", "kts", "xml", "conf", "json", "yml
 
 private val CORE_MODULES = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
 
-internal const val TEMPLATE_DEFAULT_FEATURE = "Home"
+internal const val TEMPLATE_DEFAULT_FEATURE = "Placeholder"
 
 /**
  * Scaffolds a complete new app by copying the `templatereplaceme` template, substituting

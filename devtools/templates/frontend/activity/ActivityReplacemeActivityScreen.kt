@@ -36,6 +36,13 @@ import kotlin.reflect.KType
  * activityReplacemeNavGraphNavigation(typeMap)
  * ```
  *
+ * ⚠️ `composable`/`dialog` do **not** take a `typeMap` argument of their own — `typeMap` is only
+ * passed once, here, to [navigationGraph].
+ *
+ * ⚠️ `import androidx.navigation.compose.composable` is intentionally not pre-added: an unused
+ * import would be auto-removed by `NoUnusedImports`. Add it yourself once the first
+ * `composable(...)` entry is added below.
+ *
  * TODO: Add `composable` / `dialog` entries for each [ActivityReplacemeDestination] screen.
  */
 fun NavGraphBuilder.activityReplacemeNavGraphNavigation(

@@ -379,7 +379,7 @@ class GeneratorsTest {
         assertTrue(content.contains("AuthNavGraphDestination"))
         assertTrue(content.contains("EdifikanáWindowNavGraphDestination"))
         assertFalse(content.contains("FeatureReplacemeDestination"))
-        assertTrue(content.contains("HomeDestination"))
+        assertTrue(content.contains("PlaceholderDestination"))
     }
 
     @Test
@@ -396,7 +396,7 @@ class GeneratorsTest {
             )
         val content = activityScreen.readText()
         assertFalse(content.contains("FeatureReplacemeDestination"))
-        assertTrue(content.contains("HomeDestination"))
+        assertTrue(content.contains("PlaceholderDestination"))
     }
 
     @Test

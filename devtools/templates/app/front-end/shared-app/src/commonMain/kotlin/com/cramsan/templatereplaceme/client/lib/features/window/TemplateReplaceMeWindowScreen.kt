@@ -18,9 +18,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.cramsan.architecture.client.navigation.BrowserNavigator
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.features.splash.splashNavGraphNavigation
+import com.cramsan.templatereplaceme.client.lib.navigation.entryToPath
+import com.cramsan.templatereplaceme.client.lib.navigation.pathToDestination
 import com.cramsan.templatereplaceme.client.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -30,11 +34,6 @@ import kotlin.reflect.KType
 
 /**
  * TemplateReplaceMe window screen.
- *
- * @param initialDeepLink Optional URL or hash string received at startup (e.g. from
- * [kotlinx.browser.window.location.hash] on WASM). Passed into [WindowsContent] so it is
- * processed after the event observer is collecting, avoiding the lost-event race with
- * [MutableSharedFlow].
  */
 @Composable
 fun TemplateReplaceMeWindowScreen(
@@ -42,13 +41,11 @@ fun TemplateReplaceMeWindowScreen(
     viewModel: TemplateReplaceMeWindowViewModel = koinViewModel(),
     startDestination: TemplateReplaceMeWindowNavGraphDestination =
         TemplateReplaceMeWindowNavGraphDestination.SplashNavGraphDestination,
-    initialDeepLink: String? = null,
 ) {
     WindowsContent(
         eventHandler = eventHandler,
         viewModel = viewModel,
         startDestination = startDestination,
-        initialDeepLink = initialDeepLink,
     )
 }
 
@@ -57,15 +54,20 @@ private fun WindowsContent(
     startDestination: TemplateReplaceMeWindowNavGraphDestination,
     viewModel: TemplateReplaceMeWindowViewModel,
     eventHandler: TemplateReplaceMeApplicationMainScreenEventHandler,
-    initialDeepLink: String? = null,
 ) {
     val navController = rememberNavController()
+    val browserNavigator = remember { BrowserNavigator() }
+
+    // Resolve the initial deep-link destination once at composition time so SplashScreen
+    // can navigate there after the main graph loads, avoiding the race where Splash's
+    // clearStack navigation overwrites the target.
+    val initialDestination: Destination? = remember {
+        browserNavigator.getInitialPath()?.let { pathToDestination(it) }
+    }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
     // Guards against calling navController.navigate() before NavHost calls setGraph().
-    // NavHost's internal LaunchedEffect sets the graph during composition, but
-    // LaunchedEffect(initialDeepLink) below can fire first because it is higher in the tree.
     // Any navigation action that arrives before the graph is ready is stored here and
     // drained once currentBackStackEntry becomes non-null (i.e. the graph is set).
     var pendingNavAction by remember { mutableStateOf<(() -> Unit)?>(null) }
@@ -85,6 +87,17 @@ private fun WindowsContent(
         }
     }
 
+    LaunchedEffect(Unit) {
+        browserNavigator.attach(
+            navController,
+            ::entryToPath,
+        ) { path ->
+            pathToDestination(path)?.let { destination ->
+                navigate { navController.navigate(destination) }
+            }
+        }
+    }
+
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
             is TemplateReplaceMeWindowViewModelEvent.TemplateReplaceMeWindowEventWrapper -> {
@@ -101,15 +114,6 @@ private fun WindowsContent(
         }
     }
 
-    // Intentionally placed after ObserveViewModelEvents. Compose launches effects in
-    // composition order, so the event collector above is guaranteed to reach its collect
-    // suspend point before this effect calls handleDeepLink and emits a navigation event.
-    LaunchedEffect(initialDeepLink) {
-        if (initialDeepLink != null) {
-            viewModel.handleDeepLink(initialDeepLink)
-        }
-    }
-
     AppTheme {
         Scaffold(
             snackbarHost = {
@@ -119,6 +123,7 @@ private fun WindowsContent(
             WindowNavigationHost(
                 navHostController = navController,
                 startDestination = startDestination,
+                initialDestination = initialDestination,
             )
         }
     }
@@ -223,6 +228,7 @@ private suspend fun handleSnackbarEvent(
 private fun WindowNavigationHost(
     navHostController: NavHostController,
     startDestination: TemplateReplaceMeWindowNavGraphDestination,
+    initialDestination: Destination? = null,
 ) {
     val typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> =
         remember {
@@ -235,7 +241,7 @@ private fun WindowNavigationHost(
         enterTransition = { fadeIn(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
         exitTransition = { fadeOut(animationSpec = tween(TRANSITION_ANIMATION_DURATION_MS)) },
     ) {
-        splashNavGraphNavigation(typeMap)
+        splashNavGraphNavigation(typeMap, initialDestination)
     }
 }
 

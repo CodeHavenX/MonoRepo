@@ -25,10 +25,10 @@ sealed class AccountDestination : WebDestination {
 
     override fun toWebPath(): String =
         when (this) {
-        is MyAccountDestination -> Companion.myAccountRoute.toWebPath(this)
-        is NotificationsDestination -> Companion.notificationsRoute.toWebPath(this)
-        is ChangePasswordDestination -> Companion.changePasswordRoute.toWebPath(this)
-    }
+            is MyAccountDestination -> Companion.myAccountRoute.toWebPath(this)
+            is NotificationsDestination -> Companion.notificationsRoute.toWebPath(this)
+            is ChangePasswordDestination -> Companion.changePasswordRoute.toWebPath(this)
+        }
 
     companion object {
         private val myAccountRoute by lazy { webRoute<MyAccountDestination>("/account") }

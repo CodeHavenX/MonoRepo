@@ -60,17 +60,17 @@ sealed class HomeDestination : WebDestination {
 
     override fun toWebPath(): String =
         when (this) {
-        is ManagementHub -> Companion.managementHubRoute.toWebPath(this)
-        is PropertyManagementDestination -> Companion.propertyManagementRoute.toWebPath(this)
-        is AddPropertyManagementDestination -> Companion.addPropertyManagementRoute.toWebPath(this)
-        is AddSecondaryEmployeeManagementDestination -> Companion.addSecondaryEmployeeManagementRoute.toWebPath(this)
-        is EmployeeDestination -> Companion.employeeRoute.toWebPath(this)
-        is TimeCardEmployeeListDestination -> Companion.timeCardEmployeeListRoute.toWebPath(this)
-        is TimeCardSingleEmployeeDestination -> Companion.timeCardSingleEmployeeRoute.toWebPath(this)
-        is EventLogSingleItemDestination -> Companion.eventLogSingleItemRoute.toWebPath(this)
-        is EventLogAddItemDestination -> Companion.eventLogAddItemRoute.toWebPath(this)
-        is InviteStaffMemberDestination -> Companion.inviteStaffMemberRoute.toWebPath(this)
-    }
+            is ManagementHub -> managementHubRoute.toWebPath(this)
+            is PropertyManagementDestination -> propertyManagementRoute.toWebPath(this)
+            is AddPropertyManagementDestination -> addPropertyManagementRoute.toWebPath(this)
+            is AddSecondaryEmployeeManagementDestination -> addSecondaryEmployeeManagementRoute.toWebPath(this)
+            is EmployeeDestination -> employeeRoute.toWebPath(this)
+            is TimeCardEmployeeListDestination -> timeCardEmployeeListRoute.toWebPath(this)
+            is TimeCardSingleEmployeeDestination -> timeCardSingleEmployeeRoute.toWebPath(this)
+            is EventLogSingleItemDestination -> eventLogSingleItemRoute.toWebPath(this)
+            is EventLogAddItemDestination -> eventLogAddItemRoute.toWebPath(this)
+            is InviteStaffMemberDestination -> inviteStaffMemberRoute.toWebPath(this)
+        }
 
     companion object {
         private val managementHubRoute by lazy { webRoute<ManagementHub>("/home") }

@@ -25,9 +25,9 @@ sealed class AuthDestination : WebDestination {
 
     override fun toWebPath(): String =
         when (this) {
-        is SignInDestination -> Companion.signInRoute.toWebPath(this)
-        is SignUpDestination -> Companion.signUpRoute.toWebPath(this)
-    }
+            is SignInDestination -> Companion.signInRoute.toWebPath(this)
+            is SignUpDestination -> Companion.signUpRoute.toWebPath(this)
+        }
 
     companion object {
         private val signInRoute by lazy { webRoute<SignInDestination>("/sign-in") }

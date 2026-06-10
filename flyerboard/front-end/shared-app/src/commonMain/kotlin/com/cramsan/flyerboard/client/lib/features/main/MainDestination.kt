@@ -57,14 +57,14 @@ sealed class MainDestination : WebDestination {
 
     override fun toWebPath(): String =
         when (this) {
-        is FlyerListDestination -> Companion.flyerListRoute.toWebPath(this)
-        is FlyerDetailDestination -> Companion.flyerDetailRoute.toWebPath(this)
-        is MyFlyersDestination -> Companion.myFlyersRoute.toWebPath(this)
-        is ArchiveDestination -> Companion.archiveRoute.toWebPath(this)
-        is ModerationQueueDestination -> Companion.moderationQueueRoute.toWebPath(this)
-        is FlyerEditDestination -> Companion.flyerEditRoute.toWebPath(this)
-        is FlyerSubmitDestination -> Companion.flyerSubmitRoute.toWebPath(this)
-    }
+            is FlyerListDestination -> Companion.flyerListRoute.toWebPath(this)
+            is FlyerDetailDestination -> Companion.flyerDetailRoute.toWebPath(this)
+            is MyFlyersDestination -> Companion.myFlyersRoute.toWebPath(this)
+            is ArchiveDestination -> Companion.archiveRoute.toWebPath(this)
+            is ModerationQueueDestination -> Companion.moderationQueueRoute.toWebPath(this)
+            is FlyerEditDestination -> Companion.flyerEditRoute.toWebPath(this)
+            is FlyerSubmitDestination -> Companion.flyerSubmitRoute.toWebPath(this)
+        }
 
     companion object {
         private val flyerListRoute by lazy { webRoute<FlyerListDestination>("/") }

@@ -85,7 +85,8 @@ private fun WindowsContent(
     // Resolve the initial deep-link destination once at composition time so that SplashScreen
     // can navigate directly there after the main graph loads, avoiding the race where Splash's
     // clearStack navigation overwrites the target.
-    val initialDestination: Destination? = remember {
+    val initialDestination: Destination? =
+        remember {
         browserNavigator.getInitialPath()?.let { pathToDestination(it) }
     }
 

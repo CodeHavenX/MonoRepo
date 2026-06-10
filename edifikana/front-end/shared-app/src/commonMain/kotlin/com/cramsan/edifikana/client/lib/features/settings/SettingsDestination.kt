@@ -17,8 +17,8 @@ sealed class SettingsDestination : WebDestination {
 
     override fun toWebPath(): String =
         when (this) {
-        is GeneralSettingsDestination -> Companion.generalSettingsRoute.toWebPath(this)
-    }
+            is GeneralSettingsDestination -> Companion.generalSettingsRoute.toWebPath(this)
+        }
 
     companion object {
         private val generalSettingsRoute by lazy { webRoute<GeneralSettingsDestination>("/settings") }

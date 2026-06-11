@@ -15,7 +15,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.framework.core.compose.navigation.Destination
@@ -70,7 +73,7 @@ internal fun SplashContent(
         modifier =
         modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer),
+            .background(Brush.verticalGradient(listOf(SplashGradientStart, SplashGradientEnd))),
         contentAlignment = Alignment.Center,
     ) {
         Column(
@@ -81,22 +84,24 @@ internal fun SplashContent(
                 text = "FLYERBOARD",
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                letterSpacing = TITLE_LETTER_SPACING,
+                color = Color.White,
             )
             Text(
                 text = stringResource(Res.string.splash_screen_tagline),
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = TAGLINE_ALPHA),
+                color = Color.White.copy(alpha = TAGLINE_ALPHA),
             )
-            if (content.isLoading) {
-                Spacer(modifier = Modifier.height(Padding.LARGE))
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = SPINNER_ALPHA),
-                )
-            }
+            Spacer(modifier = Modifier.height(Padding.XX_LARGE))
+            CircularProgressIndicator(
+                color = Color.White.copy(alpha = SPINNER_ALPHA),
+            )
         }
     }
 }
 
+private val SplashGradientStart = Color(0xFF4F46E5)
+private val SplashGradientEnd = Color(0xFF7C3AED)
+private val TITLE_LETTER_SPACING = 1.5.sp
 private const val TAGLINE_ALPHA = 0.75f
 private const val SPINNER_ALPHA = 0.8f

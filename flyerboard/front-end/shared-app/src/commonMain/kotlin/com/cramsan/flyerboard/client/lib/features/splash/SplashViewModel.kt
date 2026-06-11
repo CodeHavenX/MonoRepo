@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 class SplashViewModel(dependencies: ViewModelDependencies) :
     BaseViewModel<SplashEvent, SplashUIState>(
         dependencies,
-        SplashUIState.Initial,
+        SplashUIState,
         TAG,
     ) {
     /**

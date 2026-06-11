@@ -217,7 +217,7 @@ Composable functions are **not unit tested**. Visual correctness is verified at 
 
 #### Rendering a `@Preview` as a screenshot (Roborazzi)
 
-Each module with Compose UI has Roborazzi configured to generate Robolectric tests from every `@Preview` composable. Use this to visually verify a component during or after implementation.
+Each module with Compose UI has Roborazzi configured to generate Robolectric tests from every composable annotated with `@ComponentPreviews`, `@ScreenPreviews`, or `@DevicePreviews` (see `PreviewAnnotations.kt`) — a bare `@Preview` is not scanned. Use this to visually verify a component during or after implementation.
 
 **Record a single preview:**
 ```bash
@@ -247,6 +247,15 @@ Example: `flyerboard/front-end/shared-ui/screenshots/com.cramsan.flyerboard.clie
 ./gradlew :<module>:testDebugUnitTest 2>&1 | grep "PASSED\|FAILED"
 ```
 Each line contains the full test name in `[<FileNameKt>:<PreviewFunctionName>]` format.
+
+**Quick filter with a wildcard:** `recordRoborazziDebug` is not itself a `Test` task, so `--tests` only takes effect because the task depends on `testDebugUnitTest`. A simple wildcard against the preview function name works and avoids needing the exact bracketed test name:
+```bash
+./gradlew :<module>:recordRoborazziDebug --tests "*<PreviewFunctionName>*"
+```
+
+**`@DevicePreviews` variants:** previews annotated with `@DevicePreviews` (see `PreviewAnnotations.kt`) generate three variants per preview function, with `_Phone`, `_Tablet`, and `_Desktop` suffixes appended to both the test name and the screenshot filename (e.g. `SplashScreenPreview_Phone`). Account for the suffix when constructing an exact `--tests` filter, or just use the wildcard form above.
+
+**⚠️ Check for unrelated screenshot diffs after recording:** `finalizeTestRoborazziDebug` can re-write screenshots beyond the ones targeted by `--tests`, picking up stale images left in `build/intermediates/roborazzi/` from earlier runs. These often differ only by minor font-rendering/anti-aliasing from the machine that produced the committed baseline. After recording, run `git status` on the module's `screenshots/` directory and `git checkout --` any files you didn't intend to change.
 
 ---
 

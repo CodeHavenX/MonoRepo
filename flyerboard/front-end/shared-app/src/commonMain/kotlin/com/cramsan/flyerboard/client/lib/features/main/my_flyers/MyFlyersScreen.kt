@@ -34,7 +34,6 @@ import flyerboard_lib.my_flyers_screen_button_submit
 import flyerboard_lib.my_flyers_screen_empty_message
 import flyerboard_lib.my_flyers_screen_navigate_back
 import flyerboard_lib.my_flyers_screen_title
-import flyerboard_ui.app_bar_action_sign_out
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -44,8 +43,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun MyFlyersScreen(
     modifier: Modifier = Modifier,
-    isAuthenticated: Boolean = false,
-    onSignOut: () -> Unit = {},
     viewModel: MyFlyersViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -63,8 +60,6 @@ fun MyFlyersScreen(
     MyFlyersContent(
         uiState = uiState,
         modifier = modifier,
-        isAuthenticated = isAuthenticated,
-        onSignOut = onSignOut,
         onNavigateBack = { viewModel.navigateBack() },
         onRefresh = { viewModel.refresh() },
         onSubmitFlyer = { viewModel.onSubmitFlyer() },
@@ -81,8 +76,6 @@ fun MyFlyersScreen(
 internal fun MyFlyersContent(
     uiState: MyFlyersUIState,
     modifier: Modifier = Modifier,
-    isAuthenticated: Boolean = false,
-    onSignOut: () -> Unit = {},
     onNavigateBack: () -> Unit,
     onRefresh: () -> Unit,
     onSubmitFlyer: () -> Unit = {},
@@ -105,11 +98,6 @@ internal fun MyFlyersContent(
                 actions = {
                     TextButton(onClick = onSubmitFlyer) {
                         Text(stringResource(Res.string.my_flyers_screen_button_submit))
-                    }
-                    if (isAuthenticated) {
-                        TextButton(onClick = onSignOut) {
-                            Text(stringResource(flyerboard_ui.Res.string.app_bar_action_sign_out))
-                        }
                     }
                     IconButton(onClick = onRefresh) {
                         Icon(

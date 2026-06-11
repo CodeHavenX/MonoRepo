@@ -3,7 +3,6 @@ package com.cramsan.flyerboard.client.lib.features.auth
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navDeepLink
 import com.cramsan.flyerboard.client.lib.features.auth.sign_in.SignInScreen
 import com.cramsan.flyerboard.client.lib.features.auth.sign_up.SignUpScreen
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
@@ -25,14 +24,12 @@ fun NavGraphBuilder.authNavGraphNavigation(
         composable(
             AuthDestination.SignInDestination::class,
             typeMap = typeMap,
-            deepLinks = listOf(navDeepLink<AuthDestination.SignInDestination>(basePath = "$AUTH_BASE_URL/sign-in")),
         ) {
             SignInScreen()
         }
         composable(
             AuthDestination.SignUpDestination::class,
             typeMap = typeMap,
-            deepLinks = listOf(navDeepLink<AuthDestination.SignUpDestination>(basePath = "$AUTH_BASE_URL/sign-up")),
         ) {
             SignUpScreen()
         }

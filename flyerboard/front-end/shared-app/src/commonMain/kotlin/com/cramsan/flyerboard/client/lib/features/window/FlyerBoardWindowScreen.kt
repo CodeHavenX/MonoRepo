@@ -107,9 +107,6 @@ fun FlyerBoardWindowScreen(
         }
     }
 
-    val isAuthenticated = uiState.authState is AuthState.Authenticated
-    val isAdmin = uiState.authState.let { it is AuthState.Authenticated && it.isAdmin }
-
     val onSignIn = {
         navController.navigate(FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination)
     }
@@ -133,7 +130,7 @@ fun FlyerBoardWindowScreen(
                     label = stringResource(Res.string.nav_my_flyers),
                     selected = currentDestination?.hasRoute(MainDestination.MyFlyersDestination::class) == true,
                     onClick = {
-                        if (isAuthenticated) {
+                        if (uiState.authState != AuthState.Unauthenticated) {
                             navController.navigate(MainDestination.MyFlyersDestination) {
                                 launchSingleTop = true
                             }
@@ -154,7 +151,7 @@ fun FlyerBoardWindowScreen(
                     },
                 ),
             )
-            if (isAdmin) {
+            if ((uiState.authState as? AuthState.Authenticated)?.isAdmin == true) {
                 add(
                     FlyerBoardTopBarTab(
                         label = stringResource(Res.string.nav_moderation),
@@ -178,7 +175,7 @@ fun FlyerBoardWindowScreen(
         startDestination = startDestination,
         initialDestination = initialDestination,
         isTopLevelMainDestination = isTopLevelMainDestination,
-        isAuthenticated = isAuthenticated,
+        authState = uiState.authState,
         tabs = tabs,
         onSignIn = onSignIn,
         onSignOut = onSignOut,
@@ -192,7 +189,7 @@ private fun WindowsContent(
     startDestination: FlyerBoardWindowNavGraphDestination,
     initialDestination: Destination?,
     isTopLevelMainDestination: Boolean,
-    isAuthenticated: Boolean,
+    authState: AuthState,
     tabs: List<FlyerBoardTopBarTab>,
     onSignIn: () -> Unit,
     onSignOut: () -> Unit,
@@ -203,7 +200,7 @@ private fun WindowsContent(
                 if (isTopLevelMainDestination) {
                     FlyerBoardMainTopBar(
                         tabs = tabs,
-                        isAuthenticated = isAuthenticated,
+                        isAuthenticated = authState is AuthState.Authenticated,
                         onSignIn = onSignIn,
                         onSignOut = onSignOut,
                     )
@@ -220,10 +217,8 @@ private fun WindowsContent(
                 modifier = Modifier.padding(paddingValues),
                 navHostController = navController,
                 startDestination = startDestination,
-                isAuthenticated = isAuthenticated,
+                authState = authState,
                 initialDestination = initialDestination,
-                onSignIn = onSignIn,
-                onSignOut = onSignOut,
             )
         }
     }
@@ -321,9 +316,7 @@ private suspend fun handleSnackbarEvent(
 private fun WindowNavigationHost(
     navHostController: NavHostController,
     startDestination: FlyerBoardWindowNavGraphDestination,
-    isAuthenticated: Boolean,
-    onSignIn: () -> Unit,
-    onSignOut: () -> Unit,
+    authState: AuthState,
     modifier: Modifier = Modifier,
     initialDestination: Destination? = null,
 ) {
@@ -345,9 +338,7 @@ private fun WindowNavigationHost(
         authNavGraphNavigation(typeMap)
         mainNavGraphNavigation(
             typeMap = typeMap,
-            isAuthenticated = isAuthenticated,
-            onSignIn = onSignIn,
-            onSignOut = onSignOut,
+            authState = authState,
         )
         debugSettingsNavGraph(
             graphDestination = FlyerBoardWindowNavGraphDestination.DebugSettingsNavGraphDestination::class,

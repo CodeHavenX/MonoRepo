@@ -50,7 +50,6 @@ import flyerboard_lib.moderation_queue_screen_reject_dialog_confirm
 import flyerboard_lib.moderation_queue_screen_reject_dialog_title
 import flyerboard_lib.moderation_queue_screen_reject_reason_label
 import flyerboard_lib.moderation_queue_screen_title
-import flyerboard_ui.app_bar_action_sign_out
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -60,8 +59,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ModerationQueueScreen(
     modifier: Modifier = Modifier,
-    isAuthenticated: Boolean = false,
-    onSignOut: () -> Unit = {},
     viewModel: ModerationQueueViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -79,8 +76,6 @@ fun ModerationQueueScreen(
     ModerationQueueContent(
         uiState = uiState,
         modifier = modifier,
-        isAuthenticated = isAuthenticated,
-        onSignOut = onSignOut,
         onNavigateBack = { viewModel.navigateBack() },
         onRefresh = { viewModel.refresh() },
         onApprove = { viewModel.approveFlyer(it.id) },
@@ -98,8 +93,6 @@ fun ModerationQueueScreen(
 internal fun ModerationQueueContent(
     uiState: ModerationQueueUIState,
     modifier: Modifier = Modifier,
-    isAuthenticated: Boolean = false,
-    onSignOut: () -> Unit = {},
     onNavigateBack: () -> Unit,
     onRefresh: () -> Unit,
     onApprove: (FlyerModel) -> Unit,
@@ -121,11 +114,6 @@ internal fun ModerationQueueContent(
                     }
                 },
                 actions = {
-                    if (isAuthenticated) {
-                        TextButton(onClick = onSignOut) {
-                            Text(stringResource(flyerboard_ui.Res.string.app_bar_action_sign_out))
-                        }
-                    }
                     IconButton(onClick = onRefresh) {
                         Icon(
                             imageVector = Icons.Default.Refresh,

@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,8 +35,6 @@ import flyerboard_lib.archive_screen_empty_message
 import flyerboard_lib.archive_screen_navigate_back
 import flyerboard_lib.archive_screen_search_placeholder
 import flyerboard_lib.archive_screen_title
-import flyerboard_ui.app_bar_action_sign_in
-import flyerboard_ui.app_bar_action_sign_out
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -47,9 +44,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ArchiveScreen(
     modifier: Modifier = Modifier,
-    isAuthenticated: Boolean = false,
-    onSignIn: () -> Unit = {},
-    onSignOut: () -> Unit = {},
     viewModel: ArchiveViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -67,9 +61,6 @@ fun ArchiveScreen(
     ArchiveContent(
         uiState = uiState,
         modifier = modifier,
-        isAuthenticated = isAuthenticated,
-        onSignIn = onSignIn,
-        onSignOut = onSignOut,
         onNavigateBack = { viewModel.navigateBack() },
         onRefresh = { viewModel.refresh() },
         onQueryChanged = { viewModel.onQueryChanged(it) },
@@ -85,9 +76,6 @@ fun ArchiveScreen(
 internal fun ArchiveContent(
     uiState: ArchiveUIState,
     modifier: Modifier = Modifier,
-    isAuthenticated: Boolean = false,
-    onSignIn: () -> Unit = {},
-    onSignOut: () -> Unit = {},
     onNavigateBack: () -> Unit,
     onRefresh: () -> Unit,
     onQueryChanged: (String) -> Unit = {},
@@ -107,15 +95,6 @@ internal fun ArchiveContent(
                     }
                 },
                 actions = {
-                    if (isAuthenticated) {
-                        TextButton(onClick = onSignOut) {
-                            Text(stringResource(flyerboard_ui.Res.string.app_bar_action_sign_out))
-                        }
-                    } else {
-                        TextButton(onClick = onSignIn) {
-                            Text(stringResource(flyerboard_ui.Res.string.app_bar_action_sign_in))
-                        }
-                    }
                     IconButton(onClick = onRefresh) {
                         Icon(
                             imageVector = Icons.Default.Refresh,

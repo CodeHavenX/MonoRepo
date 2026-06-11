@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import com.cramsan.flyerboard.client.lib.features.window.AuthState
 import com.cramsan.flyerboard.client.lib.models.FlyerModel
 import com.cramsan.flyerboard.client.ui.components.EmptyStateBox
 import com.cramsan.flyerboard.client.ui.components.FlyerBoardSearchBar
@@ -49,7 +50,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun FlyerListScreen(
     modifier: Modifier = Modifier,
-    isAuthenticated: Boolean = false,
+    authState: AuthState,
     viewModel: FlyerListViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -67,7 +68,7 @@ fun FlyerListScreen(
     FlyerListContent(
         uiState = uiState,
         modifier = modifier,
-        isAuthenticated = isAuthenticated,
+        authState = authState,
         onRefresh = { viewModel.refresh() },
         onQueryChanged = { viewModel.onQueryChanged(it) },
         onSubmitFlyer = { viewModel.onSubmitFlyer() },
@@ -83,7 +84,7 @@ fun FlyerListScreen(
 internal fun FlyerListContent(
     uiState: FlyerListUIState,
     modifier: Modifier = Modifier,
-    isAuthenticated: Boolean,
+    authState: AuthState,
     onRefresh: () -> Unit,
     onQueryChanged: (String) -> Unit = {},
     onSubmitFlyer: () -> Unit = {},
@@ -92,7 +93,7 @@ internal fun FlyerListContent(
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
-            if (isAuthenticated) {
+            if (authState is AuthState.Authenticated) {
                 FloatingActionButton(
                     onClick = onSubmitFlyer,
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,

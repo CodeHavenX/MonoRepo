@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -18,12 +20,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -36,8 +36,6 @@ import com.cramsan.flyerboard.client.ui.components.LoadingStateBox
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
-import flyerboard_lib.app_bar_action_sign_in
-import flyerboard_lib.app_bar_action_sign_out
 import flyerboard_lib.flyer_list_screen_button_submit
 import flyerboard_lib.flyer_list_screen_empty_message
 import flyerboard_lib.flyer_list_screen_search_placeholder
@@ -52,8 +50,6 @@ import org.koin.compose.viewmodel.koinViewModel
 fun FlyerListScreen(
     modifier: Modifier = Modifier,
     isAuthenticated: Boolean = false,
-    onSignIn: () -> Unit = {},
-    onSignOut: () -> Unit = {},
     viewModel: FlyerListViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -72,8 +68,6 @@ fun FlyerListScreen(
         uiState = uiState,
         modifier = modifier,
         isAuthenticated = isAuthenticated,
-        onSignIn = onSignIn,
-        onSignOut = onSignOut,
         onRefresh = { viewModel.refresh() },
         onQueryChanged = { viewModel.onQueryChanged(it) },
         onSubmitFlyer = { viewModel.onSubmitFlyer() },
@@ -90,8 +84,6 @@ internal fun FlyerListContent(
     uiState: FlyerListUIState,
     modifier: Modifier = Modifier,
     isAuthenticated: Boolean,
-    onSignIn: () -> Unit = {},
-    onSignOut: () -> Unit = {},
     onRefresh: () -> Unit,
     onQueryChanged: (String) -> Unit = {},
     onSubmitFlyer: () -> Unit = {},
@@ -99,28 +91,6 @@ internal fun FlyerListContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(Res.string.flyer_list_screen_title)) },
-                actions = {
-                    if (isAuthenticated) {
-                        TextButton(onClick = onSignOut) {
-                            Text(stringResource(Res.string.app_bar_action_sign_out))
-                        }
-                    } else {
-                        TextButton(onClick = onSignIn) {
-                            Text(stringResource(Res.string.app_bar_action_sign_in))
-                        }
-                    }
-                    IconButton(onClick = onRefresh) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = stringResource(Res.string.flyer_list_screen_title),
-                        )
-                    }
-                },
-            )
-        },
         floatingActionButton = {
             if (isAuthenticated) {
                 FloatingActionButton(
@@ -139,12 +109,23 @@ internal fun FlyerListContent(
         Column(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
         ) {
-            FlyerBoardSearchBar(
-                query = uiState.query,
-                onQueryChange = onQueryChanged,
-                placeholder = stringResource(Res.string.flyer_list_screen_search_placeholder),
-                modifier = Modifier.padding(horizontal = Padding.MEDIUM, vertical = Padding.SMALL),
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Padding.MEDIUM, vertical = Padding.SMALL),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                FlyerBoardSearchBar(
+                    query = uiState.query,
+                    onQueryChange = onQueryChanged,
+                    placeholder = stringResource(Res.string.flyer_list_screen_search_placeholder),
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = onRefresh) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = stringResource(Res.string.flyer_list_screen_title),
+                    )
+                }
+            }
             Box(modifier = Modifier.fillMaxSize()) {
                 when (val state = uiState) {
                     is FlyerListUIState.Loading -> {

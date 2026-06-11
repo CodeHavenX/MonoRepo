@@ -43,7 +43,6 @@ import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
-import flyerboard_lib.app_bar_action_sign_out
 import flyerboard_lib.moderation_queue_screen_empty_message
 import flyerboard_lib.moderation_queue_screen_navigate_back
 import flyerboard_lib.moderation_queue_screen_reject_dialog_cancel
@@ -51,6 +50,7 @@ import flyerboard_lib.moderation_queue_screen_reject_dialog_confirm
 import flyerboard_lib.moderation_queue_screen_reject_dialog_title
 import flyerboard_lib.moderation_queue_screen_reject_reason_label
 import flyerboard_lib.moderation_queue_screen_title
+import flyerboard_ui.app_bar_action_sign_out
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -123,7 +123,7 @@ internal fun ModerationQueueContent(
                 actions = {
                     if (isAuthenticated) {
                         TextButton(onClick = onSignOut) {
-                            Text(stringResource(Res.string.app_bar_action_sign_out))
+                            Text(stringResource(flyerboard_ui.Res.string.app_bar_action_sign_out))
                         }
                     }
                     IconButton(onClick = onRefresh) {

@@ -4,27 +4,17 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.Gavel
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -41,6 +31,9 @@ import com.cramsan.flyerboard.client.lib.features.main.mainNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.splash.SplashScreen
 import com.cramsan.flyerboard.client.lib.navigation.flyerBoardEntryToPath
 import com.cramsan.flyerboard.client.lib.navigation.pathToDestination
+import com.cramsan.flyerboard.client.ui.components.FlyerBoardFooter
+import com.cramsan.flyerboard.client.ui.components.FlyerBoardMainTopBar
+import com.cramsan.flyerboard.client.ui.components.FlyerBoardTopBarTab
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
@@ -65,19 +58,6 @@ fun FlyerBoardWindowScreen(
     viewModel: FlyerBoardWindowViewModel = koinViewModel(),
     startDestination: FlyerBoardWindowNavGraphDestination =
         FlyerBoardWindowNavGraphDestination.SplashNavGraphDestination,
-) {
-    WindowsContent(
-        eventHandler = eventHandler,
-        viewModel = viewModel,
-        startDestination = startDestination,
-    )
-}
-
-@Composable
-private fun WindowsContent(
-    startDestination: FlyerBoardWindowNavGraphDestination,
-    viewModel: FlyerBoardWindowViewModel,
-    eventHandler: FlyerBoardApplicationMainScreenEventHandler,
 ) {
     val navController = rememberNavController()
     val browserNavigator = remember { BrowserNavigator() }
@@ -130,47 +110,107 @@ private fun WindowsContent(
     val isAuthenticated = uiState.authState is AuthState.Authenticated
     val isAdmin = uiState.authState.let { it is AuthState.Authenticated && it.isAdmin }
 
+    val onSignIn = {
+        navController.navigate(FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination)
+    }
+    val onSignOut = { viewModel.signOut() }
+
+    val tabs =
+        buildList {
+            add(
+                FlyerBoardTopBarTab(
+                    label = stringResource(Res.string.nav_browse),
+                    selected = currentDestination?.hasRoute(MainDestination.FlyerListDestination::class) == true,
+                    onClick = {
+                        navController.navigate(MainDestination.FlyerListDestination) {
+                            launchSingleTop = true
+                        }
+                    },
+                ),
+            )
+            add(
+                FlyerBoardTopBarTab(
+                    label = stringResource(Res.string.nav_my_flyers),
+                    selected = currentDestination?.hasRoute(MainDestination.MyFlyersDestination::class) == true,
+                    onClick = {
+                        if (isAuthenticated) {
+                            navController.navigate(MainDestination.MyFlyersDestination) {
+                                launchSingleTop = true
+                            }
+                        } else {
+                            onSignIn()
+                        }
+                    },
+                ),
+            )
+            add(
+                FlyerBoardTopBarTab(
+                    label = stringResource(Res.string.nav_archive),
+                    selected = currentDestination?.hasRoute(MainDestination.ArchiveDestination::class) == true,
+                    onClick = {
+                        navController.navigate(MainDestination.ArchiveDestination) {
+                            launchSingleTop = true
+                        }
+                    },
+                ),
+            )
+            if (isAdmin) {
+                add(
+                    FlyerBoardTopBarTab(
+                        label = stringResource(Res.string.nav_moderation),
+                        selected =
+                        currentDestination?.hasRoute(
+                            MainDestination.ModerationQueueDestination::class,
+                        ) == true,
+                        onClick = {
+                            navController.navigate(MainDestination.ModerationQueueDestination) {
+                                launchSingleTop = true
+                            }
+                        },
+                    ),
+                )
+            }
+        }
+
+    WindowsContent(
+        navController = navController,
+        snackbarHostState = snackbarHostState,
+        startDestination = startDestination,
+        initialDestination = initialDestination,
+        isTopLevelMainDestination = isTopLevelMainDestination,
+        isAuthenticated = isAuthenticated,
+        tabs = tabs,
+        onSignIn = onSignIn,
+        onSignOut = onSignOut,
+    )
+}
+
+@Composable
+private fun WindowsContent(
+    navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
+    startDestination: FlyerBoardWindowNavGraphDestination,
+    initialDestination: Destination?,
+    isTopLevelMainDestination: Boolean,
+    isAuthenticated: Boolean,
+    tabs: List<FlyerBoardTopBarTab>,
+    onSignIn: () -> Unit,
+    onSignOut: () -> Unit,
+) {
     AppTheme {
         Scaffold(
-            bottomBar = {
+            topBar = {
                 if (isTopLevelMainDestination) {
-                    FlyerBoardBottomNavBar(
-                        isAdmin = isAdmin,
-                        currentDestination = currentDestination,
-                        onBrowse = {
-                            navController.navigate(MainDestination.FlyerListDestination) {
-                                launchSingleTop = true
-                            }
-                        },
-                        onArchive = {
-                            navController.navigate(MainDestination.ArchiveDestination) {
-                                launchSingleTop = true
-                            }
-                        },
-                        onMyFlyers = {
-                            if (isAuthenticated) {
-                                navController.navigate(MainDestination.MyFlyersDestination) {
-                                    launchSingleTop = true
-                                }
-                            } else {
-                                navController.navigate(
-                                    FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination,
-                                )
-                            }
-                        },
-                        onModeration = {
-                            if (isAdmin) {
-                                navController.navigate(MainDestination.ModerationQueueDestination) {
-                                    launchSingleTop = true
-                                }
-                            } else {
-                                navController.navigate(
-                                    FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination,
-                                )
-                            }
-                        },
+                    FlyerBoardMainTopBar(
+                        tabs = tabs,
+                        isAuthenticated = isAuthenticated,
+                        onSignIn = onSignIn,
+                        onSignOut = onSignOut,
                     )
                 }
+            },
+            bottomBar = {
+                FlyerBoardFooter()
             },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
@@ -182,52 +222,8 @@ private fun WindowsContent(
                 startDestination = startDestination,
                 isAuthenticated = isAuthenticated,
                 initialDestination = initialDestination,
-                onSignIn = {
-                    navController.navigate(FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination)
-                },
-                onSignOut = { viewModel.signOut() },
-            )
-        }
-    }
-}
-
-@Composable
-private fun FlyerBoardBottomNavBar(
-    isAdmin: Boolean,
-    currentDestination: NavDestination?,
-    onBrowse: () -> Unit,
-    onArchive: () -> Unit,
-    onMyFlyers: () -> Unit,
-    onModeration: () -> Unit,
-) {
-    NavigationBar {
-        NavigationBarItem(
-            selected = currentDestination?.hasRoute(MainDestination.FlyerListDestination::class) == true,
-            onClick = onBrowse,
-            icon = { Icon(Icons.Default.Home, contentDescription = null) },
-            label = { Text(stringResource(Res.string.nav_browse)) },
-        )
-        NavigationBarItem(
-            selected = currentDestination?.hasRoute(MainDestination.ArchiveDestination::class) == true,
-            onClick = onArchive,
-            icon = { Icon(Icons.Default.Archive, contentDescription = null) },
-            label = { Text(stringResource(Res.string.nav_archive)) },
-        )
-        NavigationBarItem(
-            selected = currentDestination?.hasRoute(MainDestination.MyFlyersDestination::class) == true,
-            onClick = onMyFlyers,
-            icon = { Icon(Icons.Default.Person, contentDescription = null) },
-            label = { Text(stringResource(Res.string.nav_my_flyers)) },
-        )
-        if (isAdmin) {
-            NavigationBarItem(
-                selected =
-                currentDestination?.hasRoute(
-                    MainDestination.ModerationQueueDestination::class,
-                ) == true,
-                onClick = onModeration,
-                icon = { Icon(Icons.Default.Gavel, contentDescription = null) },
-                label = { Text(stringResource(Res.string.nav_moderation)) },
+                onSignIn = onSignIn,
+                onSignOut = onSignOut,
             )
         }
     }

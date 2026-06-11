@@ -39,8 +39,6 @@ fun NavGraphBuilder.mainNavGraphNavigation(
         ) {
             FlyerListScreen(
                 isAuthenticated = isAuthenticated,
-                onSignIn = onSignIn,
-                onSignOut = onSignOut,
             )
         }
         composable(

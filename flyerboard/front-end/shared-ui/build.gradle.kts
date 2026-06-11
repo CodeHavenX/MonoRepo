@@ -55,6 +55,7 @@ android {
 
 compose.resources {
     packageOfResClass = "flyerboard_ui"
+    publicResClass = true
 }
 
 roborazzi {

@@ -32,12 +32,12 @@ import com.cramsan.flyerboard.client.ui.components.LoadingStateBox
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
-import flyerboard_lib.app_bar_action_sign_in
-import flyerboard_lib.app_bar_action_sign_out
 import flyerboard_lib.archive_screen_empty_message
 import flyerboard_lib.archive_screen_navigate_back
 import flyerboard_lib.archive_screen_search_placeholder
 import flyerboard_lib.archive_screen_title
+import flyerboard_ui.app_bar_action_sign_in
+import flyerboard_ui.app_bar_action_sign_out
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -109,11 +109,11 @@ internal fun ArchiveContent(
                 actions = {
                     if (isAuthenticated) {
                         TextButton(onClick = onSignOut) {
-                            Text(stringResource(Res.string.app_bar_action_sign_out))
+                            Text(stringResource(flyerboard_ui.Res.string.app_bar_action_sign_out))
                         }
                     } else {
                         TextButton(onClick = onSignIn) {
-                            Text(stringResource(Res.string.app_bar_action_sign_in))
+                            Text(stringResource(flyerboard_ui.Res.string.app_bar_action_sign_in))
                         }
                     }
                     IconButton(onClick = onRefresh) {

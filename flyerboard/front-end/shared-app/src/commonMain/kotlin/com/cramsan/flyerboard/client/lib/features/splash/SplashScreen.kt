@@ -64,6 +64,7 @@ fun SplashScreen(
 /**
  * Content of the Splash screen.
  */
+@Suppress("UnusedParameter")
 @Composable
 internal fun SplashContent(
     content: SplashUIState,

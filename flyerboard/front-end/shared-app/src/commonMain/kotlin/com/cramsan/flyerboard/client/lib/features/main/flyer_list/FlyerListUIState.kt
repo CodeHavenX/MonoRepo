@@ -7,19 +7,22 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  * UI state for the Flyer List screen.
  */
 sealed class FlyerListUIState : ViewModelUIState {
+    /** The current search query, shared by all states so the search bar always has a value. */
+    abstract val query: String
+
     /** Flyers are being fetched. */
-    data object Loading : FlyerListUIState()
+    data class Loading(override val query: String = "") : FlyerListUIState()
 
     /** Flyers loaded successfully with at least one item. */
-    data class Content(val flyers: List<FlyerModel>) : FlyerListUIState()
+    data class Content(val flyers: List<FlyerModel>, override val query: String = "") : FlyerListUIState()
 
     /** Flyers loaded successfully but the list is empty. */
-    data object Empty : FlyerListUIState()
+    data class Empty(override val query: String = "") : FlyerListUIState()
 
     /** Loading failed; detail is shown in a snackbar. */
-    data class Error(val message: String) : FlyerListUIState()
+    data class Error(val message: String, override val query: String = "") : FlyerListUIState()
 
     companion object {
-        val Initial: FlyerListUIState = Loading
+        val Initial: FlyerListUIState = Loading()
     }
 }

@@ -6,6 +6,7 @@ import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.ui.preview.DevicePreviews
 import com.cramsan.ui.preview.ScreenPreviews
 
 private val sampleFlyers =
@@ -34,7 +35,7 @@ private val sampleFlyers =
         ),
     )
 
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun FlyerListScreenPreview() =
     AppTheme(dynamicColor = false) {
@@ -49,7 +50,7 @@ private fun FlyerListScreenPreview() =
 /**
  * Preview for the Flyer List screen with content.
  */
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun FlyerListScreenAuthenticatedPreview() =
     AppTheme {
@@ -69,7 +70,7 @@ private fun FlyerListScreenAuthenticatedPreview() =
 private fun FlyerListScreenLoadingPreview() =
     AppTheme {
         FlyerListContent(
-            uiState = FlyerListUIState.Loading,
+            uiState = FlyerListUIState.Loading(),
             isAuthenticated = false,
             onRefresh = {},
             onFlyerSelected = {},
@@ -84,7 +85,7 @@ private fun FlyerListScreenLoadingPreview() =
 private fun FlyerListScreenEmptyPreview() =
     AppTheme {
         FlyerListContent(
-            uiState = FlyerListUIState.Empty,
+            uiState = FlyerListUIState.Empty(),
             isAuthenticated = false,
             onRefresh = {},
             onFlyerSelected = {},

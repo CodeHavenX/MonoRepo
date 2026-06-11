@@ -87,8 +87,8 @@ private fun WindowsContent(
     // clearStack navigation overwrites the target.
     val initialDestination: Destination? =
         remember {
-        browserNavigator.getInitialPath()?.let { pathToDestination(it) }
-    }
+            browserNavigator.getInitialPath()?.let { pathToDestination(it) }
+        }
 
     LaunchedEffect(Unit) {
         browserNavigator.attach(

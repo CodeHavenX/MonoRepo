@@ -1,4 +1,5 @@
 .gradle
+active-modules.properties
 .DS_Store
 .externalNativeBuild
 /local.properties

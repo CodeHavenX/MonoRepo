@@ -1,3 +1,6 @@
+import java.io.File
+import java.util.Properties
+
 pluginManagement {
     includeBuild("build-logic")
     repositories {
@@ -29,81 +32,88 @@ refreshVersions {
     }
 }
 
-// In the root's build.gradle.kts file, we have a task called `releaseAll` that depends on
-// the `release` task of each module. This is used to build and test all modules at once.
-// When adding a new module, make sure to also add it to that task as well.
-include("framework:assert")
-include("framework:configuration")
-include("framework:crashhandler")
-include("framework:core")
-include("framework:core-compose")
-include("framework:core-ktor")
-include("framework:halt")
-include("framework:interfacelib")
-include("framework:interfacelib-test")
-include("framework:logging")
-include("framework:metrics")
-include("framework:userevents")
-include("framework:preferences")
-include("framework:thread")
-include("framework:test")
-include("framework:test-roborazzi")
-include("framework:ui-preview")
-include("framework:utils")
-include("framework:annotations")
-include("framework:web-route-ksp")
-include("framework:network-api")
-include("framework:http-serializers")
+// "templates" excludes devtools/templates (scaffolding templates, not real modules) and
+// "intellij-plugin" is a standalone build not wired into this root project.
+val excludedDirNames = setOf(".git", ".gradle", ".kotlin", "build", "node_modules", "build-logic", "templates", "intellij-plugin")
 
-include("samples:android-app")
-include("samples:android-lib")
-include("samples:jbcompose-mpp-lib")
-include("samples:jbcompose-desktop-app")
-include("samples:jbcompose-android-app")
-include("samples:jbcompose-wasm-app")
-include("samples:mpp-lib")
-include("samples:jvm-lib")
-include("samples:jvm-application")
-include("samples:nodejs-app")
-include("samples:service-ktor")
+fun discoverAllModules(rootDir: File): Map<String, File> {
+    return rootDir.walkTopDown()
+        .onEnter { it.name !in excludedDirNames }
+        .filter { it.name == "build.gradle.kts" || it.name == "build.gradle" }
+        .filter { it.parentFile != rootDir }
+        .associate { buildFile ->
+            val relativePath = buildFile.parentFile.relativeTo(rootDir).path
+            val moduleName = ":" + relativePath.replace(File.separatorChar, ':')
+            moduleName to buildFile.parentFile
+        }
+}
 
-include("framework-samples:framework-sample-app")
-include("framework-samples:app-android")
-include("framework-samples:app-jvm")
-include("framework-samples:app-wasm")
+fun parseModuleDeps(buildFile: File): List<String> {
+    if (!buildFile.exists()) return emptyList()
 
-include("ui-catalog")
+    val projectDepRegex = Regex("""project\(["']([^"']+)["']\)""")
+    return buildFile.readLines()
+        .flatMap { line -> projectDepRegex.findAll(line).map { it.groupValues[1] } }
+        .distinct()
+}
 
-include("edifikana:back-end")
-include("edifikana:shared")
-include("edifikana:api")
-include("edifikana:front-end:shared-ui")
-include("edifikana:front-end:shared-app")
-include("edifikana:front-end:app-android")
-include("edifikana:front-end:app-jvm")
-include("edifikana:front-end:app-wasm")
+fun buildDependencyGraph(allModules: Map<String, File>): Map<String, List<String>> {
+    return allModules.mapValues { (_, moduleDir) ->
+        val buildFile = moduleDir.resolve("build.gradle.kts")
+            .takeIf { it.exists() }
+            ?: moduleDir.resolve("build.gradle")
+        parseModuleDeps(buildFile)
+    }
+}
 
-include("runasimi:front-end:shared-ui")
-include("runasimi:front-end:shared-app")
-include("runasimi:front-end:app-wasm")
-include("runasimi:front-end:app-android")
-include("runasimi:front-end:app-jvm")
-include("runasimi:api")
-include("runasimi:back-end")
+fun resolveTransitiveDeps(
+    module: String,
+    graph: Map<String, List<String>>,
+    resolved: MutableSet<String> = linkedSetOf()
+): Set<String> {
+    if (module in resolved) return resolved
+    if (!graph.containsKey(module)) {
+        println("⚠️  Warning: '$module' not found in module graph — skipping")
+        return resolved
+    }
+    resolved.add(module)
+    graph[module].orEmpty().forEach { dep ->
+        resolveTransitiveDeps(dep, graph, resolved)
+    }
+    return resolved
+}
 
-include("architecture:back-end-architecture")
-include("architecture:back-end-architecture-test")
-include("architecture:front-end-architecture")
+val activeModulesFile = file("active-modules.properties")
 
-include("flyerboard:back-end")
-include("flyerboard:shared")
-include("flyerboard:api")
-include("flyerboard:front-end:shared-ui")
-include("flyerboard:front-end:shared-app")
-include("flyerboard:front-end:app-wasm")
-include("flyerboard:front-end:app-jvm")
+if (!activeModulesFile.exists()) {
+    // ── Full sync (CI / fresh clone) ──────────
+    discoverAllModules(rootDir).keys.sorted().forEach { include(it) }
+} else {
+    // ── Selective sync ────────────────────────
+    val props = Properties().apply { load(activeModulesFile.inputStream()) }
+    val requestedModules = props.getProperty("modules", "")
+        .split(",")
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
 
-include("devtools:core")
-include("devtools:cli")
+    if (requestedModules.isEmpty()) {
+        println("⚠️  active-modules.properties is empty — loading all modules")
+        discoverAllModules(rootDir).keys.sorted().forEach { include(it) }
+    } else {
+        val allModules = discoverAllModules(rootDir)
+        val graph = buildDependencyGraph(allModules)
 
-include("detekt-rules")
+        val toLoad = (requestedModules + ":detekt-rules")
+            .flatMap { resolveTransitiveDeps(it, graph) }
+            .toSortedSet()
+
+        println(buildString {
+            appendLine("🔧 Selective sync — resolving transitive deps...")
+            appendLine("   Requested    : ${requestedModules.joinToString()}")
+            appendLine("   Also loading : ${(toLoad - requestedModules.toSet()).joinToString().ifEmpty { "none" }}")
+            appendLine("   Total modules: ${toLoad.size} / ${allModules.size}")
+        })
+
+        toLoad.forEach { include(it) }
+    }
+}

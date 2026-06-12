@@ -96,6 +96,15 @@ class SignInViewModel(dependencies: ViewModelDependencies, private val authManag
         }
     }
 
+    /**
+     * Close the current screen
+     */
+    fun close() {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
+        }
+    }
+
     companion object {
         private const val TAG = "SignInViewModel"
     }

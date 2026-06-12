@@ -2,12 +2,13 @@ package com.cramsan.flyerboard.client.lib.features.auth.sign_in
 
 import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
+import com.cramsan.ui.preview.DevicePreviews
 import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the Sign In screen.
  */
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun SignInScreenPreview() =
     AppTheme {
@@ -18,6 +19,7 @@ private fun SignInScreenPreview() =
             onSignInClicked = {},
             onSignUpClicked = {},
             onDebugIconClicked = {},
+            onCloseIconClicked = {},
         )
     }
 
@@ -35,5 +37,6 @@ private fun SignInScreenLoadingPreview() =
             onSignInClicked = {},
             onSignUpClicked = {},
             onDebugIconClicked = {},
+            onCloseIconClicked = {},
         )
     }

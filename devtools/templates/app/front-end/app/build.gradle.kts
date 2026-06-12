@@ -48,7 +48,7 @@ kotlin {
 
             implementation(project(":ui-catalog"))
 
-            implementation(project(":templatereplaceme:shared"))
+            implementation(project(":templatereplaceme:models"))
             implementation(project(":templatereplaceme:api"))
             implementation(project(":templatereplaceme:front-end:ui-components"))
 

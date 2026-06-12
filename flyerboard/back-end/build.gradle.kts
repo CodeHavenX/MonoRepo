@@ -73,7 +73,7 @@ dependencies {
 
     implementation(project(":architecture:back-end-architecture"))
 
-    implementation(project(":flyerboard:shared"))
+    implementation(project(":flyerboard:models"))
     implementation(project(":flyerboard:api"))
 
     implementation("io.insert-koin:koin-core:_")

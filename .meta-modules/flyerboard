@@ -1,5 +1,5 @@
 :flyerboard:back-end
-:flyerboard:shared
+:flyerboard:models
 :flyerboard:api
 :flyerboard:front-end:ui-components
 :flyerboard:front-end:app

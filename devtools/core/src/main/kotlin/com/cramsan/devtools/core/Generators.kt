@@ -17,9 +17,9 @@ fun generateApi(
             "devtools/templates/api/ComponentReplaceMeApi.kt" to
                 "$app/api/src/commonMain/kotlin/com/cramsan/$app/api/${name}Api.kt",
             "devtools/templates/api/CreateComponentReplaceMeNetworkRequest.kt" to
-                "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/Create${name}NetworkRequest.kt",
+                "$app/models/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/Create${name}NetworkRequest.kt",
             "devtools/templates/api/ComponentReplaceMeNetworkResponse.kt" to
-                "$app/shared/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/${name}NetworkResponse.kt",
+                "$app/models/src/commonMain/kotlin/com/cramsan/$app/lib/model/network/${name}NetworkResponse.kt",
         ),
         checklist = listOf("[ ] Wire-up this Api with its respective Controller"),
     )

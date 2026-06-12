@@ -13,7 +13,7 @@ Analyze framework, architecture module, and shared library code in a given scope
 
 Read `.claude/skills/_shared/scope-resolution.md` and follow those instructions.
 
-Restrict the resolved file list to files under `framework/`, `architecture/`, `shared/`, and `api/` directories at the repo root level. Skip files that are clearly in `front-end/` feature code or `back-end/` application code.
+Restrict the resolved file list to files under `framework/`, `architecture/`, `models/`, and `api/` directories at the repo root level. Skip files that are clearly in `front-end/` feature code or `back-end/` application code.
 
 Read each relevant file fully before analysing.
 

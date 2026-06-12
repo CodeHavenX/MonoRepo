@@ -54,7 +54,7 @@ kotlin {
 
             implementation(project(":ui-catalog"))
 
-            implementation(project(":edifikana:shared"))
+            implementation(project(":edifikana:models"))
             implementation(project(":edifikana:api"))
             implementation(project(":edifikana:front-end:ui-components"))
 

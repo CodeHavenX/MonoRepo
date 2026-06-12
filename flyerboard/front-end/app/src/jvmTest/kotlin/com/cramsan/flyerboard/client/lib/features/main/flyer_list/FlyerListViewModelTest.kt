@@ -2,7 +2,9 @@ package com.cramsan.flyerboard.client.lib.features.main.flyer_list
 
 import app.cash.turbine.turbineScope
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
+import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
+import com.cramsan.flyerboard.client.lib.managers.AuthManager
 import com.cramsan.flyerboard.client.lib.managers.FlyerManager
 import com.cramsan.flyerboard.client.lib.models.FlyerModel
 import com.cramsan.flyerboard.client.lib.models.PaginatedFlyerModel
@@ -32,6 +34,7 @@ import kotlin.test.assertTrue
 
 class FlyerListViewModelTest : CoroutineTest() {
     private lateinit var flyerManager: FlyerManager
+    private lateinit var authManager: AuthManager
     private lateinit var viewModel: FlyerListViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -44,6 +47,7 @@ class FlyerListViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventBus = EventBus()
         windowEventBus = EventBus()
+        authManager = mockk()
         viewModel =
             FlyerListViewModel(
                 dependencies =
@@ -55,6 +59,7 @@ class FlyerListViewModelTest : CoroutineTest() {
                     applicationEventReceiver = applicationEventBus,
                 ),
                 flyerManager = flyerManager,
+                authManager = authManager,
             )
     }
 
@@ -124,12 +129,32 @@ class FlyerListViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onSubmitFlyer emits NavigateToScreen for FlyerSubmitDestination`() =
+    fun `primaryAction emits NavigateToScreen for AuthNavGraphDestination when unauthenticated`() =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
+                coEvery { authManager.isAuthenticated() } returns Result.success(false)
 
-                viewModel.onSubmitFlyer()
+                viewModel.primaryAction()
+
+                assertEquals(
+                    FlyerBoardWindowsEvent.NavigateToNavGraph(
+                        FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination,
+                    ),
+                    turbine.awaitItem(),
+                )
+                advanceUntilIdleAndAwaitComplete(turbine)
+            }
+        }
+
+    @Test
+    fun `primaryAction emits NavigateToScreen for FlyerSubmitDestination when authenticated`() =
+        runCoroutineTest {
+            turbineScope {
+                val turbine = windowEventBus.events.testIn(backgroundScope)
+                coEvery { authManager.isAuthenticated() } returns Result.success(true)
+
+                viewModel.primaryAction()
 
                 assertEquals(
                     FlyerBoardWindowsEvent.NavigateToScreen(
@@ -148,7 +173,7 @@ class FlyerListViewModelTest : CoroutineTest() {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
                 val flyerId = FlyerId("flyer-123")
 
-                viewModel.onFlyerSelected(flyerId)
+                viewModel.selectFlyer(flyerId)
 
                 val event = turbine.awaitItem()
                 assertEquals(

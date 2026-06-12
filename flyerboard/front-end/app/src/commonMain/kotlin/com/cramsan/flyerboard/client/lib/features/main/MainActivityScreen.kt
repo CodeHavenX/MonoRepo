@@ -11,7 +11,6 @@ import com.cramsan.flyerboard.client.lib.features.main.flyer_list.FlyerListScree
 import com.cramsan.flyerboard.client.lib.features.main.flyer_submit.FlyerSubmitScreen
 import com.cramsan.flyerboard.client.lib.features.main.moderation_queue.ModerationQueueScreen
 import com.cramsan.flyerboard.client.lib.features.main.my_flyers.MyFlyersScreen
-import com.cramsan.flyerboard.client.lib.features.window.AuthState
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
 import com.cramsan.framework.core.compose.navigation.navigationGraph
 import kotlin.jvm.JvmSuppressWildcards
@@ -23,7 +22,6 @@ import kotlin.reflect.KType
 @Suppress("LongMethod")
 fun NavGraphBuilder.mainNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
-    authState: AuthState,
 ) {
     navigationGraph(
         graphDestination = FlyerBoardWindowNavGraphDestination.MainNavGraphDestination::class,
@@ -34,9 +32,7 @@ fun NavGraphBuilder.mainNavGraphNavigation(
             MainDestination.FlyerListDestination::class,
             typeMap = typeMap,
         ) {
-            FlyerListScreen(
-                authState = authState,
-            )
+            FlyerListScreen()
         }
         composable(
             MainDestination.FlyerDetailDestination::class,

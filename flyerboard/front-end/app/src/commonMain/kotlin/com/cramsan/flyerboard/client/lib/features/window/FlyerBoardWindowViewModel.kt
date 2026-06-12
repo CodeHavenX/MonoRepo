@@ -1,7 +1,6 @@
 package com.cramsan.flyerboard.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
-import androidx.lifecycle.viewModelScope
 import com.cramsan.flyerboard.client.lib.managers.AuthManager
 import com.cramsan.flyerboard.client.lib.managers.FlyerManager
 import com.cramsan.framework.annotations.FrontendViewModel
@@ -80,12 +79,6 @@ class FlyerBoardWindowViewModel(
         viewModelCoroutineScope.launch {
             logI(TAG, "Result from snackbar: $result")
             delegatedEvents.push(FlyerBoardWindowDelegatedEvent.HandleSnackbarResult(result))
-        }
-    }
-
-    fun close() {
-        viewModelCoroutineScope.launch {
-            emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
         }
     }
 

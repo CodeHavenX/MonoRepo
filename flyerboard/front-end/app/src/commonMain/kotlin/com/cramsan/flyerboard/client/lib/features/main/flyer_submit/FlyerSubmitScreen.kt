@@ -8,22 +8,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,6 +33,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cramsan.flyerboard.client.lib.filepicker.FilePicker
+import com.cramsan.flyerboard.client.ui.components.FlyerBoardFormCard
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
@@ -48,7 +44,6 @@ import flyerboard_lib.flyer_submit_screen_expires_at_hint
 import flyerboard_lib.flyer_submit_screen_label_description
 import flyerboard_lib.flyer_submit_screen_label_expires_at
 import flyerboard_lib.flyer_submit_screen_label_title
-import flyerboard_lib.flyer_submit_screen_navigate_back
 import flyerboard_lib.flyer_submit_screen_subtitle
 import flyerboard_lib.flyer_submit_screen_title
 import flyerboard_lib.flyer_submit_screen_title_placeholder
@@ -103,19 +98,6 @@ internal fun FlyerSubmitContent(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(Res.string.flyer_submit_screen_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.flyer_submit_screen_navigate_back),
-                        )
-                    }
-                },
-            )
-        },
     ) { innerPadding ->
         Box(
             modifier = Modifier.padding(innerPadding).fillMaxSize(),
@@ -149,18 +131,13 @@ private fun FlyerSubmitForm(
     val scope = rememberCoroutineScope()
     val isSubmitting = uiState.status is SubmitStatus.Submitting
     val outlineColor = MaterialTheme.colorScheme.secondary
-    Column(
-        modifier =
-        modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(Padding.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(Padding.MEDIUM),
+
+    FlyerBoardFormCard(
+        title = stringResource(Res.string.flyer_submit_screen_title),
+        subtitle = stringResource(Res.string.flyer_submit_screen_subtitle),
+        modifier = modifier,
+        isLoading = isSubmitting,
     ) {
-        Text(
-            text = stringResource(Res.string.flyer_submit_screen_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-        )
         Box(
             modifier =
             Modifier

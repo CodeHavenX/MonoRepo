@@ -1,7 +1,9 @@
 package com.cramsan.flyerboard.client.lib.features.main.flyer_list
 
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
+import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
+import com.cramsan.flyerboard.client.lib.managers.AuthManager
 import com.cramsan.flyerboard.client.lib.managers.FlyerManager
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.framework.annotations.FrontendViewModel
@@ -14,8 +16,11 @@ import kotlinx.coroutines.launch
  * ViewModel for the Flyer List screen.
  */
 @FrontendViewModel
-class FlyerListViewModel(dependencies: ViewModelDependencies, private val flyerManager: FlyerManager) :
-    BaseViewModel<FlyerListEvent, FlyerListUIState>(dependencies, FlyerListUIState.Initial, TAG) {
+class FlyerListViewModel(
+    dependencies: ViewModelDependencies,
+    private val flyerManager: FlyerManager,
+    private val authManager: AuthManager,
+) : BaseViewModel<FlyerListEvent, FlyerListUIState>(dependencies, FlyerListUIState.Initial, TAG) {
     /**
      * Load the initial page of public flyers, optionally filtered by [query].
      */
@@ -56,16 +61,16 @@ class FlyerListViewModel(dependencies: ViewModelDependencies, private val flyerM
     /**
      * Update the search query and reload results.
      */
-    fun onQueryChanged(q: String) {
-        logI(TAG, "onQueryChanged q=$q")
+    fun changeQuery(q: String) {
+        logI(TAG, "changeQuery q=$q")
         loadFlyers(query = q.takeIf { it.isNotEmpty() })
     }
 
     /**
      * Navigate to the detail screen for [flyerId].
      */
-    fun onFlyerSelected(flyerId: FlyerId) {
-        logI(TAG, "onFlyerSelected: ${flyerId.flyerId}")
+    fun selectFlyer(flyerId: FlyerId) {
+        logI(TAG, "selectFlyer: ${flyerId.flyerId}")
         viewModelCoroutineScope.launch {
             emitWindowEvent(
                 FlyerBoardWindowsEvent.NavigateToScreen(
@@ -78,14 +83,22 @@ class FlyerListViewModel(dependencies: ViewModelDependencies, private val flyerM
     /**
      * Navigate to the Submit Flyer screen.
      */
-    fun onSubmitFlyer() {
-        logI(TAG, "onSubmitFlyer")
+    fun primaryAction() {
+        logI(TAG, "primaryAction")
         viewModelCoroutineScope.launch {
-            emitWindowEvent(
-                FlyerBoardWindowsEvent.NavigateToScreen(
-                    MainDestination.FlyerSubmitDestination,
-                ),
-            )
+            if (authManager.isAuthenticated().getOrNull() == true) {
+                emitWindowEvent(
+                    FlyerBoardWindowsEvent.NavigateToScreen(
+                        MainDestination.FlyerSubmitDestination,
+                    ),
+                )
+            } else {
+                emitWindowEvent(
+                    FlyerBoardWindowsEvent.NavigateToNavGraph(
+                        FlyerBoardWindowNavGraphDestination.AuthNavGraphDestination,
+                    ),
+                )
+            }
         }
     }
 

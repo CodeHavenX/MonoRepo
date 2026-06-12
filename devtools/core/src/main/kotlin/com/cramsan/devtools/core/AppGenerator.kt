@@ -12,7 +12,7 @@ import kotlin.io.path.writeText
 
 private val TEMPLATE_EXTENSIONS = setOf("kt", "kts", "xml", "conf", "json", "yml", "html", "css")
 
-private val CORE_MODULES = listOf("api", "shared", "back-end", "front-end:app", "front-end:ui-components")
+private val CORE_MODULES = listOf("api", "models", "back-end", "front-end:app", "front-end:ui-components")
 
 internal const val TEMPLATE_DEFAULT_FEATURE = "Placeholder"
 

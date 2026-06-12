@@ -71,7 +71,7 @@ dependencies {
 
     implementation(project(":architecture:back-end-architecture"))
 
-    implementation(project(":templatereplaceme:shared"))
+    implementation(project(":templatereplaceme:models"))
     implementation(project(":templatereplaceme:api"))
 
     implementation("io.insert-koin:koin-core:_")

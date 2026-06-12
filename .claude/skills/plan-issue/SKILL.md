@@ -102,7 +102,7 @@ Grep: "TODO" in the feature-relevant path
 
 1. Find existing domain models:
    ```
-   Glob: edifikana/shared/src/**/*Models.kt
+   Glob: edifikana/models/src/**/*Models.kt
    ```
 2. Find existing API interfaces:
    ```

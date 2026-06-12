@@ -74,7 +74,7 @@ dependencies {
 
     implementation(project(":architecture:back-end-architecture"))
 
-    implementation(project(":edifikana:shared"))
+    implementation(project(":edifikana:models"))
     implementation(project(":edifikana:api"))
 
     implementation("io.insert-koin:koin-core:_")

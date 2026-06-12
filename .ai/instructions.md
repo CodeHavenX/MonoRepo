@@ -43,7 +43,7 @@ framework/          # Reusable cross-platform libraries (logging, core, network,
 framework-samples/  # Sample apps exercising the framework modules
 architecture/       # Shared architecture modules (front-end-architecture, back-end-architecture)
 edifikana/          # Main project
-  shared/           # Shared domain models and serialization
+  models/           # Shared domain models and serialization
   api/              # API contracts
   back-end/         # Ktor back-end server
   front-end/

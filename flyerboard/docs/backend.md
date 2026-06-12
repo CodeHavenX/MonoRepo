@@ -32,7 +32,7 @@ Dependency injection is handled by **Koin**. Every layer depends only on interfa
 | Location | Purpose |
 |---|---|
 | `flyerboard/api` | Shared API contract objects (`FlyerApi`, `ModerationApi`, `UserApi`) |
-| `flyerboard/shared` | Shared network request/response models used by client and server |
+| `flyerboard/models` | Shared network request/response models used by client and server |
 | `flyerboard/back-end/src/main/.../controller/` | Ktor route handlers |
 | `flyerboard/back-end/src/main/.../service/` | Business logic services |
 | `flyerboard/back-end/src/main/.../datastore/` | Datastore interfaces and Supabase implementations |

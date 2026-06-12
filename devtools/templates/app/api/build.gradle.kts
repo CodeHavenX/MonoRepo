@@ -29,7 +29,7 @@ kotlin {
                 implementation(project(":framework:network-api"))
                 implementation(project(":framework:annotations"))
 
-                implementation(project(":templatereplaceme:shared"))
+                implementation(project(":templatereplaceme:models"))
 
                 implementation("io.ktor:ktor-http:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")

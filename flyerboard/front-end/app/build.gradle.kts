@@ -52,7 +52,7 @@ kotlin {
 
             implementation(project(":ui-catalog"))
 
-            implementation(project(":flyerboard:shared"))
+            implementation(project(":flyerboard:models"))
             implementation(project(":flyerboard:api"))
             implementation(project(":flyerboard:front-end:ui-components"))
 

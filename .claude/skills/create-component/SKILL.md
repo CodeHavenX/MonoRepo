@@ -55,5 +55,5 @@ Run:
 |----------------------------------|----------------------------------------|
 | controller / service / datastore | `<app>:back-end`                       |
 | manager / frontend-service       | `<app>:front-end:app`           |
-| api                              | `<app>:api` and `<app>:shared`         |
+| api                              | `<app>:api` and `<app>:models`         |
 | feature                          | `<app>:front-end:app`           |

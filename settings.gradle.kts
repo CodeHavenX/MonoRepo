@@ -66,6 +66,22 @@ fun buildDependencyGraph(allModules: Map<String, File>): Map<String, List<String
     }
 }
 
+// Expands meta-module entries into the module paths listed in .meta-modules/<name>
+// (one path per line, blank lines and "#" comments ignored). Entries that don't match
+// a meta-module file pass through unchanged.
+fun expandMetaModules(requested: List<String>, metaModulesDir: File): List<String> {
+    return requested.flatMap { entry ->
+        val metaFile = metaModulesDir.resolve(entry)
+        if (metaFile.isFile) {
+            metaFile.readLines()
+                .map { it.substringBefore("#").trim() }
+                .filter { it.isNotEmpty() }
+        } else {
+            listOf(entry)
+        }
+    }
+}
+
 fun resolveTransitiveDeps(
     module: String,
     graph: Map<String, List<String>>,
@@ -103,14 +119,16 @@ if (!activeModulesFile.exists()) {
         val allModules = discoverAllModules(rootDir)
         val graph = buildDependencyGraph(allModules)
 
-        val toLoad = (requestedModules + ":detekt-rules")
+        val expandedModules = expandMetaModules(requestedModules, file(".meta-modules"))
+
+        val toLoad = (expandedModules + ":detekt-rules")
             .flatMap { resolveTransitiveDeps(it, graph) }
             .toSortedSet()
 
         println(buildString {
             appendLine("🔧 Selective sync — resolving transitive deps...")
             appendLine("   Requested    : ${requestedModules.joinToString()}")
-            appendLine("   Also loading : ${(toLoad - requestedModules.toSet()).joinToString().ifEmpty { "none" }}")
+            appendLine("   Also loading : ${(toLoad - expandedModules.toSet()).joinToString().ifEmpty { "none" }}")
             appendLine("   Total modules: ${toLoad.size} / ${allModules.size}")
         })
 

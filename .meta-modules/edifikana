@@ -1,0 +1,8 @@
+:edifikana:back-end
+:edifikana:shared
+:edifikana:api
+:edifikana:front-end:shared-ui
+:edifikana:front-end:shared-app
+:edifikana:front-end:app-android
+:edifikana:front-end:app-jvm
+:edifikana:front-end:app-wasm

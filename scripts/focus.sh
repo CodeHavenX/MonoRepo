@@ -2,14 +2,16 @@
 set -euo pipefail
 
 PROPS_FILE="active-modules.properties"
+META_MODULES_DIR=".meta-modules"
 SCRIPT_NAME=$(basename "$0")
 
 usage() {
   echo "Usage:"
-  echo "  ./$SCRIPT_NAME :module-a :module-b   # focus on specific modules"
+  echo "  ./$SCRIPT_NAME :module-a :module-b    # focus on specific modules"
+  echo "  ./$SCRIPT_NAME meta-module            # focus on a meta-module (see .meta-modules/)"
   echo "  ./$SCRIPT_NAME --all                  # load all modules (removes focus)"
   echo "  ./$SCRIPT_NAME --status               # show current focus"
-  echo "  ./$SCRIPT_NAME --list                 # list all available modules"
+  echo "  ./$SCRIPT_NAME --list                 # list all available modules and meta-modules"
 }
 
 case "${1:-}" in
@@ -37,24 +39,30 @@ case "${1:-}" in
       | grep -v "/build/" \
       | sed 's|/build.gradle.kts||;s|/build.gradle||;s|^\./|:|;s|/|:|g' \
       | sort
+
+    if [ -d "$META_MODULES_DIR" ]; then
+      echo ""
+      echo "📋 Available meta-modules:"
+      find "$META_MODULES_DIR" -maxdepth 1 -type f -printf "%f\n" | sort
+    fi
     ;;
 
   --help|-h)
     usage
     ;;
 
-  :*)
-    modules=$(IFS=", "; echo "$*")
-    echo "modules = $modules" > "$PROPS_FILE"
-    echo "✅ Focus set. Transitive deps will be auto-resolved by Gradle."
-    echo "   Modules: $modules"
-    echo ""
-    echo "   Re-sync your IDE or run: ./gradlew tasks"
+  "")
+    echo "❌ No modules or meta-modules specified"
+    usage
+    exit 1
     ;;
 
   *)
-    echo "❌ Unknown argument: ${1:-<none>}"
-    usage
-    exit 1
+    modules=$(IFS=", "; echo "$*")
+    echo "modules = $modules" > "$PROPS_FILE"
+    echo "✅ Focus set. Transitive deps and meta-modules will be auto-resolved by Gradle."
+    echo "   Modules: $modules"
+    echo ""
+    echo "   Re-sync your IDE or run: ./gradlew tasks"
     ;;
 esac

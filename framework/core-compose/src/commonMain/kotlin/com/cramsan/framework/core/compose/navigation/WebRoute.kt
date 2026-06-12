@@ -11,9 +11,11 @@ import kotlinx.serialization.serializer
  *
  * [path] is the fixed path prefix (e.g. "/auth/sign-up"). Destination properties are
  * serialized automatically via [encodeToKeyValueMap] / [decodeFromKeyValueMap], so no
- * manual render/parse lambdas are needed. Required-field presence is checked against the
- * serializer descriptor before decoding, which allows multiple routes sharing the same
- * path prefix to be tried in sequence without exceptions.
+ * manual render/parse lambdas are needed. Before decoding, the query parameters are checked
+ * against the serializer descriptor: every required field must be present, and every
+ * parameter must correspond to a known field. This allows multiple routes sharing the same
+ * path prefix (e.g. a list view and a detail view) to be tried in any order, with the route
+ * matching the most specific set of parameters winning.
  */
 @OptIn(ExperimentalSerializationApi::class)
 class WebRoute<T : Destination>(val path: String, private val serializer: KSerializer<T>) {
@@ -46,12 +48,19 @@ class WebRoute<T : Destination>(val path: String, private val serializer: KSeria
                         valueTransform = { it.substringAfter('=') },
                     )
             }
-        if (!hasRequiredParams(params)) return null
+        if (!matchesParams(params)) return null
         return decodeFromKeyValueMap(serializer, params)
     }
 
-    private fun hasRequiredParams(params: Map<String, List<String>>): Boolean {
+    /**
+     * Returns true if [params] contains every required field of [serializer] and no
+     * parameters that don't correspond to a field, so other routes sharing [path] aren't
+     * mistaken for this one.
+     */
+    private fun matchesParams(params: Map<String, List<String>>): Boolean {
         val descriptor = serializer.descriptor
+        val elementNames = (0 until descriptor.elementsCount).map { descriptor.getElementName(it) }
+        if (params.keys.any { it !in elementNames }) return false
         for (i in 0 until descriptor.elementsCount) {
             if (!descriptor.isElementOptional(i)) {
                 if (!params.containsKey(descriptor.getElementName(i))) return false

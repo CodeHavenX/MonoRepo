@@ -29,6 +29,10 @@ kotlin {
     }
 
     sourceSets {
+        commonMain {
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+        }
+
         commonMain.dependencies {
             implementation(project(":framework:annotations"))
             implementation(project(":framework:assert"))
@@ -131,6 +135,15 @@ kotlin {
     }
 }
 
+// WebDestination routing codegen runs against commonMain metadata, but per-target compiles and
+// detekt don't depend on that task by default. Without this, a clean build can compile/lint a
+// target before the generated *WebRoutes objects are generated.
+tasks.matching { it.name != "kspCommonMainKotlinMetadata" }.configureEach {
+    if (name.startsWith("ksp") || name.startsWith("compile") || name.startsWith("detekt")) {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
 android {
     namespace = "com.cramsan.edifikana.client.lib"
 
@@ -152,6 +165,10 @@ dependencies {
     add("kspCommonMainMetadata", "androidx.room:room-compiler:_")
     add("kspAndroid", "androidx.room:room-compiler:_")
     add("kspJvm", "androidx.room:room-compiler:_")
+
+    // WebDestination routing codegen (commonMain only — generated routing objects are
+    // shared across all targets, no per-platform variants needed)
+    add("kspCommonMainMetadata", project(":framework:web-route-ksp"))
 
     implementation("androidx.appcompat:appcompat:_")
     implementation("androidx.core:core-ktx:_")

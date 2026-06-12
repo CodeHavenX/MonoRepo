@@ -1,7 +1,7 @@
 # Shared UI Components Plan
 
 This document identifies the reusable components to be built in
-`flyerboard/front-end/shared-ui/src/commonMain/kotlin/com/cramsan/flyerboard/client/ui/components/`.
+`flyerboard/front-end/ui-components/src/commonMain/kotlin/com/cramsan/flyerboard/client/ui/components/`.
 
 Each component has a paired preview file following the convention established by
 `FlyerBoardTopBar.kt` / `FlyerBoardTopBarPreview.kt`.

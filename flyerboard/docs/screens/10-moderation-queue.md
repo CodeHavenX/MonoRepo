@@ -42,9 +42,9 @@ backend (403) and by the UI (the Moderation tab is only shown when
 
 | Component | From | Replaces |
 |---|---|---|
-| `ModerationFlyerCard` | `shared-ui` (Phase 1.4) | Private `PendingFlyerCard` |
-| `LoadingStateBox` | `shared-ui` (Phase 1.5) | Inline `CircularProgressIndicator` |
-| `EmptyStateBox` | `shared-ui` (Phase 1.6) | Inline `Text` |
+| `ModerationFlyerCard` | `ui-components` (Phase 1.4) | Private `PendingFlyerCard` |
+| `LoadingStateBox` | `ui-components` (Phase 1.5) | Inline `CircularProgressIndicator` |
+| `EmptyStateBox` | `ui-components` (Phase 1.6) | Inline `Text` |
 
 ### Layout
 

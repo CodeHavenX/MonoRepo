@@ -56,7 +56,7 @@ kotlin {
 
             implementation(project(":edifikana:shared"))
             implementation(project(":edifikana:api"))
-            implementation(project(":edifikana:front-end:shared-ui"))
+            implementation(project(":edifikana:front-end:ui-components"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")

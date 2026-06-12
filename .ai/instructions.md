@@ -47,7 +47,7 @@ edifikana/          # Main project
   api/              # API contracts
   back-end/         # Ktor back-end server
   front-end/
-    shared-ui/      # Reusable Compose UI components
+    ui-components/  # Reusable Compose UI components
     app/            # Main shared app code (features, VMs, services, DI)
     launcher-android/ # Android entry point
     launcher-desktop/ # JVM Desktop entry point
@@ -227,15 +227,15 @@ Each module with Compose UI has Roborazzi configured to generate Robolectric tes
 
 The test name format is `<fully.qualified.package.FileNameKt>:<PreviewFunctionName>` where `FileNameKt` is the Kotlin file name with `Kt` appended (e.g. `StatusBadgePreview.kt` → `StatusBadgePreviewKt`).
 
-**Example** — render `ApprovedPreview` from `StatusBadgePreview.kt` in `flyerboard:front-end:shared-ui`:
+**Example** — render `ApprovedPreview` from `StatusBadgePreview.kt` in `flyerboard:front-end:ui-components`:
 ```bash
-./gradlew :flyerboard:front-end:shared-ui:recordRoborazziDebug \
+./gradlew :flyerboard:front-end:ui-components:recordRoborazziDebug \
   --tests "com.github.takahirom.roborazzi.RoborazziPreviewParameterizedTests.test[com.cramsan.flyerboard.client.ui.components.StatusBadgePreviewKt:ApprovedPreview]"
 ```
 
 **Screenshot output location:** `<module-dir>/screenshots/<fully.qualified.FileNameKt>_<PreviewFunctionName>.png`
 
-Example: `flyerboard/front-end/shared-ui/screenshots/com.cramsan.flyerboard.client.ui.components.StatusBadgePreviewKt_ApprovedPreview.png`
+Example: `flyerboard/front-end/ui-components/screenshots/com.cramsan.flyerboard.client.ui.components.StatusBadgePreviewKt_ApprovedPreview.png`
 
 **Record all previews in a module** (re-renders everything):
 ```bash

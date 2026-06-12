@@ -62,7 +62,7 @@ No arguments — the form always starts empty.
 
 | Component | From |
 |---|---|
-| `LoadingStateBox` | `shared-ui` (Phase 1.5) — shown while submitting |
+| `LoadingStateBox` | `ui-components` (Phase 1.5) — shown while submitting |
 
 ### Layout
 

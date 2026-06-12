@@ -40,10 +40,10 @@ the public feed.
 
 | Component | From | Replaces |
 |---|---|---|
-| `FlyerBoardSearchBar` | `shared-ui` (Phase 1.7) | Not yet implemented |
-| `FlyerCard` | `shared-ui` (Phase 1.2) | Private `ArchivedFlyerCard` |
-| `LoadingStateBox` | `shared-ui` (Phase 1.5) | Inline `CircularProgressIndicator` |
-| `EmptyStateBox` | `shared-ui` (Phase 1.6) | Inline `Text` |
+| `FlyerBoardSearchBar` | `ui-components` (Phase 1.7) | Not yet implemented |
+| `FlyerCard` | `ui-components` (Phase 1.2) | Private `ArchivedFlyerCard` |
+| `LoadingStateBox` | `ui-components` (Phase 1.5) | Inline `CircularProgressIndicator` |
+| `EmptyStateBox` | `ui-components` (Phase 1.6) | Inline `Text` |
 
 ### Layout
 

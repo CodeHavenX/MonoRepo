@@ -21,7 +21,6 @@ private fun SignUpScreenPreview() =
             onConfirmPasswordChanged = {},
             onSignUpClicked = {},
             onSignInClicked = {},
-            onCloseIconClicked = {},
         )
     }
 
@@ -49,6 +48,5 @@ private fun SignUpScreenLoadingPreview() =
             onConfirmPasswordChanged = {},
             onSignUpClicked = {},
             onSignInClicked = {},
-            onCloseIconClicked = {},
         )
     }

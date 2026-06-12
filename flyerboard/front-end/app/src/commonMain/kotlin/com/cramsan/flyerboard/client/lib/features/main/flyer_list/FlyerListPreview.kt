@@ -1,7 +1,6 @@
 package com.cramsan.flyerboard.client.lib.features.main.flyer_list
 
 import androidx.compose.runtime.Composable
-import com.cramsan.flyerboard.client.lib.features.window.AuthState
 import com.cramsan.flyerboard.client.lib.models.FlyerModel
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerId
@@ -42,22 +41,6 @@ private fun FlyerListScreenPreview() =
     AppTheme(dynamicColor = false) {
         FlyerListContent(
             uiState = FlyerListUIState.Content(flyers = sampleFlyers),
-            authState = AuthState.Unauthenticated,
-            onRefresh = {},
-            onFlyerSelected = {},
-        )
-    }
-
-/**
- * Preview for the Flyer List screen with content.
- */
-@DevicePreviews
-@Composable
-private fun FlyerListScreenAuthenticatedPreview() =
-    AppTheme {
-        FlyerListContent(
-            uiState = FlyerListUIState.Content(flyers = sampleFlyers),
-            authState = AuthState.Authenticated(false),
             onRefresh = {},
             onFlyerSelected = {},
         )
@@ -72,7 +55,6 @@ private fun FlyerListScreenLoadingPreview() =
     AppTheme {
         FlyerListContent(
             uiState = FlyerListUIState.Loading(),
-            authState = AuthState.Unauthenticated,
             onRefresh = {},
             onFlyerSelected = {},
         )
@@ -87,7 +69,6 @@ private fun FlyerListScreenEmptyPreview() =
     AppTheme {
         FlyerListContent(
             uiState = FlyerListUIState.Empty(),
-            authState = AuthState.Unauthenticated,
             onRefresh = {},
             onFlyerSelected = {},
         )

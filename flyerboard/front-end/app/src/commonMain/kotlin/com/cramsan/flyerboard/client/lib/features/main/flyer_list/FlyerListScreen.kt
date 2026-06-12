@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.cramsan.flyerboard.client.lib.features.window.AuthState
 import com.cramsan.flyerboard.client.lib.models.FlyerModel
 import com.cramsan.flyerboard.client.ui.components.EmptyStateBox
 import com.cramsan.flyerboard.client.ui.components.FlyerBoardSearchBar
@@ -50,7 +49,6 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun FlyerListScreen(
     modifier: Modifier = Modifier,
-    authState: AuthState,
     viewModel: FlyerListViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -68,11 +66,10 @@ fun FlyerListScreen(
     FlyerListContent(
         uiState = uiState,
         modifier = modifier,
-        authState = authState,
         onRefresh = { viewModel.refresh() },
-        onQueryChanged = { viewModel.onQueryChanged(it) },
-        onSubmitFlyer = { viewModel.onSubmitFlyer() },
-        onFlyerSelected = { viewModel.onFlyerSelected(it.id) },
+        onQueryChanged = { viewModel.changeQuery(it) },
+        onSubmitFlyer = { viewModel.primaryAction() },
+        onFlyerSelected = { viewModel.selectFlyer(it.id) },
     )
 }
 
@@ -84,7 +81,6 @@ fun FlyerListScreen(
 internal fun FlyerListContent(
     uiState: FlyerListUIState,
     modifier: Modifier = Modifier,
-    authState: AuthState,
     onRefresh: () -> Unit,
     onQueryChanged: (String) -> Unit = {},
     onSubmitFlyer: () -> Unit = {},
@@ -93,17 +89,15 @@ internal fun FlyerListContent(
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
-            if (authState is AuthState.Authenticated) {
-                FloatingActionButton(
-                    onClick = onSubmitFlyer,
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(Res.string.flyer_list_screen_button_submit),
-                    )
-                }
+            FloatingActionButton(
+                onClick = onSubmitFlyer,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(Res.string.flyer_list_screen_button_submit),
+                )
             }
         },
     ) { innerPadding ->
@@ -128,7 +122,7 @@ internal fun FlyerListContent(
                 }
             }
             Box(modifier = Modifier.fillMaxSize()) {
-                when (val state = uiState) {
+                when (uiState) {
                     is FlyerListUIState.Loading -> {
                         LoadingStateBox()
                     }
@@ -149,7 +143,7 @@ internal fun FlyerListContent(
                             horizontalArrangement = Arrangement.spacedBy(Padding.SMALL),
                             verticalItemSpacing = Padding.SMALL,
                         ) {
-                            items(state.flyers, key = { it.id.flyerId }) { flyer ->
+                            items(uiState.flyers, key = { it.id.flyerId }) { flyer ->
                                 FlyerCard(
                                     title = flyer.title,
                                     description = flyer.description,

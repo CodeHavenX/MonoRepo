@@ -19,7 +19,6 @@ private fun SignInScreenPreview() =
             onSignInClicked = {},
             onSignUpClicked = {},
             onDebugIconClicked = {},
-            onCloseIconClicked = {},
         )
     }
 
@@ -37,6 +36,5 @@ private fun SignInScreenLoadingPreview() =
             onSignInClicked = {},
             onSignUpClicked = {},
             onDebugIconClicked = {},
-            onCloseIconClicked = {},
         )
     }

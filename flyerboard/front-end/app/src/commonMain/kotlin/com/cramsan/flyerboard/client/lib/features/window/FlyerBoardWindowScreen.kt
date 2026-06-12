@@ -43,12 +43,12 @@ import flyerboard_lib.nav_archive
 import flyerboard_lib.nav_browse
 import flyerboard_lib.nav_moderation
 import flyerboard_lib.nav_my_flyers
-import kotlin.jvm.JvmSuppressWildcards
-import kotlin.reflect.KType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.jvm.JvmSuppressWildcards
+import kotlin.reflect.KType
 
 /**
  * FlyerBoard window screen.
@@ -181,7 +181,6 @@ fun FlyerBoardWindowScreen(
         tabs = tabs,
         onSignIn = onSignIn,
         onSignOut = onSignOut,
-        onCloseIconClicked = { viewModel.close() }
     )
 }
 
@@ -196,7 +195,6 @@ private fun WindowsContent(
     tabs: List<FlyerBoardTopBarTab>,
     onSignIn: () -> Unit,
     onSignOut: () -> Unit,
-    onCloseIconClicked: () -> Unit,
 ) {
     AppTheme {
         FlyerBoardWindowChrome(
@@ -211,7 +209,6 @@ private fun WindowsContent(
                 modifier = Modifier.padding(paddingValues),
                 navHostController = navController,
                 startDestination = startDestination,
-                authState = authState,
                 initialDestination = initialDestination,
             )
         }
@@ -346,7 +343,6 @@ private suspend fun handleSnackbarEvent(
 private fun WindowNavigationHost(
     navHostController: NavHostController,
     startDestination: FlyerBoardWindowNavGraphDestination,
-    authState: AuthState,
     modifier: Modifier = Modifier,
     initialDestination: Destination? = null,
 ) {
@@ -368,7 +364,6 @@ private fun WindowNavigationHost(
         authNavGraphNavigation(typeMap)
         mainNavGraphNavigation(
             typeMap = typeMap,
-            authState = authState,
         )
         debugSettingsNavGraph(
             graphDestination = FlyerBoardWindowNavGraphDestination.DebugSettingsNavGraphDestination::class,

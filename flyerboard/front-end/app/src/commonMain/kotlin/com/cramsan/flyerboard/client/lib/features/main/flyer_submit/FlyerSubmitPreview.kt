@@ -2,12 +2,13 @@ package com.cramsan.flyerboard.client.lib.features.main.flyer_submit
 
 import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
+import com.cramsan.ui.preview.DevicePreviews
 import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the Flyer Submit screen with all fields blank and no file selected.
  */
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun FlyerSubmitEmptyPreview() =
     AppTheme(dynamicColor = false) {

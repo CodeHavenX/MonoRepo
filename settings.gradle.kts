@@ -51,6 +51,7 @@ include("framework:test-roborazzi")
 include("framework:ui-preview")
 include("framework:utils")
 include("framework:annotations")
+include("framework:web-route-ksp")
 include("framework:network-api")
 include("framework:http-serializers")
 

@@ -1,8 +1,8 @@
-:edifikana:back-end
-:edifikana:shared
-:edifikana:api
-:edifikana:front-end:shared-ui
-:edifikana:front-end:shared-app
-:edifikana:front-end:app-android
-:edifikana:front-end:app-jvm
-:edifikana:front-end:app-wasm
+:flyerboard:back-end
+:flyerboard:shared
+:flyerboard:api
+:flyerboard:front-end:shared-ui
+:flyerboard:front-end:shared-app
+:flyerboard:front-end:app-android
+:flyerboard:front-end:app-jvm
+:flyerboard:front-end:app-wasm

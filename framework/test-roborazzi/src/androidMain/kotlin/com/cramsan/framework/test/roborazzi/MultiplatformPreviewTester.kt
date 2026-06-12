@@ -156,7 +156,7 @@ class MultiplatformPreviewTester : ComposePreviewTester<JUnit4TestParameter<JvmA
             val roborazziContext = provideRoborazziContext()
             val outputDir = roborazziContext.outputDirectory
             val suffix = if (param.nameSuffix.isEmpty()) "" else "_${param.nameSuffix}"
-            val filename = "${param.preview.declaringClass}_${param.preview.methodName}$suffix"
+            val filename = "${param.preview.methodName}${suffix}_${param.preview.declaringClass}"
             val filepath = "$outputDir/$filename.${roborazziContext.imageExtension}"
 
             param.composeTestRule.onRoot().captureRoboImage(filepath)

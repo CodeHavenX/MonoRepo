@@ -122,4 +122,4 @@ private fun FlyerBoardMainTopBarTab(
     )
 }
 
-private val ACCENT_LINE_HEIGHT = 2.dp
+internal val ACCENT_LINE_HEIGHT = 2.dp

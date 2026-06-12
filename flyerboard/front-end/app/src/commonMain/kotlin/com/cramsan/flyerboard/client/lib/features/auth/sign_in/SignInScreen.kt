@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
@@ -82,6 +85,7 @@ fun SignInScreen(
         onSignInClicked = { viewModel.signIn() },
         onSignUpClicked = { viewModel.navigateToSignUp() },
         onDebugIconClicked = { viewModel.navigateToDebugSettings() },
+        onCloseIconClicked = { viewModel.close() }
     )
 }
 
@@ -97,16 +101,20 @@ internal fun SignInContent(
     onSignInClicked: () -> Unit,
     onSignUpClicked: () -> Unit,
     onDebugIconClicked: () -> Unit,
+    onCloseIconClicked: () -> Unit,
 ) {
     var rememberMe by remember { mutableStateOf(false) }
 
-    Scaffold(modifier = modifier) { innerPadding ->
+    Scaffold(
+        modifier = modifier,
+    ) { innerPadding ->
         Box(
             modifier =
             Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.Center,
         ) {
             IconButton(

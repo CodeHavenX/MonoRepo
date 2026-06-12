@@ -3,6 +3,7 @@ package com.cramsan.flyerboard.client.lib.features.window
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -42,12 +43,12 @@ import flyerboard_lib.nav_archive
 import flyerboard_lib.nav_browse
 import flyerboard_lib.nav_moderation
 import flyerboard_lib.nav_my_flyers
+import kotlin.jvm.JvmSuppressWildcards
+import kotlin.reflect.KType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.jvm.JvmSuppressWildcards
-import kotlin.reflect.KType
 
 /**
  * FlyerBoard window screen.
@@ -84,13 +85,9 @@ fun FlyerBoardWindowScreen(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    val isTopLevelMainDestination =
-        currentDestination?.let { dest ->
-            dest.hasRoute(MainDestination.FlyerListDestination::class) ||
-                dest.hasRoute(MainDestination.ArchiveDestination::class) ||
-                dest.hasRoute(MainDestination.MyFlyersDestination::class) ||
-                dest.hasRoute(MainDestination.ModerationQueueDestination::class)
-        } ?: false
+    val isSplashDestination =
+        currentDestination?.hasRoute(FlyerBoardWindowNavGraphDestination.SplashNavGraphDestination::class)
+            ?: true
 
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
@@ -112,6 +109,9 @@ fun FlyerBoardWindowScreen(
     }
     val onSignOut = { viewModel.signOut() }
 
+    val isSignedIn = uiState.authState is AuthState.Authenticated
+    val isAdmin = (uiState.authState as? AuthState.Authenticated)?.isAdmin == true
+
     val tabs =
         buildList {
             add(
@@ -125,21 +125,23 @@ fun FlyerBoardWindowScreen(
                     },
                 ),
             )
-            add(
-                FlyerBoardTopBarTab(
-                    label = stringResource(Res.string.nav_my_flyers),
-                    selected = currentDestination?.hasRoute(MainDestination.MyFlyersDestination::class) == true,
-                    onClick = {
-                        if (uiState.authState != AuthState.Unauthenticated) {
-                            navController.navigate(MainDestination.MyFlyersDestination) {
-                                launchSingleTop = true
+            if (isSignedIn) {
+                add(
+                    FlyerBoardTopBarTab(
+                        label = stringResource(Res.string.nav_my_flyers),
+                        selected = currentDestination?.hasRoute(MainDestination.MyFlyersDestination::class) == true,
+                        onClick = {
+                            if (uiState.authState != AuthState.Unauthenticated) {
+                                navController.navigate(MainDestination.MyFlyersDestination) {
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                onSignIn()
                             }
-                        } else {
-                            onSignIn()
-                        }
-                    },
-                ),
-            )
+                        },
+                    ),
+                )
+            }
             add(
                 FlyerBoardTopBarTab(
                     label = stringResource(Res.string.nav_archive),
@@ -151,7 +153,7 @@ fun FlyerBoardWindowScreen(
                     },
                 ),
             )
-            if ((uiState.authState as? AuthState.Authenticated)?.isAdmin == true) {
+            if (isAdmin) {
                 add(
                     FlyerBoardTopBarTab(
                         label = stringResource(Res.string.nav_moderation),
@@ -174,11 +176,12 @@ fun FlyerBoardWindowScreen(
         snackbarHostState = snackbarHostState,
         startDestination = startDestination,
         initialDestination = initialDestination,
-        isTopLevelMainDestination = isTopLevelMainDestination,
+        showTopBar = !isSplashDestination,
         authState = uiState.authState,
         tabs = tabs,
         onSignIn = onSignIn,
         onSignOut = onSignOut,
+        onCloseIconClicked = { viewModel.close() }
     )
 }
 
@@ -188,30 +191,21 @@ private fun WindowsContent(
     snackbarHostState: SnackbarHostState,
     startDestination: FlyerBoardWindowNavGraphDestination,
     initialDestination: Destination?,
-    isTopLevelMainDestination: Boolean,
+    showTopBar: Boolean,
     authState: AuthState,
     tabs: List<FlyerBoardTopBarTab>,
     onSignIn: () -> Unit,
     onSignOut: () -> Unit,
+    onCloseIconClicked: () -> Unit,
 ) {
     AppTheme {
-        Scaffold(
-            topBar = {
-                if (isTopLevelMainDestination) {
-                    FlyerBoardMainTopBar(
-                        tabs = tabs,
-                        isAuthenticated = authState is AuthState.Authenticated,
-                        onSignIn = onSignIn,
-                        onSignOut = onSignOut,
-                    )
-                }
-            },
-            bottomBar = {
-                FlyerBoardFooter()
-            },
-            snackbarHost = {
-                SnackbarHost(hostState = snackbarHostState)
-            },
+        FlyerBoardWindowChrome(
+            showTopBar = showTopBar,
+            authState = authState,
+            tabs = tabs,
+            onSignIn = onSignIn,
+            onSignOut = onSignOut,
+            snackbarHostState = snackbarHostState,
         ) { paddingValues ->
             WindowNavigationHost(
                 modifier = Modifier.padding(paddingValues),
@@ -221,6 +215,42 @@ private fun WindowsContent(
                 initialDestination = initialDestination,
             )
         }
+    }
+}
+
+/**
+ * Scaffold chrome shared by all FlyerBoard window destinations: the main top bar (hidden on
+ * [showTopBar] == false), the footer, and the snackbar host.
+ */
+@Composable
+internal fun FlyerBoardWindowChrome(
+    showTopBar: Boolean,
+    authState: AuthState,
+    tabs: List<FlyerBoardTopBarTab>,
+    onSignIn: () -> Unit,
+    onSignOut: () -> Unit,
+    snackbarHostState: SnackbarHostState,
+    content: @Composable (PaddingValues) -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            if (showTopBar) {
+                FlyerBoardMainTopBar(
+                    tabs = tabs,
+                    isAuthenticated = authState is AuthState.Authenticated,
+                    onSignIn = onSignIn,
+                    onSignOut = onSignOut,
+                )
+            }
+        },
+        bottomBar = {
+            FlyerBoardFooter()
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
+    ) { paddingValues ->
+        content(paddingValues)
     }
 }
 

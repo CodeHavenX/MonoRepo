@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -84,6 +87,7 @@ fun SignUpScreen(
         onConfirmPasswordChanged = { viewModel.onConfirmPasswordChanged(it) },
         onSignUpClicked = { viewModel.signUp() },
         onSignInClicked = { viewModel.navigateToSignIn() },
+        onCloseIconClicked = { }
     )
 }
 
@@ -101,17 +105,21 @@ internal fun SignUpContent(
     onConfirmPasswordChanged: (String) -> Unit,
     onSignUpClicked: () -> Unit,
     onSignInClicked: () -> Unit,
+    onCloseIconClicked: () -> Unit,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
 
-    Scaffold(modifier = modifier) { innerPadding ->
+    Scaffold(
+        modifier = modifier,
+    ) { innerPadding ->
         Box(
             modifier =
             Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.Center,
         ) {
             Card(

@@ -15,7 +15,7 @@ Ask the user for:
 - **Activity name** (PascalCase, e.g. `Auth`, `Onboarding`)
 - **Parent folder** — the existing features directory where the new activity package will be created.
   The activity package name is the activity name lowercased. For example, activity `Auth`
-  with parent `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`
+  with parent `edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`
   produces the package `com.cramsan.edifikana.client.lib.features.auth`.
 
 ## Step 2 — Run the CLI
@@ -43,7 +43,7 @@ The CLI prints a full checklist with ready-to-paste snippets — follow it exact
 
 Use `/create-feature` to scaffold each screen inside the activity. Set `--parent` to the newly
 created activity package directory (e.g.
-`edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth`).
+`edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth`).
 
 ⚠️ The generated `<Name>Destination.kt` ships with a placeholder `PlaceholderDestination` (and
 `PlaceholderDestination`-based `startDestination` in `<Name>ActivityScreen.kt`). The checklist
@@ -53,5 +53,5 @@ the placeholder by giving your feature the same name, replace it instead.
 ## Step 5 — Verify compilation
 
 ```bash
-./gradlew :<app>:front-end:shared-app:release --quiet
+./gradlew :<app>:front-end:app:release --quiet
 ```

@@ -11,8 +11,7 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm-compose-app")
 }
 
-val wasmModuleName by extra("RunasimiWasmApp")
-val ciDeployable by extra(true)
+val wasmModuleName by extra("FlyerBoardWasmApp")
 
 kotlin {
     wasmJs {
@@ -35,7 +34,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":runasimi:front-end:shared-app"))
+                implementation(project(":flyerboard:front-end:app"))
 
                 implementation(project(":framework:interfacelib"))
                 implementation(project(":framework:core-compose"))

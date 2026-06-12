@@ -12,7 +12,7 @@ import kotlin.io.path.writeText
 
 private val TEMPLATE_EXTENSIONS = setOf("kt", "kts", "xml", "conf", "json", "yml", "html", "css")
 
-private val CORE_MODULES = listOf("api", "shared", "back-end", "front-end:shared-app", "front-end:shared-ui")
+private val CORE_MODULES = listOf("api", "shared", "back-end", "front-end:app", "front-end:shared-ui")
 
 internal const val TEMPLATE_DEFAULT_FEATURE = "Placeholder"
 
@@ -26,9 +26,9 @@ internal const val TEMPLATE_DEFAULT_FEATURE = "Placeholder"
  * @param initialComponent PascalCase name for the starter component, e.g. `"Sample"`.
  *   The template's `ComponentReplaceMe`/`componentreplaceme` placeholders are replaced with this
  *   value so that new apps start with real (non-placeholder) class names.
- * @param includeWasm whether to include the `front-end/app-wasm` module
- * @param includeAndroid whether to include the `front-end/app-android` module
- * @param includeJvm whether to include the `front-end/app-jvm` module
+ * @param includeWasm whether to include the `front-end/launcher-web` module
+ * @param includeAndroid whether to include the `front-end/launcher-android` module
+ * @param includeJvm whether to include the `front-end/launcher-desktop` module
  */
 fun generateApp(
     repoRoot: Path,
@@ -159,9 +159,9 @@ private fun renamePathComponents(dest: Path, subs: List<Pair<String, String>>) {
 }
 
 private fun removePlatformDirs(dest: Path, includeWasm: Boolean, includeAndroid: Boolean, includeJvm: Boolean) {
-    if (!includeWasm) dest.resolve("front-end/app-wasm").toFile().deleteRecursively()
-    if (!includeAndroid) dest.resolve("front-end/app-android").toFile().deleteRecursively()
-    if (!includeJvm) dest.resolve("front-end/app-jvm").toFile().deleteRecursively()
+    if (!includeWasm) dest.resolve("front-end/launcher-web").toFile().deleteRecursively()
+    if (!includeAndroid) dest.resolve("front-end/launcher-android").toFile().deleteRecursively()
+    if (!includeJvm) dest.resolve("front-end/launcher-desktop").toFile().deleteRecursively()
 }
 
 private fun platformModules(
@@ -170,9 +170,9 @@ private fun platformModules(
     includeJvm: Boolean,
 ): List<String> =
     buildList {
-        if (includeAndroid) add("front-end:app-android")
-        if (includeJvm) add("front-end:app-jvm")
-        if (includeWasm) add("front-end:app-wasm")
+        if (includeAndroid) add("front-end:launcher-android")
+        if (includeJvm) add("front-end:launcher-desktop")
+        if (includeWasm) add("front-end:launcher-web")
     }
 
 private fun updateSettingsGradle(

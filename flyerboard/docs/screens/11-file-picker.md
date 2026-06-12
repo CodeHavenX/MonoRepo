@@ -18,7 +18,7 @@ gap is collecting those values from the platform UI.
 ### Data class (commonMain)
 
 ```kotlin
-// shared-app/src/commonMain/…/files/PickedFile.kt
+// app/src/commonMain/…/files/PickedFile.kt
 data class PickedFile(
     val bytes: ByteArray,
     val name: String,
@@ -32,7 +32,7 @@ Define the picker as a suspending function rather than a class so each
 platform can implement it without inheritance complexity.
 
 ```kotlin
-// shared-app/src/commonMain/…/files/FilePicker.kt
+// app/src/commonMain/…/files/FilePicker.kt
 expect suspend fun pickFile(): PickedFile?
 ```
 
@@ -68,7 +68,7 @@ viewModel.onFileSelected(picked.bytes, picked.name, picked.mimeType)
 ### wasmJs — Browser File API
 
 ```kotlin
-// shared-app/src/wasmJsMain/…/files/FilePicker.wasmJs.kt
+// app/src/wasmJsMain/…/files/FilePicker.wasmJs.kt
 
 actual suspend fun pickFile(): PickedFile? = suspendCoroutine { cont ->
     val input = document.createElement("input").unsafeCast<HTMLInputElement>()
@@ -113,7 +113,7 @@ actual suspend fun pickFile(): PickedFile? = suspendCoroutine { cont ->
 ### Android — ActivityResult API
 
 ```kotlin
-// shared-app/src/androidMain/…/files/FilePicker.android.kt
+// app/src/androidMain/…/files/FilePicker.android.kt
 
 actual suspend fun pickFile(): PickedFile? {
     // FilePicker on Android requires access to an Activity or Fragment context.
@@ -166,7 +166,7 @@ actual suspend fun pickFile(): PickedFile? {
 ### JVM Desktop — Swing JFileChooser
 
 ```kotlin
-// shared-app/src/jvmMain/…/files/FilePicker.jvm.kt
+// app/src/jvmMain/…/files/FilePicker.jvm.kt
 
 actual suspend fun pickFile(): PickedFile? = withContext(Dispatchers.IO) {
     val chooser = JFileChooser().apply {
@@ -278,7 +278,7 @@ OutlinedButton(
 | `androidMain/…/files/FilePicker.android.kt` | ActivityResult implementation |
 | `jvmMain/…/files/FilePicker.jvm.kt` | JFileChooser implementation |
 
-All files live under `shared-app/src/<sourceSet>/kotlin/com/cramsan/flyerboard/client/lib/files/`.
+All files live under `app/src/<sourceSet>/kotlin/com/cramsan/flyerboard/client/lib/files/`.
 
 ---
 

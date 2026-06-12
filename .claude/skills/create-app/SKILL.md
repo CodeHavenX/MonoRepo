@@ -37,7 +37,7 @@ real screens — run `/create-activity` with:
 
 ```bash
 ./scripts/devtools create activity --name <ActivityName> \
-  --parent <appname>/front-end/shared-app/src/commonMain/kotlin/com/cramsan/<appname>/client/lib/features
+  --parent <appname>/front-end/app/src/commonMain/kotlin/com/cramsan/<appname>/client/lib/features
 ```
 
 Then follow `/create-activity`'s post-generation checklist in full — it covers wiring the nav
@@ -48,19 +48,19 @@ is the app's first activity) updating `SplashViewModel.navigateToMainScreen`.
 
 ## Step 5 — Platform exclusion notes
 
-`--no-android` / `--no-jvm` / `--no-wasm` only remove the standalone `app-android` / `app-jvm` /
-`app-wasm` entry-point modules. The `front-end/shared-app` module's `build.gradle.kts`
-unconditionally configures all three KMP targets (Android, JVM, WASM) and requires `actual`
-implementations for each `expect` declaration in `commonMain` (e.g. `DatabaseModule`,
-`ManagerPlatformModule`, `ServicePlatformModule`, `ViewModelPlatformModule`,
+`--no-android` / `--no-jvm` / `--no-wasm` only remove the standalone `launcher-android` /
+`launcher-desktop` / `launcher-web` entry-point modules. The `front-end/app` module's
+`build.gradle.kts` unconditionally configures all three KMP targets (Android, JVM, WASM) and
+requires `actual` implementations for each `expect` declaration in `commonMain` (e.g.
+`DatabaseModule`, `ManagerPlatformModule`, `ServicePlatformModule`, `ViewModelPlatformModule`,
 `ComposableKoinContext`). The `androidMain` / `jvmMain` / `wasmJsMain` source sets in
-`shared-app/src/` are therefore always kept, even when the corresponding standalone app module is
+`app/src/` are therefore always kept, even when the corresponding standalone launcher module is
 excluded.
 
 ## Step 6 — Verify compilation
 
 ```bash
-./gradlew :<appname>:front-end:shared-app:release --quiet
+./gradlew :<appname>:front-end:app:release --quiet
 ```
 
 > **Note:** The top-level `releaseAll` task requires a clean git working tree and will fail until those

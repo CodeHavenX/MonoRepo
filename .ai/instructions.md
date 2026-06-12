@@ -14,7 +14,7 @@ Strict layering: **Controllers → Services → Datastores**
 
 ### Front End
 
-Each screen/feature lives in `<projectname>/front-end/shared-app/src/commonMain/.../features/<section>/<featurename>/` and consists of 5 files:
+Each screen/feature lives in `<projectname>/front-end/app/src/commonMain/.../features/<section>/<featurename>/` and consists of 5 files:
 
 | File | Purpose |
 |------|---------|
@@ -48,10 +48,10 @@ edifikana/          # Main project
   back-end/         # Ktor back-end server
   front-end/
     shared-ui/      # Reusable Compose UI components
-    shared-app/     # Main shared app code (features, VMs, services, DI)
-    app-android/    # Android entry point
-    app-jvm/        # JVM Desktop entry point
-    app-wasm/       # WASM/Web entry point
+    app/            # Main shared app code (features, VMs, services, DI)
+    launcher-android/ # Android entry point
+    launcher-desktop/ # JVM Desktop entry point
+    launcher-web/   # WASM/Web entry point
 runasimi/           # Second project (same structure as edifikana)
 templatereplaceme/  # Pure template module — compiles but has no demo functionality (see below)
 ui-catalog/         # Shared UI component catalog
@@ -73,7 +73,7 @@ Placeholder convention (do not rename without updating `Generators.kt` and `Temp
 | Feature level | `MainMenu` | `main.menu` | feature name (e.g., `AddProperty`) |
 | Activity level | `Main` | `main` | activity name (e.g., `Auth`) |
 
-Feature/activity templates live at: `templatereplaceme/front-end/shared-app/src/.../features/main/`
+Feature/activity templates live at: `templatereplaceme/front-end/app/src/.../features/main/`
 
 **For more in-depth information look at: https://wikijs-ok0o4wwsow8s80wwsgo40k4s.cramsan.com/en/Projects/Architecture/overview**
 
@@ -180,7 +180,7 @@ To validate your changes, run the `release` task for the modules you changed. Th
 
 - **Build all projects and run all tests:** `./gradlew releaseAll --quiet`
 - **Validate a specific module:** `./gradlew :<module-path>:release --quiet`
-  - Example: `./gradlew :edifikana:front-end:shared-app:release --quiet`
+  - Example: `./gradlew :edifikana:front-end:app:release --quiet`
 - **Fix formatting issues:** `./gradlew ktlintf --quiet`
   - Formatting is enforced by the build; the build will fail if format is wrong.
 - **Run a single test:** `./gradlew :<module>:jvmTest --quiet --tests "com.cramsan.package.MyTest"`

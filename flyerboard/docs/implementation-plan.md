@@ -249,7 +249,7 @@ displayed.
 
 ## Phase 2 — Service and Model Layer Gaps
 
-> **Location:** `flyerboard/front-end/shared-app/src/commonMain/kotlin/...`
+> **Location:** `flyerboard/front-end/app/src/commonMain/kotlin/...`
 
 ### 2.1 Add `query` to archive listing
 
@@ -469,7 +469,7 @@ A hard refresh on `/archive` causes the browser to request that path from the
 HTTP server. Without a fallback rule the server returns 404 — there is no
 `/archive` file on disk.
 
-**Development (`app-wasm` webpack config):**
+**Development (`launcher-web` webpack config):**
 ```javascript
 // webpack.config.d/devServer.js
 config.devServer = config.devServer || {};
@@ -484,7 +484,7 @@ location / {
 ```
 
 **Validation:**
-- Run `gradle :flyerboard:app-wasm:wasmJsBrowserDevelopmentRun`, then enter
+- Run `gradle :flyerboard:launcher-web:wasmJsBrowserDevelopmentRun`, then enter
   `/archive` directly in the browser address bar — the app loads and shows the
   Archive screen.
 
@@ -795,7 +795,7 @@ gap is the UI file-picker.
 
 **Approach:**
 
-1. Declare an `expect` function (or interface) in `shared-app`'s `commonMain`:
+1. Declare an `expect` function (or interface) in `app`'s `commonMain`:
 
 ```kotlin
 // FilePicker.kt

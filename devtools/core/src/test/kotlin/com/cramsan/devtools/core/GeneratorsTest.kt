@@ -182,7 +182,7 @@ class GeneratorsTest {
 
         val dest =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/managers/PropertyManager.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/managers/PropertyManager.kt",
             )
         assertTrue(dest.readText().contains("PropertyManager"))
         assertFalse(dest.readText().contains("ComponentReplaceMeManager"))
@@ -206,11 +206,11 @@ class GeneratorsTest {
 
         val iface =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/service/AuthService.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/service/AuthService.kt",
             )
         val impl =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/service/impl/AuthServiceImpl.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/service/impl/AuthServiceImpl.kt",
             )
 
         assertTrue(iface.readText().contains("AuthService"))
@@ -224,7 +224,7 @@ class GeneratorsTest {
     // region generateFeature
 
     private val featureParent =
-        "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth"
+        "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth"
 
     @Test
     fun `generateFeature fails when output files already exist`() {
@@ -239,7 +239,7 @@ class GeneratorsTest {
     @Test
     fun `generateFeature fails when parent path ends at the features root`() {
         val featuresRoot =
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features"
+            "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features"
         val result = runCatching { generateFeature(repoRoot, "Login", featuresRoot) }
         assertTrue(result.isFailure)
         val message = result.exceptionOrNull()?.message.orEmpty()
@@ -260,7 +260,7 @@ class GeneratorsTest {
 
         val screen =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/addproperty/AddPropertyScreen.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/addproperty/AddPropertyScreen.kt",
             )
         val content = screen.readText()
         assertTrue(content.contains("AddProperty"))
@@ -279,7 +279,7 @@ class GeneratorsTest {
 
         val preview =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/addproperty/AddPropertyScreenPreview.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/addproperty/AddPropertyScreenPreview.kt",
             )
         assertTrue(preview.toFile().exists())
     }
@@ -290,7 +290,7 @@ class GeneratorsTest {
 
         val vmTest =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/edifikana/client/lib/features/auth/addproperty/AddPropertyViewModelTest.kt",
+                "edifikana/front-end/app/src/jvmTest/kotlin/com/cramsan/edifikana/client/lib/features/auth/addproperty/AddPropertyViewModelTest.kt",
             )
         assertTrue(vmTest.toFile().exists())
     }
@@ -305,7 +305,7 @@ class GeneratorsTest {
             generateActivity(
                 repoRoot,
                 "Auth",
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
             )
 
         assertTrue(result.createdFiles.size == 2)
@@ -317,16 +317,16 @@ class GeneratorsTest {
         generateActivity(
             repoRoot,
             "Auth",
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
+            "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
         )
 
         val activityScreen =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthActivityScreen.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthActivityScreen.kt",
             )
         val destination =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthDestination.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthDestination.kt",
             )
         assertTrue(activityScreen.toFile().exists())
         assertTrue(destination.toFile().exists())
@@ -337,12 +337,12 @@ class GeneratorsTest {
         generateActivity(
             repoRoot,
             "Auth",
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
+            "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
         )
 
         val activityScreen =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthActivityScreen.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthActivityScreen.kt",
             )
         val content = activityScreen.readText()
         assertTrue(content.contains("Auth"))
@@ -364,12 +364,12 @@ class GeneratorsTest {
         generateActivity(
             repoRoot,
             "Auth",
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
+            "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
         )
 
         val destination =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthDestination.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthDestination.kt",
             )
         val content = destination.readText()
         assertTrue(content.contains("AuthDestination"))
@@ -387,12 +387,12 @@ class GeneratorsTest {
         generateActivity(
             repoRoot,
             "Auth",
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
+            "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
         )
 
         val activityScreen =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthActivityScreen.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth/AuthActivityScreen.kt",
             )
         val content = activityScreen.readText()
         assertFalse(content.contains("FeatureReplacemeDestination"))
@@ -404,12 +404,12 @@ class GeneratorsTest {
         generateActivity(
             repoRoot,
             "UserProfile",
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
+            "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features",
         )
 
         val activityScreen =
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/userprofile/UserProfileActivityScreen.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/userprofile/UserProfileActivityScreen.kt",
             )
         val content = activityScreen.readText()
         assertTrue(content.contains("userProfileNavGraphNavigation"))
@@ -419,7 +419,7 @@ class GeneratorsTest {
     @Test
     fun `generateActivity fails when output files already exist`() {
         val parent =
-            "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features"
+            "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features"
         generateActivity(repoRoot, "Auth", parent)
 
         val result = runCatching { generateActivity(repoRoot, "Auth", parent) }
@@ -569,7 +569,7 @@ class GeneratorsTest {
         )
         createStub(
             repoRoot.resolve(
-                "edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/window/EdifikanáWindowNavGraphDestination.kt",
+                "edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/window/EdifikanáWindowNavGraphDestination.kt",
             ),
             "package com.cramsan.edifikana.client.lib.features.window\nsealed class EdifikanáWindowNavGraphDestination {\n}",
         )

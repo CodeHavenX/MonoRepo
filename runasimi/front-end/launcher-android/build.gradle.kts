@@ -6,19 +6,19 @@ plugins {
     id("com.cramsan.kotlin-mpp-android-app")
 }
 
-private val ENV_STORE_PASSWORD = "TEMPLATE_REPLACE_ME_STORE_PASSWORD"
-private val ENV_KEY_ALIAS = "TEMPLATE_REPLACE_ME_KEY_ALIAS"
-private val ENV_KEY_PASSWORD = "TEMPLATE_REPLACE_ME_KEY_PASSWORD"
+private val ENV_STORE_PASSWORD = "RUNASIMI_STORE_PASSWORD"
+private val ENV_KEY_ALIAS = "RUNASIMI_KEY_ALIAS"
+private val ENV_KEY_PASSWORD = "RUNASIMI_KEY_PASSWORD"
 
 val releaseStorePassword = System.getenv(ENV_STORE_PASSWORD).orEmpty()
 val releaseKeyAlias = System.getenv(ENV_KEY_ALIAS).orEmpty()
 val releaseKeyPassword = System.getenv(ENV_KEY_PASSWORD).orEmpty()
 
 android {
-    namespace = "com.cramsan.templatereplaceme.client.android"
+    namespace = "com.cramsan.runasimi.client.android"
 
     defaultConfig {
-        applicationId = "com.cramsan.templatereplaceme.client.android"
+        applicationId = "com.cramsan.runasimi.client.android"
         versionCode = 13
         versionName = "2.3"
         minSdk = 30
@@ -46,7 +46,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":templatereplaceme:front-end:shared-app"))
+    implementation(project(":runasimi:front-end:app"))
     implementation(project(":framework:core-compose"))
 
     implementation("io.insert-koin:koin-core:_")

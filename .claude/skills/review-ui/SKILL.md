@@ -14,7 +14,7 @@ Analyze front-end Compose/ViewModel code in a given scope and produce a prioriti
 Read `.claude/skills/_shared/scope-resolution.md` and follow those instructions.
 
 Restrict the resolved file list to files in the front-end buckets:
-- Path contains `front-end/`, `shared-ui/`, `shared-app/`, or `ui-catalog/`
+- Path contains `front-end/`, `shared-ui/`, `front-end/app/`, or `ui-catalog/`
 - Or filename ends with `Screen.kt`, `ViewModel.kt`, `UIState.kt`, `Event.kt`, `Preview.kt`, or `.preview.kt`
 
 Read each relevant file fully before analysing.

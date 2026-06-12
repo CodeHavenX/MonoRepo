@@ -23,7 +23,7 @@ Ask the user for:
   The feature package name is the feature name lowercased.
 
   For example, feature `AddProperty` with parent
-  `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth`
+  `edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth`
   produces the package `com.cramsan.edifikana.client.lib.features.auth.addproperty`.
 
   ⚠️ The `--parent` path must point to the **activity** subdirectory, not to `features/` itself.
@@ -113,5 +113,5 @@ class) would need manual wiring into `PathNavigation.kt`'s handler lists instead
 ## Step 8 — Verify compilation
 
 ```bash
-./gradlew :<app>:front-end:shared-app:release --quiet
+./gradlew :<app>:front-end:app:release --quiet
 ```

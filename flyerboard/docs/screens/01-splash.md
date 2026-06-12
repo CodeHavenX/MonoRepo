@@ -42,7 +42,7 @@ splash screen with the system back gesture.
 
 | Component | From |
 |---|---|
-| `LoadingStateBox` | `shared-ui` (Phase 1.5) |
+| `LoadingStateBox` | `ui-components` (Phase 1.5) |
 
 ### Layout
 
@@ -55,7 +55,7 @@ Box(fillMaxSize, contentAlignment = Center)
 
 The wordmark can be a `Text` composable styled with `MaterialTheme.typography.displayLarge`
 until a vector logo asset is available. If a `DrawableResource` named
-`ic_flyerboard_wordmark` is added to `shared-ui/src/commonMain/resources/`, it
+`ic_flyerboard_wordmark` is added to `ui-components/src/commonMain/resources/`, it
 can be loaded with `painterResource` and rendered as an `Image` instead.
 
 ### Current state vs target

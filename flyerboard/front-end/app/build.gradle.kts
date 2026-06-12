@@ -54,7 +54,7 @@ kotlin {
 
             implementation(project(":flyerboard:shared"))
             implementation(project(":flyerboard:api"))
-            implementation(project(":flyerboard:front-end:shared-ui"))
+            implementation(project(":flyerboard:front-end:ui-components"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")

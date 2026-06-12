@@ -50,7 +50,7 @@ kotlin {
 
             implementation(project(":templatereplaceme:shared"))
             implementation(project(":templatereplaceme:api"))
-            implementation(project(":templatereplaceme:front-end:shared-ui"))
+            implementation(project(":templatereplaceme:front-end:ui-components"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")

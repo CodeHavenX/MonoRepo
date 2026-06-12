@@ -14,7 +14,7 @@ Analyze front-end Compose/ViewModel code in a given scope and produce a prioriti
 Read `.claude/skills/_shared/scope-resolution.md` and follow those instructions.
 
 Restrict the resolved file list to files in the front-end buckets:
-- Path contains `front-end/`, `shared-ui/`, `front-end/app/`, or `ui-catalog/`
+- Path contains `front-end/`, `ui-components/`, `front-end/app/`, or `ui-catalog/`
 - Or filename ends with `Screen.kt`, `ViewModel.kt`, `UIState.kt`, `Event.kt`, `Preview.kt`, or `.preview.kt`
 
 Read each relevant file fully before analysing.
@@ -113,7 +113,7 @@ Remediation: replace with the injected dispatcher from `DispatcherProvider` or `
 ### Composable reuse and theming rules
 
 **UI12 — No duplicated Composable functions** (P1)
-If a `@Composable` function is substantially identical to one that already exists (same visual structure, same parameters, different name or location), it is a duplication violation. Identify both functions and determine which module is the better owner. If the composable is used or could be used in more than one feature, it belongs in `shared-ui/`; if it is feature-specific, one of the two copies must be deleted and the other referenced.
+If a `@Composable` function is substantially identical to one that already exists (same visual structure, same parameters, different name or location), it is a duplication violation. Identify both functions and determine which module is the better owner. If the composable is used or could be used in more than one feature, it belongs in `ui-components/`; if it is feature-specific, one of the two copies must be deleted and the other referenced.
 Remediation: remove the duplicate, place the canonical version in the appropriate shared or feature location, and update all call sites to use it.
 
 **UI13 — Theme tokens for visual constants** (P1)

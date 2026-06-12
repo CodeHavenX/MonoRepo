@@ -1,7 +1,7 @@
 :flyerboard:back-end
 :flyerboard:shared
 :flyerboard:api
-:flyerboard:front-end:shared-ui
+:flyerboard:front-end:ui-components
 :flyerboard:front-end:app
 :flyerboard:front-end:launcher-android
 :flyerboard:front-end:launcher-desktop

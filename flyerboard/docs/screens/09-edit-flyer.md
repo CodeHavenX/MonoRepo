@@ -46,7 +46,7 @@ to `viewModel.loadFlyer(destination.flyerId)` on `ON_CREATE`.
 
 | Component | From |
 |---|---|
-| `LoadingStateBox` | `shared-ui` (Phase 1.5) — while loading flyer data |
+| `LoadingStateBox` | `ui-components` (Phase 1.5) — while loading flyer data |
 
 ### Layout
 

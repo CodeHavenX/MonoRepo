@@ -21,7 +21,7 @@ For each file in scope, assign one or more categories:
 
 | Category | Heuristics |
 |---|---|
-| **UI** | path contains `front-end/`, `shared-ui/`, `front-end/app/`, or `ui-catalog/`; or filename ends with `Screen.kt`, `ViewModel.kt`, `UIState.kt`, `Event.kt`, `Preview.kt` |
+| **UI** | path contains `front-end/`, `ui-components/`, `front-end/app/`, or `ui-catalog/`; or filename ends with `Screen.kt`, `ViewModel.kt`, `UIState.kt`, `Event.kt`, `Preview.kt` |
 | **BE** | path contains `back-end/`; or filename ends with `Controller.kt`, `Service.kt`, `Datastore.kt` |
 | **Core** | path contains `framework/`, `architecture/`, `shared/`, or `api/` at the repo root level |
 | **Generic** | any Kotlin file not matched above |

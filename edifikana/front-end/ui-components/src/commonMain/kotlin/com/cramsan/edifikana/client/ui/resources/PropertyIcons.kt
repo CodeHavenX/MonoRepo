@@ -12,7 +12,7 @@ import org.jetbrains.compose.resources.DrawableResource
  * Property icon resources for the Edifikana application.
  *
  * These icons represent different property types and are located in the
- * shared-ui composeResources/drawable directory.
+ * ui-components composeResources/drawable directory.
  *
  * This object also provides conversion functions between DrawableResource
  * and the string format used by the API ("drawable:ICON_NAME").

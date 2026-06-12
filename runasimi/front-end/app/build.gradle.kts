@@ -47,7 +47,7 @@ kotlin {
 
             implementation(project(":ui-catalog"))
 
-            implementation(project(":runasimi:front-end:shared-ui"))
+            implementation(project(":runasimi:front-end:ui-components"))
 
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
             implementation("org.jetbrains.androidx.navigation:navigation-compose:_")

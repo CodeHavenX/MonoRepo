@@ -1,7 +1,7 @@
 :edifikana:back-end
 :edifikana:shared
 :edifikana:api
-:edifikana:front-end:shared-ui
+:edifikana:front-end:ui-components
 :edifikana:front-end:app
 :edifikana:front-end:launcher-android
 :edifikana:front-end:launcher-desktop

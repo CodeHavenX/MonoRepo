@@ -43,7 +43,7 @@ surface a snackbar error without clearing the form.
 | `ScreenLayout` | `ui-catalog` (already used) |
 | `LoadingAnimationOverlay` | `ui-catalog` (already used) |
 
-No new shared-ui components are needed for this screen.
+No new ui-components components are needed for this screen.
 
 ### Layout
 

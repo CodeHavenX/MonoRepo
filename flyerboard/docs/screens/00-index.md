@@ -38,7 +38,7 @@ before starting any screen work.
 ## Dependency map
 
 ```
-Phase 1: shared-ui components
+Phase 1: ui-components components
   └── StatusBadge, FlyerCard, FlyerCardWithStatus, ModerationFlyerCard,
       LoadingStateBox, EmptyStateBox, FlyerBoardSearchBar, FlyerAsyncImage
 
@@ -74,7 +74,7 @@ Phase 5: auth fixes
   they never hold a reference to `NavController` directly.
 - All network calls go through Manager → Service. ViewModels call managers
   only, never services directly.
-- Shared UI components live in `shared-ui`; screen-specific composables live
+- Shared UI components live in `ui-components`; screen-specific composables live
   in `app` alongside their screen.
 - Previews must be wrapped in `AppTheme {}` and annotated with `@Preview`.
 - New ViewModels must be registered with `viewModelOf(::FeatureViewModel)`

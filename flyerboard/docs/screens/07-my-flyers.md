@@ -42,9 +42,9 @@ nav tab redirects to the Auth graph instead (handled in `FlyerBoardWindowScreen`
 
 | Component | From | Replaces |
 |---|---|---|
-| `FlyerCardWithStatus` | `shared-ui` (Phase 1.3) | Private `MyFlyerCard` |
-| `LoadingStateBox` | `shared-ui` (Phase 1.5) | Inline `CircularProgressIndicator` |
-| `EmptyStateBox` | `shared-ui` (Phase 1.6) | Inline `Text` |
+| `FlyerCardWithStatus` | `ui-components` (Phase 1.3) | Private `MyFlyerCard` |
+| `LoadingStateBox` | `ui-components` (Phase 1.5) | Inline `CircularProgressIndicator` |
+| `EmptyStateBox` | `ui-components` (Phase 1.6) | Inline `Text` |
 
 ### Layout
 

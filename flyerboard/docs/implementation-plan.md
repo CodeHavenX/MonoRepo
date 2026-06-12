@@ -2,7 +2,7 @@
 
 This document describes the work needed to bring every screen described in
 `frontend.md` to its specified state, using the shared components defined in
-`shared-ui-components.md`. Changes are ordered by dependency so that each
+`ui-components.md`. Changes are ordered by dependency so that each
 phase can be merged independently.
 
 Each step includes a **Validation** section that specifies exactly what must
@@ -40,7 +40,7 @@ The following items are currently missing or incomplete relative to `frontend.md
 
 ## Phase 1 — Shared UI Components
 
-> **Location:** `flyerboard/front-end/shared-ui/src/commonMain/kotlin/com/cramsan/flyerboard/client/ui/components/`
+> **Location:** `flyerboard/front-end/ui-components/src/commonMain/kotlin/com/cramsan/flyerboard/client/ui/components/`
 >
 > All components must be wrapped in `AppTheme {}` in their preview files.
 > Follow the package convention: `com.cramsan.flyerboard.client.ui.components`.
@@ -931,7 +931,7 @@ declared as `data class FlyerDetailDestination(val flyerId: String)` and
 
 | Phase | What | Prerequisite |
 |---|---|---|
-| 1 | 8 shared-ui components + previews | — |
+| 1 | 8 ui-components components + previews | — |
 | 2 | Service/model layer: archive query, rejectionReason, AuthState | — |
 | 3 | Browser navigation: URL scheme, deep links, History adapter, SPA fallback | — |
 | 4 | FlyerSubmit screen (5 files) + destination + route | Phases 1, 3 |

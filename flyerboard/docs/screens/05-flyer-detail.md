@@ -47,9 +47,9 @@ the target flyer. It is passed as `it.toRoute<FlyerDetailDestination>()` in
 
 | Component | From | Replaces |
 |---|---|---|
-| `FlyerAsyncImage` | `shared-ui` (Phase 1.8) | Inline `AsyncImage` in `FlyerDetailBody` |
-| `LoadingStateBox` | `shared-ui` (Phase 1.5) | Inline `CircularProgressIndicator` |
-| `EmptyStateBox` | `shared-ui` (Phase 1.6) | Inline "not found" `Text` |
+| `FlyerAsyncImage` | `ui-components` (Phase 1.8) | Inline `AsyncImage` in `FlyerDetailBody` |
+| `LoadingStateBox` | `ui-components` (Phase 1.5) | Inline `CircularProgressIndicator` |
+| `EmptyStateBox` | `ui-components` (Phase 1.6) | Inline "not found" `Text` |
 
 ### Layout
 

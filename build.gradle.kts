@@ -85,81 +85,9 @@ tasks.register("generateBuildArtifacts") {
  * Production task settings for all projects. These must pass to consider
  * all projects are running correctly.
  */
-tasks.register("releaseAll") {
+val releaseAll = tasks.register("releaseAll") {
     group = "release"
     description = "Builds all target"
-
-    dependsOn("framework:annotations:release")
-    dependsOn("framework:assert:release")
-    dependsOn("framework:configuration:release")
-    dependsOn("framework:crashhandler:release")
-    dependsOn("framework:core:release")
-    dependsOn("framework:core-compose:release")
-    dependsOn("framework:core-ktor:release")
-    dependsOn("framework:halt:release")
-    dependsOn("framework:interfacelib:release")
-    dependsOn("framework:interfacelib-test:release")
-    dependsOn("framework:logging:release")
-    dependsOn("framework:metrics:release")
-    dependsOn("framework:userevents:release")
-    dependsOn("framework:preferences:release")
-    dependsOn("framework:thread:release")
-    dependsOn("framework:test:release")
-    dependsOn("framework:test-roborazzi:release")
-    dependsOn("framework:utils:release")
-    dependsOn("framework:network-api:release")
-    dependsOn("framework:http-serializers:release")
-
-    dependsOn("samples:android-app:release")
-    dependsOn("samples:android-lib:release")
-    dependsOn("samples:jbcompose-mpp-lib:release")
-    dependsOn("samples:jbcompose-desktop-app:release")
-    dependsOn("samples:jbcompose-android-app:release")
-    dependsOn("samples:jbcompose-wasm-app:release")
-    dependsOn("samples:mpp-lib:release")
-    dependsOn("samples:jvm-lib:release")
-    dependsOn("samples:jvm-application:release")
-    dependsOn("samples:nodejs-app:release")
-    dependsOn("samples:service-ktor:release")
-
-    dependsOn("framework-samples:app-android:release")
-    dependsOn("framework-samples:framework-sample-app:release")
-    dependsOn("framework-samples:app-jvm:release")
-    dependsOn("framework-samples:app-wasm:release")
-
-    dependsOn("ui-catalog:release")
-
-    dependsOn("edifikana:back-end:release")
-    dependsOn("edifikana:shared:release")
-    dependsOn("edifikana:api:release")
-    dependsOn("edifikana:front-end:shared-ui:release")
-    dependsOn("edifikana:front-end:shared-app:release")
-    dependsOn("edifikana:front-end:app-wasm:release")
-    dependsOn("edifikana:front-end:app-android:release")
-    dependsOn("edifikana:front-end:app-jvm:release")
-
-    dependsOn("runasimi:front-end:shared-ui:release")
-    dependsOn("runasimi:front-end:shared-app:release")
-    dependsOn("runasimi:front-end:app-wasm:release")
-    dependsOn("runasimi:front-end:app-android:release")
-    dependsOn("runasimi:front-end:app-jvm:release")
-    dependsOn("runasimi:back-end:release")
-    dependsOn("runasimi:api:release")
-
-    dependsOn("architecture:back-end-architecture:release")
-    dependsOn("architecture:back-end-architecture-test:release")
-    dependsOn("architecture:front-end-architecture:release")
-
-    dependsOn("flyerboard:back-end:release")
-    dependsOn("flyerboard:shared:release")
-    dependsOn("flyerboard:api:release")
-    dependsOn("flyerboard:front-end:shared-ui:release")
-    dependsOn("flyerboard:front-end:shared-app:release")
-    dependsOn("flyerboard:front-end:app-wasm:release")
-
-    dependsOn("detekt-rules:release")
-    dependsOn("devtools:core:release")
-    dependsOn("devtools:cli:release")
 
     dependsOn("generateBuildArtifacts")
     val repoDir: File = rootDir
@@ -178,5 +106,13 @@ tasks.register("releaseAll") {
                     modifiedFiles.lines().joinToString("\n") { "  $it" }
             )
         }
+    }
+}
+
+// Wired up after all (selectively-synced) subprojects are configured, so releaseAll only
+// depends on the "release" task of modules that are actually included in this build.
+gradle.projectsEvaluated {
+    releaseAll.configure {
+        dependsOn(subprojects.mapNotNull { it.tasks.findByName("release") })
     }
 }

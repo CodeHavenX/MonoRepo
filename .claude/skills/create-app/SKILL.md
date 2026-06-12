@@ -1,6 +1,6 @@
 ---
 name: create-app
-description: "Scaffold a complete new app from the templatereplaceme template, updating settings.gradle.kts and build.gradle.kts automatically."
+description: "Scaffold a complete new app from the templatereplaceme template."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
@@ -63,7 +63,5 @@ excluded.
 ./gradlew :<appname>:front-end:shared-app:release --quiet
 ```
 
-> **Note:** `create app` modifies `settings.gradle.kts` and `build.gradle.kts`. The top-level
-> `releaseAll` task requires a clean git working tree and will fail until those changes are
-> committed. Use per-module `:<appname>:front-end:shared-app:release` for local verification
-> before committing.
+> **Note:** The top-level `releaseAll` task requires a clean git working tree and will fail until those
+> changes are committed. 

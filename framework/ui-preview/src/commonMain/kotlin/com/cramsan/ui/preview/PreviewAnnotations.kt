@@ -27,15 +27,15 @@ annotation class ComponentPreviews
 @Retention(AnnotationRetention.BINARY)
 annotation class ScreenPreviews
 
-/*
-* Generates three preview variants (no light/dark distinction):
-* - Phone (~411 dp wide)
-* - Tablet (~840 dp wide, landscape)
-* - Desktop (~1280 dp wide)
-*
-* Use this when the focus is adaptive layout across form factors rather than colour-scheme
-* coverage.
-*/
+/**
+ * Multipreview annotation generating three preview variants (no light/dark distinction):
+ * - Phone (~411 dp wide)
+ * - Tablet (~840 dp wide, landscape)
+ * - Desktop (~1280 dp wide)
+ *
+ * Use this when the focus is adaptive layout across form factors rather than colour-scheme
+ * coverage.
+ */
 @Preview(name = "Phone", widthDp = 411)
 @Preview(name = "Tablet", widthDp = 840)
 @Preview(name = "Desktop", widthDp = 1280)

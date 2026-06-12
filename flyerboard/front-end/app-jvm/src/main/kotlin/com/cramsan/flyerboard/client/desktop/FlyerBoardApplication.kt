@@ -32,7 +32,8 @@ fun main() =
             Window(
                 onCloseRequest = ::exitApplication,
                 title = "FlyerBoard",
-                state = rememberWindowState(
+                state =
+                rememberWindowState(
                     size = DpSize(600.dp, 800.dp),
                 ),
             ) {

@@ -6,6 +6,8 @@ plugins {
     id("io.ktor.plugin")
     // Configures default settings for JVM/Ktor project
     id("com.cramsan.kotlin-jvm-ktor")
+    // Adds Gradle tasks that wrap the Supabase CLI
+    id("com.cramsan.supabase-task")
 }
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")

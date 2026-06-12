@@ -16,6 +16,7 @@ plugins {
     // Internal gradle plugins
     id("com.cramsan.detekt") apply false
     id("com.cramsan.release-task") apply false
+    id("com.cramsan.supabase-task") apply false
     id("com.cramsan.kotlin-jvm-lib") apply false
     id("com.cramsan.kotlin-jvm-lib-compose") apply false
     id("com.cramsan.kotlin-jvm-application") apply false

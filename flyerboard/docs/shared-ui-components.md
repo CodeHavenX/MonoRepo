@@ -10,7 +10,7 @@ Each component has a paired preview file following the convention established by
 
 ## Analysis
 
-The screens in `shared-app` contain significant UI duplication:
+The screens in `app` contain significant UI duplication:
 
 | Pattern | Duplicated in |
 |---|---|

@@ -8,10 +8,9 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":framework:core"))
     implementation(project(":framework:core-compose"))
 
-    implementation(project(":edifikana:front-end:shared-app"))
+    implementation(project(":templatereplaceme:front-end:app"))
 
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-compose:_")
@@ -20,11 +19,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.cramsan.edifikana.client.desktop.EdifikanaApplicationKt"
+        mainClass = "com.cramsan.templatereplaceme.client.desktop.TemplateReplaceMeApplicationKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.cramsan.edifikana.client.desktop"
+            packageName = "com.cramsan.templatereplaceme.client.desktop"
             packageVersion = "1.0.0"
         }
     }

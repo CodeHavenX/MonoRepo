@@ -28,12 +28,12 @@ flyerboard/back-end/build/libs/flyerboard-back-end.jar
 ### Frontend (WASM)
 
 ```bash
-./gradlew :flyerboard:front-end:app-wasm:wasmJsBrowserDistribution
+./gradlew :flyerboard:front-end:launcher-web:wasmJsBrowserDistribution
 ```
 
 The output static files are located at:
 ```
-flyerboard/front-end/app-wasm/build/dist/wasmJs/productionExecutable/
+flyerboard/front-end/launcher-web/build/dist/wasmJs/productionExecutable/
 ```
 
 ---
@@ -104,7 +104,7 @@ Copy the WASM build output to the Nginx web root:
 
 ```bash
 sudo mkdir -p /var/www/flyerboard
-sudo cp -r flyerboard/front-end/app-wasm/build/dist/wasmJs/productionExecutable/. /var/www/flyerboard/
+sudo cp -r flyerboard/front-end/launcher-web/build/dist/wasmJs/productionExecutable/. /var/www/flyerboard/
 ```
 
 ---

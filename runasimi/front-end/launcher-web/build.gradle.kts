@@ -11,7 +11,7 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm-compose-app")
 }
 
-val wasmModuleName by extra("EdifikanaWasmApp")
+val wasmModuleName by extra("RunasimiWasmApp")
 val ciDeployable by extra(true)
 
 kotlin {
@@ -35,7 +35,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":edifikana:front-end:shared-app"))
+                implementation(project(":runasimi:front-end:app"))
 
                 implementation(project(":framework:interfacelib"))
                 implementation(project(":framework:core-compose"))

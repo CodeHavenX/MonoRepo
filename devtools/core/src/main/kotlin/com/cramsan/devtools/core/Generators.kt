@@ -119,15 +119,15 @@ fun generateManager(
         filePairs =
         listOf(
             "devtools/templates/frontend/manager/ComponentReplaceMeManager.kt" to
-                "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/managers/${name}Manager.kt",
+                "$app/front-end/app/src/commonMain/kotlin/com/cramsan/$app/client/lib/managers/${name}Manager.kt",
         ),
         checklist =
         listOf(
-            "# Add to $app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/di/ManagerModule.kt",
+            "# Add to $app/front-end/app/src/commonMain/kotlin/com/cramsan/$app/client/lib/di/ManagerModule.kt",
             "singleOf(::${name}Manager)",
             "",
             "# Note: No jvmTest template exists for managers. Write tests manually in:",
-            "#   $app/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/$app/client/lib/managers/${name}ManagerTest.kt",
+            "#   $app/front-end/app/src/jvmTest/kotlin/com/cramsan/$app/client/lib/managers/${name}ManagerTest.kt",
         ),
     )
 
@@ -144,17 +144,17 @@ fun generateFrontendService(
         filePairs =
         listOf(
             "devtools/templates/frontend/service/ComponentReplaceMeService.kt" to
-                "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/${name}Service.kt",
+                "$app/front-end/app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/${name}Service.kt",
             "devtools/templates/frontend/service/impl/ComponentReplaceMeServiceImpl.kt" to
-                "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/impl/${name}ServiceImpl.kt",
+                "$app/front-end/app/src/commonMain/kotlin/com/cramsan/$app/client/lib/service/impl/${name}ServiceImpl.kt",
         ),
         checklist =
         listOf(
-            "# Add to $app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/di/ServiceModule.kt",
+            "# Add to $app/front-end/app/src/commonMain/kotlin/com/cramsan/$app/client/lib/di/ServiceModule.kt",
             "singleOf(::${name}ServiceImpl) { bind<${name}Service>() }",
             "",
             "# Note: No jvmTest template exists for frontend services. Write tests manually in:",
-            "#   $app/front-end/shared-app/src/jvmTest/kotlin/com/cramsan/$app/client/lib/service/impl/${name}ServiceImplTest.kt",
+            "#   $app/front-end/app/src/jvmTest/kotlin/com/cramsan/$app/client/lib/service/impl/${name}ServiceImplTest.kt",
         ),
     )
 
@@ -168,7 +168,7 @@ private const val ACTIVITY_TMPL_COMMON = "devtools/templates/frontend/activity"
  * Template source: `devtools/templates/frontend/feature/`
  *
  * @param parentRel repo-relative path to the parent activity directory,
- *   e.g. `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth`
+ *   e.g. `edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth`
  */
 fun generateFeature(
     repoRoot: Path,
@@ -238,7 +238,7 @@ fun generateFeature(
  * Template source: `devtools/templates/frontend/activity/`
  *
  * @param parentRel repo-relative path to the parent features directory,
- *   e.g. `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`
+ *   e.g. `edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`
  */
 fun generateActivity(
     repoRoot: Path,
@@ -332,7 +332,7 @@ private fun activityChecklist(
 private fun findWindowNavGraphDestinationClass(repoRoot: Path, app: String): String {
     val windowDir =
         repoRoot.resolve(
-            "$app/front-end/shared-app/src/commonMain/kotlin/com/cramsan/$app/client/lib/features/window",
+            "$app/front-end/app/src/commonMain/kotlin/com/cramsan/$app/client/lib/features/window",
         )
     val file =
         windowDir

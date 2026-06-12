@@ -11,7 +11,7 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm-compose-app")
 }
 
-val wasmModuleName by extra("FlyerBoardWasmApp")
+val wasmModuleName by extra("TemplateReplaceMeWasmApp")
 
 kotlin {
     wasmJs {
@@ -34,7 +34,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":flyerboard:front-end:shared-app"))
+                implementation(project(":templatereplaceme:front-end:app"))
 
                 implementation(project(":framework:interfacelib"))
                 implementation(project(":framework:core-compose"))

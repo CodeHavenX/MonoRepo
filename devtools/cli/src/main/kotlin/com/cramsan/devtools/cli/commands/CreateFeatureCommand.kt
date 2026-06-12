@@ -15,7 +15,7 @@ internal class CreateFeatureCommand : CliktCommand(name = "feature") {
         "--parent",
         help =
         "Repo-relative path to the activity directory inside features/ that will contain this feature, " +
-            "e.g. edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth",
+            "e.g. edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features/auth",
     ).required()
     private val repoRoot: Path by option("--repo-root", help = "Path to monorepo root (auto-detected if omitted)")
         .path(mustExist = true, canBeFile = false)

@@ -23,9 +23,9 @@ internal class CreateAppCommand : CliktCommand(name = "app") {
         "--initial-component",
         help = "PascalCase name for the starter component included in the new app, e.g. Sample",
     ).default("Sample")
-    private val noWasm: Boolean by option("--no-wasm", help = "Exclude the front-end/app-wasm module").flag()
-    private val noAndroid: Boolean by option("--no-android", help = "Exclude the front-end/app-android module").flag()
-    private val noJvm: Boolean by option("--no-jvm", help = "Exclude the front-end/app-jvm module").flag()
+    private val noWasm: Boolean by option("--no-wasm", help = "Exclude the front-end/launcher-web module").flag()
+    private val noAndroid: Boolean by option("--no-android", help = "Exclude the front-end/launcher-android module").flag()
+    private val noJvm: Boolean by option("--no-jvm", help = "Exclude the front-end/launcher-desktop module").flag()
     private val repoRoot: Path by option("--repo-root", help = "Path to monorepo root (auto-detected if omitted)")
         .path(mustExist = true, canBeFile = false)
         .defaultLazy { detectRepoRoot() }

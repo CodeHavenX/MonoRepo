@@ -8,10 +8,9 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":framework:core"))
     implementation(project(":framework:core-compose"))
 
-    implementation(project(":flyerboard:front-end:shared-app"))
+    implementation(project(":runasimi:front-end:app"))
 
     implementation("io.insert-koin:koin-core:_")
     implementation("io.insert-koin:koin-compose:_")
@@ -20,11 +19,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.cramsan.flyerboard.client.desktop.FlyerBoardApplicationKt"
+        mainClass = "com.cramsan.runasimi.client.desktop.RunasimiApplicationKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.cramsan.flyerboard.client.desktop"
+            packageName = "com.cramsan.runasimi.client.desktop"
             packageVersion = "1.0.0"
         }
     }

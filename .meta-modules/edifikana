@@ -2,7 +2,7 @@
 :edifikana:shared
 :edifikana:api
 :edifikana:front-end:shared-ui
-:edifikana:front-end:shared-app
-:edifikana:front-end:app-android
-:edifikana:front-end:app-jvm
-:edifikana:front-end:app-wasm
+:edifikana:front-end:app
+:edifikana:front-end:launcher-android
+:edifikana:front-end:launcher-desktop
+:edifikana:front-end:launcher-web

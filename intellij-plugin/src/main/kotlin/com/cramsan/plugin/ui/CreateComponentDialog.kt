@@ -19,7 +19,7 @@ class CreateComponentDialog : DialogWrapper(true) {
     private val appField = JTextField(30).apply { toolTipText = "e.g. edifikana (not used for feature type)" }
     private val providerField = JTextField(20).apply { toolTipText = "e.g. Supabase (required for datastore)" }
     private val parentField = JTextField(60).apply {
-        toolTipText = "e.g. edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features"
+        toolTipText = "e.g. edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features"
     }
 
     /** The selected component type. */

@@ -83,7 +83,7 @@ class AppGeneratorTest {
         val content = repoRoot.resolve("settings.gradle.kts").readText()
         assertTrue(content.contains("include(\"myapp:api\")"))
         assertTrue(content.contains("include(\"myapp:back-end\")"))
-        assertTrue(content.contains("include(\"myapp:front-end:shared-app\")"))
+        assertTrue(content.contains("include(\"myapp:front-end:app\")"))
     }
 
     @Test
@@ -102,9 +102,9 @@ class AppGeneratorTest {
         generateApp(repoRoot, "myapp", "MyApp")
 
         val content = repoRoot.resolve("settings.gradle.kts").readText()
-        assertTrue(content.contains("app-wasm"))
-        assertTrue(content.contains("app-android"))
-        assertTrue(content.contains("app-jvm"))
+        assertTrue(content.contains("launcher-web"))
+        assertTrue(content.contains("launcher-android"))
+        assertTrue(content.contains("launcher-desktop"))
     }
 
     @Test
@@ -112,7 +112,7 @@ class AppGeneratorTest {
         generateApp(repoRoot, "myapp", "MyApp", includeWasm = false)
 
         val content = repoRoot.resolve("settings.gradle.kts").readText()
-        assertFalse(content.contains("myapp:front-end:app-wasm"))
+        assertFalse(content.contains("myapp:front-end:launcher-web"))
     }
 
     @Test
@@ -120,7 +120,7 @@ class AppGeneratorTest {
         generateApp(repoRoot, "myapp", "MyApp", includeAndroid = false)
 
         val content = repoRoot.resolve("settings.gradle.kts").readText()
-        assertFalse(content.contains("myapp:front-end:app-android"))
+        assertFalse(content.contains("myapp:front-end:launcher-android"))
     }
 
     @Test
@@ -128,7 +128,7 @@ class AppGeneratorTest {
         generateApp(repoRoot, "myapp", "MyApp", includeJvm = false)
 
         val content = repoRoot.resolve("settings.gradle.kts").readText()
-        assertFalse(content.contains("myapp:front-end:app-jvm"))
+        assertFalse(content.contains("myapp:front-end:launcher-desktop"))
     }
 
     @Test
@@ -170,9 +170,9 @@ class AppGeneratorTest {
         val datastorePath =
             "myapp/back-end/src/main/kotlin/com/cramsan/myapp/server/datastore/WidgetDatastore.kt"
         val frontendServicePath =
-            "myapp/front-end/shared-app/src/commonMain/kotlin/com/cramsan/myapp/client/lib/service/WidgetService.kt"
+            "myapp/front-end/app/src/commonMain/kotlin/com/cramsan/myapp/client/lib/service/WidgetService.kt"
         val managerPath =
-            "myapp/front-end/shared-app/src/commonMain/kotlin/com/cramsan/myapp/client/lib/managers/WidgetManager.kt"
+            "myapp/front-end/app/src/commonMain/kotlin/com/cramsan/myapp/client/lib/managers/WidgetManager.kt"
         val apiPath =
             "myapp/api/src/commonMain/kotlin/com/cramsan/myapp/api/WidgetApi.kt"
 

@@ -85,7 +85,7 @@ Box(modifier.fillMaxSize(), contentAlignment = Center) {
 }
 ```
 
-Add string resource `app_name = "FlyerBoard"` to `shared-app` resources.
+Add string resource `app_name = "FlyerBoard"` to `app` resources.
 
 ---
 

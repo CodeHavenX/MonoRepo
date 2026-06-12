@@ -2,7 +2,7 @@
 :flyerboard:shared
 :flyerboard:api
 :flyerboard:front-end:shared-ui
-:flyerboard:front-end:shared-app
-:flyerboard:front-end:app-android
-:flyerboard:front-end:app-jvm
-:flyerboard:front-end:app-wasm
+:flyerboard:front-end:app
+:flyerboard:front-end:launcher-android
+:flyerboard:front-end:launcher-desktop
+:flyerboard:front-end:launcher-web

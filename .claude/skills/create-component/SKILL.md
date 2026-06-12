@@ -16,7 +16,7 @@ Ask the user for:
 - **Name** (PascalCase, e.g. `Payment`)
 - **App** (e.g. `edifikana`)
 - **Provider** (required only when type = `datastore`, e.g. `Supabase`)
-- **Parent folder** (required only when type = `feature`, e.g. `edifikana/front-end/shared-app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`)
+- **Parent folder** (required only when type = `feature`, e.g. `edifikana/front-end/app/src/commonMain/kotlin/com/cramsan/edifikana/client/lib/features`)
 
 ## Step 2 — Run the CLI
 
@@ -54,6 +54,6 @@ Run:
 | Component type                   | Affected module                        |
 |----------------------------------|----------------------------------------|
 | controller / service / datastore | `<app>:back-end`                       |
-| manager / frontend-service       | `<app>:front-end:shared-app`           |
+| manager / frontend-service       | `<app>:front-end:app`           |
 | api                              | `<app>:api` and `<app>:shared`         |
-| feature                          | `<app>:front-end:shared-app`           |
+| feature                          | `<app>:front-end:app`           |

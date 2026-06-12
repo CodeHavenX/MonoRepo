@@ -6,21 +6,21 @@ plugins {
     id("com.cramsan.kotlin-mpp-android-app")
 }
 
-private val ENV_STORE_PASSWORD = "RUNASIMI_STORE_PASSWORD"
-private val ENV_KEY_ALIAS = "RUNASIMI_KEY_ALIAS"
-private val ENV_KEY_PASSWORD = "RUNASIMI_KEY_PASSWORD"
+private val ENV_STORE_PASSWORD = "EDIFIKANA_STORE_PASSWORD"
+private val ENV_KEY_ALIAS = "EDIFIKANA_KEY_ALIAS"
+private val ENV_KEY_PASSWORD = "EDIFIKANA_KEY_PASSWORD"
 
 val releaseStorePassword = System.getenv(ENV_STORE_PASSWORD).orEmpty()
 val releaseKeyAlias = System.getenv(ENV_KEY_ALIAS).orEmpty()
 val releaseKeyPassword = System.getenv(ENV_KEY_PASSWORD).orEmpty()
 
 android {
-    namespace = "com.cramsan.runasimi.client.android"
+    namespace = "com.cramsan.edifikana.client.android"
 
     defaultConfig {
-        applicationId = "com.cramsan.runasimi.client.android"
+        applicationId = "com.cramsan.edifikana.client.android"
         versionCode = 13
-        versionName = "2.3"
+        versionName = properties["app.version"]?.toString() ?: "0.0.0"
         minSdk = 30
     }
 
@@ -46,7 +46,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":runasimi:front-end:shared-app"))
+    implementation(project(":edifikana:front-end:app"))
     implementation(project(":framework:core-compose"))
 
     implementation("io.insert-koin:koin-core:_")

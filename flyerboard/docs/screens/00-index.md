@@ -75,7 +75,7 @@ Phase 5: auth fixes
 - All network calls go through Manager → Service. ViewModels call managers
   only, never services directly.
 - Shared UI components live in `shared-ui`; screen-specific composables live
-  in `shared-app` alongside their screen.
+  in `app` alongside their screen.
 - Previews must be wrapped in `AppTheme {}` and annotated with `@Preview`.
 - New ViewModels must be registered with `viewModelOf(::FeatureViewModel)`
   in `ViewModelModule.kt`.

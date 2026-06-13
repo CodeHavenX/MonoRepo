@@ -66,6 +66,7 @@ class UserServiceTest {
                 userDatastore.createUser(
                     any(),
                     any(),
+                    any(),
                 )
             } returns Result.success(user)
             coEvery {
@@ -73,12 +74,13 @@ class UserServiceTest {
             } returns true
 
             // Act
-            val result = userService.createUser(firstName, lastName)
+            val result = userService.createUser(UserId("user123"), firstName, lastName)
 
             // Assert
             assertTrue(result.isSuccess)
             coVerify {
                 userDatastore.createUser(
+                    UserId("user123"),
                     "John",
                     "Doe",
                 )

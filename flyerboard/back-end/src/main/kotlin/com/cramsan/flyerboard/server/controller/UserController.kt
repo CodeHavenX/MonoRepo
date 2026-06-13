@@ -7,7 +7,7 @@ import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
-import com.cramsan.framework.core.ktor.unauthenticatedHandler
+import com.cramsan.framework.core.ktor.handler
 import io.ktor.server.routing.Routing
 
 /**
@@ -20,9 +20,10 @@ class UserController(
 ) : Controller {
     override fun registerRoutes(route: Routing) {
         UserApi.register(route) {
-            unauthenticatedHandler(api.createUser, contextRetriever) { request ->
+            handler(api.createUser, contextRetriever) { request ->
                 userService
                     .createUser(
+                        userId = request.context.payload.userId,
                         firstName = request.requestBody.firstName,
                         lastName = request.requestBody.lastName,
                     ).getOrThrow()

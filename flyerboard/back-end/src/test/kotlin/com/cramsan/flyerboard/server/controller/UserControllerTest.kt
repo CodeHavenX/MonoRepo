@@ -3,7 +3,9 @@ package com.cramsan.flyerboard.server.controller
 import com.cramsan.architecture.server.test.startTestKoin
 import com.cramsan.architecture.server.test.testBackEndApplication
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.flyerboard.lib.serialization.createJson
+import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.dependencyinjection.TestControllerModule
 import com.cramsan.flyerboard.server.dependencyinjection.TestServiceModule
 import com.cramsan.flyerboard.server.dependencyinjection.testApplicationModule
@@ -54,6 +56,7 @@ class UserControllerTest :
             val userService = get<UserService>()
             coEvery {
                 userService.createUser(
+                    userId = UserId("user123"),
                     firstName = "John",
                     lastName = "Doe",
                 )
@@ -66,11 +69,13 @@ class UserControllerTest :
                     ),
                 )
             }
-            val contextRetriever = get<ContextRetriever<Unit>>()
+            val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
             coEvery {
                 contextRetriever.getContext(any())
             }.answers {
-                ClientContext.UnauthenticatedClientContext()
+                ClientContext.AuthenticatedClientContext(
+                    FlyerBoardContextPayload(userId = UserId("user123"), role = UserRole.USER),
+                )
             }
 
             // Act

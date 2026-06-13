@@ -47,12 +47,11 @@ class FlyerManager(private val dependencies: ManagerDependencies, private val fl
         description: String,
         expiresAt: String?,
         fileBytes: ByteArray,
-        fileName: String,
         mimeType: String,
     ): Result<FlyerModel> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "createFlyer")
-            flyerService.createFlyer(title, description, expiresAt, fileBytes, fileName, mimeType).getOrThrow()
+            flyerService.createFlyer(title, description, expiresAt, fileBytes, mimeType).getOrThrow()
         }
 
     /**
@@ -65,12 +64,11 @@ class FlyerManager(private val dependencies: ManagerDependencies, private val fl
         description: String? = null,
         expiresAt: String? = null,
         fileBytes: ByteArray? = null,
-        fileName: String? = null,
         mimeType: String? = null,
     ): Result<FlyerModel> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "updateFlyer")
-            flyerService.updateFlyer(flyerId, title, description, expiresAt, fileBytes, fileName, mimeType).getOrThrow()
+            flyerService.updateFlyer(flyerId, title, description, expiresAt, fileBytes, mimeType).getOrThrow()
         }
 
     /**

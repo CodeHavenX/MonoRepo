@@ -67,7 +67,6 @@ class FlyerSubmitViewModel(dependencies: ViewModelDependencies, private val flye
                     description = state.description,
                     expiresAt = state.expiresAt,
                     fileBytes = selectedFileBytes ?: ByteArray(0),
-                    fileName = state.selectedFileName.orEmpty(),
                     mimeType = selectedMimeType.orEmpty(),
                 ).onSuccess {
                     submitting = false

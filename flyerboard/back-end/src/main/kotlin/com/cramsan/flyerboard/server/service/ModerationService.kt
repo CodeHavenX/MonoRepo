@@ -133,7 +133,6 @@ class ModerationService(
                 id = flyerId,
                 title = null,
                 description = null,
-                filePath = null,
                 status = newStatus,
                 expiresAt = null,
             ).map { flyer ->

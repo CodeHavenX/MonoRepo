@@ -1,11 +1,14 @@
 package com.cramsan.flyerboard.api
 
 import com.cramsan.flyerboard.lib.model.FlyerId
+import com.cramsan.flyerboard.lib.model.network.CreateFlyerNetworkRequest
+import com.cramsan.flyerboard.lib.model.network.CreateFlyerNetworkResponse
 import com.cramsan.flyerboard.lib.model.network.FlyerListNetworkResponse
 import com.cramsan.flyerboard.lib.model.network.FlyerNetworkResponse
 import com.cramsan.flyerboard.lib.model.network.ListFlyersQueryParams
 import com.cramsan.flyerboard.lib.model.network.PaginationParams
-import com.cramsan.framework.annotations.api.BytesRequestBody
+import com.cramsan.flyerboard.lib.model.network.UpdateFlyerNetworkRequest
+import com.cramsan.flyerboard.lib.model.network.UpdateFlyerNetworkResponse
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -42,31 +45,31 @@ object FlyerApi : Api("api/v1/flyers") {
     /**
      * Create a new flyer.
      *
-     * Note: This operation deviates from the standard JSON body contract.
-     * The request must be sent as multipart/form-data, with the flyer metadata
-     * fields and the file binary included as separate parts.
+     * The backend generates the flyer's [FlyerId] and creates the flyer with
+     * [com.cramsan.flyerboard.lib.model.FlyerStatus.PENDING] status. The response includes a
+     * signed upload URL the client should use to upload the flyer's asset.
      */
     val createFlyer =
         operation<
-            BytesRequestBody,
+            CreateFlyerNetworkRequest,
             NoQueryParam,
             NoPathParam,
-            FlyerNetworkResponse,
+            CreateFlyerNetworkResponse,
             >(HttpMethod.Post)
 
     /**
      * Update an existing flyer.
      *
-     * Note: This operation deviates from the standard JSON body contract.
-     * The request must be sent as multipart/form-data, with the updated metadata
-     * fields and an optional replacement file included as separate parts.
+     * Set [UpdateFlyerNetworkRequest.requestUpload] to `true` to receive a fresh signed upload
+     * URL for this flyer's asset. Any edit, including requesting an upload, resets status to
+     * [com.cramsan.flyerboard.lib.model.FlyerStatus.PENDING].
      */
     val updateFlyer =
         operation<
-            BytesRequestBody,
+            UpdateFlyerNetworkRequest,
             NoQueryParam,
             FlyerId,
-            FlyerNetworkResponse,
+            UpdateFlyerNetworkResponse,
             >(HttpMethod.Put)
 
     /**

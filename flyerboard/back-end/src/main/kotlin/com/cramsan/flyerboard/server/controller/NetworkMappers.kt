@@ -2,6 +2,8 @@ package com.cramsan.flyerboard.server.controller
 
 import com.cramsan.flyerboard.lib.model.network.FlyerListNetworkResponse
 import com.cramsan.flyerboard.lib.model.network.FlyerNetworkResponse
+import com.cramsan.flyerboard.lib.model.network.SignedUploadNetworkResponse
+import com.cramsan.flyerboard.server.datastore.SignedUpload
 import com.cramsan.flyerboard.server.service.models.Flyer
 import com.cramsan.flyerboard.server.service.models.PaginatedList
 import com.cramsan.framework.annotations.NetworkModel
@@ -24,6 +26,7 @@ fun Flyer.toFlyerNetworkResponse(): FlyerNetworkResponse =
         uploaderId = uploaderId,
         createdAt = createdAt.toString(),
         updatedAt = updatedAt.toString(),
+        rejectionReason = rejectionReason,
     )
 
 /**
@@ -36,4 +39,14 @@ fun PaginatedList<Flyer>.toFlyerListNetworkResponse(): FlyerListNetworkResponse 
         total = total,
         offset = offset,
         limit = limit,
+    )
+
+/**
+ * Maps a [SignedUpload] to a [SignedUploadNetworkResponse].
+ */
+@NetworkModel
+fun SignedUpload.toSignedUploadNetworkResponse(): SignedUploadNetworkResponse =
+    SignedUploadNetworkResponse(
+        signedUrl = signedUrl,
+        token = token,
     )

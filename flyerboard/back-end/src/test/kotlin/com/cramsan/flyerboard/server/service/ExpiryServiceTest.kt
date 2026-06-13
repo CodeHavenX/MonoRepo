@@ -58,6 +58,8 @@ class ExpiryServiceTest {
         uploaderId = UserId("user-1"),
         createdAt = Instant.fromEpochSeconds(0),
         updatedAt = Instant.fromEpochSeconds(0),
+        fileUrl = null,
+        rejectionReason = null,
     )
 
     // ── start / archiveExpiredFlyers ──────────────────────────────────────────
@@ -76,7 +78,6 @@ class ExpiryServiceTest {
                     any(),
                     any(),
                     any(),
-                    any(),
                 )
             } returns Result.success(archivedFlyer)
 
@@ -90,7 +91,6 @@ class ExpiryServiceTest {
                     id = expiredFlyer.id,
                     title = null,
                     description = null,
-                    filePath = null,
                     status = FlyerStatus.ARCHIVED,
                     expiresAt = null,
                 )
@@ -107,7 +107,7 @@ class ExpiryServiceTest {
             advanceTimeBy(1.hours + 1.milliseconds)
 
             coVerify(exactly = 0) {
-                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
             }
         }
 
@@ -125,7 +125,6 @@ class ExpiryServiceTest {
                     any(),
                     any(),
                     any(),
-                    any(),
                 )
             } returns Result.success(archivedFlyer)
 
@@ -135,7 +134,7 @@ class ExpiryServiceTest {
             advanceTimeBy(2.hours + 1.milliseconds)
 
             coVerify(exactly = 2) {
-                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
             }
         }
 

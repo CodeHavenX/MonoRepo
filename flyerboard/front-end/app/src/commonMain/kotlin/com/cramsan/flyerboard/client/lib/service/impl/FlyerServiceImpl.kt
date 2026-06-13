@@ -9,10 +9,11 @@ import com.cramsan.flyerboard.client.lib.service.AuthService
 import com.cramsan.flyerboard.client.lib.service.FlyerService
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
-import com.cramsan.flyerboard.lib.model.network.FlyerNetworkResponse
+import com.cramsan.flyerboard.lib.model.network.CreateFlyerNetworkRequest
 import com.cramsan.flyerboard.lib.model.network.ListFlyersQueryParams
 import com.cramsan.flyerboard.lib.model.network.ModerationActionNetworkRequest
 import com.cramsan.flyerboard.lib.model.network.PaginationParams
+import com.cramsan.flyerboard.lib.model.network.UpdateFlyerNetworkRequest
 import com.cramsan.flyerboard.lib.serialization.HEADER_TOKEN_AUTH
 import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
@@ -20,23 +21,14 @@ import com.cramsan.framework.logging.logW
 import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
-import io.ktor.client.request.headers
-import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.http.Headers
+import io.ktor.http.ContentType
 import io.ktor.http.HeadersBuilder
-import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
 
 /**
  * Ktor HTTP client implementation of [FlyerService].
- *
- * JSON operations use the framework's typed [execute] helper. Multipart file-upload operations
- * ([createFlyer], [updateFlyer]) use raw Ktor form-data requests because the framework's
- * [BytesRequestBody] path only supports a single binary blob, not keyed form fields.
  */
 @FrontendService
 class FlyerServiceImpl(private val http: HttpClient, private val authService: AuthService) : FlyerService {
@@ -73,7 +65,7 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
         runSuspendCatching(TAG) {
             FlyerApi.listArchived
                 .buildRequest(
-                    ListFlyersQueryParams(offset = offset, limit = limit, q = query),
+                    ListFlyersQueryParams(offset = offset, limit = limit, q = query, status = FlyerStatus.ARCHIVED),
                 ).execute(http)
                 .toPaginatedFlyerModel()
         }
@@ -106,40 +98,22 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
                 .toFlyerModel()
         }
 
-    // ── Multipart operations ──────────────────────────────────────────────────
+    // ── Upload operations ─────────────────────────────────────────────────────
 
     override suspend fun createFlyer(
         title: String,
         description: String,
         expiresAt: String?,
         fileBytes: ByteArray,
-        fileName: String,
         mimeType: String,
     ): Result<FlyerModel> =
         runSuspendCatching(TAG) {
-            val response: FlyerNetworkResponse =
-                http
-                    .post(FlyerApi.path) {
-                        headers { appendBearerToken() }
-                        setBody(
-                            MultiPartFormDataContent(
-                                formData {
-                                    append("title", title)
-                                    append("description", description)
-                                    expiresAt?.let { append("expires_at", it) }
-                                    append(
-                                        "file",
-                                        fileBytes,
-                                        Headers.build {
-                                            append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
-                                            append(HttpHeaders.ContentType, mimeType)
-                                        },
-                                    )
-                                },
-                            ),
-                        )
-                    }.body()
-            response.toFlyerModel()
+            val response =
+                FlyerApi.createFlyer
+                    .buildRequest(CreateFlyerNetworkRequest(title, description, expiresAt))
+                    .execute(http, authHeader())
+            uploadAsset(response.upload.signedUrl, fileBytes, mimeType)
+            response.flyer.toFlyerModel()
         }
 
     override suspend fun updateFlyer(
@@ -148,36 +122,28 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
         description: String?,
         expiresAt: String?,
         fileBytes: ByteArray?,
-        fileName: String?,
         mimeType: String?,
     ): Result<FlyerModel> =
         runSuspendCatching(TAG) {
-            val response: FlyerNetworkResponse =
-                http
-                    .put("${FlyerApi.path}/${flyerId.flyerId}") {
-                        headers { appendBearerToken() }
-                        setBody(
-                            MultiPartFormDataContent(
-                                formData {
-                                    title?.let { append("title", it) }
-                                    description?.let { append("description", it) }
-                                    expiresAt?.let { append("expires_at", it) }
-                                    if (fileBytes != null && fileName != null && mimeType != null) {
-                                        append(
-                                            "file",
-                                            fileBytes,
-                                            Headers.build {
-                                                append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
-                                                append(HttpHeaders.ContentType, mimeType)
-                                            },
-                                        )
-                                    }
-                                },
-                            ),
-                        )
-                    }.body()
-            response.toFlyerModel()
+            val response =
+                FlyerApi.updateFlyer
+                    .buildRequest(
+                        flyerId,
+                        UpdateFlyerNetworkRequest(title, description, expiresAt, requestUpload = fileBytes != null),
+                    ).execute(http, authHeader())
+            if (fileBytes != null) {
+                val upload = requireNotNull(response.upload) { "Server did not return an upload URL" }
+                uploadAsset(upload.signedUrl, fileBytes, mimeType.orEmpty())
+            }
+            response.flyer.toFlyerModel()
         }
+
+    private suspend fun uploadAsset(signedUrl: String, fileBytes: ByteArray, mimeType: String) {
+        http.put(signedUrl) {
+            contentType(ContentType.parse(mimeType))
+            setBody(fileBytes)
+        }
+    }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 

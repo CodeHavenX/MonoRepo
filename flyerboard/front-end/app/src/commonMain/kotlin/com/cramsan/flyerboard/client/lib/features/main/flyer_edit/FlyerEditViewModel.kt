@@ -109,7 +109,6 @@ class FlyerEditViewModel(dependencies: ViewModelDependencies, private val flyerM
                     description = editingState.description,
                     expiresAt = editingState.expiresAt,
                     fileBytes = selectedFileBytes,
-                    fileName = editingState.selectedFileName,
                     mimeType = selectedMimeType,
                 ).onSuccess {
                     updateUiState { state -> (state as? Editing)?.copy(isSaving = false) ?: state }

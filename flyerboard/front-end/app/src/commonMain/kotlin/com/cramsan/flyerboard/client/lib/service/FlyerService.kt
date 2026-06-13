@@ -34,7 +34,6 @@ interface FlyerService {
         description: String,
         expiresAt: String?,
         fileBytes: ByteArray,
-        fileName: String,
         mimeType: String,
     ): Result<FlyerModel>
 
@@ -49,7 +48,6 @@ interface FlyerService {
         description: String? = null,
         expiresAt: String? = null,
         fileBytes: ByteArray? = null,
-        fileName: String? = null,
         mimeType: String? = null,
     ): Result<FlyerModel>
 

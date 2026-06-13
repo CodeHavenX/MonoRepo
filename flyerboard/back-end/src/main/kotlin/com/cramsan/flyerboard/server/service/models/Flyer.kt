@@ -21,5 +21,6 @@ data class Flyer(
     val uploaderId: UserId,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val fileUrl: String? = null,
+    val fileUrl: String?,
+    val rejectionReason: String?,
 )

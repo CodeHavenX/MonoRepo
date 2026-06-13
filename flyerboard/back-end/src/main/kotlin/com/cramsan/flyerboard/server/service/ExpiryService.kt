@@ -62,7 +62,6 @@ class ExpiryService(private val flyerDatastore: FlyerDatastore) {
                     id = flyer.id,
                     title = null,
                     description = null,
-                    filePath = null,
                     status = FlyerStatus.ARCHIVED,
                     expiresAt = null,
                 ).onFailure { e ->

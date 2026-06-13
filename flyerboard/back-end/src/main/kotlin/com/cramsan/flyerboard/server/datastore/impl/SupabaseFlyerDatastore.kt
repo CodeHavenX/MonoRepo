@@ -22,6 +22,7 @@ import kotlin.time.Instant
 @BackendDatastore
 class SupabaseFlyerDatastore(private val postgrest: Postgrest) : FlyerDatastore {
     override suspend fun createFlyer(
+        id: FlyerId,
         title: String,
         description: String,
         filePath: String,
@@ -32,6 +33,7 @@ class SupabaseFlyerDatastore(private val postgrest: Postgrest) : FlyerDatastore 
             logD(TAG, "Creating flyer: %s", title)
             val entity =
                 FlyerEntity.CreateFlyerEntity(
+                    id = id.flyerId,
                     title = title,
                     description = description,
                     filePath = filePath,
@@ -90,7 +92,6 @@ class SupabaseFlyerDatastore(private val postgrest: Postgrest) : FlyerDatastore 
         id: FlyerId,
         title: String?,
         description: String?,
-        filePath: String?,
         status: FlyerStatus?,
         expiresAt: Instant?,
     ): Result<Flyer> =
@@ -101,7 +102,6 @@ class SupabaseFlyerDatastore(private val postgrest: Postgrest) : FlyerDatastore 
                 .update({
                     title?.let { FlyerEntity::title setTo it }
                     description?.let { FlyerEntity::description setTo it }
-                    filePath?.let { FlyerEntity::filePath setTo it }
                     status?.let { FlyerEntity::status setTo it.name.lowercase() }
                     expiresAt?.let { FlyerEntity::expiresAt setTo it }
                 }) {

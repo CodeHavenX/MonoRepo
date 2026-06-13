@@ -77,6 +77,7 @@ class ModerationApiIntegrationTest : KoinTest {
         createdAt = Instant.fromEpochSeconds(0),
         updatedAt = Instant.fromEpochSeconds(0),
         fileUrl = "https://signed.example.com/file.png",
+        rejectionReason = null,
     )
 
     private fun makePendingPage(vararg flyers: Flyer) = PaginatedList(
@@ -170,7 +171,7 @@ class ModerationApiIntegrationTest : KoinTest {
 
         val response = client.post("api/v1/moderation/flyer-1") {
             contentType(ContentType.Application.Json)
-            setBody("""{"action":"approve"}""")
+            setBody("""{"action":"approve","reason":null}""")
         }
 
         assertEquals(HttpStatusCode.Unauthorized, response.status)
@@ -187,7 +188,7 @@ class ModerationApiIntegrationTest : KoinTest {
 
         val response = client.post("api/v1/moderation/flyer-1") {
             contentType(ContentType.Application.Json)
-            setBody("""{"action":"approve"}""")
+            setBody("""{"action":"approve","reason":null}""")
             header(HttpHeaders.Authorization, "Bearer user-token")
         }
 
@@ -210,7 +211,7 @@ class ModerationApiIntegrationTest : KoinTest {
 
         val response = client.post("api/v1/moderation/flyer-1") {
             contentType(ContentType.Application.Json)
-            setBody("""{"action":"approve"}""")
+            setBody("""{"action":"approve","reason":null}""")
             header(HttpHeaders.Authorization, "Bearer admin-token")
         }
 
@@ -235,7 +236,7 @@ class ModerationApiIntegrationTest : KoinTest {
 
         val response = client.post("api/v1/moderation/flyer-1") {
             contentType(ContentType.Application.Json)
-            setBody("""{"action":"reject"}""")
+            setBody("""{"action":"reject","reason":null}""")
             header(HttpHeaders.Authorization, "Bearer admin-token")
         }
 
@@ -255,7 +256,7 @@ class ModerationApiIntegrationTest : KoinTest {
 
         val response = client.post("api/v1/moderation/flyer-1") {
             contentType(ContentType.Application.Json)
-            setBody("""{"action":"delete"}""")
+            setBody("""{"action":"delete","reason":null}""")
             header(HttpHeaders.Authorization, "Bearer admin-token")
         }
 
@@ -279,7 +280,7 @@ class ModerationApiIntegrationTest : KoinTest {
 
         val response = client.post("api/v1/moderation/nonexistent") {
             contentType(ContentType.Application.Json)
-            setBody("""{"action":"approve"}""")
+            setBody("""{"action":"approve","reason":null}""")
             header(HttpHeaders.Authorization, "Bearer admin-token")
         }
 

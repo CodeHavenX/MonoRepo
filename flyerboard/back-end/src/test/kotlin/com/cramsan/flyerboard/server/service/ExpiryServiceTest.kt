@@ -152,4 +152,78 @@ class ExpiryServiceTest {
                 flyerDatastore.listExpiredFlyers(any())
             }
         }
+
+    @Test
+    fun `errors listing expired flyers are logged and do not trigger updates or crash`() =
+        runTest {
+            coEvery { flyerDatastore.listExpiredFlyers(any()) } returns Result.failure(RuntimeException("boom"))
+
+            expiryService.start(backgroundScope)
+
+            advanceTimeBy(1.hours + 1.milliseconds)
+
+            coVerify(exactly = 0) {
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+            }
+        }
+
+    @Test
+    fun `multiple expired flyers are each updated once on a tick`() =
+        runTest {
+            val expiredFlyer1 = makeFlyer(id = "flyer-expired-1", status = FlyerStatus.APPROVED)
+            val expiredFlyer2 = makeFlyer(id = "flyer-expired-2", status = FlyerStatus.APPROVED)
+
+            coEvery { flyerDatastore.listExpiredFlyers(any()) } returns
+                Result.success(listOf(expiredFlyer1, expiredFlyer2))
+            coEvery {
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+            } returns Result.success(expiredFlyer1.copy(status = FlyerStatus.ARCHIVED))
+
+            expiryService.start(backgroundScope)
+
+            advanceTimeBy(1.hours + 1.milliseconds)
+
+            coVerify(exactly = 2) {
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+            }
+        }
+
+    @Test
+    fun `a failed update for one flyer does not prevent processing of the other`() =
+        runTest {
+            val expiredFlyer1 = makeFlyer(id = "flyer-expired-1", status = FlyerStatus.APPROVED)
+            val expiredFlyer2 = makeFlyer(id = "flyer-expired-2", status = FlyerStatus.APPROVED)
+
+            coEvery { flyerDatastore.listExpiredFlyers(any()) } returns
+                Result.success(listOf(expiredFlyer1, expiredFlyer2))
+            coEvery {
+                flyerDatastore.updateFlyer(expiredFlyer1.id, any(), any(), any(), any())
+            } returns Result.failure(RuntimeException("boom"))
+            coEvery {
+                flyerDatastore.updateFlyer(expiredFlyer2.id, any(), any(), any(), any())
+            } returns Result.success(expiredFlyer2.copy(status = FlyerStatus.ARCHIVED))
+
+            expiryService.start(backgroundScope)
+
+            advanceTimeBy(1.hours + 1.milliseconds)
+
+            coVerify {
+                flyerDatastore.updateFlyer(
+                    id = expiredFlyer1.id,
+                    title = null,
+                    description = null,
+                    status = FlyerStatus.ARCHIVED,
+                    expiresAt = null,
+                )
+            }
+            coVerify {
+                flyerDatastore.updateFlyer(
+                    id = expiredFlyer2.id,
+                    title = null,
+                    description = null,
+                    status = FlyerStatus.ARCHIVED,
+                    expiresAt = null,
+                )
+            }
+        }
 }

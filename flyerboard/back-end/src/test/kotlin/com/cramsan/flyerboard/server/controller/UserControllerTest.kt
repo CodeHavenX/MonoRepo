@@ -14,6 +14,7 @@ import com.cramsan.flyerboard.server.service.models.User
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
+import com.cramsan.framework.utils.exceptions.ForbiddenException
 import com.cramsan.framework.utils.file.readFileContent
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -88,5 +89,63 @@ class UserControllerTest :
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
             assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `test createUser fails with 401 when unauthenticated`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/create_user_request.json")
+            val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.UnauthenticatedClientContext()
+            }
+
+            // Act
+            val response =
+                client.post("user") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
+
+            // Assert
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+        }
+
+    @Test
+    fun `test createUser fails when service returns failure`() =
+        testBackEndApplication {
+            // Arrange
+            val requestBody = readFileContent("requests/create_user_request.json")
+            val userService = get<UserService>()
+            coEvery {
+                userService.createUser(
+                    userId = UserId("user123"),
+                    firstName = "John",
+                    lastName = "Doe",
+                )
+            }.answers {
+                Result.failure(ForbiddenException("You are not allowed to create this user."))
+            }
+            val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.AuthenticatedClientContext(
+                    FlyerBoardContextPayload(userId = UserId("user123"), role = UserRole.USER),
+                )
+            }
+
+            // Act
+            val response =
+                client.post("user") {
+                    setBody(requestBody)
+                    contentType(ContentType.Application.Json)
+                }
+
+            // Assert
+            assertEquals(HttpStatusCode.Forbidden, response.status)
         }
 }

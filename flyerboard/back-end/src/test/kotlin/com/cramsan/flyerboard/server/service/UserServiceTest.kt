@@ -4,6 +4,7 @@ import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.flyerboard.server.datastore.UserDatastore
 import com.cramsan.flyerboard.server.service.models.User
+import com.cramsan.flyerboard.server.settings.FlyerBoardSettingKey
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -11,6 +12,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -85,5 +88,69 @@ class UserServiceTest {
                     "Doe",
                 )
             }
+        }
+
+    /**
+     * Tests that createUser returns a failure when the datastore fails to create the user.
+     */
+    @Test
+    fun `createUser returns failure when datastore fails`() =
+        runTest {
+            // Arrange
+            val firstName = "John"
+            val lastName = "Doe"
+            val exception = IllegalStateException("datastore error")
+            coEvery {
+                userDatastore.createUser(
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns Result.failure(exception)
+
+            // Act
+            val result = userService.createUser(UserId("user123"), firstName, lastName)
+
+            // Assert
+            assertTrue(result.isFailure)
+            assertEquals(exception, result.exceptionOrNull())
+            coVerify(exactly = 0) {
+                settingsHolder.getBoolean(any())
+            }
+        }
+
+    /**
+     * Tests that createUser still returns success when the log-on-success setting is disabled.
+     */
+    @Test
+    fun `createUser returns success when log setting is disabled`() =
+        runTest {
+            // Arrange
+            val firstName = "John"
+            val lastName = "Doe"
+            val user =
+                User(
+                    id = UserId("user123"),
+                    firstName = "John",
+                    lastName = "Doe",
+                )
+            coEvery {
+                userDatastore.createUser(
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns Result.success(user)
+            coEvery {
+                settingsHolder.getBoolean(FlyerBoardSettingKey.LogAccountCreated)
+            } returns false
+
+            // Act
+            val result = userService.createUser(UserId("user123"), firstName, lastName)
+
+            // Assert
+            assertTrue(result.isSuccess)
+            assertEquals(user, result.getOrThrow())
+            assertFalse(result.isFailure)
         }
 }

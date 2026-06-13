@@ -70,7 +70,6 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
                         description = "Outdoor concert in the park.",
                         expiresAt = "2026-08-01",
                         fileBytes = bytes,
-                        fileName = "concert.jpg",
                         mimeType = "image/jpeg",
                     )
                 } returns Result.success(createdFlyer)
@@ -87,7 +86,6 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
                         description = "Outdoor concert in the park.",
                         expiresAt = "2026-08-01",
                         fileBytes = bytes,
-                        fileName = "concert.jpg",
                         mimeType = "image/jpeg",
                     )
                 }
@@ -104,7 +102,7 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
                 coEvery {
-                    flyerManager.createFlyer(any(), any(), any(), any(), any(), any())
+                    flyerManager.createFlyer(any(), any(), any(), any(), any())
                 } returns Result.failure(RuntimeException("Server error"))
 
                 viewModel.submit()
@@ -147,7 +145,7 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
                 // Use a deferred so the first coroutine suspends at createFlyer, keeping it in-flight.
                 val deferred = CompletableDeferred<Result<FlyerModel>>()
                 coEvery {
-                    flyerManager.createFlyer(any(), any(), any(), any(), any(), any())
+                    flyerManager.createFlyer(any(), any(), any(), any(), any())
                 } coAnswers { deferred.await() }
 
                 viewModel.submit()
@@ -162,7 +160,7 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
 
                 assertEquals(FlyerBoardWindowsEvent.NavigateBack, turbine.awaitItem())
                 coVerify(exactly = 1) {
-                    flyerManager.createFlyer(any(), any(), any(), any(), any(), any())
+                    flyerManager.createFlyer(any(), any(), any(), any(), any())
                 }
                 advanceUntilIdleAndAwaitComplete(turbine)
             }

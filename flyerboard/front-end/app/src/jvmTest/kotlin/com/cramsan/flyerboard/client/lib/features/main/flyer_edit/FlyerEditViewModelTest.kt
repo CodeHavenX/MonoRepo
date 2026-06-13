@@ -85,7 +85,6 @@ class FlyerEditViewModelTest : CoroutineTest() {
                         description = any(),
                         expiresAt = any(),
                         fileBytes = any(),
-                        fileName = any(),
                         mimeType = any(),
                     )
                 } returns Result.success(updatedFlyer)
@@ -101,7 +100,6 @@ class FlyerEditViewModelTest : CoroutineTest() {
                         description = "Description",
                         expiresAt = null,
                         fileBytes = bytes,
-                        fileName = "photo.jpg",
                         mimeType = "image/jpeg",
                     )
                 }

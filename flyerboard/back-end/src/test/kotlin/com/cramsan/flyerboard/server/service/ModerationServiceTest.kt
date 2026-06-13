@@ -66,6 +66,8 @@ class ModerationServiceTest {
         uploaderId = UserId(uploaderId),
         createdAt = Instant.fromEpochSeconds(0),
         updatedAt = Instant.fromEpochSeconds(0),
+        fileUrl = null,
+        rejectionReason = null,
     )
 
     private fun makeAdminProfile(userId: String = "admin-1") =
@@ -103,7 +105,6 @@ class ModerationServiceTest {
                     any(),
                     any(),
                     any(),
-                    any(),
                 )
             } returns Result.success(approvedFlyer)
             coEvery { fileDatastore.getSignedUrl(any()) } returns Result.success("https://signed.example.com/file.png")
@@ -117,7 +118,6 @@ class ModerationServiceTest {
                     id = flyerId,
                     title = null,
                     description = null,
-                    filePath = null,
                     status = FlyerStatus.APPROVED,
                     expiresAt = null,
                 )
@@ -187,7 +187,6 @@ class ModerationServiceTest {
                     any(),
                     any(),
                     any(),
-                    any(),
                 )
             } returns Result.success(rejectedFlyer)
             coEvery { fileDatastore.getSignedUrl(any()) } returns Result.success("https://signed.example.com/file.png")
@@ -202,7 +201,6 @@ class ModerationServiceTest {
                     id = flyerId,
                     title = null,
                     description = null,
-                    filePath = null,
                     status = FlyerStatus.REJECTED,
                     expiresAt = null,
                 )

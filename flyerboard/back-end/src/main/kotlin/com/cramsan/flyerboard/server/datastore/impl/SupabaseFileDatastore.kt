@@ -1,31 +1,25 @@
 package com.cramsan.flyerboard.server.datastore.impl
 
 import com.cramsan.flyerboard.server.datastore.FileDatastore
+import com.cramsan.flyerboard.server.datastore.SignedUpload
 import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
-import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.storage.Storage
 import kotlin.time.Duration.Companion.hours
 
 /**
  * Supabase Storage implementation of [FileDatastore].
  *
- * Files are stored in the private `flyer-files` bucket. Each uploaded file is given a
- * UUID-prefixed name to prevent collisions between uploads with the same original filename.
+ * Files are stored in the private `flyer-files` bucket, keyed by the flyer's own ID.
  */
 @BackendDatastore
 class SupabaseFileDatastore(private val storage: Storage) : FileDatastore {
-    override suspend fun uploadFile(fileName: String, content: ByteArray): Result<String> =
+    override suspend fun createSignedUploadUrl(filePath: String): Result<SignedUpload> =
         runSuspendCatching(TAG) {
-            // Strip any directory components from the caller-supplied name to prevent path traversal.
-            val baseName = fileName.substringAfterLast('/').substringAfterLast('\\')
-            val path = "${UUID.random()}_$baseName"
-            logD(TAG, "Uploading file: %s", path)
-            storage.from(BUCKET).upload(path, content) {
-                upsert = false
-            }
-            path
+            logD(TAG, "Creating signed upload URL for: %s", filePath)
+            val signed = storage.from(BUCKET).createSignedUploadUrl(filePath, upsert = true)
+            SignedUpload(signedUrl = signed.url, token = signed.token)
         }
 
     override suspend fun getSignedUrl(filePath: String): Result<String> =

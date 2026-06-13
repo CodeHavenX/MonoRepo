@@ -16,5 +16,5 @@ data class CreateFlyerNetworkRequest(
     @SerialName("description")
     val description: String,
     @SerialName("expires_at")
-    val expiresAt: String? = null,
+    val expiresAt: String?,
 ) : RequestBody

@@ -14,5 +14,5 @@ data class ModerationActionNetworkRequest(
     @SerialName("action")
     val action: String,
     @SerialName("reason")
-    val reason: String? = null,
+    val reason: String?,
 ) : RequestBody

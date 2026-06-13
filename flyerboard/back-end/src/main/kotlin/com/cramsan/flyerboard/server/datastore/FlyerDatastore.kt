@@ -13,9 +13,10 @@ import kotlin.time.Instant
 @BackendDatastore
 interface FlyerDatastore {
     /**
-     * Inserts a new flyer record. Returns the created [Flyer].
+     * Inserts a new flyer record with the given [id]. Returns the created [Flyer].
      */
     suspend fun createFlyer(
+        id: FlyerId,
         title: String,
         description: String,
         filePath: String,
@@ -51,7 +52,6 @@ interface FlyerDatastore {
         id: FlyerId,
         title: String?,
         description: String?,
-        filePath: String?,
         status: FlyerStatus?,
         expiresAt: Instant?,
     ): Result<Flyer>

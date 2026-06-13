@@ -8,10 +8,10 @@ import com.cramsan.framework.annotations.BackendDatastore
 @BackendDatastore
 interface FileDatastore {
     /**
-     * Uploads [content] to storage under a collision-safe name derived from [fileName].
-     * Returns the stored file path (UUID-prefixed) on success.
+     * Generates a signed URL the client can use to upload the asset for [filePath] directly to
+     * storage. The upload overwrites any existing object at [filePath].
      */
-    suspend fun uploadFile(fileName: String, content: ByteArray): Result<String>
+    suspend fun createSignedUploadUrl(filePath: String): Result<SignedUpload>
 
     /**
      * Generates a short-lived signed URL for the file at [filePath].
@@ -24,3 +24,8 @@ interface FileDatastore {
      */
     suspend fun deleteFile(filePath: String): Result<Unit>
 }
+
+/**
+ * A signed URL the client can use to upload a file directly to storage.
+ */
+data class SignedUpload(val signedUrl: String, val token: String)

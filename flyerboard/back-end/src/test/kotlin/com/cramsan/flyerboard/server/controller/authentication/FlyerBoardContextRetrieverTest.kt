@@ -1,0 +1,229 @@
+package com.cramsan.flyerboard.server.controller.authentication
+
+import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.UserRole
+import com.cramsan.flyerboard.lib.serialization.HEADER_TOKEN_AUTH
+import com.cramsan.flyerboard.server.datastore.UserProfileDatastore
+import com.cramsan.flyerboard.server.service.models.UserProfile
+import com.cramsan.framework.core.ktor.auth.ClientContext
+import com.cramsan.framework.logging.EventLogger
+import com.cramsan.framework.logging.implementation.PassthroughEventLogger
+import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.user.UserInfo
+import io.ktor.http.Headers
+import io.ktor.http.headersOf
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.request.ApplicationRequest
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.koin.core.context.stopKoin
+import kotlin.test.AfterTest
+import kotlin.test.assertEquals
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
+/**
+ * Unit tests for [FlyerBoardContextRetriever].
+ */
+@OptIn(ExperimentalTime::class)
+class FlyerBoardContextRetrieverTest {
+    private lateinit var auth: Auth
+    private lateinit var userProfileDatastore: UserProfileDatastore
+    private lateinit var contextRetriever: FlyerBoardContextRetriever
+
+    @BeforeEach
+    fun setUp() {
+        EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
+        auth = mockk()
+        userProfileDatastore = mockk()
+        contextRetriever = FlyerBoardContextRetriever(auth, userProfileDatastore)
+    }
+
+    @AfterTest
+    fun cleanUp() {
+        stopKoin()
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private fun makeApplicationCall(headerValue: String?): ApplicationCall {
+        val request = mockk<ApplicationRequest>()
+        val headers = if (headerValue == null) Headers.Empty else headersOf(HEADER_TOKEN_AUTH, headerValue)
+        every { request.headers } returns headers
+
+        val applicationCall = mockk<ApplicationCall>()
+        every { applicationCall.request } returns request
+        return applicationCall
+    }
+
+    private fun makeUserInfo(userId: String = "user-1") =
+        mockk<UserInfo>(relaxed = true).also {
+            every { it.id } returns userId
+        }
+
+    private fun makeProfile(
+        userId: String = "user-1",
+        role: UserRole = UserRole.USER,
+    ) = UserProfile(
+        id = UserId(userId),
+        role = role,
+        createdAt = Instant.fromEpochSeconds(0),
+        updatedAt = Instant.fromEpochSeconds(0),
+    )
+
+    // ── getContext ────────────────────────────────────────────────────────────
+
+    @Test
+    fun `getContext returns unauthenticated when no Authorization header`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = null)
+
+            val result = contextRetriever.getContext(applicationCall)
+
+            assertTrue(result is ClientContext.UnauthenticatedClientContext)
+            assertEquals(ClientContext.UnauthenticatedClientContext<FlyerBoardContextPayload>(), result)
+        }
+
+    @Test
+    fun `getContext returns unauthenticated when retrieveUser throws`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
+            coEvery { auth.retrieveUser(any()) } throws RuntimeException("invalid token")
+
+            val result = contextRetriever.getContext(applicationCall)
+
+            assertTrue(result is ClientContext.UnauthenticatedClientContext)
+            coVerify(exactly = 0) { userProfileDatastore.getUserProfile(any()) }
+        }
+
+    @Test
+    fun `getContext returns authenticated context with USER role for existing profile`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
+            val userInfo = makeUserInfo(userId = "user-1")
+            val profile = makeProfile(userId = "user-1", role = UserRole.USER)
+
+            coEvery { auth.retrieveUser(any()) } returns userInfo
+            coEvery { userProfileDatastore.getUserProfile(UserId("user-1")) } returns Result.success(profile)
+
+            val result = contextRetriever.getContext(applicationCall)
+
+            assertEquals(
+                ClientContext.AuthenticatedClientContext(
+                    FlyerBoardContextPayload(UserId("user-1"), UserRole.USER),
+                ),
+                result,
+            )
+            coVerify(exactly = 0) { userProfileDatastore.createUserProfile(any(), any()) }
+        }
+
+    @Test
+    fun `getContext returns authenticated context with ADMIN role for existing profile`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
+            val userInfo = makeUserInfo(userId = "admin-1")
+            val profile = makeProfile(userId = "admin-1", role = UserRole.ADMIN)
+
+            coEvery { auth.retrieveUser(any()) } returns userInfo
+            coEvery { userProfileDatastore.getUserProfile(UserId("admin-1")) } returns Result.success(profile)
+
+            val result = contextRetriever.getContext(applicationCall)
+
+            assertEquals(
+                ClientContext.AuthenticatedClientContext(
+                    FlyerBoardContextPayload(UserId("admin-1"), UserRole.ADMIN),
+                ),
+                result,
+            )
+            coVerify(exactly = 0) { userProfileDatastore.createUserProfile(any(), any()) }
+        }
+
+    @Test
+    fun `getContext auto-creates profile when none exists`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
+            val userInfo = makeUserInfo(userId = "new-user")
+            val createdProfile = makeProfile(userId = "new-user", role = UserRole.USER)
+
+            coEvery { auth.retrieveUser(any()) } returns userInfo
+            coEvery { userProfileDatastore.getUserProfile(UserId("new-user")) } returns Result.success(null)
+            coEvery {
+                userProfileDatastore.createUserProfile(UserId("new-user"), UserRole.USER)
+            } returns Result.success(createdProfile)
+
+            val result = contextRetriever.getContext(applicationCall)
+
+            assertEquals(
+                ClientContext.AuthenticatedClientContext(
+                    FlyerBoardContextPayload(UserId("new-user"), UserRole.USER),
+                ),
+                result,
+            )
+            coVerify { userProfileDatastore.createUserProfile(UserId("new-user"), UserRole.USER) }
+        }
+
+    @Test
+    fun `getContext returns unauthenticated when getUserProfile fails`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
+            val userInfo = makeUserInfo(userId = "user-1")
+
+            coEvery { auth.retrieveUser(any()) } returns userInfo
+            coEvery { userProfileDatastore.getUserProfile(UserId("user-1")) } returns
+                Result.failure(RuntimeException("db error"))
+
+            val result = contextRetriever.getContext(applicationCall)
+
+            assertTrue(result is ClientContext.UnauthenticatedClientContext)
+        }
+
+    @Test
+    fun `getContext returns unauthenticated when createUserProfile fails`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
+            val userInfo = makeUserInfo(userId = "new-user")
+
+            coEvery { auth.retrieveUser(any()) } returns userInfo
+            coEvery { userProfileDatastore.getUserProfile(UserId("new-user")) } returns Result.success(null)
+            coEvery {
+                userProfileDatastore.createUserProfile(UserId("new-user"), UserRole.USER)
+            } returns Result.failure(RuntimeException("db error"))
+
+            val result = contextRetriever.getContext(applicationCall)
+
+            assertTrue(result is ClientContext.UnauthenticatedClientContext)
+        }
+
+    @Test
+    fun `getContext strips Bearer prefix before validating token`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
+            val userInfo = makeUserInfo(userId = "user-1")
+            val profile = makeProfile(userId = "user-1", role = UserRole.USER)
+
+            coEvery { auth.retrieveUser(any()) } returns userInfo
+            coEvery { userProfileDatastore.getUserProfile(UserId("user-1")) } returns Result.success(profile)
+
+            contextRetriever.getContext(applicationCall)
+
+            coVerify { auth.retrieveUser("sometoken") }
+        }
+
+    @Test
+    fun `getContext returns unauthenticated when Authorization header is blank`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = "   ")
+
+            val result = contextRetriever.getContext(applicationCall)
+
+            assertTrue(result is ClientContext.UnauthenticatedClientContext)
+            coVerify(exactly = 0) { auth.retrieveUser(any()) }
+        }
+}

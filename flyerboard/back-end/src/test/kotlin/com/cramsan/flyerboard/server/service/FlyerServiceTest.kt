@@ -175,6 +175,73 @@ class FlyerServiceTest {
             assertTrue(result.isFailure)
         }
 
+    @Test
+    fun `createFlyer fails when flyerDatastore createFlyer fails and does not request a signed upload URL`() =
+        runTest {
+            val uploader = UserId("user-1")
+
+            coEvery {
+                flyerDatastore.createFlyer(any(), any(), any(), any(), any(), any())
+            } returns Result.failure(RuntimeException("db error"))
+
+            val result =
+                flyerService.createFlyer(
+                    uploaderId = uploader,
+                    title = "Title",
+                    description = "Desc",
+                    expiresAt = null,
+                )
+
+            assertTrue(result.isFailure)
+            coVerify(exactly = 0) { fileDatastore.createSignedUploadUrl(any()) }
+        }
+
+    // ── getFlyer ──────────────────────────────────────────────────────────────
+
+    @Test
+    fun `getFlyer returns flyer with fileUrl populated when found`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val flyer = makeFlyer(id = "flyer-1")
+
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(flyer)
+            coEvery { fileDatastore.getSignedUrl(flyer.filePath) } returns
+                Result.success("https://signed.example.com/file.png")
+
+            val result = flyerService.getFlyer(flyerId)
+
+            assertTrue(result.isSuccess)
+            assertEquals("https://signed.example.com/file.png", result.getOrThrow()?.fileUrl)
+        }
+
+    @Test
+    fun `getFlyer returns null when flyer is not found`() =
+        runTest {
+            val flyerId = FlyerId("nonexistent")
+
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(null)
+
+            val result = flyerService.getFlyer(flyerId)
+
+            assertTrue(result.isSuccess)
+            assertEquals(null, result.getOrThrow())
+        }
+
+    @Test
+    fun `getFlyer returns flyer with null fileUrl when getSignedUrl fails`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val flyer = makeFlyer(id = "flyer-1")
+
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(flyer)
+            coEvery { fileDatastore.getSignedUrl(flyer.filePath) } returns Result.failure(RuntimeException("boom"))
+
+            val result = flyerService.getFlyer(flyerId)
+
+            assertTrue(result.isSuccess)
+            assertEquals(null, result.getOrThrow()?.fileUrl)
+        }
+
     // ── updateFlyer ───────────────────────────────────────────────────────────
 
     @Test
@@ -285,6 +352,105 @@ class FlyerServiceTest {
             assertTrue(result.isFailure)
         }
 
+    @Test
+    fun `updateFlyer with only title provided sanitizes title and keeps description null`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val uploaderId = UserId("user-1")
+            val existingFlyer = makeFlyer(id = "flyer-1", uploaderId = "user-1", status = FlyerStatus.APPROVED)
+            val updatedFlyer = existingFlyer.copy(status = FlyerStatus.PENDING)
+
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(existingFlyer)
+            coEvery {
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+            } returns Result.success(updatedFlyer)
+
+            val result =
+                flyerService.updateFlyer(
+                    flyerId = flyerId,
+                    requesterId = uploaderId,
+                    title = "<b>New</b> Title",
+                    description = null,
+                    expiresAt = null,
+                    requestUpload = false,
+                )
+
+            assertTrue(result.isSuccess)
+            coVerify {
+                flyerDatastore.updateFlyer(
+                    id = flyerId,
+                    title = "New Title",
+                    description = null,
+                    status = FlyerStatus.PENDING,
+                    expiresAt = null,
+                )
+            }
+        }
+
+    @Test
+    fun `updateFlyer passes through expiresAt when provided`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val uploaderId = UserId("user-1")
+            val existingFlyer = makeFlyer(id = "flyer-1", uploaderId = "user-1", status = FlyerStatus.APPROVED)
+            val newExpiresAt = Instant.fromEpochSeconds(1_000_000)
+            val updatedFlyer = existingFlyer.copy(status = FlyerStatus.PENDING, expiresAt = newExpiresAt)
+
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(existingFlyer)
+            coEvery {
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+            } returns Result.success(updatedFlyer)
+
+            val result =
+                flyerService.updateFlyer(
+                    flyerId = flyerId,
+                    requesterId = uploaderId,
+                    title = null,
+                    description = null,
+                    expiresAt = newExpiresAt,
+                    requestUpload = false,
+                )
+
+            assertTrue(result.isSuccess)
+            coVerify {
+                flyerDatastore.updateFlyer(
+                    id = flyerId,
+                    title = null,
+                    description = null,
+                    status = FlyerStatus.PENDING,
+                    expiresAt = newExpiresAt,
+                )
+            }
+        }
+
+    @Test
+    fun `updateFlyer fails when requestUpload is true and signed upload URL generation fails`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val uploaderId = UserId("user-1")
+            val existingFlyer = makeFlyer(id = "flyer-1", uploaderId = "user-1", status = FlyerStatus.APPROVED)
+            val updatedFlyer = existingFlyer.copy(status = FlyerStatus.PENDING)
+
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(existingFlyer)
+            coEvery {
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+            } returns Result.success(updatedFlyer)
+            coEvery { fileDatastore.createSignedUploadUrl(updatedFlyer.filePath) } returns
+                Result.failure(RuntimeException("boom"))
+
+            val result =
+                flyerService.updateFlyer(
+                    flyerId = flyerId,
+                    requesterId = uploaderId,
+                    title = null,
+                    description = null,
+                    expiresAt = null,
+                    requestUpload = true,
+                )
+
+            assertTrue(result.isFailure)
+        }
+
     // ── listFlyers ────────────────────────────────────────────────────────────
 
     @Test
@@ -300,5 +466,91 @@ class FlyerServiceTest {
 
             assertTrue(result.isSuccess)
             assertEquals(2, result.getOrThrow().items.size)
+        }
+
+    @Test
+    fun `listFlyers passes non-null query through to flyerDatastore listFlyers`() =
+        runTest {
+            val flyers = listOf(makeFlyer(id = "flyer-1"))
+            val page = PagedResult(items = flyers, total = 1L)
+
+            coEvery { flyerDatastore.listFlyers(any(), any(), any(), any()) } returns Result.success(page)
+            coEvery { fileDatastore.getSignedUrl(any()) } returns Result.success("https://signed.example.com/file.png")
+
+            val result =
+                flyerService.listFlyers(status = FlyerStatus.APPROVED, query = "search term", offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            coVerify {
+                flyerDatastore.listFlyers(
+                    status = FlyerStatus.APPROVED,
+                    query = "search term",
+                    offset = 0,
+                    limit = 10,
+                )
+            }
+        }
+
+    @Test
+    fun `listFlyers returns empty items list with correct total when page is empty`() =
+        runTest {
+            val page = PagedResult<Flyer>(items = emptyList(), total = 0L)
+
+            coEvery { flyerDatastore.listFlyers(any(), any(), any(), any()) } returns Result.success(page)
+
+            val result = flyerService.listFlyers(status = FlyerStatus.APPROVED, query = null, offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            val paginated = result.getOrThrow()
+            assertTrue(paginated.items.isEmpty())
+            assertEquals(0, paginated.total)
+        }
+
+    @Test
+    fun `listFlyers sets fileUrl to null for items when getSignedUrl fails`() =
+        runTest {
+            val flyers = listOf(makeFlyer(id = "flyer-1"))
+            val page = PagedResult(items = flyers, total = 1L)
+
+            coEvery { flyerDatastore.listFlyers(any(), any(), any(), any()) } returns Result.success(page)
+            coEvery { fileDatastore.getSignedUrl(any()) } returns Result.failure(RuntimeException("boom"))
+
+            val result = flyerService.listFlyers(status = FlyerStatus.APPROVED, query = null, offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            assertEquals(
+                null,
+                result
+                    .getOrThrow()
+                    .items
+                    .single()
+                    .fileUrl,
+            )
+        }
+
+    // ── listFlyersByUploader ──────────────────────────────────────────────────
+
+    @Test
+    fun `listFlyersByUploader returns paginated flyers belonging to the uploader with signed URLs`() =
+        runTest {
+            val uploaderId = UserId("user-1")
+            val flyers =
+                listOf(
+                    makeFlyer(id = "flyer-1", uploaderId = "user-1"),
+                    makeFlyer(id = "flyer-2", uploaderId = "user-1"),
+                )
+            val page = PagedResult(items = flyers, total = 2L)
+
+            coEvery { flyerDatastore.listFlyersByUploader(uploaderId, any(), any()) } returns Result.success(page)
+            coEvery { fileDatastore.getSignedUrl(any()) } returns Result.success("https://signed.example.com/file.png")
+
+            val result = flyerService.listFlyersByUploader(uploaderId = uploaderId, offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            val paginated = result.getOrThrow()
+            assertEquals(2, paginated.items.size)
+            assertEquals(2, paginated.total)
+            assertTrue(paginated.items.all { it.fileUrl == "https://signed.example.com/file.png" })
+            assertTrue(paginated.items.all { it.uploaderId == uploaderId })
         }
 }

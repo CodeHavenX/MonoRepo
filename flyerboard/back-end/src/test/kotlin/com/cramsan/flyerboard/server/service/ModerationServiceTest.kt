@@ -205,6 +205,7 @@ class ModerationServiceTest {
                     expiresAt = null,
                 )
             }
+            coVerify { fileDatastore.deleteFile(pendingFlyer.filePath) }
         }
 
     @Test
@@ -222,6 +223,66 @@ class ModerationServiceTest {
             val result = moderationService.rejectFlyer(flyerId, regularUserId)
 
             assertTrue(result.isFailure)
+        }
+
+    @Test
+    fun `rejectFlyer fails when user has no profile`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val unknownUserId = UserId("unknown-user")
+
+            coEvery { userProfileDatastore.getUserProfile(unknownUserId) } returns Result.success(null)
+
+            val result = moderationService.rejectFlyer(flyerId, unknownUserId)
+
+            assertTrue(result.isFailure)
+        }
+
+    @Test
+    fun `rejectFlyer fails with NotFoundException when flyer does not exist`() =
+        runTest {
+            val flyerId = FlyerId("nonexistent")
+            val adminId = UserId("admin-1")
+
+            coEvery { userProfileDatastore.getUserProfile(adminId) } returns Result.success(makeAdminProfile("admin-1"))
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(null)
+
+            val result = moderationService.rejectFlyer(flyerId, adminId)
+
+            assertTrue(result.isFailure)
+            coVerify(exactly = 0) {
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+            }
+            coVerify(exactly = 0) { fileDatastore.deleteFile(any()) }
+        }
+
+    @Test
+    fun `rejectFlyer succeeds even when fileDatastore deleteFile fails`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val adminId = UserId("admin-1")
+            val pendingFlyer = makeFlyer(id = "flyer-1", status = FlyerStatus.PENDING)
+            val rejectedFlyer = pendingFlyer.copy(status = FlyerStatus.REJECTED)
+
+            coEvery { userProfileDatastore.getUserProfile(adminId) } returns Result.success(makeAdminProfile("admin-1"))
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(pendingFlyer)
+            coEvery {
+                flyerDatastore.updateFlyer(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns Result.success(rejectedFlyer)
+            coEvery { fileDatastore.getSignedUrl(any()) } returns Result.success("https://signed.example.com/file.png")
+            coEvery { fileDatastore.deleteFile(any()) } returns Result.failure(RuntimeException("boom"))
+
+            val result = moderationService.rejectFlyer(flyerId, adminId)
+
+            assertTrue(result.isSuccess)
+            assertEquals(FlyerStatus.REJECTED, result.getOrThrow().status)
+            coVerify { fileDatastore.deleteFile(pendingFlyer.filePath) }
         }
 
     // ── listPendingFlyers ─────────────────────────────────────────────────────
@@ -244,5 +305,42 @@ class ModerationServiceTest {
             assertTrue(result.isSuccess)
             assertEquals(2, result.getOrThrow().items.size)
             coVerify { flyerDatastore.listFlyers(FlyerStatus.PENDING, null, 0, 10) }
+        }
+
+    @Test
+    fun `listPendingFlyers returns empty list when no flyers are pending`() =
+        runTest {
+            val page = PagedResult<Flyer>(items = emptyList(), total = 0L)
+
+            coEvery { flyerDatastore.listFlyers(FlyerStatus.PENDING, null, 0, 10) } returns Result.success(page)
+
+            val result = moderationService.listPendingFlyers(offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            assertTrue(result.getOrThrow().items.isEmpty())
+            assertEquals(0, result.getOrThrow().total)
+        }
+
+    @Test
+    fun `listPendingFlyers sets fileUrl to null when getSignedUrl fails`() =
+        runTest {
+            val pendingFlyers = listOf(makeFlyer(id = "flyer-1", status = FlyerStatus.PENDING))
+            val page = PagedResult(items = pendingFlyers, total = 1L)
+
+            coEvery { flyerDatastore.listFlyers(FlyerStatus.PENDING, null, 0, 10) } returns Result.success(page)
+            coEvery { fileDatastore.getSignedUrl(any()) } returns Result.failure(RuntimeException("boom"))
+
+            val result = moderationService.listPendingFlyers(offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            assertEquals(1, result.getOrThrow().items.size)
+            assertEquals(
+                null,
+                result
+                    .getOrThrow()
+                    .items
+                    .first()
+                    .fileUrl,
+            )
         }
 }

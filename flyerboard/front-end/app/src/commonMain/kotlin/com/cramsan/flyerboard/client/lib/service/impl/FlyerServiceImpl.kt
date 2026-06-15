@@ -14,7 +14,6 @@ import com.cramsan.flyerboard.lib.model.network.ListFlyersQueryParams
 import com.cramsan.flyerboard.lib.model.network.ModerationActionNetworkRequest
 import com.cramsan.flyerboard.lib.model.network.PaginationParams
 import com.cramsan.flyerboard.lib.model.network.UpdateFlyerNetworkRequest
-import com.cramsan.flyerboard.lib.serialization.HEADER_TOKEN_AUTH
 import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logW
@@ -24,7 +23,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.HeadersBuilder
 import io.ktor.http.contentType
 
 /**
@@ -75,7 +73,7 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
             FlyerApi.listMyFlyers
                 .buildRequest(
                     PaginationParams(offset = offset, limit = limit),
-                ).execute(http, authHeader())
+                ).execute(http)
                 .toPaginatedFlyerModel()
         }
 
@@ -84,7 +82,7 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
             ModerationApi.listPending
                 .buildRequest(
                     PaginationParams(offset = offset, limit = limit),
-                ).execute(http, authHeader())
+                ).execute(http)
                 .toPaginatedFlyerModel()
         }
 
@@ -94,7 +92,7 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
                 .buildRequest(
                     flyerId,
                     ModerationActionNetworkRequest(action = action, reason = reason),
-                ).execute(http, authHeader())
+                ).execute(http)
                 .toFlyerModel()
         }
 
@@ -111,7 +109,7 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
             val response =
                 FlyerApi.createFlyer
                     .buildRequest(CreateFlyerNetworkRequest(title, description, expiresAt))
-                    .execute(http, authHeader())
+                    .execute(http)
             uploadAsset(response.upload.signedUrl, fileBytes, mimeType)
             response.flyer.toFlyerModel()
         }
@@ -130,7 +128,7 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
                     .buildRequest(
                         flyerId,
                         UpdateFlyerNetworkRequest(title, description, expiresAt, requestUpload = fileBytes != null),
-                    ).execute(http, authHeader())
+                    ).execute(http)
             if (fileBytes != null) {
                 val upload = requireNotNull(response.upload) { "Server did not return an upload URL" }
                 uploadAsset(upload.signedUrl, fileBytes, mimeType.orEmpty())
@@ -143,15 +141,6 @@ class FlyerServiceImpl(private val http: HttpClient, private val authService: Au
             contentType(ContentType.parse(mimeType))
             setBody(fileBytes)
         }
-    }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private fun authHeader(): HeadersBuilder.() -> Unit = { appendBearerToken() }
-
-    private fun HeadersBuilder.appendBearerToken() {
-        val token = authService.getAccessToken() ?: return
-        append(HEADER_TOKEN_AUTH, "Bearer $token")
     }
 
     companion object {

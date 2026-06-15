@@ -25,7 +25,6 @@ import kotlin.test.assertIs
 
 class FlyerBoardWindowViewModelTest : CoroutineTest() {
     private lateinit var authManager: AuthManager
-    private lateinit var flyerManager: FlyerManager
     private lateinit var viewModel: FlyerBoardWindowViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -38,7 +37,6 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
-        flyerManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         windowEventBus = EventBus()
         applicationEventBus = EventBus()
@@ -61,7 +59,6 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
             windowEventEmitter = windowEventEmitterBus,
             delegatedEvents = delegatedEventBus,
             authManager = authManager,
-            flyerManager = flyerManager,
         )
 
     @Test
@@ -69,32 +66,13 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
         runCoroutineTest {
             viewModel = buildViewModel()
 
-            assertEquals(AuthState.Unauthenticated, viewModel.uiState.value.authState)
+            assertEquals(AuthState.Undefined, viewModel.uiState.value.authState)
         }
 
     @Test
-    fun `auth emits userId and listPendingFlyers succeeds sets Authenticated isAdmin true`() =
+    fun `auth emits userId and Authenticated is isAdmin false`() =
         runCoroutineTest {
-            val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 1)
-            coEvery { flyerManager.listPendingFlyers(any(), any()) } returns Result.success(paginated)
-            viewModel = buildViewModel()
-
-            activeUserFlow.emit(UserId("user-admin"))
-
-            val state = viewModel.uiState.value.authState
-            assertIs<AuthState.Authenticated>(state)
-            assertEquals(true, state.isAdmin)
-        }
-
-    @Test
-    fun `auth emits userId and listPendingFlyers fails sets Authenticated isAdmin false`() =
-        runCoroutineTest {
-            coEvery {
-                flyerManager.listPendingFlyers(
-                    any(),
-                    any(),
-                )
-            } returns Result.failure(RuntimeException("Forbidden"))
+            coEvery { authManager.isAuthenticated() } returns Result.success(true)
             viewModel = buildViewModel()
 
             activeUserFlow.emit(UserId("user-regular"))
@@ -107,8 +85,7 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
     @Test
     fun `auth emits null reverts to Unauthenticated`() =
         runCoroutineTest {
-            val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 1)
-            coEvery { flyerManager.listPendingFlyers(any(), any()) } returns Result.success(paginated)
+            coEvery { authManager.isAuthenticated() } returns Result.success(true)
             viewModel = buildViewModel()
 
             activeUserFlow.emit(UserId("user-admin"))

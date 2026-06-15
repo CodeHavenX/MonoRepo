@@ -26,8 +26,7 @@ class UserController(
                         userId = request.context.payload.userId,
                         firstName = request.requestBody.firstName,
                         lastName = request.requestBody.lastName,
-                    ).getOrThrow()
-                    .toUserNetworkResponse()
+                    ).toUserNetworkResponse()
             }
         }
     }

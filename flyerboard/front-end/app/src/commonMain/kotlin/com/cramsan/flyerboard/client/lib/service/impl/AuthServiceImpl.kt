@@ -3,6 +3,7 @@ package com.cramsan.flyerboard.client.lib.service.impl
 import com.cramsan.flyerboard.client.lib.service.AuthService
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.framework.annotations.FrontendService
+import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
@@ -11,21 +12,27 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.exceptions.RestException
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * Supabase implementation of [AuthService].
  */
+@OptIn(ExperimentalAtomicApi::class)
 @FrontendService
-class AuthServiceImpl(private val auth: Auth) : AuthService {
+class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : AuthService {
     private val _activeUser = MutableStateFlow<UserId?>(null)
+    private val isInitialized = AtomicBoolean(false)
 
     override suspend fun signUp(email: String, password: String): Result<Unit> =
         runSuspendCatching(TAG) {
             logD(TAG, "signUp: %s", email)
             try {
+                // Sign up with Supabase
                 auth.signUpWith(Email) {
                     this.email = email
                     this.password = password
@@ -66,6 +73,7 @@ class AuthServiceImpl(private val auth: Auth) : AuthService {
             if (user == null) {
                 _activeUser.value = null
                 logD(TAG, "User not authenticated")
+                isInitialized.store(true)
                 false
             } else {
                 try {
@@ -76,6 +84,8 @@ class AuthServiceImpl(private val auth: Auth) : AuthService {
                     logE(TAG, "Failed to refresh session", e)
                     _activeUser.value = null
                     false
+                } finally {
+                    isInitialized.store(true)
                 }
             }
         }
@@ -84,7 +94,10 @@ class AuthServiceImpl(private val auth: Auth) : AuthService {
 
     override fun currentUserId(): UserId? = auth.currentUserOrNull()?.id?.let { UserId(it) }
 
-    override fun activeUser(): StateFlow<UserId?> = _activeUser.asStateFlow()
+    override fun activeUser(): StateFlow<UserId?> {
+        assert(isInitialized.load(), TAG, "Reading active user before initialization")
+        return _activeUser.asStateFlow()
+    }
 
     companion object {
         private const val TAG = "AuthServiceImpl"

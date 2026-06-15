@@ -7,6 +7,6 @@ import com.cramsan.framework.core.compose.ViewModelUIState
  */
 data class FlyerBoardWindowUIState(val authState: AuthState) : ViewModelUIState {
     companion object {
-        val Initial = FlyerBoardWindowUIState(authState = AuthState.Unauthenticated)
+        val Initial = FlyerBoardWindowUIState(authState = AuthState.Undefined)
     }
 }

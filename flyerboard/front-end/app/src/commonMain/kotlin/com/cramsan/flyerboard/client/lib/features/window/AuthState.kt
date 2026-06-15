@@ -6,6 +6,9 @@ package com.cramsan.flyerboard.client.lib.features.window
  * unrepresentable at compile time.
  */
 sealed class AuthState {
+    /** Auth state is undetermined. Useful for cases like a loading state **/
+    data object Undefined : AuthState()
+
     /** The user is not signed in. */
     data object Unauthenticated : AuthState()
 

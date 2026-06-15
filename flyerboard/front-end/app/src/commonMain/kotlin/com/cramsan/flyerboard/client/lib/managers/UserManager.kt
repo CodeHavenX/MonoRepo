@@ -20,7 +20,7 @@ class UserManager(private val dependencies: ManagerDependencies, private val use
         lastName: String,
     ): Result<UserModel> =
         dependencies.getOrCatch(TAG) {
-            logI(TAG, "signing in with OTP code")
+            logI(TAG, "createUser")
             userService.createUser(firstName, lastName).getOrThrow()
         }
 

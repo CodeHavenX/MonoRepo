@@ -1,6 +1,7 @@
 package com.cramsan.flyerboard.client.lib.di
 
 import com.cramsan.architecture.client.settings.SettingsHolder
+import com.cramsan.flyerboard.client.lib.service.AuthRequestPlugin
 import com.cramsan.flyerboard.client.lib.service.AuthService
 import com.cramsan.flyerboard.client.lib.service.FlyerService
 import com.cramsan.flyerboard.client.lib.service.UserService
@@ -52,5 +53,9 @@ internal val ServiceModule =
 
         singleOf(::FlyerServiceImpl) {
             bind<FlyerService>()
+        }
+
+        single {
+            AuthRequestPlugin(get())
         }
     }

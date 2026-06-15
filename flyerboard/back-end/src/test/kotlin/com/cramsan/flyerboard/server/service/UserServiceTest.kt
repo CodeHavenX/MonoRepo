@@ -1,10 +1,11 @@
 package com.cramsan.flyerboard.server.service
 
-import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.flyerboard.server.datastore.UserDatastore
+import com.cramsan.flyerboard.server.datastore.UserProfileDatastore
 import com.cramsan.flyerboard.server.service.models.User
-import com.cramsan.flyerboard.server.settings.FlyerBoardSettingKey
+import com.cramsan.flyerboard.server.service.models.UserProfile
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -13,13 +14,13 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.stopKoin
 import kotlin.test.AfterTest
+import kotlin.test.assertFailsWith
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Test class for [UserService].
@@ -27,9 +28,8 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class UserServiceTest {
     private lateinit var userDatastore: UserDatastore
+    private lateinit var userProfileDatastore: UserProfileDatastore
     private lateinit var userService: UserService
-
-    private lateinit var settingsHolder: SettingsHolder
 
     /**
      * Sets up the test environment by initializing mocks for [UserDatastore] and [userService].
@@ -38,8 +38,8 @@ class UserServiceTest {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         userDatastore = mockk()
-        settingsHolder = mockk()
-        userService = UserService(userDatastore, settingsHolder)
+        userProfileDatastore = mockk()
+        userService = UserService(userDatastore, userProfileDatastore)
     }
 
     /**
@@ -51,10 +51,10 @@ class UserServiceTest {
     }
 
     /**
-     * Tests that createUser creates a transient user.
+     * Tests that createUser creates a user and a default profile for them.
      */
     @Test
-    fun `createUser should create user`() =
+    fun `createUser should create user and profile`() =
         runTest {
             // Arrange
             val firstName = "John"
@@ -65,6 +65,13 @@ class UserServiceTest {
                     firstName = "John",
                     lastName = "Doe",
                 )
+            val profile =
+                UserProfile(
+                    id = UserId("user123"),
+                    role = UserRole.USER,
+                    createdAt = Instant.fromEpochSeconds(0),
+                    updatedAt = Instant.fromEpochSeconds(0),
+                )
             coEvery {
                 userDatastore.createUser(
                     any(),
@@ -73,28 +80,30 @@ class UserServiceTest {
                 )
             } returns Result.success(user)
             coEvery {
-                settingsHolder.getBoolean(any())
-            } returns true
+                userProfileDatastore.createUserProfile(UserId("user123"), UserRole.USER)
+            } returns Result.success(profile)
 
             // Act
             val result = userService.createUser(UserId("user123"), firstName, lastName)
 
             // Assert
-            assertTrue(result.isSuccess)
+            assertEquals(user, result)
             coVerify {
                 userDatastore.createUser(
                     UserId("user123"),
                     "John",
                     "Doe",
                 )
+                userProfileDatastore.createUserProfile(UserId("user123"), UserRole.USER)
             }
         }
 
     /**
-     * Tests that createUser returns a failure when the datastore fails to create the user.
+     * Tests that createUser throws when the datastore fails to create the user, without
+     * attempting to create a profile.
      */
     @Test
-    fun `createUser returns failure when datastore fails`() =
+    fun `createUser throws when datastore fails`() =
         runTest {
             // Arrange
             val firstName = "John"
@@ -109,21 +118,23 @@ class UserServiceTest {
             } returns Result.failure(exception)
 
             // Act
-            val result = userService.createUser(UserId("user123"), firstName, lastName)
+            val thrown =
+                assertFailsWith<IllegalStateException> {
+                    userService.createUser(UserId("user123"), firstName, lastName)
+                }
 
             // Assert
-            assertTrue(result.isFailure)
-            assertEquals(exception, result.exceptionOrNull())
+            assertEquals(exception, thrown)
             coVerify(exactly = 0) {
-                settingsHolder.getBoolean(any())
+                userProfileDatastore.createUserProfile(any(), any())
             }
         }
 
     /**
-     * Tests that createUser still returns success when the log-on-success setting is disabled.
+     * Tests that createUser throws when the profile datastore fails to create the profile.
      */
     @Test
-    fun `createUser returns success when log setting is disabled`() =
+    fun `createUser throws when profile creation fails`() =
         runTest {
             // Arrange
             val firstName = "John"
@@ -134,6 +145,7 @@ class UserServiceTest {
                     firstName = "John",
                     lastName = "Doe",
                 )
+            val exception = IllegalStateException("profile datastore error")
             coEvery {
                 userDatastore.createUser(
                     any(),
@@ -142,15 +154,16 @@ class UserServiceTest {
                 )
             } returns Result.success(user)
             coEvery {
-                settingsHolder.getBoolean(FlyerBoardSettingKey.LogAccountCreated)
-            } returns false
+                userProfileDatastore.createUserProfile(UserId("user123"), UserRole.USER)
+            } returns Result.failure(exception)
 
             // Act
-            val result = userService.createUser(UserId("user123"), firstName, lastName)
+            val thrown =
+                assertFailsWith<IllegalStateException> {
+                    userService.createUser(UserId("user123"), firstName, lastName)
+                }
 
             // Assert
-            assertTrue(result.isSuccess)
-            assertEquals(user, result.getOrThrow())
-            assertFalse(result.isFailure)
+            assertEquals(exception, thrown)
         }
 }

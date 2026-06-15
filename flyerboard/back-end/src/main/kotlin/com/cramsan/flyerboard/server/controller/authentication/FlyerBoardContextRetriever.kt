@@ -49,23 +49,10 @@ class FlyerBoardContextRetriever(private val auth: Auth, private val userProfile
                     return ClientContext.UnauthenticatedClientContext()
                 }
 
-        val resolvedProfile =
-            if (profile == null) {
-                logD(TAG, "No profile found for ${userId.userId}, auto-creating with USER role")
-                userProfileDatastore
-                    .createUserProfile(userId, UserRole.USER)
-                    .getOrElse { e ->
-                        logW(TAG, "Failed to auto-create user profile for ${userId.userId}: ${e.message}")
-                        return ClientContext.UnauthenticatedClientContext()
-                    }
-            } else {
-                profile
-            }
-
         return ClientContext.AuthenticatedClientContext(
             FlyerBoardContextPayload(
                 userId = userId,
-                role = resolvedProfile.role,
+                role = profile?.role ?: UserRole.USER,
             ),
         )
     }

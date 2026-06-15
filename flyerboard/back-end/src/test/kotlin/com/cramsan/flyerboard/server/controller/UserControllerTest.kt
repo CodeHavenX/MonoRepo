@@ -62,12 +62,10 @@ class UserControllerTest :
                     lastName = "Doe",
                 )
             }.answers {
-                Result.success(
-                    User(
-                        id = UserId("user123"),
-                        firstName = "John",
-                        lastName = "Doe",
-                    ),
+                User(
+                    id = UserId("user123"),
+                    firstName = "John",
+                    lastName = "Doe",
                 )
             }
             val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
@@ -126,9 +124,7 @@ class UserControllerTest :
                     firstName = "John",
                     lastName = "Doe",
                 )
-            }.answers {
-                Result.failure(ForbiddenException("You are not allowed to create this user."))
-            }
+            } throws ForbiddenException("You are not allowed to create this user.")
             val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
             coEvery {
                 contextRetriever.getContext(any())

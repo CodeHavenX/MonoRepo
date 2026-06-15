@@ -82,12 +82,10 @@ class UserApiIntegrationTest : KoinTest {
                 firstName = "John",
                 lastName = "Doe",
             )
-        } returns Result.success(
-            User(
-                id = UserId("user123"),
-                firstName = "John",
-                lastName = "Doe",
-            ),
+        } returns User(
+            id = UserId("user123"),
+            firstName = "John",
+            lastName = "Doe",
         )
 
         val response = client.post("user") {
@@ -114,7 +112,7 @@ class UserApiIntegrationTest : KoinTest {
                 firstName = "John",
                 lastName = "Doe",
             )
-        } returns Result.failure(ForbiddenException("You are not allowed to create this user."))
+        } throws ForbiddenException("You are not allowed to create this user.")
 
         val response = client.post("user") {
             setBody(requestBody)

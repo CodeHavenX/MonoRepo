@@ -146,17 +146,13 @@ class FlyerBoardContextRetrieverTest {
         }
 
     @Test
-    fun `getContext auto-creates profile when none exists`() =
+    fun `getContext does not auto-creates profile`() =
         runTest {
             val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
             val userInfo = makeUserInfo(userId = "new-user")
-            val createdProfile = makeProfile(userId = "new-user", role = UserRole.USER)
 
             coEvery { auth.retrieveUser(any()) } returns userInfo
             coEvery { userProfileDatastore.getUserProfile(UserId("new-user")) } returns Result.success(null)
-            coEvery {
-                userProfileDatastore.createUserProfile(UserId("new-user"), UserRole.USER)
-            } returns Result.success(createdProfile)
 
             val result = contextRetriever.getContext(applicationCall)
 
@@ -166,7 +162,7 @@ class FlyerBoardContextRetrieverTest {
                 ),
                 result,
             )
-            coVerify { userProfileDatastore.createUserProfile(UserId("new-user"), UserRole.USER) }
+            coVerify(exactly = 0) { userProfileDatastore.createUserProfile(any(), any()) }
         }
 
     @Test
@@ -178,23 +174,6 @@ class FlyerBoardContextRetrieverTest {
             coEvery { auth.retrieveUser(any()) } returns userInfo
             coEvery { userProfileDatastore.getUserProfile(UserId("user-1")) } returns
                 Result.failure(RuntimeException("db error"))
-
-            val result = contextRetriever.getContext(applicationCall)
-
-            assertTrue(result is ClientContext.UnauthenticatedClientContext)
-        }
-
-    @Test
-    fun `getContext returns unauthenticated when createUserProfile fails`() =
-        runTest {
-            val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
-            val userInfo = makeUserInfo(userId = "new-user")
-
-            coEvery { auth.retrieveUser(any()) } returns userInfo
-            coEvery { userProfileDatastore.getUserProfile(UserId("new-user")) } returns Result.success(null)
-            coEvery {
-                userProfileDatastore.createUserProfile(UserId("new-user"), UserRole.USER)
-            } returns Result.failure(RuntimeException("db error"))
 
             val result = contextRetriever.getContext(applicationCall)
 

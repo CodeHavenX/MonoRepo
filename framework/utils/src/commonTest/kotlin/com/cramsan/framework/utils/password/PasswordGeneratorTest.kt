@@ -1,6 +1,5 @@
 package com.cramsan.framework.utils.password
 
-import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -8,7 +7,6 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class PasswordGeneratorTest {
-
     @Test
     fun `password has correct length`() {
         val length = 16
@@ -41,14 +39,27 @@ class PasswordGeneratorTest {
 
     @Test
     fun `can generate password with only digits`() {
-        val password = generateRandomPassword(10, includeUppercase = false, includeLowercase = false, includeDigits = true, includeSymbols = false)
+        val password =
+            generateRandomPassword(
+                10,
+                includeUppercase = false,
+                includeLowercase = false,
+                includeDigits = true,
+                includeSymbols = false,
+            )
         assertTrue(password.all { it.isDigit() })
     }
 
     @Test
     fun `can generate password with only symbols`() {
-        val password = generateRandomPassword(10, includeUppercase = false, includeLowercase = false, includeDigits = false, includeSymbols = true)
+        val password =
+            generateRandomPassword(
+                10,
+                includeUppercase = false,
+                includeLowercase = false,
+                includeDigits = false,
+                includeSymbols = true,
+            )
         assertTrue(password.all { "!@#\$%^&*()-_=+[]{}|;:,.<>?/".contains(it) })
     }
 }
-

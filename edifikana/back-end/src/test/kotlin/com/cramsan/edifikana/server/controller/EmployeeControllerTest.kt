@@ -211,7 +211,6 @@ class EmployeeControllerTest :
             // Arrange
             val expectedResponse = readFileContent("requests/get_employees_response.json")
             val employeeService = get<EmployeeService>()
-            val rbacService = get<RBACService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
             val clientContext =
                 ClientContext.AuthenticatedClientContext(

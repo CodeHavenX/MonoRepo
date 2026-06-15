@@ -222,7 +222,9 @@ class SignUpValidationTests {
     fun validatePassword_min_greater_than_max_length() {
         val password = "Pass1@"
         val result = validatePassword(password, minLength = 10, maxLength = 6)
-        assertTrue(result.contains("Invalid password length range: minimum length (10) cannot exceed maximum length (6)."))
+        assertTrue(
+            result.contains("Invalid password length range: minimum length (10) cannot exceed maximum length (6)."),
+        )
     }
 
     /**

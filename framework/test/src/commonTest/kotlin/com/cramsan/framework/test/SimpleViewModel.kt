@@ -10,11 +10,8 @@ import kotlin.time.Duration
 /**
  * Set of test for common coroutine scenarios in common code.
  */
-class SimpleViewModel(
-    var testScope: CoroutineScope,
-    val repository: Repository
-) {
-
+@Suppress("ArchitectureNamingRule")
+class SimpleViewModel(var testScope: CoroutineScope, val repository: Repository) {
     val observableInt = MutableStateFlow(0)
 
     suspend fun updateWithIODispatch() {

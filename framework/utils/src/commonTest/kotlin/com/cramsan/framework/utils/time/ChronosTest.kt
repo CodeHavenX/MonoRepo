@@ -13,26 +13,26 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-
 @OptIn(TestOnly::class, ExperimentalTime::class)
 class ChronosTest {
-
     lateinit var clockNow: Clock
     lateinit var clockFuture: Clock
 
     @BeforeTest
     fun setup() {
-        clockNow = object : Clock {
-            override fun now(): Instant {
-                return Instant.fromEpochSeconds(1000)
+        clockNow =
+            object : Clock {
+                override fun now(): Instant {
+                    return Instant.fromEpochSeconds(1000)
+                }
             }
-        }
         // Clocking mocking being 10 seconds in the future
-        clockFuture = object : Clock {
-            override fun now(): Instant {
-                return Instant.fromEpochSeconds(1010)
+        clockFuture =
+            object : Clock {
+                override fun now(): Instant {
+                    return Instant.fromEpochSeconds(1010)
+                }
             }
-        }
     }
 
     @AfterTest
@@ -117,9 +117,10 @@ class ChronosTest {
     @Test
     fun `clock should throw exception if not initialized`() {
         // Act & Assert
-        val exception = assertFailsWith<IllegalStateException> {
-            Chronos.clock()
-        }
+        val exception =
+            assertFailsWith<IllegalStateException> {
+                Chronos.clock()
+            }
         assertEquals("Clock not initialized. Call initializeClock() first.", exception.message)
     }
 

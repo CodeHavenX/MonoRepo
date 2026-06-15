@@ -1,7 +1,6 @@
 package com.cramsan.framework.core.compose
 
 sealed class TestableEvent : ViewModelEvent {
-
     /**
      * Emit a number.
      */

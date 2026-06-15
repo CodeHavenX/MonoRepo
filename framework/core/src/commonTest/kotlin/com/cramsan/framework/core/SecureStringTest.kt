@@ -6,7 +6,6 @@ import kotlin.test.assertNotEquals
 
 @OptIn(SecureStringAccess::class)
 class SecureStringTest {
-
     @Test
     fun `default constructor creates empty SecureString`() {
         val secure = SecureString()

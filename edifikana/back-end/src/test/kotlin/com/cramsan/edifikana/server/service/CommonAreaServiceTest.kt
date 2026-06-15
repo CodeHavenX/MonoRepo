@@ -4,7 +4,6 @@ package com.cramsan.edifikana.server.service
 
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.datastore.CommonAreaDatastore
 import com.cramsan.edifikana.server.service.models.CommonArea
@@ -130,7 +129,6 @@ class CommonAreaServiceTest {
         runTest {
             // Arrange
             val propertyId = PropertyId("property123")
-            val orgId = OrganizationId("org123")
             val areas =
                 listOf(
                     commonArea(CommonAreaId("area123"), propertyId),

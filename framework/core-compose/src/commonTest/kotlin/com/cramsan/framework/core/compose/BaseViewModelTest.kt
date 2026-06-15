@@ -25,7 +25,6 @@ import kotlin.test.assertEquals
  */
 @Suppress("UNCHECKED_CAST")
 class BaseViewModelTest : CoroutineTest() {
-
     private lateinit var viewModel: TestableViewModel
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
@@ -41,60 +40,66 @@ class BaseViewModelTest : CoroutineTest() {
         AssertUtil.setInstance(NoopAssertUtil())
         applicationEventReceiver = EventBus()
         windowEventReceiver = EventBus()
-        viewModel = TestableViewModel(
-            dependencies = ViewModelDependencies(
-                appScope = testCoroutineScope,
-                dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
-                coroutineExceptionHandler = exceptionHandler,
-                applicationEventReceiver = applicationEventReceiver,
-                windowEventReceiver = windowEventReceiver,
+        viewModel =
+            TestableViewModel(
+                dependencies =
+                ViewModelDependencies(
+                    appScope = testCoroutineScope,
+                    dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
+                    coroutineExceptionHandler = exceptionHandler,
+                    applicationEventReceiver = applicationEventReceiver,
+                    windowEventReceiver = windowEventReceiver,
+                ),
             )
-        )
     }
 
     @Test
-    fun `test updating the title`() = runCoroutineTest {
-        viewModel.setTitle("Test")
+    fun `test updating the title`() =
+        runCoroutineTest {
+            viewModel.setTitle("Test")
 
-        assertEquals("Test", viewModel.uiState.value.title)
-    }
-
-    @Test
-    fun `test emitting some numbers`() = runCoroutineTest {
-        turbineScope {
-            // Arrange
-            val turbine = viewModel.events.testIn(backgroundScope)
-
-            // Act
-            viewModel.emitNumbers()
-
-            // Assert
-            assertEquals(TestableEvent.EmitNumber(1), turbine.awaitItem())
-            assertEquals(TestableEvent.EmitNumber(2), turbine.awaitItem())
-            assertEquals(TestableEvent.EmitNumber(3), turbine.awaitItem())
-            advanceUntilIdleAndAwaitComplete(turbine)
+            assertEquals("Test", viewModel.uiState.value.title)
         }
-    }
 
     @Test
-    fun `test emitting an application event`() = runCoroutineTest {
-        turbineScope {
-            // Arrange
-            val turbine = windowEventReceiver.events.testIn(backgroundScope)
+    fun `test emitting some numbers`() =
+        runCoroutineTest {
+            turbineScope {
+                // Arrange
+                val turbine = viewModel.events.testIn(backgroundScope)
 
-            // Act
-            viewModel.emitApplicationEvent()
+                // Act
+                viewModel.emitNumbers()
 
-            // Assert
-            assertEquals(TestableApplicationEvent.Signal, turbine.awaitItem())
-            advanceUntilIdleAndAwaitComplete(turbine)
+                // Assert
+                assertEquals(TestableEvent.EmitNumber(1), turbine.awaitItem())
+                assertEquals(TestableEvent.EmitNumber(2), turbine.awaitItem())
+                assertEquals(TestableEvent.EmitNumber(3), turbine.awaitItem())
+                advanceUntilIdleAndAwaitComplete(turbine)
+            }
         }
-    }
 
     @Test
-    fun `test throwing an exception`() = runCoroutineTest {
-        viewModel.throwError()
+    fun `test emitting an application event`() =
+        runCoroutineTest {
+            turbineScope {
+                // Arrange
+                val turbine = windowEventReceiver.events.testIn(backgroundScope)
 
-        assertEquals(1, exceptionHandler.exceptions.size)
-    }
+                // Act
+                viewModel.emitApplicationEvent()
+
+                // Assert
+                assertEquals(TestableApplicationEvent.Signal, turbine.awaitItem())
+                advanceUntilIdleAndAwaitComplete(turbine)
+            }
+        }
+
+    @Test
+    fun `test throwing an exception`() =
+        runCoroutineTest {
+            viewModel.throwError()
+
+            assertEquals(1, exceptionHandler.exceptions.size)
+        }
 }

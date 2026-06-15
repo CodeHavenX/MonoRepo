@@ -1,11 +1,10 @@
 package com.cramsan.framework.core.compose
 
-data class TestableUIState(
-    val title: String?,
-) : ViewModelUIState {
+data class TestableUIState(val title: String?) : ViewModelUIState {
     companion object {
-        val Initial = TestableUIState(
-            title = null,
-        )
+        val Initial =
+            TestableUIState(
+                title = null,
+            )
     }
 }

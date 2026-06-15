@@ -8,29 +8,28 @@ import kotlin.time.Duration.Companion.minutes
 
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class AsyncCoroutineTest : CoroutineTest() {
-
     lateinit var viewModel: SimpleViewModel
     lateinit var repository: Repository
 
     @BeforeTest
-
     fun setupTest() {
         this.repository = Repository()
         this.viewModel = SimpleViewModel(testCoroutineScope, repository)
     }
 
     @Test
-    fun test_that_async_code_is_executed_eagerly() = runCoroutineTest {
-        var value = 0
-        viewModel.postDelayed(2.minutes) {
-            value = 2
-        }
+    fun test_that_async_code_is_executed_eagerly() =
+        runCoroutineTest {
+            var value = 0
+            viewModel.postDelayed(2.minutes) {
+                value = 2
+            }
 
-        viewModel.postDelayed(1.minutes) {
-            value = 1
-        }
-        advanceUntilIdle()
+            viewModel.postDelayed(1.minutes) {
+                value = 1
+            }
+            advanceUntilIdle()
 
-        assertEquals(2, value, "The second postDelayed should execute first due to its shorter delay")
-    }
+            assertEquals(2, value, "The second postDelayed should execute first due to its shorter delay")
+        }
 }

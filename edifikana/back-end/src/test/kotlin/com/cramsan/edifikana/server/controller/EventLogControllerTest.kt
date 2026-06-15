@@ -192,7 +192,6 @@ class EventLogControllerTest :
             // Configure
             val expectedResponse = readFileContent("requests/get_event_log_entries_response.json")
             val userService = get<EventLogService>()
-            val rbacService = get<RBACService>()
             val propertyId = PropertyId("property1")
             coEvery {
                 userService.getEventLogEntries(propertyId)

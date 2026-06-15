@@ -5,14 +5,13 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Testable screen.
  **/
-class TestableViewModel(
-    dependencies: ViewModelDependencies,
-) : BaseViewModel<TestableEvent, TestableUIState>(
-    dependencies,
-    TestableUIState.Initial,
-    TAG,
-) {
-
+@Suppress("ArchitectureNamingRule")
+class TestableViewModel(dependencies: ViewModelDependencies) :
+    BaseViewModel<TestableEvent, TestableUIState>(
+        dependencies,
+        TestableUIState.Initial,
+        TAG,
+    ) {
     fun setTitle(title: String) {
         viewModelCoroutineScope.launch {
             updateUiState {

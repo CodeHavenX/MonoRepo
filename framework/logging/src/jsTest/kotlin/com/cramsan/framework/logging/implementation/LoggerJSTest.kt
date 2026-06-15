@@ -4,7 +4,6 @@ import com.cramsan.framework.logging.Severity
 import kotlin.test.Test
 
 class LoggerJSTest {
-
     @Test
     fun testLogVerbose() {
         val logger = LoggerJS()

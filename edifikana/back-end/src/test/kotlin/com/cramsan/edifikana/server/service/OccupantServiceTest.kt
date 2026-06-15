@@ -5,7 +5,6 @@ package com.cramsan.edifikana.server.service
 import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
 import com.cramsan.edifikana.lib.model.occupant.OccupantId
 import com.cramsan.edifikana.lib.model.occupant.OccupantType
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.server.datastore.OccupantDatastore
 import com.cramsan.edifikana.server.service.models.Occupant
@@ -35,7 +34,6 @@ class OccupantServiceTest {
     private lateinit var occupantService: OccupantService
 
     private val unitId = UnitId("unit-1")
-    private val orgId = OrganizationId("org-1")
     private val occupantId = OccupantId("occ-1")
 
     @BeforeEach

@@ -22,6 +22,7 @@ tasks.register("releaseWasm") {
     dependsOn("wasmJsMainClasses")
     dependsOn("detektCommonMainSourceSet")
     dependsOn("detektWasmJsMainSourceSet")
+    dependsOn("detektWasmJsTestSourceSet")
 }
 
 tasks.named("release") {

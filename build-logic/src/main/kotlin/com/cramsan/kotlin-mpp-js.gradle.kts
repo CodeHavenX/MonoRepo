@@ -25,6 +25,7 @@ tasks.register("releaseJs") {
     dependsOn("compileKotlinJs")
     dependsOn("detektCommonMainSourceSet")
     dependsOn("detektJsMainSourceSet")
+    dependsOn("detektJsTestSourceSet")
     dependsOn("jsTest")
 }
 

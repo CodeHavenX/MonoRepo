@@ -2,7 +2,7 @@ complexity:
   excludes:
     - '**/build/generated/**'
   LongParameterList:
-    ignoreAnnotated: [ 'Composable' ]
+    ignoreAnnotated: [ 'Composable', 'Test' ]
     active: true
     allowedFunctionParameters: 12
     allowedConstructorParameters: 12
@@ -98,6 +98,7 @@ ktlint:
     active: true
   ArgumentListWrapping:
     active: true
+    ignoreAnnotated: [ 'Test' ]
   BackingPropertyNaming:
     active: false
   BinaryExpressionWrapping:
@@ -110,8 +111,10 @@ ktlint:
     active: false
   ChainMethodContinuation:
     active: true
+    ignoreAnnotated: [ 'Test' ]
   ChainWrapping:
     active: true
+    ignoreAnnotated: [ 'Test' ]
   ClassName:
     active: true
   ClassSignature:
@@ -180,6 +183,7 @@ ktlint:
     active: true
   MultilineExpressionWrapping:
     active: true
+    ignoreAnnotated: [ 'Test' ]
   MultilineLoop:
     active: true
   NoBlankLineBeforeRbrace:
@@ -226,6 +230,7 @@ ktlint:
     active: true
   ParameterWrapping:
     active: true
+    ignoreAnnotated: [ 'Test' ]
   PropertyName:
     active: true
   PropertyWrapping:

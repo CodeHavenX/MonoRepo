@@ -22,3 +22,7 @@ kotlin {
         }
     }
 }
+
+tasks.named("release") {
+    dependsOn("detektCommonTestSourceSet")
+}

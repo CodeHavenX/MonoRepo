@@ -35,6 +35,8 @@ tasks.register("releaseJvm") {
     dependsOn("build")
     dependsOn("detektMain")
     dependsOn("detektMainSourceSet")
+    dependsOn("detektTest")
+    dependsOn("detektTestSourceSet")
     dependsOn("test")
 }
 

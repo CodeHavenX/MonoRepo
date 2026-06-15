@@ -80,6 +80,14 @@ tasks.register("releaseAndroid") {
     dependsOn("assembleRelease")
     dependsOn("detektCommonMainSourceSet")
     dependsOn("detektAndroidDebugSourceSet")
+    dependsOn("detektAndroidUnitTestDebugSourceSet")
+    // detektDebugAndroid and detektDebugUnitTestAndroid (type-resolution analysis of the android
+    // compilations) crash with an internal detekt exception on Compose source files
+    // ("findFirCompiledSymbol only works on compiled declarations") and also lint generated
+    // Roborazzi test sources under build/. Re-enable once fixed upstream:
+    // https://github.com/CodeHavenX/MonoRepo/issues/478
+    // dependsOn("detektDebugAndroid")
+    // dependsOn("detektDebugUnitTestAndroid")
     dependsOn("testDebugUnitTest")
     dependsOn("testReleaseUnitTest")
 }

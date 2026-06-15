@@ -14,6 +14,7 @@ tasks.register("releaseIos") {
     dependsOn("compileKotlinIosSimulatorArm64")
     dependsOn("detektCommonMainSourceSet")
     dependsOn("detektIosSimulatorArm64MainSourceSet")
+    dependsOn("detektIosSimulatorArm64TestSourceSet")
     dependsOn("iosSimulatorArm64Test")
 }
 

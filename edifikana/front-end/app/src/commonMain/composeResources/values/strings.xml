@@ -102,6 +102,11 @@
     <string name="password_reset_screen_subtitle">Enter your email address and we will send you a reset link.</string>
     <string name="password_reset_screen_send_button">Send Reset Link</string>
 
+    <!-- Set new password screen -->
+    <string name="set_new_password_screen_title">Set New Password</string>
+    <string name="set_new_password_screen_subtitle">Enter your new password below.</string>
+    <string name="set_new_password_screen_submit_button">Set Password</string>
+
     <!-- Password reset confirmation screen -->
     <string name="password_reset_confirmation_screen_title">Check Your Email</string>
     <string name="password_reset_confirmation_screen_message">A password reset link was sent to %1$s. Check your inbox and follow the instructions.</string>

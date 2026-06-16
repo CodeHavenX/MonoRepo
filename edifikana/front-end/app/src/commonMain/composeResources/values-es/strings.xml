@@ -102,6 +102,11 @@
     <string name="password_reset_screen_subtitle">Ingresa tu correo electrónico y te enviaremos un enlace de restablecimiento.</string>
     <string name="password_reset_screen_send_button">Enviar Enlace</string>
 
+    <!-- Set new password screen -->
+    <string name="set_new_password_screen_title">Establecer Nueva Contraseña</string>
+    <string name="set_new_password_screen_subtitle">Ingresa tu nueva contraseña a continuación.</string>
+    <string name="set_new_password_screen_submit_button">Establecer Contraseña</string>
+
     <!-- Password reset confirmation screen -->
     <string name="password_reset_confirmation_screen_title">Revisa tu Correo</string>
     <string name="password_reset_confirmation_screen_message">Se envió un enlace de restablecimiento a %1$s. Revisa tu bandeja de entrada y sigue las instrucciones.</string>

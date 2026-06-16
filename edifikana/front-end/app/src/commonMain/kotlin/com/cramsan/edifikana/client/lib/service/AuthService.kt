@@ -106,6 +106,13 @@ interface AuthService {
     ): Result<Unit>
 
     /**
+     * Updates the current user's password on an active recovery session. Do NOT use [changePassword] —
+     * that requires the current password and will fail on a recovery session.
+     */
+    @OptIn(SecureStringAccess::class)
+    suspend fun setNewPassword(newPassword: SecureString): Result<Unit>
+
+    /**
      * Invite an employee member to the organization with the provided [organizationId] using the given [email]
      * and assign them the specified [role].
      */

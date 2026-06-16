@@ -45,6 +45,11 @@ sealed class AuthDestination : WebDestination {
     @WebPath("/auth/password-reset-confirm")
     data class PasswordResetConfirmationDestination(val userEmail: String) : AuthDestination()
 
+    /** Set-new-password screen destination, reached via the recovery deep link. */
+    @Serializable
+    @WebPath("/auth/set-new-password")
+    data object SetNewPasswordDestination : AuthDestination()
+
     override fun toWebPath(): String = AuthDestinationWebRoutes.toWebPath(this)
 
     companion object {

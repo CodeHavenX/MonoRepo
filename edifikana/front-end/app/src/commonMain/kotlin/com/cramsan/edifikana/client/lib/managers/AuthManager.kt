@@ -183,6 +183,17 @@ class AuthManager(private val dependencies: ManagerDependencies, private val aut
         }
 
     /**
+     * Sets a new password on the active recovery session. Do NOT use [changePassword] — that
+     * requires the current password and will fail on a recovery session.
+     */
+    @OptIn(SecureStringAccess::class)
+    suspend fun setNewPassword(newPassword: SecureString): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "setNewPassword")
+            authService.setNewPassword(newPassword).getOrThrow()
+        }
+
+    /**
      * Invite a employee with the specified [role] to the organization.
      */
     suspend fun inviteEmployee(

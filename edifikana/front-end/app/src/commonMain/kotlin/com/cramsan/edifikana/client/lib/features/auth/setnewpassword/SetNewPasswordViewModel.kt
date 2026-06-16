@@ -32,6 +32,7 @@ class SetNewPasswordViewModel(
     TAG,
 ) {
     /** Marks the form as ready for input. Called once on first composition. */
+    @OptIn(SecureStringAccess::class)
     fun initialize() {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = false) }
@@ -76,6 +77,7 @@ class SetNewPasswordViewModel(
     }
 
     /** Submits the new password. Navigates to [AuthDestination.SignInDestination] on success. */
+    @OptIn(SecureStringAccess::class)
     fun onSubmitSelected() {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }

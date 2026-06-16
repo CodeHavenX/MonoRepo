@@ -101,4 +101,12 @@ class DeepLinkManagerTest {
 
         assertEquals(input, DeepLinkParams.parse(input).rawInput)
     }
+
+    @Test
+    fun `parse extracts params from URL with both query and fragment`() {
+        val params = DeepLinkParams.parse("https://edifikana.com?query=abc#action=reset")
+
+        assertEquals("abc", params.params["query"])
+        assertEquals("reset", params.params["action"])
+    }
 }

@@ -16,6 +16,7 @@ class Initializer(
     private val eventLogger: EventLoggerInterface,
     private val authManager: AuthManager,
     private val settingsHolder: SettingsHolder,
+    private val isDebugBuild: Boolean,
 ) : KoinComponent {
     /**
      * Start the initialization steps.
@@ -37,6 +38,12 @@ class Initializer(
             settingsHolder.saveString(
                 FrontEndApplicationSettingKey.BackEndUrl,
                 BuildConfig.DEFAULT_API_URL,
+            )
+        }
+        if (settingsHolder.getBoolean(FrontEndApplicationSettingKey.IsDebug) == null) {
+            settingsHolder.saveBoolean(
+                FrontEndApplicationSettingKey.IsDebug,
+                isDebugBuild,
             )
         }
     }

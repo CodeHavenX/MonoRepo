@@ -23,7 +23,7 @@ android {
         }
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -113,8 +113,6 @@ tasks.register("releaseAndroid") {
     description = "Run all the steps to build a release artifact"
     dependsOn("build")
     dependsOn("bundle")
-    dependsOn("detektDebug")
-    dependsOn("detektDebugUnitTest")
     // detektDebug and detektDebugUnitTest (type-resolution analysis of the android
     // compilations) crash with an internal detekt exception on Compose source files
     // ("findFirCompiledSymbol only works on compiled declarations") and also lint generated

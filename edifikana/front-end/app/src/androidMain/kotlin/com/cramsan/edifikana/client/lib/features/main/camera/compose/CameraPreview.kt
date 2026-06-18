@@ -58,10 +58,15 @@ fun CameraPreview(
     val lifecycleOwner = LocalLifecycleOwner.current
     val isInspectionMode = LocalInspectionMode.current
 
-    val preview = androidx.camera.core.Preview.Builder().build()
+    val preview =
+        androidx.camera.core.Preview
+        .Builder()
+        .build()
     val previewView = remember { PreviewView(context) }
-    val imageCapture: ImageCapture = remember {
-        ImageCapture.Builder()
+    val imageCapture: ImageCapture =
+        remember {
+        ImageCapture
+            .Builder()
             .setTargetResolution(Size(captureWidth, captureHeight))
             .build()
     }
@@ -75,7 +80,9 @@ fun CameraPreview(
         cameraProvider.unbindAll()
 
         lensFacing?.let {
-            val cameraSelector = CameraSelector.Builder()
+            val cameraSelector =
+                CameraSelector
+                .Builder()
                 .requireLensFacing(lensFacing)
                 .build()
 
@@ -83,7 +90,7 @@ fun CameraPreview(
                 lifecycleOwner,
                 cameraSelector,
                 preview,
-                imageCapture
+                imageCapture,
             )
         }
 
@@ -101,9 +108,10 @@ fun CameraPreview(
                         imageVector = Icons.Sharp.Lens,
                         contentDescription = stringResource(Res.string.edifikana_string_take_photo),
                         tint = Color.White,
-                        modifier = Modifier
+                        modifier =
+                            Modifier
                             .border(1.dp, Color.White, CircleShape)
-                            .fillMaxSize()
+                            .fillMaxSize(),
                     )
                 }
             },
@@ -113,17 +121,19 @@ fun CameraPreview(
                         imageVector = Icons.Sharp.FlipCameraAndroid,
                         contentDescription = stringResource(Res.string.edifikana_string_flip_camera),
                         tint = Color.White,
-                        modifier = Modifier
+                        modifier =
+                            Modifier
                             .padding(5.dp)
-                            .fillMaxSize()
+                            .fillMaxSize(),
                     )
                 }
-            }
+            },
         )
     }
 }
 
-private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->
+private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
+    suspendCoroutine { continuation ->
     // TODO: Can we refactor this to use some sort of coroutine/future interop?
     ProcessCameraProvider.getInstance(this).also { cameraProvider ->
         cameraProvider.addListener(

@@ -6,7 +6,6 @@ import android.net.Uri
  * Camera event.
  */
 sealed class CameraEvent {
-
     /**
      * Cancel flow.
      */
@@ -15,9 +14,7 @@ sealed class CameraEvent {
     /**
      * Complete flow.
      */
-    data class CompleteFlow(
-        val uri: Uri,
-    ) : CameraEvent()
+    data class CompleteFlow(val uri: Uri) : CameraEvent()
 
     /**
      * Open settings.

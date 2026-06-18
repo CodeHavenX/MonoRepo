@@ -16,10 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cramsan.ui.preview.ComponentPreviews
-import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Bottom action bar for the camera preview.
@@ -37,11 +35,12 @@ fun BottomActionBar(
     mainButton: @Composable () -> Unit,
 ) {
     Row(
-        modifier = modifier
+        modifier =
+            modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
             .padding(vertical = 4.dp),
-    ) {
+            ) {
         Box(
             modifier = Modifier.weight(1f),
             contentAlignment = Alignment.Center,
@@ -69,7 +68,7 @@ private fun PreviewBottomActionBar() {
                         contentDescription = "",
                         tint = Color.White,
                     )
-                }
+                },
             )
         },
         secondaryButton = {
@@ -81,8 +80,8 @@ private fun PreviewBottomActionBar() {
                         contentDescription = "",
                         tint = Color.White,
                     )
-                }
+                },
             )
-        }
+        },
     )
 }

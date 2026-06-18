@@ -13,9 +13,11 @@ val composablePreviewScannerVersion = versionFor("version.io.github.sergio-sastr
 kotlin {
     android {
         namespace = "com.cramsan.framework.test.roborazzi"
+    }
 
-        dependencies {
-            testImplementation(project(":framework:ui-preview"))
+    sourceSets {
+        getByName("androidHostTest").dependencies {
+            implementation(project(":framework:ui-preview"))
         }
     }
 }

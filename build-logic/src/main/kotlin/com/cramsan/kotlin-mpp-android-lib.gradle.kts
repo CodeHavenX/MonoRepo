@@ -72,8 +72,6 @@ tasks.register("releaseAndroid") {
     description = "Run all the steps to build a releaseAndroid artifact"
     dependsOn("assemble")
     dependsOn("detektCommonMainSourceSet")
-    dependsOn("detektAndroidMainSourceSet")
-    dependsOn("detektAndroidHostTestSourceSet")
     // detektAndroidMainSourceSet and detektAndroidHostTestSourceSet (type-resolution analysis of
     // the android compilations) crash with an internal detekt exception on Compose source files
     // ("findFirCompiledSymbol only works on compiled declarations") and also lint generated

@@ -146,11 +146,6 @@ tasks.matching { it.name != "kspCommonMainKotlinMetadata" }.configureEach {
 kotlin {
     android {
         namespace = "com.cramsan.edifikana.client.lib"
-
-
-        buildFeatures {
-            buildConfig = false
-        }
     }
 }
 

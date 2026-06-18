@@ -2,7 +2,7 @@
   <configuration default="false" name="Edifikana:Front-End:[JVM]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/edifikana/front-end/app-jvm" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/edifikana/front-end/launcher-desktop" />
       <option name="externalSystemIdString" value="GRADLE" />
       <option name="scriptParameters" value="" />
       <option name="taskDescriptions">

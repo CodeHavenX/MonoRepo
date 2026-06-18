@@ -110,16 +110,6 @@ kotlin {
 kotlin {
     android {
         namespace = "com.cramsan.runasimi.client.lib"
-
-
-        buildFeatures {
-            buildConfig = true
-        }
-
-        buildTypes {
-            all {
-            }
-        }
     }
 }
 

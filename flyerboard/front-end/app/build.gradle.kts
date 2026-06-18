@@ -139,24 +139,9 @@ tasks.matching { it.name != "kspCommonMainKotlinMetadata" }.configureEach {
     }
 }
 
-private val ENV_TEMPLATE_REPLACE_ME_BUILD_VARIABLE = "ENV_TEMPLATE_REPLACE_ME_VARIABLE"
-
-val flyerboardBuildVariable = "hello!"
-
 kotlin {
     android {
         namespace = "com.cramsan.flyerboard.client.lib"
-
-
-        buildFeatures {
-            buildConfig = true
-        }
-
-        buildTypes {
-            all {
-                buildConfigField("String", ENV_TEMPLATE_REPLACE_ME_BUILD_VARIABLE, "\"${flyerboardBuildVariable}\"")
-            }
-        }
     }
 }
 

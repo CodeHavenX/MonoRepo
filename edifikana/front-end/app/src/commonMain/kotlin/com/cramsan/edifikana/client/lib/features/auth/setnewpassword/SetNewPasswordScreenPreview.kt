@@ -10,7 +10,8 @@ import com.cramsan.ui.preview.ScreenPreviews
 @Composable
 internal fun SetNewPasswordContentPreview() {
     SetNewPasswordContent(
-        uiState = SetNewPasswordUIState(
+        uiState =
+        SetNewPasswordUIState(
             isLoading = false,
             submitEnabled = false,
         ),
@@ -26,7 +27,8 @@ internal fun SetNewPasswordContentPreview() {
 @Composable
 internal fun SetNewPasswordContentWithErrorsPreview() {
     SetNewPasswordContent(
-        uiState = SetNewPasswordUIState(
+        uiState =
+        SetNewPasswordUIState(
             isLoading = false,
             newPassword = SecureString("short"),
             confirmPassword = SecureString("different"),

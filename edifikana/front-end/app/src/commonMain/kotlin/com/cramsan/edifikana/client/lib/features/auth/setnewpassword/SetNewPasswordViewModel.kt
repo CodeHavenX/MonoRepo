@@ -44,16 +44,21 @@ class SetNewPasswordViewModel(
     fun onNewPasswordChange(password: String) {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(newPassword = SecureString(password)) }
-            val message = when {
-                password.isEmpty() ->
-                    stringProvider.getString(Res.string.change_password_dialog_error_new_password_empty)
-                password.length < MIN_PASSWORD_LENGTH ->
-                    stringProvider.getString(Res.string.change_password_dialog_error_new_password_too_short)
-                else -> {
-                    val errors = validatePassword(password)
-                    if (errors.isNotEmpty()) errors.joinToString("\n") else null
+            val message =
+                when {
+                    password.isEmpty() -> {
+                        stringProvider.getString(Res.string.change_password_dialog_error_new_password_empty)
+                    }
+
+                    password.length < MIN_PASSWORD_LENGTH -> {
+                        stringProvider.getString(Res.string.change_password_dialog_error_new_password_too_short)
+                    }
+
+                    else -> {
+                        val errors = validatePassword(password)
+                        if (errors.isNotEmpty()) errors.joinToString("\n") else null
+                    }
                 }
-            }
             updateUiState { it.copy(newPasswordMessage = message) }
             verifySubmitButtonState()
         }
@@ -64,13 +69,20 @@ class SetNewPasswordViewModel(
     fun onConfirmPasswordChange(password: String) {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(confirmPassword = SecureString(password)) }
-            val message = when {
-                password.isEmpty() ->
-                    stringProvider.getString(Res.string.change_password_dialog_error_confirm_password_empty)
-                password != uiState.value.newPassword.reveal() ->
-                    stringProvider.getString(Res.string.change_password_dialog_error_passwords_do_not_match)
-                else -> null
-            }
+            val message =
+                when {
+                    password.isEmpty() -> {
+                        stringProvider.getString(Res.string.change_password_dialog_error_confirm_password_empty)
+                    }
+
+                    password != uiState.value.newPassword.reveal() -> {
+                        stringProvider.getString(Res.string.change_password_dialog_error_passwords_do_not_match)
+                    }
+
+                    else -> {
+                        null
+                    }
+                }
             updateUiState { it.copy(confirmPasswordMessage = message) }
             verifySubmitButtonState()
         }
@@ -81,7 +93,8 @@ class SetNewPasswordViewModel(
     fun onSubmitSelected() {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
-            authManager.setNewPassword(uiState.value.newPassword)
+            authManager
+                .setNewPassword(uiState.value.newPassword)
                 .onSuccess {
                     updateUiState { it.copy(isLoading = false) }
                     emitWindowEvent(
@@ -92,7 +105,7 @@ class SetNewPasswordViewModel(
                         it.copy(
                             isLoading = false,
                             newPasswordMessage =
-                                stringProvider.getString(Res.string.error_message_unexpected_error),
+                            stringProvider.getString(Res.string.error_message_unexpected_error),
                         )
                     }
                 }
@@ -109,8 +122,12 @@ class SetNewPasswordViewModel(
     @OptIn(SecureStringAccess::class)
     private suspend fun verifySubmitButtonState() {
         val enabled =
-            uiState.value.newPassword.reveal().isNotEmpty() &&
-                uiState.value.confirmPassword.reveal().isNotEmpty() &&
+            uiState.value.newPassword
+                .reveal()
+                .isNotEmpty() &&
+                uiState.value.confirmPassword
+                    .reveal()
+                    .isNotEmpty() &&
                 uiState.value.newPasswordMessage == null &&
                 uiState.value.confirmPasswordMessage == null
         updateUiState { it.copy(submitEnabled = enabled) }

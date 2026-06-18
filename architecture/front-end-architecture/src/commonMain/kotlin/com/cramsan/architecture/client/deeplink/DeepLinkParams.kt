@@ -33,11 +33,12 @@ data class DeepLinkParams(val rawInput: String, val params: Map<String, String>)
 
             // Fragment params take precedence over query params on key collision.
             // If neither delimiter is present, treat the whole input as a bare key=value string.
-            val params = if (queryStr == null && fragmentStr == null) {
-                toMap(rawInput)
-            } else {
-                toMap(queryStr) + toMap(fragmentStr)
-            }
+            val params =
+                if (queryStr == null && fragmentStr == null) {
+                    toMap(rawInput)
+                } else {
+                    toMap(queryStr) + toMap(fragmentStr)
+                }
             return DeepLinkParams(rawInput, params)
         }
     }

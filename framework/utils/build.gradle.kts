@@ -15,9 +15,11 @@ plugins {
 kotlin {
     android {
         namespace = "com.cramsan.framework.utils"
+    }
 
-        dependencies {
-            testImplementation(project(":framework:test"))
+    sourceSets {
+        getByName("androidHostTest").dependencies {
+            implementation(project(":framework:test"))
         }
     }
 }

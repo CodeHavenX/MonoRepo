@@ -118,11 +118,6 @@ kotlin {
 kotlin {
     android {
         namespace = "com.cramsan.architecture.client"
-
-
-        buildFeatures {
-            buildConfig = true
-        }
     }
 }
 

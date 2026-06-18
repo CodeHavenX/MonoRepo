@@ -11,12 +11,17 @@ import com.cramsan.framework.halt.R
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * [HaltUtilDelegate] implementation for the debug target.
+ * [HaltUtilDelegate] implementation for Android. On debug builds this halts the calling thread and
+ * surfaces a notification with the stack trace; on release builds it is a no-op. AGP's Kotlin
+ * Multiplatform library plugin has no debug/release source set variants, so [isDebugBuild] must be
+ * supplied by the caller instead of being resolved from a variant-specific implementation.
  */
-class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
+class HaltUtilAndroid(private val appContext: Context, private val isDebugBuild: Boolean) : HaltUtilDelegate {
     private val shouldStop = AtomicBoolean(false)
 
     override fun stopThread() {
+        if (!isDebugBuild) return
+
         shouldStop.set(true)
 
         displayNotification()
@@ -31,6 +36,8 @@ class HaltUtilAndroid(private val appContext: Context) : HaltUtilDelegate {
     }
 
     override fun crashApp() {
+        if (!isDebugBuild) return
+
         android.os.Process.killProcess(android.os.Process.myPid())
     }
 

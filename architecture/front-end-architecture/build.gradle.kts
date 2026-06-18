@@ -7,7 +7,6 @@ plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.android.library")
     id("androidx.room")
     id("com.google.devtools.ksp")
     id("com.cramsan.kotlin-mpp-common-compose")
@@ -101,7 +100,7 @@ kotlin {
         androidMain {
             dependsOn(localDB)
         }
-        androidUnitTest {
+        getByName("androidHostTest") {
             dependencies {
             }
         }
@@ -116,15 +115,14 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.cramsan.architecture.client"
+kotlin {
+    android {
+        namespace = "com.cramsan.architecture.client"
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
-    buildFeatures {
-        buildConfig = true
+        buildFeatures {
+            buildConfig = true
+        }
     }
 }
 
@@ -138,21 +136,10 @@ dependencies {
     add("kspAndroid", "androidx.room:room-compiler:_")
     add("kspJvm", "androidx.room:room-compiler:_")
 
-    implementation("androidx.appcompat:appcompat:_")
-    implementation("androidx.core:core-ktx:_")
 
-    implementation("io.coil-kt.coil3:coil:")
-    implementation("io.coil-kt.coil3:coil-compose:_")
-    implementation("io.coil-kt.coil3:coil-network-ktor3:_")
 
-    implementation("io.ktor:ktor-client-cio:_")
 
-    implementation("androidx.room:room-runtime:_")
-    implementation("androidx.room:room-ktx:_")
 
-    implementation("io.insert-koin:koin-core:_")
-    implementation("io.insert-koin:koin-android:_")
-    implementation("io.insert-koin:koin-androidx-compose:_")
 }
 
 room {
@@ -162,4 +149,29 @@ room {
 tasks.getByName("release") {
     dependsOn("detektLocalDBSourceSet")
     dependsOn("detektNoDBSourceSet")
+}
+
+kotlin {
+    sourceSets.getByName("androidMain") {
+        resources.srcDir("src/commonMain/resources")
+    }
+}
+
+
+kotlin {
+    sourceSets {
+        getByName("androidMain").dependencies {
+            implementation("androidx.appcompat:appcompat:_")
+            implementation("androidx.core:core-ktx:_")
+            implementation("io.coil-kt.coil3:coil:")
+            implementation("io.coil-kt.coil3:coil-compose:_")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:_")
+            implementation("io.ktor:ktor-client-cio:_")
+            implementation("androidx.room:room-runtime:_")
+            implementation("androidx.room:room-ktx:_")
+            implementation("io.insert-koin:koin-core:_")
+            implementation("io.insert-koin:koin-android:_")
+            implementation("io.insert-koin:koin-androidx-compose:_")
+        }
+    }
 }

@@ -9,7 +9,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class EventLoggerCommonTest : CoroutineTest() {
-
     private lateinit var platformDelegate: EventLoggerDelegate
 
     @BeforeTest
@@ -18,7 +17,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun logWithVerboseSeverity() = runCoroutineTest {
+    fun logWithVerboseSeverity() =
+        runCoroutineTest {
         val errorCallback = mockk<EventLoggerErrorCallback>(relaxUnitFun = true)
         val eventLogger = EventLoggerImpl(Severity.VERBOSE, errorCallback, platformDelegate)
         eventLogger.log(Severity.VERBOSE, "Test", "Message-1")
@@ -29,7 +29,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun logWithDebugSeverity() = runCoroutineTest {
+    fun logWithDebugSeverity() =
+        runCoroutineTest {
         val errorCallback = mockk<EventLoggerErrorCallback>(relaxUnitFun = true)
         val eventLogger = EventLoggerImpl(Severity.DEBUG, errorCallback, platformDelegate)
         eventLogger.log(Severity.VERBOSE, "Test", "Message-1")
@@ -40,7 +41,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun logWithInfoSeverity() = runCoroutineTest {
+    fun logWithInfoSeverity() =
+        runCoroutineTest {
         val errorCallback = mockk<EventLoggerErrorCallback>(relaxUnitFun = true)
         val eventLogger = EventLoggerImpl(Severity.INFO, errorCallback, platformDelegate)
         eventLogger.log(Severity.VERBOSE, "Test", "Message-1")
@@ -51,7 +53,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun logWithWarningSeverity() = runCoroutineTest {
+    fun logWithWarningSeverity() =
+        runCoroutineTest {
         val errorCallback = mockk<EventLoggerErrorCallback>(relaxUnitFun = true)
         val eventLogger = EventLoggerImpl(Severity.WARNING, errorCallback, platformDelegate)
         eventLogger.log(Severity.VERBOSE, "Test", "Message-1")
@@ -62,7 +65,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun logWithErrorSeverity() = runCoroutineTest {
+    fun logWithErrorSeverity() =
+        runCoroutineTest {
         val errorCallback = mockk<EventLoggerErrorCallback>(relaxUnitFun = true)
         val eventLogger = EventLoggerImpl(Severity.ERROR, errorCallback, platformDelegate)
         eventLogger.log(Severity.VERBOSE, "Test", "Message-1")
@@ -73,7 +77,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun test_logV_top_level_function() = runCoroutineTest {
+    fun test_logV_top_level_function() =
+        runCoroutineTest {
         val eventLogger: EventLoggerInterface = mockk(relaxed = true)
         val tag = "TestTag"
         val message = "Error message %s"
@@ -87,7 +92,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun test_logD_top_level_function() = runCoroutineTest {
+    fun test_logD_top_level_function() =
+        runCoroutineTest {
         val eventLogger: EventLoggerInterface = mockk(relaxed = true)
         val tag = "TestTag"
         val message = "Error message"
@@ -100,7 +106,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun test_logI_top_level_function() = runCoroutineTest {
+    fun test_logI_top_level_function() =
+        runCoroutineTest {
         val eventLogger: EventLoggerInterface = mockk(relaxed = true)
         val tag = "TestTag"
         val message = "Error message"
@@ -113,7 +120,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun test_logI_top_level_function_with_args() = runCoroutineTest {
+    fun test_logI_top_level_function_with_args() =
+        runCoroutineTest {
         val eventLogger: EventLoggerInterface = mockk(relaxed = true)
         val tag = "TestTag"
         val message = "Hello %s"
@@ -126,7 +134,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun test_logW_top_level_functions() = runCoroutineTest {
+    fun test_logW_top_level_functions() =
+        runCoroutineTest {
         val eventLogger: EventLoggerInterface = mockk(relaxed = true)
         val warningException: Throwable = mockk(relaxed = true)
         val tag = "TestTag"
@@ -143,7 +152,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun test_logE_top_level_functions() = runCoroutineTest {
+    fun test_logE_top_level_functions() =
+        runCoroutineTest {
         val eventLogger: EventLoggerInterface = mockk(relaxed = true)
         val errorException: Throwable = mockk(relaxed = true)
         val tag = "TestTag"
@@ -160,7 +170,8 @@ class EventLoggerCommonTest : CoroutineTest() {
     }
 
     @Test
-    fun test_configuring_singleton() = runCoroutineTest {
+    fun test_configuring_singleton() =
+        runCoroutineTest {
         val eventLogger: EventLoggerInterface = mockk(relaxed = true)
 
         // Configure singleton

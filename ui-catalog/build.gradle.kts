@@ -7,7 +7,6 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.android.library")
     id("com.google.devtools.ksp")
     id("io.github.takahirom.roborazzi")
     id("com.cramsan.kotlin-mpp-common-compose")
@@ -32,7 +31,7 @@ kotlin {
             }
         }
 
-        androidUnitTest {
+        getByName("androidHostTest") {
             dependencies {
                 implementation(project(":framework:test-roborazzi"))
             }
@@ -40,12 +39,11 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.cramsan.ui"
+kotlin {
+    android {
+        namespace = "com.cramsan.ui"
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+    }
 }
 
 roborazzi {
@@ -58,4 +56,10 @@ roborazzi {
 compose.resources {
     packageOfResClass = "ui_catalog"
     publicResClass = true
+}
+
+kotlin {
+    sourceSets.getByName("androidMain") {
+        resources.srcDir("src/commonMain/resources")
+    }
 }

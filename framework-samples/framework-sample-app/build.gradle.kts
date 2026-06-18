@@ -8,7 +8,6 @@ plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.android.library")
     id("com.google.devtools.ksp")
     id("io.github.takahirom.roborazzi")
     id("com.cramsan.kotlin-mpp-common-compose")
@@ -64,7 +63,7 @@ kotlin {
             dependencies {
             }
         }
-        androidUnitTest {
+        getByName("androidHostTest") {
             dependencies {
                 implementation(project(":framework:test-roborazzi"))
             }
@@ -83,12 +82,11 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.cramsan.framework.sample.shared"
+kotlin {
+    android {
+        namespace = "com.cramsan.framework.sample.shared"
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+    }
 }
 
 compose.resources {
@@ -101,18 +99,32 @@ dependencies {
     add("kspAndroid", "androidx.room:room-compiler:_")
     add("kspJvm", "androidx.room:room-compiler:_")
 
-    implementation("androidx.appcompat:appcompat:_")
-    implementation("androidx.core:core-ktx:_")
-    implementation("androidx.compose.material:material-icons-extended:_")
 
-    implementation("io.insert-koin:koin-core:_")
-    implementation("io.insert-koin:koin-android:_")
-    implementation("io.insert-koin:koin-androidx-compose:_")
 }
 
 roborazzi {
     generateComposePreviewRobolectricTests {
         enable = true
         packages = listOf("com.cramsan.framework.sample.shared")
+    }
+}
+
+kotlin {
+    sourceSets.getByName("androidMain") {
+        resources.srcDir("src/commonMain/resources")
+    }
+}
+
+
+kotlin {
+    sourceSets {
+        getByName("androidMain").dependencies {
+            implementation("androidx.appcompat:appcompat:_")
+            implementation("androidx.core:core-ktx:_")
+            implementation("androidx.compose.material:material-icons-extended:_")
+            implementation("io.insert-koin:koin-core:_")
+            implementation("io.insert-koin:koin-android:_")
+            implementation("io.insert-koin:koin-androidx-compose:_")
+        }
     }
 }

@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
     id("com.cramsan.kotlin-mpp-common")
     id("com.cramsan.kotlin-mpp-android-lib")
     id("com.cramsan.kotlin-mpp-ios")
@@ -13,13 +12,13 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm")
 }
 
-android {
-    namespace = "com.cramsan.framework.halt"
+kotlin {
+    android {
+        namespace = "com.cramsan.framework.halt"
+    }
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:_")
-    implementation("androidx.core:core-ktx:_")
 }
 
 kotlin {
@@ -46,6 +45,16 @@ kotlin {
             dependencies {
                 implementation(project(":framework:test"))
             }
+        }
+    }
+}
+
+
+kotlin {
+    sourceSets {
+        getByName("androidMain").dependencies {
+            implementation("androidx.appcompat:appcompat:_")
+            implementation("androidx.core:core-ktx:_")
         }
     }
 }

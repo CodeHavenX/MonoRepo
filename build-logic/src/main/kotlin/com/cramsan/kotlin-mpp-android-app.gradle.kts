@@ -2,14 +2,9 @@ package com.cramsan
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.compose")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.cramsan.release-task")
-}
-
-kotlin {
-    androidTarget { }
-    jvmToolchain(21)
 }
 
 android {
@@ -78,7 +73,6 @@ android {
 }
 
 dependencies {
-    "implementation"("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
     "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
     "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-android:_")
 
@@ -119,10 +113,9 @@ tasks.register("releaseAndroid") {
     description = "Run all the steps to build a release artifact"
     dependsOn("build")
     dependsOn("bundle")
-    dependsOn("detektCommonMainSourceSet")
-    dependsOn("detektAndroidDebugSourceSet")
-    dependsOn("detektAndroidUnitTestDebugSourceSet")
-    // detektDebugAndroid and detektDebugUnitTestAndroid (type-resolution analysis of the android
+    dependsOn("detektDebug")
+    dependsOn("detektDebugUnitTest")
+    // detektDebug and detektDebugUnitTest (type-resolution analysis of the android
     // compilations) crash with an internal detekt exception on Compose source files
     // ("findFirCompiledSymbol only works on compiled declarations") and also lint generated
     // Roborazzi test sources under build/. Re-enable once fixed upstream:

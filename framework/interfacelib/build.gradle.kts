@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
     id("com.cramsan.kotlin-mpp-common")
     id("com.cramsan.kotlin-mpp-android-lib")
     id("com.cramsan.kotlin-mpp-ios")
@@ -13,8 +12,10 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm")
 }
 
-android {
-    namespace = "com.cramsan.framework.interfacelib"
+kotlin {
+    android {
+        namespace = "com.cramsan.framework.interfacelib"
+    }
 }
 
 kotlin {

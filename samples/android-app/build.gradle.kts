@@ -1,8 +1,6 @@
 plugins {
-    kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
-    id("com.android.application")
     id("com.cramsan.kotlin-mpp-android-app")
 }
 

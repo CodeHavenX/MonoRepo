@@ -21,10 +21,29 @@ roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 
 [versions]
 
-# AGP 9.x upgrade failed (2026-05-08).
-# Error: Plugin conflict — 'Cannot add extension with name kotlin, as there is an extension already registered with that name.'
-# Affects kotlin-mpp-android-lib.gradle.kts applying org.jetbrains.kotlin.multiplatform alongside AGP 9.x.
-# TODO: Investigate KMP + AGP 9.x compatibility. Also requires Gradle 9.x and unblocks Hilt 2.59.x.
+# AGP 9.x upgrade in progress (WIP, paused 2026-06-18).
+# Root cause confirmed: AGP 9.0+ disallows combining com.android.library/com.android.application
+# directly with org.jetbrains.kotlin.multiplatform ("Cannot add extension with name 'kotlin', as
+# there is an extension already registered with that name."). The documented escape-hatch flags
+# (android.builtInKotlin=false, android.newDsl=false, android.enableLegacyVariantApi=true) do NOT
+# fix this — confirmed by testing, don't retry them. The real fix:
+#   - Library modules: migrate to the com.android.kotlin.multiplatform.library plugin, with the
+#     android {} block moving inside kotlin { android { ... } }.
+#   - App modules: no multiplatform-compatible application plugin exists. This repo's app/launcher
+#     modules are thin shells with no commonMain, so the fix is dropping the KMP plugin from them
+#     entirely (plain com.android.application, androidMain -> main, etc).
+# WIP branch with ~40 library + 6 app modules migrated and build/test-verified:
+#   worktree-agent-a047ac75aa23bbcef (committed at c78c71906, based on this branch's 3e3230c9a)
+# Remaining before this can land: 5 Room+KSP modules (architecture/front-end-architecture and each
+# app's front-end/app module) not yet migrated/verified; Roborazzi screenshot baselines and Compose
+# preview tooling not visually verified; devtools/cli generator source not checked for hardcoded
+# plugin-id/DSL assumptions beyond the template files themselves.
+# Decision made for resuming architecture/front-end-architecture: PlatformBuildConfig.android.kt
+# currently reads AGP's variant-bound BuildConfig.DEBUG, which the variant-less library plugin
+# can't generate. Fix: thread the real debug flag from each consuming app's startup/DI wiring
+# (apps keep com.android.application and still have working build-type variants) into the
+# library's settings-based override (FrontEndApplicationSettingKey.IsDebug in ExtrasModule.kt),
+# rather than hardcoding false on Android.
 android-agp = "8.13.2"
 ##       ⬆ = "9.0.0"
 ##       ⬆ = "9.0.1"

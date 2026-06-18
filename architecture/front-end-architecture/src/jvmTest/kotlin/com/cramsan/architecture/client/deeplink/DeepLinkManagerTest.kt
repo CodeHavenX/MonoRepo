@@ -109,4 +109,37 @@ class DeepLinkManagerTest {
         assertEquals("abc", params.params["query"])
         assertEquals("reset", params.params["action"])
     }
+
+    @Test
+    fun `parse fragment value wins over query value on key collision`() {
+        val params = DeepLinkParams.parse("https://edifikana.com?type=query-value#type=fragment-value")
+
+        assertEquals("fragment-value", params.params["type"])
+    }
+
+    @Test
+    fun `parse returns empty params for URL with no param delimiter`() {
+        val params = DeepLinkParams.parse("edifikana://reset")
+
+        assertEquals(emptyMap(), params.params)
+    }
+
+    @Test
+    fun `resolve returns null when handler uses rawInput and input does not match`() {
+        val router = DeepLinkManager()
+        router.register { params ->
+            if (params.rawInput.startsWith("edifikana://reset")) TestDestination else null
+        }
+
+        assertNull(router.resolve("edifikana://other"))
+    }
+
+    @Test
+    fun `resolve returns null when all handlers return null`() {
+        val router = DeepLinkManager()
+        router.register { null }
+        router.register { null }
+
+        assertNull(router.resolve("edifikana://reset#type=recovery"))
+    }
 }

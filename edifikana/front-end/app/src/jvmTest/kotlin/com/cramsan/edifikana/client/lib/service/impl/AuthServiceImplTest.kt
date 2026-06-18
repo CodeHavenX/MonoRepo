@@ -33,6 +33,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -307,6 +308,7 @@ class AuthServiceImplTest {
 
     @Test
     fun `signInWithPassword returns user model when credentials are valid`() = runTest {
+        // Arrange
         val email = "valid@example.com"
         val password = "password123"
         val userInfo = mockk<UserInfo> { coEvery { id } returns "user-6" }
@@ -327,8 +329,10 @@ class AuthServiceImplTest {
             )
         }
 
+        // Act
         val result = service.signInWithPassword(email, password)
 
+        // Assert
         assertTrue(result.isSuccess)
         assertEquals(UserId("user-6"), result.getOrThrow().id)
     }
@@ -339,10 +343,13 @@ class AuthServiceImplTest {
 
     @Test
     fun `signOut clears active user`() = runTest {
+        // Arrange
         coEvery { auth.signOut() } just Runs
 
+        // Act
         val result = service.signOut()
 
+        // Assert
         assertTrue(result.isSuccess)
         assertEquals(null, service.activeUser().first())
     }
@@ -353,6 +360,7 @@ class AuthServiceImplTest {
 
     @Test
     fun `signUp creates new user and returns user model`() = runTest {
+        // Arrange
         val email = "newuser@example.com"
         val phoneNumber = "9876543210"
         val firstName = "Jane"
@@ -373,8 +381,10 @@ class AuthServiceImplTest {
             )
         }
 
+        // Act
         val result = service.signUp(email, phoneNumber, firstName, lastName)
 
+        // Assert
         assertTrue(result.isSuccess)
         assertEquals(UserId("user-7"), result.getOrThrow().id)
     }
@@ -385,6 +395,7 @@ class AuthServiceImplTest {
 
     @Test
     fun `signInWithOtp returns user model when OTP verification succeeds and user is created`() = runTest {
+        // Arrange
         val email = "user@example.com"
         val hashToken = "validToken"
         val userInfo = mockk<UserInfo> { coEvery { id } returns "user-8" }
@@ -404,8 +415,10 @@ class AuthServiceImplTest {
             )
         }
 
+        // Act
         val result = service.signInWithOtp(email, hashToken, createUser = true)
 
+        // Assert
         assertTrue(result.isSuccess)
         assertEquals(UserId("user-8"), result.getOrThrow().id)
     }
@@ -416,6 +429,7 @@ class AuthServiceImplTest {
 
     @Test
     fun `signInWithOtp returns user model when OTP verification succeeds and user is not created`() = runTest {
+        // Arrange
         val email = "user@example.com"
         val hashToken = "validToken"
         val userInfo = mockk<UserInfo> { coEvery { id } returns "user-9" }
@@ -435,8 +449,10 @@ class AuthServiceImplTest {
             )
         }
 
+        // Act
         val result = service.signInWithOtp(email, hashToken, createUser = false)
 
+        // Assert
         assertTrue(result.isSuccess)
         assertEquals(UserId("user-9"), result.getOrThrow().id)
     }
@@ -548,10 +564,46 @@ class AuthServiceImplTest {
     }
 
     /**
+     * Tests that setNewPassword calls auth.updateUser and returns success.
+     */
+    @OptIn(SecureStringAccess::class)
+    @Test
+    fun `setNewPassword calls auth updateUser with the provided password`() = runTest {
+        // Arrange
+        val newPassword = SecureString("newSecurePass1!")
+        coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
+        coEvery { auth.updateUser(any(), anyNullable(), any()) } returns mockk()
+
+        // Act
+        val result = service.setNewPassword(newPassword)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify { auth.updateUser(any(), anyNullable(), any()) }
+    }
+
+    /**
+     * Tests that setNewPassword returns failure when auth.updateUser throws.
+     */
+    @OptIn(SecureStringAccess::class)
+    @Test
+    fun `setNewPassword returns failure when auth updateUser throws`() = runTest {
+        // Arrange
+        val newPassword = SecureString("newSecurePass1!")
+        coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
+        coEvery { auth.updateUser(any(), anyNullable(), any()) } throws RuntimeException("auth error")
+
+        // Act
+        val result = service.setNewPassword(newPassword)
+
+        // Assert
+        assertTrue(result.isFailure)
+    }
+
+    /**
      * Verifies that inviteEmployee sends an invite successfully.
      */
     @Ignore("Requires backend support for inviting employees, related to TODO() on method")
-
     @Test
     fun `inviteEmployee sends invite successfully`() = runTest {
         // Arrange

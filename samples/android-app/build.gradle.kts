@@ -18,6 +18,8 @@ dependencies {
     implementation(project(":samples:android-lib"))
     implementation(project(":samples:mpp-lib"))
     implementation(project(":samples:jvm-lib"))
+    implementation(project(":framework:annotations"))
+    implementation(project(":framework:ui-preview"))
 
     implementation("androidx.activity:activity-compose:_")
     implementation("androidx.appcompat:appcompat:_")

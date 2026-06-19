@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.cramsan.sample.mpplib.compose.common.MainView
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Main entry point for the JB Compose Android sample app.
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-@Preview
+@ScreenPreviews
 @Composable
 private fun MainActivityPreview() {
     MainView()

@@ -2,6 +2,7 @@ package com.cramsan.samples.android.app.homepage
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.sample.mpplib.MPPLib
 import com.cramsan.sample.mpplib.greeting
 import com.cramsan.samples.android.app.UIEvent
@@ -20,11 +21,12 @@ import kotlinx.coroutines.launch
 /**
  *
  */
+@FrontendViewModel
 class HomePageViewModel : ViewModel() {
-
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Log.e(TAG, "Unhandled exception in VM: $throwable")
-    }
+    private val exceptionHandler =
+        CoroutineExceptionHandler { _, throwable ->
+            Log.e(TAG, "Unhandled exception in VM: $throwable")
+        }
 
     private val viewModelCoroutineScope = CoroutineScope(SupervisorJob() + exceptionHandler + Dispatchers.Main)
 
@@ -47,12 +49,13 @@ class HomePageViewModel : ViewModel() {
                 }
                 delay(100)
             } finally {
-                _uiState.value = _uiState.value.copy(
-                    loading = false,
-                    title = greeting(MPPLib()),
-                    subtitle = JVMLib().getTarget(),
-                    message = Library().getValue(),
-                )
+                _uiState.value =
+                    _uiState.value.copy(
+                        loading = false,
+                        title = greeting(MPPLib()),
+                        subtitle = JVMLib().getTarget(),
+                        message = Library().getValue(),
+                    )
             }
         }
     }

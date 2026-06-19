@@ -21,7 +21,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  *
  */
 class HomePageFragment : Fragment() {
-
     private val viewModel: HomePageViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +53,7 @@ class HomePageFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)

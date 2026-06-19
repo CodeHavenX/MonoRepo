@@ -10,7 +10,6 @@ import org.koin.core.context.startKoin
  * Main application class for the Android application.
  */
 class Application : Application() {
-
     override fun onCreate() {
         super.onCreate()
 

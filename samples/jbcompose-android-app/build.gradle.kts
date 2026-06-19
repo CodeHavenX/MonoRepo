@@ -16,6 +16,7 @@ android {
 
 dependencies {
     implementation(project(":samples:jbcompose-mpp-lib"))
+    implementation(project(":framework:ui-preview"))
 
     implementation("androidx.activity:activity-compose:_")
     implementation("androidx.appcompat:appcompat:_")

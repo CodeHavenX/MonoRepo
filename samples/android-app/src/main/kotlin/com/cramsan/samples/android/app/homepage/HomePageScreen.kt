@@ -14,8 +14,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.cramsan.samples.android.app.theme.CoreProjectTheme
+import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Based on the official documentation for Scaffolding.
@@ -23,7 +23,7 @@ import com.cramsan.samples.android.app.theme.CoreProjectTheme
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalLayoutApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalFoundationApi::class,
 )
 @Suppress("DEPRECATION")
 @Composable
@@ -41,7 +41,8 @@ fun HomePageScreen(
         content = { innerPadding ->
             Column(
                 // consume insets as scaffold doesn't do it by default
-                modifier = Modifier
+                modifier =
+                Modifier
                     .fillMaxSize()
                     .consumeWindowInsets(innerPadding),
             ) {
@@ -61,14 +62,14 @@ fun HomePageScreen(
                     )
                 }
             }
-        }
+        },
     )
 }
 
 /**
  *
  */
-@Preview(showBackground = true)
+@ScreenPreviews
 @Composable
 fun DefaultPreview() {
     CoreProjectTheme {

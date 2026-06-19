@@ -124,24 +124,9 @@ kotlin {
     }
 }
 
-private val ENV_TEMPLATE_REPLACE_ME_BUILD_VARIABLE = "ENV_TEMPLATE_REPLACE_ME_VARIABLE"
-
-val templatereplacemeBuildVariable = "hello!"
-
 kotlin {
     android {
         namespace = "com.cramsan.templatereplaceme.client.lib"
-
-
-        buildFeatures {
-            buildConfig = true
-        }
-
-        buildTypes {
-            all {
-                buildConfigField("String", ENV_TEMPLATE_REPLACE_ME_BUILD_VARIABLE, "\"${templatereplacemeBuildVariable}\"")
-            }
-        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.cramsan.templatereplaceme.client.android
 
 import android.app.Application
+import com.cramsan.templatereplaceme.client.android.BuildConfig
 import com.cramsan.templatereplaceme.client.lib.di.startAndroidApplication
 
 /**
@@ -10,6 +11,6 @@ class TemplateReplaceMeApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        startAndroidApplication(this)
+        startAndroidApplication(this, BuildConfig.DEBUG)
     }
 }

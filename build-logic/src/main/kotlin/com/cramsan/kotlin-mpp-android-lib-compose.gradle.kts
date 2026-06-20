@@ -52,12 +52,12 @@ roborazzi {
     )
 }
 
-tasks.register("regenerateRoborazziDebug") {
+tasks.register("regenerateRoborazzi") {
     group = "roborazzi"
     description = "Clears existing debug screenshots and records new ones"
-    dependsOn("clearRoborazziDebug", "recordRoborazziDebug")
+    dependsOn("clearRoborazziAndroidHostTest", "recordRoborazziAndroidHostTest")
 }
 
-tasks.matching { it.name == "recordRoborazziDebug" }.configureEach {
-    mustRunAfter("clearRoborazziDebug")
+tasks.matching { it.name == "recordRoborazziAndroidHostTest" }.configureEach {
+    mustRunAfter("clearRoborazziAndroidHostTest")
 }

@@ -2,8 +2,11 @@ package com.cramsan.flyerboard.client.lib.features.window
 
 import com.cramsan.flyerboard.client.lib.managers.AuthManager
 import com.cramsan.flyerboard.client.lib.managers.FlyerManager
+import com.cramsan.flyerboard.client.lib.managers.UserManager
 import com.cramsan.flyerboard.client.lib.models.PaginatedFlyerModel
+import com.cramsan.flyerboard.client.lib.models.UserModel
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -25,6 +28,7 @@ import kotlin.test.assertIs
 
 class FlyerBoardWindowViewModelTest : CoroutineTest() {
     private lateinit var authManager: AuthManager
+    private lateinit var userManager: UserManager
     private lateinit var viewModel: FlyerBoardWindowViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -37,6 +41,7 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
+        userManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         windowEventBus = EventBus()
         applicationEventBus = EventBus()
@@ -59,7 +64,11 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
             windowEventEmitter = windowEventEmitterBus,
             delegatedEvents = delegatedEventBus,
             authManager = authManager,
+            userManager = userManager,
         )
+
+    private fun userModel(userId: UserId, role: UserRole) =
+        UserModel(id = userId, firstName = "John", lastName = "Doe", role = role)
 
     @Test
     fun `initial authState is Unauthenticated`() =
@@ -70,9 +79,40 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `auth emits userId and Authenticated is isAdmin false`() =
+    fun `auth emits userId and Authenticated is isAdmin false for a regular user`() =
         runCoroutineTest {
             coEvery { authManager.isAuthenticated() } returns Result.success(true)
+            coEvery { userManager.getCurrentUser() } returns
+                Result.success(userModel(UserId("user-regular"), UserRole.USER))
+            viewModel = buildViewModel()
+
+            activeUserFlow.emit(UserId("user-regular"))
+
+            val state = viewModel.uiState.value.authState
+            assertIs<AuthState.Authenticated>(state)
+            assertEquals(false, state.isAdmin)
+        }
+
+    @Test
+    fun `auth emits userId and Authenticated is isAdmin true for an admin`() =
+        runCoroutineTest {
+            coEvery { authManager.isAuthenticated() } returns Result.success(true)
+            coEvery { userManager.getCurrentUser() } returns
+                Result.success(userModel(UserId("user-admin"), UserRole.ADMIN))
+            viewModel = buildViewModel()
+
+            activeUserFlow.emit(UserId("user-admin"))
+
+            val state = viewModel.uiState.value.authState
+            assertIs<AuthState.Authenticated>(state)
+            assertEquals(true, state.isAdmin)
+        }
+
+    @Test
+    fun `auth emits userId and Authenticated is isAdmin false when role lookup fails`() =
+        runCoroutineTest {
+            coEvery { authManager.isAuthenticated() } returns Result.success(true)
+            coEvery { userManager.getCurrentUser() } returns Result.failure(IllegalStateException("network error"))
             viewModel = buildViewModel()
 
             activeUserFlow.emit(UserId("user-regular"))
@@ -86,6 +126,8 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
     fun `auth emits null reverts to Unauthenticated`() =
         runCoroutineTest {
             coEvery { authManager.isAuthenticated() } returns Result.success(true)
+            coEvery { userManager.getCurrentUser() } returns
+                Result.success(userModel(UserId("user-admin"), UserRole.ADMIN))
             viewModel = buildViewModel()
 
             activeUserFlow.emit(UserId("user-admin"))

@@ -1,5 +1,6 @@
 package com.cramsan.flyerboard.lib.model.network
 
+import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import kotlinx.serialization.SerialName
@@ -17,4 +18,6 @@ data class UserNetworkResponse(
     val firstName: String,
     @SerialName("last_name")
     val lastName: String,
+    @SerialName("role")
+    val role: UserRole,
 ) : ResponseBody

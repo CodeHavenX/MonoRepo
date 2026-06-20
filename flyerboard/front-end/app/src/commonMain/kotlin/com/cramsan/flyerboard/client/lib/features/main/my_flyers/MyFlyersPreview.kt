@@ -6,6 +6,7 @@ import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.ui.preview.DevicePreviews
 import com.cramsan.ui.preview.ScreenPreviews
 
 private val mixedFlyers =
@@ -88,8 +89,6 @@ private fun MyFlyersLoadingPreview() =
     AppTheme(dynamicColor = false) {
         MyFlyersContent(
             uiState = MyFlyersUIState.Loading,
-            onNavigateBack = {},
-            onRefresh = {},
             onFlyerSelected = {},
             onEditFlyer = {},
         )
@@ -101,8 +100,6 @@ private fun MyFlyersScreenPreview() =
     AppTheme {
         MyFlyersContent(
             uiState = MyFlyersUIState.Empty,
-            onNavigateBack = {},
-            onRefresh = {},
             onFlyerSelected = {},
             onEditFlyer = {},
         )
@@ -111,14 +108,12 @@ private fun MyFlyersScreenPreview() =
 /**
  * Preview for the My Flyers screen in loading state.
  */
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun MyFlyersScreenLoadingPreview() =
     AppTheme {
         MyFlyersContent(
             uiState = MyFlyersUIState.Content(flyers = mixedFlyers),
-            onNavigateBack = {},
-            onRefresh = {},
             onFlyerSelected = {},
             onEditFlyer = {},
         )
@@ -133,8 +128,6 @@ private fun MyFlyersScreenEmptyPreview() =
     AppTheme {
         MyFlyersContent(
             uiState = MyFlyersUIState.Content(flyers = archivedOnlyFlyers),
-            onNavigateBack = {},
-            onRefresh = {},
             onFlyerSelected = {},
             onEditFlyer = {},
         )

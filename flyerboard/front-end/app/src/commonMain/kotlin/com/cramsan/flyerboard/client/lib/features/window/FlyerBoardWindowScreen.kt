@@ -126,6 +126,17 @@ fun FlyerBoardWindowScreen(
                     },
                 ),
             )
+            add(
+                FlyerBoardTopBarTab(
+                    label = stringResource(Res.string.nav_archive),
+                    selected = currentDestination?.hasRoute(MainDestination.ArchiveDestination::class) == true,
+                    onClick = {
+                        navController.navigate(MainDestination.ArchiveDestination) {
+                            launchSingleTop = true
+                        }
+                    },
+                ),
+            )
             if (isSignedIn) {
                 add(
                     FlyerBoardTopBarTab(
@@ -143,17 +154,6 @@ fun FlyerBoardWindowScreen(
                     ),
                 )
             }
-            add(
-                FlyerBoardTopBarTab(
-                    label = stringResource(Res.string.nav_archive),
-                    selected = currentDestination?.hasRoute(MainDestination.ArchiveDestination::class) == true,
-                    onClick = {
-                        navController.navigate(MainDestination.ArchiveDestination) {
-                            launchSingleTop = true
-                        }
-                    },
-                ),
-            )
             if (isAdmin) {
                 add(
                     FlyerBoardTopBarTab(

@@ -32,6 +32,14 @@ class UserServiceImpl(private val http: HttpClient) : UserService {
             userModel
         }
 
+    override suspend fun getCurrentUser(): Result<UserModel> =
+        runSuspendCatching(TAG) {
+            UserApi.getCurrentUser
+                .buildRequest()
+                .execute(http)
+                .toUserModel()
+        }
+
     companion object {
         private const val TAG = "UserServiceImpl"
     }

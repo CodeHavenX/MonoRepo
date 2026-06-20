@@ -64,3 +64,10 @@ tasks.register("supabaseRestart") {
 tasks.named("supabaseStart") {
     mustRunAfter("supabaseStop")
 }
+
+tasks.register<Exec>("supabaseDbReset") {
+    group = "supabase"
+    description = "Reset the local Supabase database, wiping all data and replaying every migration."
+    workingDir = projectDir
+    commandLine(supabaseExecutable, "db", "reset")
+}

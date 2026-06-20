@@ -22,4 +22,12 @@ interface UserDatastore {
         firstName: String,
         lastName: String,
     ): Result<User>
+
+    /**
+     * Retrieves the user identified by [userId].
+     *
+     * @param userId The Supabase Auth UUID of the user.
+     * @return A [Result] containing the [User] or an error if the operation failed (including if not found).
+     */
+    suspend fun getUser(userId: UserId): Result<User>
 }

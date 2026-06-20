@@ -11,7 +11,8 @@ sealed class FlyerDetailUIState : ViewModelUIState {
     data object Loading : FlyerDetailUIState()
 
     /** The flyer was fetched successfully. */
-    data class Content(val flyer: FlyerModel) : FlyerDetailUIState()
+    data class Content(val flyer: FlyerModel, val canEdit: Boolean = false, val canModerate: Boolean = false) :
+        FlyerDetailUIState()
 
     /** No flyer was found for the requested ID. */
     data object NotFound : FlyerDetailUIState()

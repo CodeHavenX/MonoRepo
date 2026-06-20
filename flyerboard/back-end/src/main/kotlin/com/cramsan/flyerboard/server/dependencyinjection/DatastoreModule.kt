@@ -26,7 +26,7 @@ import org.koin.dsl.module
 /**
  * Koin module that initializes and binds all datastore components.
  */
-internal val DatastoreModule =
+val DatastoreModule =
     module {
 
         single {

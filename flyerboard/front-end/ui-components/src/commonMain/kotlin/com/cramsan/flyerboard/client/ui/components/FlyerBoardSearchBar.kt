@@ -1,6 +1,5 @@
 package com.cramsan.flyerboard.client.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -25,7 +24,7 @@ fun FlyerBoardSearchBar(
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
         singleLine = true,
         shape = RoundedCornerShape(SEARCH_BAR_CORNER_PERCENT),
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
     )
 }
 

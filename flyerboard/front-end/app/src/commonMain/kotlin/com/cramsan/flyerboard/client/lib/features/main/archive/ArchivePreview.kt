@@ -6,6 +6,7 @@ import com.cramsan.flyerboard.client.ui.theme.AppTheme
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.ui.preview.DevicePreviews
 import com.cramsan.ui.preview.ScreenPreviews
 
 private val sampleArchivedFlyers =
@@ -43,7 +44,6 @@ private fun ArchiveScreenPreview() =
     AppTheme {
         ArchiveContent(
             uiState = ArchiveUIState.Loading(),
-            onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},
         )
@@ -58,7 +58,6 @@ private fun ArchiveScreenLoadingPreview() =
     AppTheme {
         ArchiveContent(
             uiState = ArchiveUIState.Empty(),
-            onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},
         )
@@ -73,19 +72,17 @@ private fun ArchiveScreenEmptyPreview() =
     AppTheme {
         ArchiveContent(
             uiState = ArchiveUIState.Content(flyers = sampleArchivedFlyers),
-            onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},
         )
     }
 
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun ArchiveWithQueryPreview() =
     AppTheme(dynamicColor = false) {
         ArchiveContent(
             uiState = ArchiveUIState.Content(flyers = sampleArchivedFlyers, query = "spring"),
-            onNavigateBack = {},
             onRefresh = {},
             onFlyerSelected = {},
         )

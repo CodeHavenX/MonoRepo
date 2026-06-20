@@ -203,8 +203,14 @@ object OperationHandler {
 
                     val response = responseResult.getOrThrow()
                     call.response.status(response.status)
-                    if (handler.responseBodyType != NoResponseBody::class) {
-                        call.respond(response.body, TypeInfo(handler.responseBodyType))
+                    val body = response.body
+                    if (body == null) {
+                        // A null body (e.g. the 404 produced by a handler returning null) has no
+                        // serializer for the declared, non-nullable response type. Respond with
+                        // just the status instead of attempting to serialize null.
+                        call.respond(response.status)
+                    } else if (handler.responseBodyType != NoResponseBody::class) {
+                        call.respond(body, TypeInfo(handler.responseBodyType))
                     } else {
                         call.respond(Unit)
                     }

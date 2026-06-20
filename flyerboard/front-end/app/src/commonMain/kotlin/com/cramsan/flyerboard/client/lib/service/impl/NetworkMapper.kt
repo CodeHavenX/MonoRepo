@@ -13,5 +13,6 @@ fun UserNetworkResponse.toUserModel(): UserModel {
         id = UserId(this.id),
         firstName = this.firstName,
         lastName = this.lastName,
+        role = this.role,
     )
 }

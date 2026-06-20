@@ -15,8 +15,9 @@ import io.ktor.server.application.ApplicationCall
  * [ContextRetriever] that validates a Supabase JWT from the Authorization header and resolves the
  * caller's role from the [UserProfileDatastore].
  *
- * If no profile exists for a valid user, one is auto-created with the [USER][UserRole.USER] role.
- * Requests without a token, or with an invalid token, return [ClientContext.UnauthenticatedClientContext].
+ * If no profile exists yet for a valid user, the caller is treated as having the [USER][UserRole.USER]
+ * role for this request; no profile row is created. Requests without a token, or with an invalid
+ * token, return [ClientContext.UnauthenticatedClientContext].
  */
 class FlyerBoardContextRetriever(private val auth: Auth, private val userProfileDatastore: UserProfileDatastore) :
     ContextRetriever<FlyerBoardContextPayload> {

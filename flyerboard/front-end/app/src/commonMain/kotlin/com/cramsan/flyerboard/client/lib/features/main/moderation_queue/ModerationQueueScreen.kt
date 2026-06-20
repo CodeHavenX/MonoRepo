@@ -9,22 +9,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.flyerboard.client.lib.models.FlyerModel
@@ -44,12 +41,11 @@ import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.theme.Padding
 import flyerboard_lib.Res
 import flyerboard_lib.moderation_queue_screen_empty_message
-import flyerboard_lib.moderation_queue_screen_navigate_back
+import flyerboard_lib.moderation_queue_screen_pending_badge
 import flyerboard_lib.moderation_queue_screen_reject_dialog_cancel
 import flyerboard_lib.moderation_queue_screen_reject_dialog_confirm
 import flyerboard_lib.moderation_queue_screen_reject_dialog_title
 import flyerboard_lib.moderation_queue_screen_reject_reason_label
-import flyerboard_lib.moderation_queue_screen_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -76,8 +72,6 @@ fun ModerationQueueScreen(
     ModerationQueueContent(
         uiState = uiState,
         modifier = modifier,
-        onNavigateBack = { viewModel.navigateBack() },
-        onRefresh = { viewModel.refresh() },
         onApprove = { viewModel.approveFlyer(it.id) },
         onRejectTapped = { viewModel.onRejectTapped(it.id) },
         onConfirmReject = { flyerId, reason -> viewModel.rejectFlyer(flyerId, reason) },
@@ -88,90 +82,103 @@ fun ModerationQueueScreen(
 /**
  * Content of the Moderation Queue screen.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ModerationQueueContent(
     uiState: ModerationQueueUIState,
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit,
-    onRefresh: () -> Unit,
     onApprove: (FlyerModel) -> Unit,
     onRejectTapped: (FlyerModel) -> Unit,
     onConfirmReject: (FlyerId, String) -> Unit,
     onDismissRejectDialog: () -> Unit,
 ) {
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(Res.string.moderation_queue_screen_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.moderation_queue_screen_navigate_back),
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onRefresh) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = stringResource(Res.string.moderation_queue_screen_title),
-                        )
-                    }
-                },
-            )
-        },
-    ) { innerPadding ->
+    Scaffold(modifier = modifier) { innerPadding ->
         var rejectReason by remember { mutableStateOf("") }
-        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-            when (val state = uiState) {
-                is ModerationQueueUIState.Loading -> {
-                    LoadingStateBox()
-                }
+        Column(
+            modifier =
+            Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                when (val state = uiState) {
+                    is ModerationQueueUIState.Loading -> {
+                        LoadingStateBox()
+                    }
 
-                is ModerationQueueUIState.Empty,
-                is ModerationQueueUIState.Error,
-                -> {
-                    EmptyStateBox(
-                        message = stringResource(Res.string.moderation_queue_screen_empty_message),
-                    )
-                }
+                    is ModerationQueueUIState.Empty,
+                    is ModerationQueueUIState.Error,
+                    -> {
+                        EmptyStateBox(
+                            message = stringResource(Res.string.moderation_queue_screen_empty_message),
+                        )
+                    }
 
-                is ModerationQueueUIState.Content -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(Padding.MEDIUM),
-                        verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
-                    ) {
-                        items(state.flyers, key = { it.id.flyerId }) { flyer ->
-                            ModerationFlyerCard(
-                                title = flyer.title,
-                                description = flyer.description,
-                                expiresAt = flyer.expiresAt,
-                                onApprove = { onApprove(flyer) },
-                                onReject = { onRejectTapped(flyer) },
+                    is ModerationQueueUIState.Content -> {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(Padding.MEDIUM),
+                            verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
+                        ) {
+                            items(state.flyers, key = { it.id.flyerId }) { flyer ->
+                                ModerationFlyerCard(
+                                    title = flyer.title,
+                                    description = flyer.description,
+                                    uploaderHandle = flyer.uploaderId.userId,
+                                    postedAt = flyer.createdAt,
+                                    imageUrl = flyer.fileUrl,
+                                    onApprove = { onApprove(flyer) },
+                                    onReject = { onRejectTapped(flyer) },
+                                )
+                            }
+                        }
+                        if (state.pendingRejectionFlyerId != null) {
+                            RejectReasonDialog(
+                                flyerId = state.pendingRejectionFlyerId,
+                                reason = rejectReason,
+                                onReasonChanged = { rejectReason = it },
+                                onConfirm = { flyerId, reason ->
+                                    rejectReason = ""
+                                    onConfirmReject(flyerId, reason)
+                                },
+                                onDismiss = {
+                                    rejectReason = ""
+                                    onDismissRejectDialog()
+                                },
                             )
                         }
                     }
-                    if (state.pendingRejectionFlyerId != null) {
-                        RejectReasonDialog(
-                            flyerId = state.pendingRejectionFlyerId,
-                            reason = rejectReason,
-                            onReasonChanged = { rejectReason = it },
-                            onConfirm = { flyerId, reason ->
-                                rejectReason = ""
-                                onConfirmReject(flyerId, reason)
-                            },
-                            onDismiss = {
-                                rejectReason = ""
-                                onDismissRejectDialog()
-                            },
-                        )
-                    }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun PendingCountBadge(
+    count: Int,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        color = Color(PENDING_BADGE_COLOR),
+        shape = CircleShape,
+        modifier = modifier,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = Padding.SMALL, vertical = Padding.X_SMALL),
+            horizontalArrangement = Arrangement.spacedBy(Padding.XX_SMALL),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier =
+                Modifier
+                    .size(Padding.XX_SMALL)
+                    .background(Color.White, CircleShape),
+            )
+            Text(
+                text = "$count ${stringResource(Res.string.moderation_queue_screen_pending_badge)}",
+                style = MaterialTheme.typography.labelMedium,
+                color = Color.White,
+            )
         }
     }
 }
@@ -223,3 +230,4 @@ private fun RejectReasonDialog(
 }
 
 private const val DIALOG_SCRIM_ALPHA = 0.5f
+private const val PENDING_BADGE_COLOR = 0xFFF43F5EL

@@ -42,6 +42,17 @@ class UserService(private val userDatastore: UserDatastore, private val userProf
         return user
     }
 
+    /**
+     * Retrieves the user identified by [userId].
+     *
+     * @param userId The Supabase Auth UUID of the user.
+     * @return The [User].
+     */
+    suspend fun getUser(userId: UserId): User {
+        logD(TAG, "getUser")
+        return userDatastore.getUser(userId).getOrThrow()
+    }
+
     companion object {
         private const val TAG = "UserService"
     }

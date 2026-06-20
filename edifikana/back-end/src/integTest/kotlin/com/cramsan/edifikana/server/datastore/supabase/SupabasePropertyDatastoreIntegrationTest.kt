@@ -1,4 +1,5 @@
 package com.cramsan.edifikana.server.datastore.supabase
+import kotlinx.coroutines.runBlocking
 
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
@@ -25,7 +26,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createProperty should return property on success`() = runCoroutineTest {
+    fun `createProperty should return property on success`() = runBlocking {
         // Arrange
 
         // Act
@@ -54,7 +55,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getProperty should return created property`() = runCoroutineTest {
+    fun `getProperty should return created property`() = runBlocking {
         // Arrange
 
         // Act
@@ -80,7 +81,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getProperties should return all properties for user`() = runCoroutineTest {
+    fun `getProperties should return all properties for user`() = runBlocking {
         // Arrange
 
         // Act
@@ -112,7 +113,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateProperty should update only name when address is null`() = runCoroutineTest {
+    fun `updateProperty should update only name when address is null`() = runBlocking {
         // Arrange
         val createResult = propertyDatastore.createProperty(
             name = "${test_prefix}_ToUpdate",
@@ -142,7 +143,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateProperty should update only address when name is null`() = runCoroutineTest {
+    fun `updateProperty should update only address when name is null`() = runBlocking {
         // Arrange
         val createResult = propertyDatastore.createProperty(
             name = "${test_prefix}_ToUpdate",
@@ -172,7 +173,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateProperty should update both name and address`() = runCoroutineTest {
+    fun `updateProperty should update both name and address`() = runBlocking {
         // Arrange
         val createResult = propertyDatastore.createProperty(
             name = "${test_prefix}_ToUpdate",
@@ -202,7 +203,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteProperty should remove property`() = runCoroutineTest {
+    fun `deleteProperty should remove property`() = runBlocking {
         // Arrange
         val createResult = propertyDatastore.createProperty(
             name = "${test_prefix}_ToDelete",
@@ -229,7 +230,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteProperty should fail for non-existent property`() = runCoroutineTest {
+    fun `deleteProperty should fail for non-existent property`() = runBlocking {
         // Arrange
         val fakeId = PropertyId(UUID.random())
 

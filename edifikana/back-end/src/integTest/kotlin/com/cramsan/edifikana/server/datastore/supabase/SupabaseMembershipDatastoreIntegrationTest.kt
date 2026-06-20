@@ -41,7 +41,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `getMembers returns all active members for org`() = runCoroutineTest {
+    fun `getMembers returns all active members for org`() = runBlocking {
         // Arrange
         val memberId = createTestUser("member-${testPrefix}@example.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
@@ -57,7 +57,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getMembers excludes inactive members`() = runCoroutineTest {
+    fun `getMembers excludes inactive members`() = runBlocking {
         // Arrange
         val memberId = createTestUser("inactive-${testPrefix}@example.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
@@ -77,7 +77,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `getMember returns member when found`() = runCoroutineTest {
+    fun `getMember returns member when found`() = runBlocking {
         // Act
         val result = membershipDatastore.getMember(orgId!!, ownerUserId!!)
 
@@ -90,7 +90,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getMember returns null for non-member`() = runCoroutineTest {
+    fun `getMember returns null for non-member`() = runBlocking {
         // Arrange
         val stranger = createTestUser("stranger-${testPrefix}@example.com")
 
@@ -107,7 +107,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `updateMemberRole updates role correctly`() = runCoroutineTest {
+    fun `updateMemberRole updates role correctly`() = runBlocking {
         // Arrange
         val memberId = createTestUser("roleupdate-${testPrefix}@example.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
@@ -126,7 +126,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `removeMember soft-deletes member by setting status to INACTIVE`() = runCoroutineTest {
+    fun `removeMember soft-deletes member by setting status to INACTIVE`() = runBlocking {
         // Arrange
         val memberId = createTestUser("remove-${testPrefix}@example.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
@@ -147,7 +147,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `createInvite should succeed and return invite`() = runCoroutineTest {
+    fun `createInvite should succeed and return invite`() = runBlocking {
         // Arrange
         val email = "create-${testPrefix}@example.com"
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
@@ -180,7 +180,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `getInviteById should return invite by ID`() = runCoroutineTest {
+    fun `getInviteById should return invite by ID`() = runBlocking {
         // Arrange
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
@@ -200,7 +200,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getInviteById should return null for non-existent ID`() = runCoroutineTest {
+    fun `getInviteById should return null for non-existent ID`() = runBlocking {
         // Act
         val result = membershipDatastore.getInviteById(
             InviteId("00000000-0000-0000-0000-000000000000")
@@ -216,7 +216,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `listPendingInvites returns non-expired non-cancelled non-accepted invites`() = runCoroutineTest {
+    fun `listPendingInvites returns non-expired non-cancelled non-accepted invites`() = runBlocking {
         // Arrange
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
@@ -236,7 +236,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `listPendingInvites excludes cancelled invites`() = runCoroutineTest {
+    fun `listPendingInvites excludes cancelled invites`() = runBlocking {
         // Arrange
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
@@ -256,7 +256,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `listPendingInvites excludes expired invites`() = runCoroutineTest {
+    fun `listPendingInvites excludes expired invites`() = runBlocking {
         // Arrange — expiry in the past
         val pastExpiry = clock.now().minus(kotlin.time.Duration.parse("1d"))
         val inviteId = createTestInvite(
@@ -279,7 +279,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `cancelInvite marks invite as deleted`() = runCoroutineTest {
+    fun `cancelInvite marks invite as deleted`() = runBlocking {
         // Arrange
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
@@ -303,7 +303,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `resendInvite generates new code and updates expiry`() = runCoroutineTest {
+    fun `resendInvite generates new code and updates expiry`() = runBlocking {
         // Arrange
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
@@ -331,7 +331,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `getInviteByCode finds invite by code`() = runCoroutineTest {
+    fun `getInviteByCode finds invite by code`() = runBlocking {
         // Arrange
         val futureExpiry = clock.now().plus(kotlin.time.Duration.parse("7d"))
         val inviteId = createTestInvite(
@@ -352,7 +352,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getInviteByCode returns null for invalid code`() = runCoroutineTest {
+    fun `getInviteByCode returns null for invalid code`() = runBlocking {
         // Act
         val result = membershipDatastore.getInviteByCode("invalid-code-${testPrefix}")
 
@@ -366,7 +366,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `transferOwnership atomically swaps roles`() = runCoroutineTest {
+    fun `transferOwnership atomically swaps roles`() = runBlocking {
         // Arrange
         val newOwnerId = createTestUser("newowner-${testPrefix}@example.com")
         organizationDatastore.addUserToOrganization(newOwnerId, orgId!!, OrgRole.ADMIN)
@@ -387,7 +387,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `purgeOrgMember hard-deletes membership row`() = runCoroutineTest {
+    fun `purgeOrgMember hard-deletes membership row`() = runBlocking {
         // Arrange
         val memberId = createTestUser("purge-${testPrefix}@example.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)
@@ -404,7 +404,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `purgeOrgMember returns false for non-existent member`() = runCoroutineTest {
+    fun `purgeOrgMember returns false for non-existent member`() = runBlocking {
         // Arrange
         val nonMember = createTestUser("nonmember-${testPrefix}@example.com")
 
@@ -421,7 +421,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `acceptInviteByCode creates ACTIVE membership with role from invite`() = runCoroutineTest {
+    fun `acceptInviteByCode creates ACTIVE membership with role from invite`() = runBlocking {
         // Arrange
         val email = "acceptinvite-${testPrefix}@example.com"
         val userId = createTestUser(email)
@@ -443,7 +443,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `acceptInviteByCode reactivates previously-inactive member with new role from invite`() = runCoroutineTest {
+    fun `acceptInviteByCode reactivates previously-inactive member with new role from invite`() = runBlocking {
         // Arrange
         val email = "reactivate-${testPrefix}@example.com"
         val userId = createTestUser(email)
@@ -467,7 +467,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `acceptInviteByCode second call on same invite fails because invite is already accepted`() = runCoroutineTest {
+    fun `acceptInviteByCode second call on same invite fails because invite is already accepted`() = runBlocking {
         // Arrange
         val email = "doubleclaim-${testPrefix}@example.com"
         val userId = createTestUser(email)

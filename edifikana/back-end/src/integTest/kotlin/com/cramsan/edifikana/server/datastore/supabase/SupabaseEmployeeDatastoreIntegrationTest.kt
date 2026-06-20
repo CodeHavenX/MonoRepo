@@ -32,7 +32,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createEmployee should return employee on success`() = runCoroutineTest {
+    fun `createEmployee should return employee on success`() = runBlocking {
         // Arrange
 
         // Act
@@ -50,7 +50,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getEmployee should return created employee`() = runCoroutineTest {
+    fun `getEmployee should return created employee`() = runBlocking {
         // Arrange
 
         // Act
@@ -73,7 +73,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getEmployees should return all employee for a given user`() = runCoroutineTest {
+    fun `getEmployees should return all employee for a given user`() = runBlocking {
         // Arrange
 
         // Act
@@ -105,7 +105,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateEmployee should update employee fields`() = runCoroutineTest {
+    fun `updateEmployee should update employee fields`() = runBlocking {
         // Arrange
 
         // Act
@@ -137,7 +137,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteEmployee should remove employee`() = runCoroutineTest {
+    fun `deleteEmployee should remove employee`() = runBlocking {
         // Arrange
         val createResult = employeeDatastore.createEmployee(
             firstName = "${test_prefix}_ToDelete",
@@ -161,7 +161,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteEmployee should fail for non-existent employee`() = runCoroutineTest {
+    fun `deleteEmployee should fail for non-existent employee`() = runBlocking {
         // Arrange
         val fakeId = EmployeeId(UUID.random())
 

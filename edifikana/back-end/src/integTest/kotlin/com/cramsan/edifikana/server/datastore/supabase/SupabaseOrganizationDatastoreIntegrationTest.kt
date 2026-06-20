@@ -1,4 +1,5 @@
 package com.cramsan.edifikana.server.datastore.supabase
+import kotlinx.coroutines.runBlocking
 
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
@@ -25,7 +26,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createOrganization should return organization on success`() = runCoroutineTest {
+    fun `createOrganization should return organization on success`() = runBlocking {
         // Act
         val result = organizationDatastore
             .createOrganization("test_org_$test_prefix", "")
@@ -38,7 +39,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getOrganization should return created organization`() = runCoroutineTest {
+    fun `getOrganization should return created organization`() = runBlocking {
         // Arrange
         val createResult = organizationDatastore
             .createOrganization("test_org_$test_prefix", "")
@@ -57,7 +58,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateOrganization should update organization fields`() = runCoroutineTest {
+    fun `updateOrganization should update organization fields`() = runBlocking {
         // Arrange
         val createResult = organizationDatastore
             .createOrganization("test_org_$test_prefix", "")
@@ -78,7 +79,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteOrganization should remove organization`() = runCoroutineTest {
+    fun `deleteOrganization should remove organization`() = runBlocking {
         // Arrange
         val createResult = organizationDatastore
             .createOrganization("test_org_$test_prefix", "")
@@ -98,7 +99,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteOrganization should fail for non-existent organization`() = runCoroutineTest {
+    fun `deleteOrganization should fail for non-existent organization`() = runBlocking {
         // Arrange
         val fakeId = OrganizationId(UUID.random())
 
@@ -112,7 +113,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getOrganizationList should return organizations for user`() = runCoroutineTest {
+    fun `getOrganizationList should return organizations for user`() = runBlocking {
         // Arrange
         val org1 = createTestOrganization("test_org_$test_prefix", "")
         val org2 = createTestOrganization("test_org_$test_prefix", "")
@@ -131,7 +132,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getOrganizationsForUser should return empty list for user with no organizations`() = runCoroutineTest {
+    fun `getOrganizationsForUser should return empty list for user with no organizations`() = runBlocking {
         // Arrange
         val newUser = createTestUser("nouser-${test_prefix}@example.com")
 
@@ -146,7 +147,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `addUserToOrganization should add user to organization and getOrganizationsForUser should reflect this`() = runCoroutineTest {
+    fun `addUserToOrganization should add user to organization and getOrganizationsForUser should reflect this`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("adduser-${test_prefix}@example.com")
@@ -164,7 +165,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `addUserToOrganization should handle adding same user twice gracefully`() = runCoroutineTest {
+    fun `addUserToOrganization should handle adding same user twice gracefully`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("dupeuser-${test_prefix}@example.com")
@@ -182,7 +183,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `addUserToOrganization preserves original role when called with a different role`() = runCoroutineTest {
+    fun `addUserToOrganization preserves original role when called with a different role`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("rolepreserve-${test_prefix}@example.com")
@@ -200,7 +201,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `addUserToOrganization concurrent calls all succeed and produce exactly one membership row`() = runCoroutineTest {
+    fun `addUserToOrganization concurrent calls all succeed and produce exactly one membership row`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("concurrent-${test_prefix}@example.com")
@@ -220,7 +221,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `addUserToOrganization with OWNER role should succeed`() = runCoroutineTest {
+    fun `addUserToOrganization with OWNER role should succeed`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("owner-${test_prefix}@example.com")
@@ -233,7 +234,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `addUserToOrganization with ADMIN role should succeed`() = runCoroutineTest {
+    fun `addUserToOrganization with ADMIN role should succeed`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("admin-${test_prefix}@example.com")
@@ -246,7 +247,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `addUserToOrganization with MANAGER role should succeed`() = runCoroutineTest {
+    fun `addUserToOrganization with MANAGER role should succeed`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("manager-${test_prefix}@example.com")
@@ -259,7 +260,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `addUserToOrganization with EMPLOYEE role should succeed`() = runCoroutineTest {
+    fun `addUserToOrganization with EMPLOYEE role should succeed`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("employee-${test_prefix}@example.com")
@@ -272,7 +273,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getUserRole should return OrgRole after addUserToOrganization`() = runCoroutineTest {
+    fun `getUserRole should return OrgRole after addUserToOrganization`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("rolecheck-${test_prefix}@example.com")
@@ -287,7 +288,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `addUserToOrganization should default status to ACTIVE`() = runCoroutineTest {
+    fun `addUserToOrganization should default status to ACTIVE`() = runBlocking {
         // Arrange
         val orgId = createTestOrganization("test_org_$test_prefix", "")
         val newUser = createTestUser("statuscheck-${test_prefix}@example.com")

@@ -37,7 +37,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createOccupant should return the created record`() = runCoroutineTest {
+    fun `createOccupant should return the created record`() = runBlocking {
         val startDate = LocalDate(2026, 1, 1)
 
         val result = occupantDatastore.createOccupant(
@@ -67,7 +67,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getOccupant should return the created record`() = runCoroutineTest {
+    fun `getOccupant should return the created record`() = runBlocking {
         val createResult = occupantDatastore.createOccupant(
             unitId = unitId!!,
             userId = testUserId,
@@ -92,7 +92,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `listOccupantsForUnit should return active occupants only by default`() = runCoroutineTest {
+    fun `listOccupantsForUnit should return active occupants only by default`() = runBlocking {
         val unit2Id = createTestUnit(propertyId!!, "${testPrefix}_U2")
 
         val active1 = occupantDatastore.createOccupant(
@@ -133,7 +133,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
 
     @Test
     fun `listOccupantsForProperty should aggregate occupants across all units and respect includeInactive`() =
-        runCoroutineTest {
+        runBlocking {
             val unitA = createTestUnit(propertyId!!, "${testPrefix}_PA")
             val unitB = createTestUnit(propertyId!!, "${testPrefix}_PB")
 
@@ -208,7 +208,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
         }
 
     @Test
-    fun `listOccupantsForProperty should return empty list when property has no units`() = runCoroutineTest {
+    fun `listOccupantsForProperty should return empty list when property has no units`() = runBlocking {
         val emptyOrgId = createTestOrganization("occ_org_empty_$testPrefix", "")
         val emptyPropertyId = createTestProperty("${testPrefix}_EmptyProp", testUserId!!, emptyOrgId)
 
@@ -219,7 +219,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `clearPrimaryForUnit should unset is_primary on all active occupants`() = runCoroutineTest {
+    fun `clearPrimaryForUnit should unset is_primary on all active occupants`() = runBlocking {
         val unit3Id = createTestUnit(propertyId!!, "${testPrefix}_U3")
 
         occupantDatastore.createOccupant(
@@ -241,7 +241,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `softRemoveOccupant should set status to INACTIVE without deleting the row`() = runCoroutineTest {
+    fun `softRemoveOccupant should set status to INACTIVE without deleting the row`() = runBlocking {
         val createResult = occupantDatastore.createOccupant(
             unitId = unitId!!,
             userId = null,
@@ -271,7 +271,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateOccupant should apply only provided fields`() = runCoroutineTest {
+    fun `updateOccupant should apply only provided fields`() = runBlocking {
         val created = occupantDatastore.createOccupant(
             unitId = unitId!!,
             userId = null,

@@ -38,7 +38,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
     }
 
     @Test
-    fun `createPaymentRecord should return created record`() = runCoroutineTest {
+    fun `createPaymentRecord should return created record`() = runBlocking {
         // Arrange
         val periodMonth = LocalDate(2026, 3, 1)
 
@@ -65,7 +65,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
     }
 
     @Test
-    fun `getPaymentRecord should return created record`() = runCoroutineTest {
+    fun `getPaymentRecord should return created record`() = runBlocking {
         // Arrange
         val createResult = paymentRecordDatastore.createPaymentRecord(
             unitId = unitId!!,
@@ -91,7 +91,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
     }
 
     @Test
-    fun `getPaymentRecord should return null when not found`() = runCoroutineTest {
+    fun `getPaymentRecord should return null when not found`() = runBlocking {
         // Arrange
         val fakeId = PaymentRecordId(UUID.random())
 
@@ -104,7 +104,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
     }
 
     @Test
-    fun `listPaymentRecords should return all records for unit without filter`() = runCoroutineTest {
+    fun `listPaymentRecords should return all records for unit without filter`() = runBlocking {
         // Arrange
 
         // Act
@@ -138,7 +138,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
     }
 
     @Test
-    fun `listPaymentRecords should filter by periodMonth`() = runCoroutineTest {
+    fun `listPaymentRecords should filter by periodMonth`() = runBlocking {
         // Arrange
 
         // Act
@@ -174,7 +174,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
     }
 
     @Test
-    fun `updatePaymentRecord should update status and amount paid`() = runCoroutineTest {
+    fun `updatePaymentRecord should update status and amount paid`() = runBlocking {
         // Arrange
         val createResult = paymentRecordDatastore.createPaymentRecord(
             unitId = unitId!!,
@@ -207,7 +207,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
     }
 
     @Test
-    fun `deletePaymentRecord should soft delete and make record invisible`() = runCoroutineTest {
+    fun `deletePaymentRecord should soft delete and make record invisible`() = runBlocking {
         // Arrange
         val createResult = paymentRecordDatastore.createPaymentRecord(
             unitId = unitId!!,
@@ -233,7 +233,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
     }
 
     @Test
-    fun `purgePaymentRecord should hard delete the record`() = runCoroutineTest {
+    fun `purgePaymentRecord should hard delete the record`() = runBlocking {
         // Arrange
         val createResult = paymentRecordDatastore.createPaymentRecord(
             unitId = unitId!!,

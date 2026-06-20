@@ -1,4 +1,5 @@
 package com.cramsan.edifikana.server.datastore.supabase
+import kotlinx.coroutines.runBlocking
 
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.service.models.User
@@ -29,7 +30,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUser with provided password should return user on success`() = runCoroutineTest {
+    fun `createUser with provided password should return user on success`() = runBlocking {
         // Arrange
 
         // Act
@@ -58,7 +59,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUser with null password should succeed with a temp user pending association`() = runCoroutineTest {
+    fun `createUser with null password should succeed with a temp user pending association`() = runBlocking {
         // Arrange
 
         // Act
@@ -89,7 +90,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUser should fail with existing email`() = runCoroutineTest {
+    fun `createUser should fail with existing email`() = runBlocking {
         // Arrange
 
         // Act
@@ -117,7 +118,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUser should fail with invalid email`() = runCoroutineTest {
+    fun `createUser should fail with invalid email`() = runBlocking {
         // Arrange
 
         // Act
@@ -136,7 +137,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getUser should return created user`() = runCoroutineTest {
+    fun `getUser should return created user`() = runBlocking {
         // Arrange
 
         // Act
@@ -162,7 +163,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getUser(email) returns the created user when the email exists.
      */
     @Test
-    fun `getUser by email should return created user`() = runCoroutineTest {
+    fun `getUser by email should return created user`() = runBlocking {
         // Arrange
         val email = "${test_prefix}_byemail@example.com"
 
@@ -195,7 +196,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getUser(email) returns null when the email is not present in the database.
      */
     @Test
-    fun `getUser by email should return null when not found`() = runCoroutineTest {
+    fun `getUser by email should return null when not found`() = runBlocking {
         // Arrange
         val email = "${test_prefix}_noexist@example.com"
 
@@ -208,7 +209,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteUser should remove user`() = runCoroutineTest {
+    fun `deleteUser should remove user`() = runBlocking {
         // Arrange
 
         // Act
@@ -235,7 +236,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteUser should fail for non-existent user`() = runCoroutineTest {
+    fun `deleteUser should fail for non-existent user`() = runBlocking {
         // Arrange
         val fakeId = UserId(test_prefix)
 
@@ -248,7 +249,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `associateUser should fail for non-existent Supabase user`() = runCoroutineTest {
+    fun `associateUser should fail for non-existent Supabase user`() = runBlocking {
         // Arrange: Use an email that does not exist
 
         // Act
@@ -268,7 +269,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
      */
     @Test
     @Ignore("We have to ignore this test because it causes emails to be sent, which cases rate limit issues on supabase")
-    fun `requestPasswordReset should succeed for registered email`() = runCoroutineTest {
+    fun `requestPasswordReset should succeed for registered email`() = runBlocking {
         // Arrange
         val email = "${test_prefix}_pwreset@mailinator.org"
         userDatastore.createUser(
@@ -292,7 +293,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Supabase never reveals whether the email exists to prevent enumeration.
      */
     @Test
-    fun `requestPasswordReset should succeed for unregistered email`() = runCoroutineTest {
+    fun `requestPasswordReset should succeed for unregistered email`() = runBlocking {
         // Arrange — no user created
         val email = "${test_prefix}_nonexist@example.com"
 
@@ -307,7 +308,7 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // Right now we can create the user but we are not able to retrieve the user ID from Supabase Auth.
     @Ignore("OTP sign-in does not return user ID synchronously; needs Supabase Auth admin API workaround")
     @Test
-    fun `associateUser should associate a pending user with a Supabase user`() = runCoroutineTest {
+    fun `associateUser should associate a pending user with a Supabase user`() = runBlocking {
         // Arrange: Create a user with a password (Supabase user)
         val email = "${test_prefix}@example.com"
         val createResult = userDatastore.createUser(

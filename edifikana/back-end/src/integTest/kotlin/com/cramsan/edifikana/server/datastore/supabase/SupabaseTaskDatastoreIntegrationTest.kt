@@ -37,7 +37,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createTask should return created task with correct fields`() = runCoroutineTest {
+    fun `createTask should return created task with correct fields`() = runBlocking {
         // Arrange
         val title = "${testPrefix}_Fix leaky faucet"
 
@@ -69,7 +69,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTask should return created task`() = runCoroutineTest {
+    fun `getTask should return created task`() = runBlocking {
         // Arrange
         val createResult = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -97,7 +97,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTask should return null when not found`() = runCoroutineTest {
+    fun `getTask should return null when not found`() = runBlocking {
         // Arrange
         val fakeId = TaskId(UUID.random())
 
@@ -110,7 +110,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTask should return null when soft deleted`() = runCoroutineTest {
+    fun `getTask should return null when soft deleted`() = runBlocking {
         // Arrange
         val createResult = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -136,7 +136,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTasks should return all tasks for property`() = runCoroutineTest {
+    fun `getTasks should return all tasks for property`() = runBlocking {
         // Arrange & Act
         val result1 = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -175,7 +175,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTasks should filter by status`() = runCoroutineTest {
+    fun `getTasks should filter by status`() = runBlocking {
         // Arrange
         val createResult = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -205,7 +205,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTasks should filter by priority`() = runCoroutineTest {
+    fun `getTasks should filter by priority`() = runBlocking {
         // Arrange
         val result = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -235,7 +235,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTasks should not return deleted tasks`() = runCoroutineTest {
+    fun `getTasks should not return deleted tasks`() = runBlocking {
         // Arrange
         val createResult = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -262,7 +262,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateTask should update title and priority`() = runCoroutineTest {
+    fun `updateTask should update title and priority`() = runBlocking {
         // Arrange
         val createResult = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -301,7 +301,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateTask should update status and set audit fields`() = runCoroutineTest {
+    fun `updateTask should update status and set audit fields`() = runBlocking {
         // Arrange
         val createResult = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -342,7 +342,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteTask should soft delete and make task invisible`() = runCoroutineTest {
+    fun `deleteTask should soft delete and make task invisible`() = runBlocking {
         // Arrange
         val createResult = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -370,7 +370,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `purgeTask should hard delete the task`() = runCoroutineTest {
+    fun `purgeTask should hard delete the task`() = runBlocking {
         // Arrange
         val createResult = taskDatastore.createTask(
             propertyId = propertyId!!,
@@ -397,7 +397,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `unassignTasksForEmployee should set assignee_id to null on non-deleted tasks`() = runCoroutineTest {
+    fun `unassignTasksForEmployee should set assignee_id to null on non-deleted tasks`() = runBlocking {
         // Arrange
         val employeeId = createTestEmployee(propertyId!!, "Test", "${testPrefix}_Employee")
         val taskResult = taskDatastore.createTask(

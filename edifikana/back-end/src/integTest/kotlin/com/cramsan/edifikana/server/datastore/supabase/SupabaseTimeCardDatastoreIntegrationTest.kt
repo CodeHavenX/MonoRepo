@@ -40,7 +40,7 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createTimeCardEvent should return event on success`() = runCoroutineTest {
+    fun `createTimeCardEvent should return event on success`() = runBlocking {
         // Arrange
 
         // Act
@@ -59,7 +59,7 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTimeCardEvent should return created event`() = runCoroutineTest {
+    fun `getTimeCardEvent should return created event`() = runBlocking {
         // Arrange
 
         // Act
@@ -82,7 +82,7 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTimeCardEventList should return all events`() = runCoroutineTest {
+    fun `getTimeCardEventList should return all events`() = runBlocking {
         // Arrange
 
         // Act
@@ -115,7 +115,7 @@ class SupabaseTimeCardDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getTimeCardEvent should return null for non-existent event`() = runCoroutineTest {
+    fun `getTimeCardEvent should return null for non-existent event`() = runBlocking {
         // Arrange
         val fakeId = TimeCardEventId(UUID.random())
 

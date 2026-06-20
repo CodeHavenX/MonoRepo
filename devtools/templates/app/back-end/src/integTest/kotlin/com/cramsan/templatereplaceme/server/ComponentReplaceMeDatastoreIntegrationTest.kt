@@ -2,8 +2,8 @@ package com.cramsan.templatereplaceme.server
 
 import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
-import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.templatereplaceme.server.datastore.impl.ExampleComponentReplaceMeDatastore
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -20,8 +20,13 @@ import kotlin.test.assertTrue
  * These tests exercise [ExampleComponentReplaceMeDatastore] directly. When migrating to a real
  * backend, swap [ExampleComponentReplaceMeDatastore] for the real implementation and load its
  * module in the [setUp] Koin context.
+ *
+ * Once a real backend is wired in, tests run on a plain [runBlocking], not a virtual-time test
+ * dispatcher: `kotlinx-coroutines-test`'s `TestScope` fast-forwards `delay()`-based suspension once
+ * it sees no other work scheduled, which fires Ktor's per-request `HttpTimeout` near-instantly
+ * instead of waiting on real socket I/O.
  */
-class ComponentReplaceMeDatastoreIntegrationTest : CoroutineTest(), KoinTest {
+class ComponentReplaceMeDatastoreIntegrationTest : KoinTest {
 
     private val datastore = ExampleComponentReplaceMeDatastore()
 
@@ -41,7 +46,7 @@ class ComponentReplaceMeDatastoreIntegrationTest : CoroutineTest(), KoinTest {
     }
 
     @Test
-    fun `create returns success with the provided id`() = runCoroutineTest {
+    fun `create returns success with the provided id`() = runBlocking {
         // Act
         val result = datastore.create(id = "test-id")
 

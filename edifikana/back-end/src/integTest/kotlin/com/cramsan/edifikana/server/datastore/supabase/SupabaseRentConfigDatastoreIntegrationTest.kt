@@ -33,7 +33,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getRentConfig should return null when no config exists`() = runCoroutineTest {
+    fun `getRentConfig should return null when no config exists`() = runBlocking {
         // Arrange — unitId has no rent config yet
 
         // Act
@@ -45,7 +45,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `setRentConfig should insert a new config when none exists`() = runCoroutineTest {
+    fun `setRentConfig should insert a new config when none exists`() = runBlocking {
         // Arrange
         val monthlyAmount = 1500.00
         val dueDay = 5
@@ -71,7 +71,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `setRentConfig should update existing config when called again`() = runCoroutineTest {
+    fun `setRentConfig should update existing config when called again`() = runBlocking {
         // Arrange
         val initial = rentConfigDatastore.setRentConfig(
             unitId = unitId!!,
@@ -102,7 +102,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getRentConfig should return config after insert`() = runCoroutineTest {
+    fun `getRentConfig should return config after insert`() = runBlocking {
         // Arrange
         val setResult = rentConfigDatastore.setRentConfig(
             unitId = unitId!!,
@@ -126,7 +126,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteRentConfigByUnitId should soft delete and make config invisible`() = runCoroutineTest {
+    fun `deleteRentConfigByUnitId should soft delete and make config invisible`() = runBlocking {
         // Arrange
         val setResult = rentConfigDatastore.setRentConfig(
             unitId = unitId!!,
@@ -149,7 +149,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `purgeRentConfig should hard delete the config`() = runCoroutineTest {
+    fun `purgeRentConfig should hard delete the config`() = runBlocking {
         // Arrange
         val setResult = rentConfigDatastore.setRentConfig(
             unitId = unitId!!,

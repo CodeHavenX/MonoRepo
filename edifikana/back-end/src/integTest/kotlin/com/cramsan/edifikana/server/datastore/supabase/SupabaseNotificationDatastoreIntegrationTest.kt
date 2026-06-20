@@ -1,4 +1,5 @@
 package com.cramsan.edifikana.server.datastore.supabase
+import kotlinx.coroutines.runBlocking
 
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.notification.NotificationType
@@ -35,7 +36,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that createNotification creates a notification without a user ID.
      */
     @Test
-    fun `createNotification should create notification without user ID`() = runCoroutineTest {
+    fun `createNotification should create notification without user ID`() = runBlocking {
         // Arrange
         val organizationId = createTestOrganization("org_$testPrefix", "")
         val expiration = clock.now() + 5.minutes
@@ -66,7 +67,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that createNotification creates a notification with a user ID.
      */
     @Test
-    fun `createNotification should create notification with user ID`() = runCoroutineTest {
+    fun `createNotification should create notification with user ID`() = runBlocking {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@example.com")
         val organizationId = createTestOrganization("org_$testPrefix", "")
@@ -97,7 +98,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getNotification returns the created notification.
      */
     @Test
-    fun `getNotification should return created notification`() = runCoroutineTest {
+    fun `getNotification should return created notification`() = runBlocking {
         // Arrange
         val organizationId = createTestOrganization("org_$testPrefix", "")
         val expiration = clock.now() + 5.minutes
@@ -128,7 +129,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getNotification returns null for non-existent notification.
      */
     @Test
-    fun `getNotification should return null for non-existent notification`() = runCoroutineTest {
+    fun `getNotification should return null for non-existent notification`() = runBlocking {
         // Arrange
         val fakeId = NotificationId(testPrefix)
 
@@ -144,7 +145,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getNotificationsForUser returns notifications for a user.
      */
     @Test
-    fun `getNotificationsForUser should return notifications for user`() = runCoroutineTest {
+    fun `getNotificationsForUser should return notifications for user`() = runBlocking {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@example.com")
         val organizationId = createTestOrganization("org_$testPrefix", "")
@@ -183,7 +184,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getNotificationsForUser with unreadOnly returns only unread notifications.
      */
     @Test
-    fun `getNotificationsForUser should filter unread only when requested`() = runCoroutineTest {
+    fun `getNotificationsForUser should filter unread only when requested`() = runBlocking {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@example.com")
         val organizationId = createTestOrganization("org_$testPrefix", "")
@@ -225,7 +226,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getNotificationsForUser respects limit.
      */
     @Test
-    fun `getNotificationsForUser should respect limit parameter`() = runCoroutineTest {
+    fun `getNotificationsForUser should respect limit parameter`() = runBlocking {
         // Arrange
         val userId = createTestUser("${testPrefix}_user@example.com")
         val organizationId = createTestOrganization("org_$testPrefix", "")
@@ -256,7 +257,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that markAsRead marks a notification as read.
      */
     @Test
-    fun `markAsRead should mark notification as read`() = runCoroutineTest {
+    fun `markAsRead should mark notification as read`() = runBlocking {
         // Arrange
         val organizationId = createTestOrganization("org_$testPrefix", "")
         val expiration = clock.now() + 5.minutes
@@ -285,7 +286,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that markAsRead fails for non-existent notification.
      */
     @Test
-    fun `markAsRead should fail for non-existent notification`() = runCoroutineTest {
+    fun `markAsRead should fail for non-existent notification`() = runBlocking {
         // Arrange
         val fakeId = NotificationId(testPrefix)
 
@@ -300,7 +301,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that deleteNotification deletes a notification.
      */
     @Test
-    fun `deleteNotification should delete notification`() = runCoroutineTest {
+    fun `deleteNotification should delete notification`() = runBlocking {
         // Arrange
         val organizationId = createTestOrganization("org_$testPrefix", "")
         val expiration = clock.now() + 5.minutes
@@ -330,7 +331,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that deleteNotification returns false for non-existent notification.
      */
     @Test
-    fun `deleteNotification should return false for non-existent notification`() = runCoroutineTest {
+    fun `deleteNotification should return false for non-existent notification`() = runBlocking {
         // Arrange
         val fakeId = NotificationId(testPrefix)
 
@@ -346,7 +347,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getNotificationByInvite returns notification for an invite.
      */
     @Test
-    fun `getNotificationByInvite should return notification for invite`() = runCoroutineTest {
+    fun `getNotificationByInvite should return notification for invite`() = runBlocking {
         // Arrange
         val organizationId = createTestOrganization("org_$testPrefix", "")
         val expiration = clock.now() + 5.minutes
@@ -376,7 +377,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getNotificationByInvite returns null for non-existent invite.
      */
     @Test
-    fun `getNotificationByInvite should return null for non-existent invite`() = runCoroutineTest {
+    fun `getNotificationByInvite should return null for non-existent invite`() = runBlocking {
         // Arrange
         val fakeInviteId = InviteId("00000000-0000-0000-0000-000000000000")
 
@@ -392,7 +393,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that getNotificationsByEmail returns notifications for an email address.
      */
     @Test
-    fun `getNotificationsByEmail should return notifications for email`() = runCoroutineTest {
+    fun `getNotificationsByEmail should return notifications for email`() = runBlocking {
         // Arrange
         val recipientEmail = "${testPrefix}_recipient@example.com"
         val organizationId = createTestOrganization("org_$testPrefix", "")
@@ -432,7 +433,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that linkNotificationsToUser links notifications by email to a user.
      */
     @Test
-    fun `linkNotificationsToUser should link notifications by email to user`() = runCoroutineTest {
+    fun `linkNotificationsToUser should link notifications by email to user`() = runBlocking {
         // Arrange
         val recipientEmail = "${testPrefix}_recipient@example.com"
         val organizationId = createTestOrganization("org_$testPrefix", "")
@@ -483,7 +484,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that linkNotificationsToUser returns 0 when no notifications exist for email.
      */
     @Test
-    fun `linkNotificationsToUser should return 0 when no notifications exist`() = runCoroutineTest {
+    fun `linkNotificationsToUser should return 0 when no notifications exist`() = runBlocking {
         // Arrange
         val email = "${testPrefix}_nonexistent@example.com"
         val userId = createTestUser("${testPrefix}_user@example.com")
@@ -500,7 +501,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that linkNotificationsToUser does not link notifications already assigned to a user.
      */
     @Test
-    fun `linkNotificationsToUser should not link notifications already assigned to a user`() = runCoroutineTest {
+    fun `linkNotificationsToUser should not link notifications already assigned to a user`() = runBlocking {
         // Arrange
         val recipientEmail = "${testPrefix}_recipient@example.com"
         val existingUserId = createTestUser("${testPrefix}_existing@example.com")

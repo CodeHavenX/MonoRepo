@@ -38,7 +38,6 @@ import com.cramsan.edifikana.server.service.models.Task
 import com.cramsan.edifikana.server.service.models.TimeCardEvent
 import com.cramsan.edifikana.server.service.models.Unit
 import com.cramsan.edifikana.server.service.models.User
-import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.password.generateRandomPassword
 import com.cramsan.framework.utils.uuid.UUID
 import io.github.jan.supabase.SupabaseClient
@@ -54,7 +53,7 @@ import org.koin.test.KoinTest
 import org.koin.test.inject
 
 @OptIn(ExperimentalTime::class)
-abstract class SupabaseIntegrationTest : CoroutineTest(), KoinTest {
+abstract class SupabaseIntegrationTest : KoinTest {
 
     protected val supabase: SupabaseClient by inject()
 

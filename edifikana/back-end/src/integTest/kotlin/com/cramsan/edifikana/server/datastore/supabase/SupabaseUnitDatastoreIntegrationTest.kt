@@ -1,4 +1,5 @@
 package com.cramsan.edifikana.server.datastore.supabase
+import kotlinx.coroutines.runBlocking
 
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
@@ -27,7 +28,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUnit should return unit on success`() = runCoroutineTest {
+    fun `createUnit should return unit on success`() = runBlocking {
         // Act
         val result = unitDatastore.createUnit(
             propertyId = testProperty!!,
@@ -54,7 +55,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getUnit should return created unit`() = runCoroutineTest {
+    fun `getUnit should return created unit`() = runBlocking {
         // Arrange
         val createResult = unitDatastore.createUnit(
             propertyId = testProperty!!,
@@ -84,7 +85,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getUnit should return null for non-existent unit`() = runCoroutineTest {
+    fun `getUnit should return null for non-existent unit`() = runBlocking {
         // Arrange
         val fakeId = UnitId(UUID.random())
 
@@ -97,7 +98,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getUnits should filter by propertyId`() = runCoroutineTest {
+    fun `getUnits should filter by propertyId`() = runBlocking {
         // Arrange — create a second property with its own unit
         val otherProperty = createTestProperty("other-property-${test_prefix}", testUserId!!, testOrg!!)
         val result1 = unitDatastore.createUnit(
@@ -132,7 +133,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `updateUnit should update provided fields`() = runCoroutineTest {
+    fun `updateUnit should update provided fields`() = runBlocking {
         // Arrange
         val createResult = unitDatastore.createUnit(
             propertyId = testProperty!!,
@@ -170,7 +171,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteUnit should soft-delete the unit`() = runCoroutineTest {
+    fun `deleteUnit should soft-delete the unit`() = runBlocking {
         // Arrange
         val createResult = unitDatastore.createUnit(
             propertyId = testProperty!!,
@@ -199,7 +200,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteUnit should return false for non-existent unit`() = runCoroutineTest {
+    fun `deleteUnit should return false for non-existent unit`() = runBlocking {
         // Arrange
         val fakeId = UnitId(UUID.random())
 

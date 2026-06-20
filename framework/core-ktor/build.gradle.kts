@@ -16,4 +16,8 @@ dependencies {
     implementation("io.ktor:ktor-server-openapi:_")
     implementation("io.ktor:ktor-server-swagger:_")
     implementation("io.ktor:ktor-server-routing-openapi:_")
+
+    testImplementation("io.ktor:ktor-server-test-host:_")
+    testImplementation("io.ktor:ktor-server-content-negotiation:_")
+    testImplementation("io.ktor:ktor-serialization-kotlinx-json:_")
 }

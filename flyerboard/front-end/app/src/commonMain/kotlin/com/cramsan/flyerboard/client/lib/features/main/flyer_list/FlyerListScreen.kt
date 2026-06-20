@@ -171,4 +171,4 @@ private fun flyerAccentColor(seed: Int) =
     )[(seed % ACCENT_COLOR_COUNT).let { if (it < 0) it + ACCENT_COLOR_COUNT else it }]
 
 private const val ACCENT_COLOR_COUNT = 3
-private val GRID_COLUMN_MIN_WIDTH = 280.dp
+val GRID_COLUMN_MIN_WIDTH = 280.dp

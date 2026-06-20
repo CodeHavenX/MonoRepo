@@ -6,12 +6,13 @@ import com.cramsan.ui.preview.ComponentPreviews
 
 @ComponentPreviews
 @Composable
-private fun ModerationFlyerCardWithExpiryPreview() =
+private fun ModerationFlyerCardNoImagePreview() =
     AppTheme {
         ModerationFlyerCard(
             title = "Community Event",
             description = "Join us for a community gathering in the park this weekend.",
-            expiresAt = "2026-07-01",
+            uploaderHandle = "cramsan",
+            postedAt = "2026-04-17",
             onApprove = {},
             onReject = {},
         )
@@ -19,11 +20,14 @@ private fun ModerationFlyerCardWithExpiryPreview() =
 
 @ComponentPreviews
 @Composable
-private fun ModerationFlyerCardNoExpiryPreview() =
+private fun ModerationFlyerCardWithImagePreview() =
     AppTheme {
         ModerationFlyerCard(
             title = "Lost Dog Reward",
             description = "Missing golden retriever, last seen near Elm Street. Please call if found.",
+            uploaderHandle = "neighbor_bob",
+            postedAt = "2026-04-18",
+            imageUrl = "https://example.com/flyer.jpg",
             onApprove = {},
             onReject = {},
         )

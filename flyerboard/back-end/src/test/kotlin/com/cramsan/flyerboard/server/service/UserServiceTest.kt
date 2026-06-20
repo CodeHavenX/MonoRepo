@@ -166,4 +166,47 @@ class UserServiceTest {
             // Assert
             assertEquals(exception, thrown)
         }
+
+    /**
+     * Tests that getUser returns the user from the datastore.
+     */
+    @Test
+    fun `getUser returns user from datastore`() =
+        runTest {
+            // Arrange
+            val user =
+                User(
+                    id = UserId("user123"),
+                    firstName = "John",
+                    lastName = "Doe",
+                )
+            coEvery { userDatastore.getUser(UserId("user123")) } returns Result.success(user)
+
+            // Act
+            val result = userService.getUser(UserId("user123"))
+
+            // Assert
+            assertEquals(user, result)
+            coVerify { userDatastore.getUser(UserId("user123")) }
+        }
+
+    /**
+     * Tests that getUser throws when the datastore fails to find the user.
+     */
+    @Test
+    fun `getUser throws when datastore fails`() =
+        runTest {
+            // Arrange
+            val exception = IllegalStateException("datastore error")
+            coEvery { userDatastore.getUser(UserId("user123")) } returns Result.failure(exception)
+
+            // Act
+            val thrown =
+                assertFailsWith<IllegalStateException> {
+                    userService.getUser(UserId("user123"))
+                }
+
+            // Assert
+            assertEquals(exception, thrown)
+        }
 }

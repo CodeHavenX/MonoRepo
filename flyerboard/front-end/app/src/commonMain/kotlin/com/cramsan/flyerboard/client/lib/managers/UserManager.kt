@@ -24,6 +24,15 @@ class UserManager(private val dependencies: ManagerDependencies, private val use
             userService.createUser(firstName, lastName).getOrThrow()
         }
 
+    /**
+     * Retrieve the currently authenticated user, including their role.
+     */
+    suspend fun getCurrentUser(): Result<UserModel> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "getCurrentUser")
+            userService.getCurrentUser().getOrThrow()
+        }
+
     companion object {
         private const val TAG = "UserManager"
     }

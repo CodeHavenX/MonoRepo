@@ -15,4 +15,9 @@ interface UserService {
         firstName: String,
         lastName: String,
     ): Result<UserModel>
+
+    /**
+     * Retrieve the currently authenticated user, including their role.
+     */
+    suspend fun getCurrentUser(): Result<UserModel>
 }

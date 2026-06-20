@@ -26,7 +26,14 @@ class UserController(
                         userId = request.context.payload.userId,
                         firstName = request.requestBody.firstName,
                         lastName = request.requestBody.lastName,
-                    ).toUserNetworkResponse()
+                    ).toUserNetworkResponse(request.context.payload.role)
+            }
+
+            // GET /user/me — retrieve the currently authenticated user, including their role.
+            handler(api.getCurrentUser, contextRetriever) { request ->
+                userService
+                    .getUser(request.context.payload.userId)
+                    .toUserNetworkResponse(request.context.payload.role)
             }
         }
     }

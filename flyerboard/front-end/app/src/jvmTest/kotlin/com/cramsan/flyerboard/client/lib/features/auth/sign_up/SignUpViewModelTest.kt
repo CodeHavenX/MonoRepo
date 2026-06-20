@@ -7,6 +7,7 @@ import com.cramsan.flyerboard.client.lib.managers.AuthManager
 import com.cramsan.flyerboard.client.lib.managers.UserManager
 import com.cramsan.flyerboard.client.lib.models.UserModel
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -238,5 +239,6 @@ class SignUpViewModelTest : CoroutineTest() {
             id = UserId("user-1"),
             firstName = "Jane",
             lastName = "Doe",
+            role = UserRole.USER,
         )
 }

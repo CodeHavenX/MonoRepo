@@ -16,6 +16,7 @@ import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.exceptions.ForbiddenException
 import com.cramsan.framework.utils.file.readFileContent
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -87,6 +88,56 @@ class UserControllerTest :
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
             assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `test getCurrentUser`() =
+        testBackEndApplication {
+            // Arrange
+            val expectedResponse = readFileContent("requests/get_current_user_response.json")
+            val userService = get<UserService>()
+            coEvery {
+                userService.getUser(UserId("user123"))
+            }.answers {
+                User(
+                    id = UserId("user123"),
+                    firstName = "John",
+                    lastName = "Doe",
+                )
+            }
+            val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.AuthenticatedClientContext(
+                    FlyerBoardContextPayload(userId = UserId("user123"), role = UserRole.ADMIN),
+                )
+            }
+
+            // Act
+            val response = client.get("user/me")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `test getCurrentUser fails with 401 when unauthenticated`() =
+        testBackEndApplication {
+            // Arrange
+            val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                ClientContext.UnauthenticatedClientContext()
+            }
+
+            // Act
+            val response = client.get("user/me")
+
+            // Assert
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
         }
 
     @Test

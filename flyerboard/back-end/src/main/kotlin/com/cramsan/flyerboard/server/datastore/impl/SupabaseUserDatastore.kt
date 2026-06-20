@@ -8,6 +8,7 @@ import com.cramsan.flyerboard.server.service.models.User
 import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.github.jan.supabase.postgrest.Postgrest
 
 /**
@@ -34,6 +35,20 @@ class SupabaseUserDatastore(private val postgrest: Postgrest) : UserDatastore {
                     select()
                 }.decodeSingle<UserEntity>()
                 .toUser()
+        }
+
+    override suspend fun getUser(userId: UserId): Result<User> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting user: %s", userId)
+            postgrest
+                .from(UserEntity.COLLECTION)
+                .select {
+                    filter {
+                        UserEntity::id eq userId.userId
+                    }
+                }.decodeSingleOrNull<UserEntity>()
+                ?.toUser()
+                ?: throw ClientRequestExceptions.NotFoundException("User not found: ${userId.userId}")
         }
 
     companion object {

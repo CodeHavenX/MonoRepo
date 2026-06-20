@@ -44,6 +44,9 @@ tasks.register<Test>("integTest") {
     classpath = sourceSets["integTest"].runtimeClasspath
     shouldRunAfter("test")
     useJUnitPlatform()
+    // Integration tests share a single local Supabase instance; run them sequentially to avoid
+    // cross-test interference (e.g. concurrent auth-admin/session calls against the same backend).
+    maxParallelForks = 1
 }
 
 tasks.named<KotlinCompilationTask<*>>("compileKotlin").configure {

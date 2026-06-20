@@ -8,6 +8,7 @@ import com.cramsan.edifikana.client.lib.features.auth.onboarding.createneworg.Cr
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg.SelectOrgScreen
 import com.cramsan.edifikana.client.lib.features.auth.passwordreset.PasswordResetScreen
 import com.cramsan.edifikana.client.lib.features.auth.passwordresetconfirmation.PasswordResetConfirmationScreen
+import com.cramsan.edifikana.client.lib.features.auth.setnewpassword.SetNewPasswordScreen
 import com.cramsan.edifikana.client.lib.features.auth.signin.SignInScreen
 import com.cramsan.edifikana.client.lib.features.auth.signup.SignUpScreen
 import com.cramsan.edifikana.client.lib.features.auth.validation.OtpValidationScreen
@@ -72,6 +73,12 @@ fun NavGraphBuilder.authNavGraphNavigation(
             typeMap = typeMap,
         ) {
             PasswordResetConfirmationScreen(destination = it.toRoute())
+        }
+        composable(
+            AuthDestination.SetNewPasswordDestination::class,
+            typeMap = typeMap,
+        ) {
+            SetNewPasswordScreen()
         }
     }
 }

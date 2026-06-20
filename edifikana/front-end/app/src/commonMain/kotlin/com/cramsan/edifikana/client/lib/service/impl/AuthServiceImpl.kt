@@ -255,6 +255,14 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             }
         }
 
+    @OptIn(SecureStringAccess::class)
+    override suspend fun setNewPassword(newPassword: SecureString): Result<Unit> =
+        runSuspendCatching(TAG) {
+            auth.updateUser {
+                password = newPassword.reveal()
+            }
+        }
+
     override suspend fun inviteEmployee(
         email: String,
         organizationId: OrganizationId,

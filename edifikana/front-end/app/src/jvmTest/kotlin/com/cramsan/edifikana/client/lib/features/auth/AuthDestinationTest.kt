@@ -61,4 +61,9 @@ class AuthDestinationTest {
     fun `fromWebPath returns null for sign-up path without required param`() {
         assertNull(AuthDestination.fromWebPath("/auth/sign-up"))
     }
+
+    @Test
+    fun `fromWebPath returns SetNewPasswordDestination`() {
+        assertIs<AuthDestination.SetNewPasswordDestination>(AuthDestination.fromWebPath("/auth/set-new-password"))
+    }
 }

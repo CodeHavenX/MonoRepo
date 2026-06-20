@@ -13,17 +13,32 @@ data class DeepLinkParams(val rawInput: String, val params: Map<String, String>)
          * full URLs with a query string (`?key=val`), and bare `key=val&...` strings.
          */
         fun parse(rawInput: String): DeepLinkParams {
-            val paramStr =
-                when {
-                    '#' in rawInput -> rawInput.substringAfter('#')
-                    '?' in rawInput -> rawInput.substringAfter('?')
-                    else -> rawInput
+            val queryStr =
+                if ('?' in rawInput) {
+                    rawInput.substringAfter('?').let { afterQ ->
+                        if ('#' in afterQ) afterQ.substringBefore('#') else afterQ
+                    }
+                } else {
+                    null
                 }
+
+            val fragmentStr = if ('#' in rawInput) rawInput.substringAfter('#') else null
+
+            fun toMap(s: String?) =
+                s
+                    ?.split('&')
+                    ?.filter { '=' in it }
+                    ?.associate { it.substringBefore('=') to it.substringAfter('=') }
+                    ?: emptyMap()
+
+            // Fragment params take precedence over query params on key collision.
+            // If neither delimiter is present, treat the whole input as a bare key=value string.
             val params =
-                paramStr
-                    .split('&')
-                    .filter { '=' in it }
-                    .associate { it.substringBefore('=') to it.substringAfter('=') }
+                if (queryStr == null && fragmentStr == null) {
+                    toMap(rawInput)
+                } else {
+                    toMap(queryStr) + toMap(fragmentStr)
+                }
             return DeepLinkParams(rawInput, params)
         }
     }

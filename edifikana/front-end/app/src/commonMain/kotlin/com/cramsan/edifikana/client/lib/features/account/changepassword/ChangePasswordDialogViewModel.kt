@@ -167,11 +167,17 @@ class ChangePasswordDialogViewModel(
     fun onSubmitSelected() {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true) }
-            authManager
-                .changePassword(
-                    currentPassword = uiState.value.currentPassword,
-                    newPassword = uiState.value.newPassword,
-                ).onSuccess {
+            val operation =
+                if (uiState.value.showCurrentPassword) {
+                    authManager.changePassword(
+                        currentPassword = uiState.value.currentPassword,
+                        newPassword = uiState.value.newPassword,
+                    )
+                } else {
+                    authManager.setNewPassword(newPassword = uiState.value.newPassword)
+                }
+            operation
+                .onSuccess {
                     updateUiState { it.copy(isLoading = false) }
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar(

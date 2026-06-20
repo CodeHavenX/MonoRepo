@@ -304,4 +304,40 @@ class AuthManagerTest : CoroutineTest() {
         coVerify { authService.declineInvite(inviteId) }
     }
 
+    /**
+     * Tests that setNewPassword delegates to authService and returns success.
+     */
+    @OptIn(com.cramsan.framework.core.SecureStringAccess::class)
+    @Test
+    fun `setNewPassword delegates to authService and returns success`() = runTest {
+        // Arrange
+        val newPassword = com.cramsan.framework.core.SecureString("newSecurePass1!")
+        coEvery { authService.setNewPassword(newPassword) } returns Result.success(Unit)
+
+        // Act
+        val result = manager.setNewPassword(newPassword)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        coVerify { authService.setNewPassword(newPassword) }
+    }
+
+    /**
+     * Tests that setNewPassword returns failure when authService throws.
+     */
+    @OptIn(com.cramsan.framework.core.SecureStringAccess::class)
+    @Test
+    fun `setNewPassword returns failure when authService throws`() = runTest {
+        // Arrange
+        val newPassword = com.cramsan.framework.core.SecureString("newSecurePass1!")
+        coEvery { authService.setNewPassword(newPassword) } returns Result.failure(Exception("service error"))
+
+        // Act
+        val result = manager.setNewPassword(newPassword)
+
+        // Assert
+        assertTrue(result.isFailure)
+        coVerify { authService.setNewPassword(newPassword) }
+    }
+
 }

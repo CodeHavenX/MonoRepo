@@ -8,12 +8,13 @@ import com.cramsan.framework.core.CoreUri
  */
 internal actual fun getFileSizeBytesImpl(uri: CoreUri, dependencies: IODependencies): Result<Long> {
     return runCatching {
-        val cursor = dependencies.contentResolver.query(
+        val cursor =
+            dependencies.contentResolver.query(
             uri.getAndroidUri(),
             arrayOf(OpenableColumns.SIZE),
             null,
             null,
-            null
+            null,
         )
         cursor?.use {
             if (it.moveToFirst()) {

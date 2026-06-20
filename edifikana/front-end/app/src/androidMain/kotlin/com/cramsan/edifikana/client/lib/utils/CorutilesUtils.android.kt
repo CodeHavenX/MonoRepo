@@ -12,7 +12,8 @@ import java.io.ByteArrayOutputStream
 /**
  * Read the bytes from the given [uri].
  */
-actual fun readBytes(uri: CoreUri, dependencies: IODependencies): Result<ByteArray> = runCatching {
+actual fun readBytes(uri: CoreUri, dependencies: IODependencies): Result<ByteArray> =
+    runCatching {
     dependencies.contentResolver.openInputStream(uri.getAndroidUri()).use { inputStream ->
         requireNotNull(inputStream) { "Failed to open input stream for uri: $uri" }
         inputStream.readBytes()
@@ -23,12 +24,14 @@ actual fun readBytes(uri: CoreUri, dependencies: IODependencies): Result<ByteArr
  * Write the given [data] to the given [uri].
  */
 @Suppress("MagicNumber")
-actual fun processImageData(data: ByteArray): Result<ByteArray> = runCatching {
+actual fun processImageData(data: ByteArray): Result<ByteArray> =
+    runCatching {
     val exifInterface = ExifInterface(ByteArrayInputStream(data))
-    val rotation = when (
+    val rotation =
+        when (
         exifInterface.getAttributeInt(
             ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_NORMAL
+            ExifInterface.ORIENTATION_NORMAL,
         )
     ) {
         ExifInterface.ORIENTATION_ROTATE_90 -> 90f
@@ -52,6 +55,4 @@ actual fun processImageData(data: ByteArray): Result<ByteArray> = runCatching {
 /**
  * Dependencies required for IO operations.
  */
-actual class IODependencies(
-    val contentResolver: ContentResolver,
-)
+actual class IODependencies(val contentResolver: ContentResolver)

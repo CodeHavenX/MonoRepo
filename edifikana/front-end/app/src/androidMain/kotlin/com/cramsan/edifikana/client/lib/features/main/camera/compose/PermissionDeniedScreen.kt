@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cramsan.ui.preview.ScreenPreviews
 import edifikana_lib.Res
@@ -34,11 +33,12 @@ fun PermissionDeniedScreen(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier
+            modifier =
+                Modifier
                 .padding(15.dp)
                 .wrapContentSize()
                 .align(Alignment.Center),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = stringResource(Res.string.edifikana_string_permissions_camera),
@@ -57,9 +57,10 @@ fun PermissionDeniedScreen(
                         imageVector = Icons.Sharp.Cancel,
                         contentDescription = stringResource(Res.string.edifikana_string_cancel),
                         tint = Color.White,
-                        modifier = Modifier
+                        modifier =
+                            Modifier
                             .fillMaxSize()
-                            .padding(5.dp)
+                            .padding(5.dp),
                     )
                 }
             },

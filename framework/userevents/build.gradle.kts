@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
     id("com.cramsan.kotlin-mpp-common")
     id("com.cramsan.kotlin-mpp-android-lib")
     id("com.cramsan.kotlin-mpp-ios")
@@ -13,13 +12,13 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm")
 }
 
-android {
-    namespace = "com.cramsan.framework.userevents"
+kotlin {
+    android {
+        namespace = "com.cramsan.framework.userevents"
+    }
 }
 
 dependencies {
-    implementation("com.microsoft.appcenter:appcenter-analytics:_")
-    implementation("com.microsoft.appcenter:appcenter-crashes:_")
 }
 
 kotlin {
@@ -40,6 +39,16 @@ kotlin {
             dependencies {
                 implementation(project(":framework:test"))
             }
+        }
+    }
+}
+
+
+kotlin {
+    sourceSets {
+        getByName("androidMain").dependencies {
+            implementation("com.microsoft.appcenter:appcenter-analytics:_")
+            implementation("com.microsoft.appcenter:appcenter-crashes:_")
         }
     }
 }

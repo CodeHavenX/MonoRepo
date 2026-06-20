@@ -2,7 +2,6 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.android.library")
     id("com.cramsan.kotlin-mpp-common-compose")
     id("com.cramsan.kotlin-mpp-android-lib-compose")
     id("com.cramsan.kotlin-mpp-ios")
@@ -16,6 +15,8 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.cramsan.ui.preview"
+kotlin {
+    android {
+        namespace = "com.cramsan.ui.preview"
+    }
 }

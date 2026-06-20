@@ -3,7 +3,6 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-    id("com.android.library")
     kotlin("multiplatform")
     id("com.cramsan.kotlin-mpp-common")
     id("com.cramsan.kotlin-mpp-android-lib")
@@ -13,22 +12,20 @@ plugins {
     id("com.cramsan.kotlin-mpp-wasm")
 }
 
-android {
-    namespace = "com.cramsan.framework.core"
+kotlin {
+    android {
+        namespace = "com.cramsan.framework.core"
 
-    // TODO: Verify if we can remove this
-    // https://github.com/CodeHavenX/MonoRepo/issues/186
-    lint {
-        disable += "NullSafeMutableLiveData"
+        // TODO: Verify if we can remove this
+        // https://github.com/CodeHavenX/MonoRepo/issues/186
+        lint {
+            disable += "NullSafeMutableLiveData"
+        }
     }
 }
 
 dependencies {
-    implementation(project(":framework:interfacelib"))
 
-    implementation("androidx.appcompat:appcompat:_")
-    implementation("androidx.fragment:fragment-ktx:_")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:_")
 }
 
 kotlin {
@@ -50,6 +47,18 @@ kotlin {
             dependencies {
                 implementation(project(":framework:test"))
             }
+        }
+    }
+}
+
+
+kotlin {
+    sourceSets {
+        getByName("androidMain").dependencies {
+            implementation(project(":framework:interfacelib"))
+            implementation("androidx.appcompat:appcompat:_")
+            implementation("androidx.fragment:fragment-ktx:_")
+            implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:_")
         }
     }
 }

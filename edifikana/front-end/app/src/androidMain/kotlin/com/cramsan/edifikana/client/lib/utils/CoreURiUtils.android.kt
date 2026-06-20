@@ -7,8 +7,7 @@ import com.cramsan.framework.core.CoreUri
  * Get the filename from the given [CoreUri].
  */
 actual fun CoreUri.getFilename(ioDependencies: IODependencies): String {
-    ioDependencies.contentResolver.query(this.getAndroidUri(), null, null, null, null)?.use {
-            cursor ->
+    ioDependencies.contentResolver.query(this.getAndroidUri(), null, null, null, null)?.use { cursor ->
         val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
         cursor.moveToFirst()
 

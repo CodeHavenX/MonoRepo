@@ -29,11 +29,13 @@ suspend fun Context.shareContent(tag: String, text: String, imageUri: CoreUri?):
         return true
     } catch (ex: ActivityNotFoundException) {
         logE(tag, "No activity found to share content", ex)
-        Toast.makeText(
-            this,
-            org.jetbrains.compose.resources.getString(Res.string.error_message_unexpected_error),
-            Toast.LENGTH_SHORT
-        ).show()
+        Toast
+            .makeText(
+                this,
+                org.jetbrains.compose.resources
+                    .getString(Res.string.error_message_unexpected_error),
+                Toast.LENGTH_SHORT,
+            ).show()
     }
 
     return false

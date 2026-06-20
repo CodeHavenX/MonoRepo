@@ -5,14 +5,15 @@ import com.cramsan.edifikana.client.lib.db.AppDatabase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
-internal actual val DatabaseModule = module {
+internal actual val DatabaseModule =
+    module {
     single {
-        Room.databaseBuilder(
-            androidApplication(),
-            AppDatabase::class.java,
-            "database-name"
-        )
-            .fallbackToDestructiveMigration(true)
+        Room
+            .databaseBuilder(
+                androidApplication(),
+                AppDatabase::class.java,
+                "database-name",
+            ).fallbackToDestructiveMigration(true)
             .build()
     }
 }

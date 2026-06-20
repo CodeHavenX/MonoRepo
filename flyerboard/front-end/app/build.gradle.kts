@@ -8,7 +8,6 @@ plugins {
     kotlin("plugin.serialization")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.android.library")
     id("androidx.room")
     id("com.google.devtools.ksp")
     id("io.github.takahirom.roborazzi")
@@ -115,7 +114,7 @@ kotlin {
         androidMain {
             dependsOn(localDB)
         }
-        androidUnitTest {
+        getByName("androidHostTest") {
             dependencies {
                 implementation(project(":framework:test-roborazzi"))
             }
@@ -140,25 +139,9 @@ tasks.matching { it.name != "kspCommonMainKotlinMetadata" }.configureEach {
     }
 }
 
-private val ENV_TEMPLATE_REPLACE_ME_BUILD_VARIABLE = "ENV_TEMPLATE_REPLACE_ME_VARIABLE"
-
-val flyerboardBuildVariable = "hello!"
-
-android {
-    namespace = "com.cramsan.flyerboard.client.lib"
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
-    buildFeatures {
-        buildConfig = true
-    }
-
-    buildTypes {
-        all {
-            buildConfigField("String", ENV_TEMPLATE_REPLACE_ME_BUILD_VARIABLE, "\"${flyerboardBuildVariable}\"")
-        }
+kotlin {
+    android {
+        namespace = "com.cramsan.flyerboard.client.lib"
     }
 }
 
@@ -176,22 +159,10 @@ dependencies {
     // shared across all targets, no per-platform variants needed)
     add("kspCommonMainMetadata", project(":framework:web-route-ksp"))
 
-    implementation("androidx.appcompat:appcompat:_")
-    implementation("androidx.core:core-ktx:_")
-    implementation("androidx.compose.material:material-icons-extended:_")
 
-    implementation("io.coil-kt.coil3:coil:")
-    implementation("io.coil-kt.coil3:coil-compose:_")
-    implementation("io.coil-kt.coil3:coil-network-ktor3:_")
 
-    implementation("io.ktor:ktor-client-cio:_")
 
-    implementation("androidx.room:room-runtime:_")
-    implementation("androidx.room:room-ktx:_")
 
-    implementation("io.insert-koin:koin-core:_")
-    implementation("io.insert-koin:koin-android:_")
-    implementation("io.insert-koin:koin-androidx-compose:_")
 }
 
 room {
@@ -207,5 +178,31 @@ roborazzi {
     generateComposePreviewRobolectricTests {
         enable = true
         packages = listOf("com.cramsan.flyerboard.client.lib")
+    }
+}
+
+kotlin {
+    sourceSets.getByName("androidMain") {
+        resources.srcDir("src/commonMain/resources")
+    }
+}
+
+
+kotlin {
+    sourceSets {
+        getByName("androidMain").dependencies {
+            implementation("androidx.appcompat:appcompat:_")
+            implementation("androidx.core:core-ktx:_")
+            implementation("androidx.compose.material:material-icons-extended:_")
+            implementation("io.coil-kt.coil3:coil:")
+            implementation("io.coil-kt.coil3:coil-compose:_")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:_")
+            implementation("io.ktor:ktor-client-cio:_")
+            implementation("androidx.room:room-runtime:_")
+            implementation("androidx.room:room-ktx:_")
+            implementation("io.insert-koin:koin-core:_")
+            implementation("io.insert-koin:koin-android:_")
+            implementation("io.insert-koin:koin-androidx-compose:_")
+        }
     }
 }

@@ -16,10 +16,7 @@ import com.cramsan.framework.core.CoreUri
  * - Compresses images (JPEG at 35% quality)
  * - Extracts filenames from content:// URIs
  */
-class FileServiceImpl(
-    private val ioDependencies: IODependencies
-) : FileService {
-
+class FileServiceImpl(private val ioDependencies: IODependencies) : FileService {
     override suspend fun readFileBytes(uri: CoreUri): Result<ByteArray> {
         return readBytes(uri, ioDependencies)
     }

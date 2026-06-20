@@ -37,13 +37,13 @@ class CameraDelegate(
     private val imageConfig: ImageConfig,
     private val stringProvider: StringProvider,
 ) {
-
-    private val _uiState = MutableStateFlow<CameraUiState>(
+    private val _uiState =
+        MutableStateFlow<CameraUiState>(
         CameraUiState.PreviewCamera(
             lensFacing = CameraSelector.LENS_FACING_BACK,
             captureWidth = imageConfig.captureWidth,
             captureHeight = imageConfig.captureHeight,
-        )
+        ),
     )
     val uiState: StateFlow<CameraUiState> = _uiState
 
@@ -52,7 +52,8 @@ class CameraDelegate(
 
     private val scope = activity.lifecycleScope
 
-    private val requestPermissionLauncher = activity.registerPermissionCallbacks(
+    private val requestPermissionLauncher =
+        activity.registerPermissionCallbacks(
         onPermissionGranted = { displayFrontCameraPreview() },
         onPermissionDenied = { displayPermissionDeniedMessage() },
     )
@@ -64,14 +65,18 @@ class CameraDelegate(
         when {
             ContextCompat.checkSelfPermission(
                 activity,
-                Manifest.permission.CAMERA
+                Manifest.permission.CAMERA,
             ) == PackageManager.PERMISSION_GRANTED -> {
                 displayFrontCameraPreview()
             }
+
             ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.CAMERA) -> {
                 displayPermissionDeniedMessage()
             }
-            else -> requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
         }
     }
 
@@ -85,13 +90,15 @@ class CameraDelegate(
     fun toggleCamera() {
         val previewState = _uiState.value as? CameraUiState.PreviewCamera ?: return
 
-        val newCameraSelection = when (previewState.lensFacing) {
+        val newCameraSelection =
+            when (previewState.lensFacing) {
             CameraSelector.LENS_FACING_BACK -> CameraSelector.LENS_FACING_FRONT
             CameraSelector.LENS_FACING_FRONT -> CameraSelector.LENS_FACING_BACK
             else -> return
         }
 
-        _uiState.value = previewState.copy(
+        _uiState.value =
+            previewState.copy(
             lensFacing = newCameraSelection,
         )
     }
@@ -105,7 +112,7 @@ class CameraDelegate(
         if (uri == null) {
             displayErrorMessage(
                 stringProvider.getString(Res.string.edifikana_string_error_take_photo),
-                RuntimeException("Failed to save image")
+                RuntimeException("Failed to save image"),
             )
             return
         } else {
@@ -117,7 +124,8 @@ class CameraDelegate(
      * Displays the front camera preview.
      */
     fun displayFrontCameraPreview() {
-        _uiState.value = CameraUiState.PreviewCamera(
+        _uiState.value =
+            CameraUiState.PreviewCamera(
             lensFacing = CameraSelector.LENS_FACING_BACK,
             captureWidth = imageConfig.captureWidth,
             captureHeight = imageConfig.captureHeight,
@@ -133,21 +141,26 @@ class CameraDelegate(
         imageCapture: ImageCapture,
     ) {
         val executor = ContextCompat.getMainExecutor(activity)
-        val fileName = SimpleDateFormat(
+        val fileName =
+            SimpleDateFormat(
             "yyyy-MM-dd-HH-mm-ss-SSS",
             Locale.US,
-        ).format(System.currentTimeMillis()) + ".jpg"
+        ).format(System.currentTimeMillis()) +
+            ".jpg"
 
-        val contentValues = ContentValues().apply {
+        val contentValues =
+            ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
         }
 
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(
-            activity.contentResolver,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            contentValues,
-        ).build()
+        val outputOptions =
+            ImageCapture.OutputFileOptions
+            .Builder(
+                activity.contentResolver,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues,
+            ).build()
 
         imageCapture.takePicture(
             outputOptions,
@@ -167,7 +180,7 @@ class CameraDelegate(
                         openImageConfirmation(outputFileResults.savedUri)
                     }
                 }
-            }
+            },
         )
     }
 
@@ -214,7 +227,7 @@ private fun ComponentActivity.registerPermissionCallbacks(
     onPermissionGranted: () -> Unit,
     onPermissionDenied: () -> Unit,
 ) = registerForActivityResult(
-    ActivityResultContracts.RequestPermission()
+    ActivityResultContracts.RequestPermission(),
 ) { isGranted ->
     if (isGranted) {
         onPermissionGranted()

@@ -1,8 +1,6 @@
 plugins {
-    kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
-    id("com.android.application")
     id("com.cramsan.kotlin-mpp-android-app")
 }
 
@@ -20,6 +18,8 @@ dependencies {
     implementation(project(":samples:android-lib"))
     implementation(project(":samples:mpp-lib"))
     implementation(project(":samples:jvm-lib"))
+    implementation(project(":framework:annotations"))
+    implementation(project(":framework:ui-preview"))
 
     implementation("androidx.activity:activity-compose:_")
     implementation("androidx.appcompat:appcompat:_")

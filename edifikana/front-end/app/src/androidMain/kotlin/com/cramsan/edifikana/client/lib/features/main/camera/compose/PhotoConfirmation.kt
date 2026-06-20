@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cramsan.edifikana.client.ui.components.EdifikanaImage
 import com.cramsan.edifikana.client.ui.components.ImageSource
@@ -48,7 +47,7 @@ fun PhotoConfirmation(
                         imageVector = Icons.Sharp.Check,
                         contentDescription = stringResource(Res.string.edifikana_string_confirm),
                         tint = Color.White,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
                     )
                 }
             },
@@ -58,11 +57,13 @@ fun PhotoConfirmation(
                         imageVector = Icons.Sharp.Cancel,
                         contentDescription = stringResource(Res.string.edifikana_string_cancel),
                         tint = Color.White,
-                        modifier = Modifier.fillMaxSize()
-                            .padding(5.dp)
+                        modifier =
+                            Modifier
+                            .fillMaxSize()
+                            .padding(5.dp),
                     )
                 }
-            }
+            },
         )
     }
 }

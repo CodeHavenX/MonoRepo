@@ -10,7 +10,6 @@ import androidx.activity.result.contract.ActivityResultContract
  * Camera contract.
  */
 class CameraContract : ActivityResultContract<String, Uri?>() {
-
     override fun createIntent(context: Context, input: String): Intent {
         return Intent(context, CameraActivity::class.java)
     }
@@ -20,7 +19,10 @@ class CameraContract : ActivityResultContract<String, Uri?>() {
             Activity.RESULT_OK -> {
                 intent?.getStringExtra(RESULT_URI)?.let { Uri.parse(it) }
             }
-            else -> null
+
+            else -> {
+                null
+            }
         }
     }
 }

@@ -219,6 +219,8 @@ Composable functions are **not unit tested**. Visual correctness is verified at 
 
 Each module with Compose UI has Roborazzi configured to generate Robolectric tests from every composable annotated with `@ComponentPreviews`, `@ScreenPreviews`, or `@DevicePreviews` (see `PreviewAnnotations.kt`) — a bare `@Preview` is not scanned. Use this to visually verify a component during or after implementation.
 
+**Task name depends on the Android plugin:** modules using the legacy `com.android.library` + Kotlin Multiplatform combination have a `Debug` variant, so the task is `recordRoborazziDebug` (as below). Modules migrated to `com.android.kotlin.multiplatform.library` (AGP 9.x) are variant-less — the equivalent task there is `recordRoborazziAndroidHostTest` (and `verifyRoborazziAndroidHostTest`, `compareRoborazziAndroidHostTest`, etc.), matching the `androidHostTest` source set name. Run `./gradlew :<module>:tasks --all | grep -i roborazzi` if unsure which one a given module has.
+
 **Record a single preview:**
 ```bash
 ./gradlew :<module>:recordRoborazziDebug \

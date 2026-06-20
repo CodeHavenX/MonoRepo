@@ -34,7 +34,9 @@ class InitializerTest : CoroutineTest() {
         eventLogger = mockk(relaxed = true)
         authManager = mockk()
         settingsHolder = mockk()
-        initializer = Initializer(eventLogger, authManager, settingsHolder)
+        every { settingsHolder.getBoolean(FrontEndApplicationSettingKey.IsDebug) } returns null
+        every { settingsHolder.saveBoolean(any(), any()) } just Runs
+        initializer = Initializer(eventLogger, authManager, settingsHolder, isDebugBuild = false)
     }
 
     @Test
@@ -62,5 +64,32 @@ class InitializerTest : CoroutineTest() {
 
         // Assert
         verify(exactly = 0) { settingsHolder.saveString(any(), any()) }
+    }
+
+    @Test
+    fun `seedDefaults seeds IsDebug from the platform flag when unset`() = runCoroutineTest {
+        // Arrange
+        every { settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) } returns "http://192.168.1.100:9292"
+        coEvery { authManager.verifyPermissions() } returns Result.success(true)
+
+        // Act
+        initializer.startStep()
+
+        // Assert
+        verify { settingsHolder.saveBoolean(FrontEndApplicationSettingKey.IsDebug, false) }
+    }
+
+    @Test
+    fun `seedDefaults does not overwrite IsDebug when already set`() = runCoroutineTest {
+        // Arrange
+        every { settingsHolder.getString(FrontEndApplicationSettingKey.BackEndUrl) } returns "http://192.168.1.100:9292"
+        every { settingsHolder.getBoolean(FrontEndApplicationSettingKey.IsDebug) } returns true
+        coEvery { authManager.verifyPermissions() } returns Result.success(true)
+
+        // Act
+        initializer.startStep()
+
+        // Assert
+        verify(exactly = 0) { settingsHolder.saveBoolean(any(), any()) }
     }
 }

@@ -74,7 +74,8 @@ internal val ExtrasModule =
 
         single(named(ApplicationIdentifier.IS_DEBUG)) {
             val settingsHolder: SettingsHolder = get()
-            settingsHolder.getBoolean(FrontEndApplicationSettingKey.IsDebug) ?: platformIsDebugBuild
+            settingsHolder.getBoolean(FrontEndApplicationSettingKey.IsDebug)
+                ?: get(named(ApplicationIdentifier.PLATFORM_IS_DEBUG_BUILD))
         }
 
         single { ManagerDependencies(get(), get()) }
@@ -145,4 +146,5 @@ enum class ApplicationIdentifier {
     WINDOW_EVENT_BUS,
     VIEW_MODEL_DEPENDENCIES,
     IS_DEBUG,
+    PLATFORM_IS_DEBUG_BUILD,
 }

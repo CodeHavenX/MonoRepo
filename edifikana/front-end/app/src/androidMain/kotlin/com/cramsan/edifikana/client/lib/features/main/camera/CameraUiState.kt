@@ -6,22 +6,15 @@ import android.net.Uri
  * Camera UI state.
  */
 sealed class CameraUiState {
-
     /**
      * No operation.
      */
-    data class PhotoConfirmation(
-        val photoUri: Uri
-    ) : CameraUiState()
+    data class PhotoConfirmation(val photoUri: Uri) : CameraUiState()
 
     /**
      * Preview camera.
      */
-    data class PreviewCamera(
-        val lensFacing: Int,
-        val captureWidth: Int,
-        val captureHeight: Int,
-    ) : CameraUiState()
+    data class PreviewCamera(val lensFacing: Int, val captureWidth: Int, val captureHeight: Int) : CameraUiState()
 
     /**
      * Permission denied.
@@ -31,7 +24,5 @@ sealed class CameraUiState {
     /**
      * Error.
      */
-    data class Error(
-        val message: String
-    ) : CameraUiState()
+    data class Error(val message: String) : CameraUiState()
 }

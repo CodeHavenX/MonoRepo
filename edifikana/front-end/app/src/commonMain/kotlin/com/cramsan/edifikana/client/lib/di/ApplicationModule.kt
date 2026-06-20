@@ -14,7 +14,6 @@ import com.cramsan.framework.core.compose.EventBus
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
 import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.withOptions
 import org.koin.core.qualifier.named
@@ -25,7 +24,9 @@ internal val ApplicationModule =
 
         single<String>(named(NamedDependency.DOMAIN_KEY)) { "EDIFIKANA" }
 
-        singleOf(::Initializer)
+        single {
+            Initializer(get(), get(), get(), get(named(ApplicationIdentifier.PLATFORM_IS_DEBUG_BUILD)))
+        }
 
         single(createdAtStart = true) {
             val registry: SettingRegistry = get()

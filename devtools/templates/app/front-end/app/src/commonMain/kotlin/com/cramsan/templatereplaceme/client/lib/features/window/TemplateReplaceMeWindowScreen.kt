@@ -23,8 +23,7 @@ import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.templatereplaceme.client.lib.app.TemplateReplaceMeApplicationMainScreenEventHandler
 import com.cramsan.templatereplaceme.client.lib.features.splash.splashNavGraphNavigation
-import com.cramsan.templatereplaceme.client.lib.navigation.entryToPath
-import com.cramsan.templatereplaceme.client.lib.navigation.pathToDestination
+import com.cramsan.templatereplaceme.client.lib.navigation.TemplateReplaceMePathNavigation
 import com.cramsan.templatereplaceme.client.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -62,7 +61,7 @@ private fun WindowsContent(
     // can navigate there after the main graph loads, avoiding the race where Splash's
     // clearStack navigation overwrites the target.
     val initialDestination: Destination? = remember {
-        browserNavigator.getInitialPath()?.let { pathToDestination(it) }
+        browserNavigator.getInitialPath()?.let { TemplateReplaceMePathNavigation.pathToDestination(it) }
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -90,9 +89,9 @@ private fun WindowsContent(
     LaunchedEffect(Unit) {
         browserNavigator.attach(
             navController,
-            ::entryToPath,
+            TemplateReplaceMePathNavigation::entryToPath,
         ) { path ->
-            pathToDestination(path)?.let { destination ->
+            TemplateReplaceMePathNavigation.pathToDestination(path)?.let { destination ->
                 navigate { navController.navigate(destination) }
             }
         }

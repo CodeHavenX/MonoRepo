@@ -88,3 +88,116 @@ class GenerateWebRoutesSourceTest {
         assertEquals(expected, source)
     }
 }
+
+class GeneratePathNavigationSourceTest {
+    @Test
+    fun `generates an aggregator chaining every root, importing those outside its own package`() {
+        val source =
+            generatePathNavigationSource(
+                packageName = "com.example.navigation",
+                objectName = "ExamplePathNavigation",
+                roots =
+                listOf(
+                    GeneratedRoot("com.example.auth", "AuthDestination"),
+                    GeneratedRoot("com.example.home", "HomeDestination"),
+                ),
+            )
+
+        val expected =
+            """
+            package com.example.navigation
+
+            import androidx.navigation.NavBackStackEntry
+            import com.cramsan.framework.core.compose.navigation.Destination
+            import com.example.auth.AuthDestination
+            import com.example.home.HomeDestination
+
+            internal object ExamplePathNavigation {
+                fun pathToDestination(path: String): Destination? =
+                    AuthDestination.fromWebPath(path)
+                        ?: HomeDestination.fromWebPath(path)
+
+                fun entryToPath(entry: NavBackStackEntry): String? =
+                    AuthDestination.toWebPath(entry)
+                        ?: HomeDestination.toWebPath(entry)
+            }
+
+            """.trimIndent()
+
+        assertEquals(expected, source)
+    }
+
+    @Test
+    fun `interleaves root imports with the fixed framework import alphabetically`() {
+        val source =
+            generatePathNavigationSource(
+                packageName = "com.cramsan.edifikana.client.lib.navigation",
+                objectName = "EdifikanaPathNavigation",
+                roots = listOf(GeneratedRoot("com.cramsan.edifikana.client.lib.features.auth", "AuthDestination")),
+            )
+
+        val expected =
+            """
+            package com.cramsan.edifikana.client.lib.navigation
+
+            import androidx.navigation.NavBackStackEntry
+            import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
+            import com.cramsan.framework.core.compose.navigation.Destination
+
+            internal object EdifikanaPathNavigation {
+                fun pathToDestination(path: String): Destination? =
+                    AuthDestination.fromWebPath(path)
+
+                fun entryToPath(entry: NavBackStackEntry): String? =
+                    AuthDestination.toWebPath(entry)
+            }
+
+            """.trimIndent()
+
+        assertEquals(expected, source)
+    }
+
+    @Test
+    fun `omits the import for a root in the same package as the aggregator`() {
+        val source =
+            generatePathNavigationSource(
+                packageName = "com.example",
+                objectName = "ExamplePathNavigation",
+                roots = listOf(GeneratedRoot("com.example", "MainDestination")),
+            )
+
+        assertEquals(
+            false,
+            source.contains("import com.example.MainDestination"),
+        )
+    }
+
+    @Test
+    fun `generates a null-returning aggregator when there are no roots`() {
+        val source =
+            generatePathNavigationSource(
+                packageName = "com.example.navigation",
+                objectName = "EmptyPathNavigation",
+                roots = emptyList(),
+            )
+
+        val expected =
+            """
+            package com.example.navigation
+
+            import androidx.navigation.NavBackStackEntry
+            import com.cramsan.framework.core.compose.navigation.Destination
+
+            internal object EmptyPathNavigation {
+                fun pathToDestination(path: String): Destination? =
+                    null
+
+                fun entryToPath(entry: NavBackStackEntry): String? =
+                    null
+            }
+
+            """.trimIndent()
+
+        assertEquals(expected, source)
+    }
+}

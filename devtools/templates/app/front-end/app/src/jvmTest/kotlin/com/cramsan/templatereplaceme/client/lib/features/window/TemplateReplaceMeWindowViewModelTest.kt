@@ -2,7 +2,6 @@ package com.cramsan.templatereplaceme.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
 import app.cash.turbine.turbineScope
-import com.cramsan.architecture.client.deeplink.DeepLinkManager
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -14,7 +13,6 @@ import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
-import io.mockk.mockk
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,7 +29,6 @@ class TemplateReplaceMeWindowViewModelTest : CoroutineTest() {
     private lateinit var delegatedEventsBus: EventBus<TemplateReplaceMeWindowDelegatedEvent>
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
-    private lateinit var deepLinkManager: DeepLinkManager
 
     @BeforeTest
     fun setupTest() {
@@ -40,7 +37,6 @@ class TemplateReplaceMeWindowViewModelTest : CoroutineTest() {
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
         delegatedEventsBus = EventBus()
-        deepLinkManager = mockk(relaxed = true)
         val dependencies = ViewModelDependencies(
             appScope = testCoroutineScope,
             dispatcherProvider = UnifiedDispatcherProvider(testCoroutineDispatcher),
@@ -52,7 +48,6 @@ class TemplateReplaceMeWindowViewModelTest : CoroutineTest() {
             dependencies = dependencies,
             windowEventEmitter = windowEventBus,
             delegatedEvents = delegatedEventsBus,
-            deepLinkManager = deepLinkManager,
         )
     }
 

@@ -17,11 +17,8 @@ internal val ManagerModule =
         singleOf(::ComponentReplaceMeManager)
         singleOf(::PreferencesManager)
 
-        // TODO: Register deep link handlers here using DeepLinkManager once you have real
-        //       navigation destinations. Example:
-        //   single(createdAtStart = true) {
-        //       get<DeepLinkManager>().register { params ->
-        //           if (params.params["type"] == "demo") MyActivity.MyDestination else null
-        //       }
-        //   }
+        // TODO: If this app needs a native custom-scheme deep link (e.g. an auth-provider
+        //       callback), add a scheme-alias resolver next to TemplateReplaceMePathNavigation
+        //       (the KSP-generated path aggregator) instead of registering it here — see
+        //       Edifikana's EdifikanaExternalUrlResolver.kt for the pattern.
     }

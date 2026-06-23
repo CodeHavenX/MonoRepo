@@ -41,10 +41,11 @@ class TemplateReplaceMeWindowViewModel(
      * Resolves [rawUrl] and navigates to the matching destination, if any. No-op for
      * unrecognized URLs.
      *
-     * If this app needs to resolve a native custom-scheme deep link (e.g. an OAuth/auth-provider
-     * callback like `templatereplaceme://reset`) in addition to plain browser paths, add a small
-     * scheme-alias resolver here instead of calling [TemplateReplaceMePathNavigation] directly —
-     * see Edifikana's `EdifikanaExternalUrlResolver.kt` for the pattern.
+     * Works unchanged for a native custom-scheme deep link (e.g. an OAuth/auth-provider callback
+     * like `templatereplaceme://host/auth/callback`) as long as the redirect URL embeds the
+     * destination's `@WebPath` as its path — [TemplateReplaceMePathNavigation] strips the
+     * scheme/authority generically (see `WebRoute.fromWebPath`), so no per-link alias table is
+     * needed here.
      */
     fun handleDeepLink(rawUrl: String) {
         viewModelCoroutineScope.launch {

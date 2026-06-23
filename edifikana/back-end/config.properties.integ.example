@@ -5,3 +5,4 @@
 supabase.url=http://localhost:54321
 supabase.key=<your-local-anon-key>
 supabase.disable=false
+webapp.url=http://127.0.0.1:8080

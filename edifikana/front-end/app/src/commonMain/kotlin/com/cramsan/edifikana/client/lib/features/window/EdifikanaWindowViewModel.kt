@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
-import com.cramsan.edifikana.client.lib.navigation.edifikanaResolveExternalUrl
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -39,22 +38,6 @@ class EdifikanaWindowViewModel(
                     ),
                 )
             }
-        }
-    }
-
-    /**
-     * Resolves [rawUrl] and navigates to the matching destination, if any. No-op for
-     * unrecognized URLs.
-     */
-    fun handleDeepLink(rawUrl: String) {
-        viewModelCoroutineScope.launch {
-            val destination = edifikanaResolveExternalUrl(rawUrl) ?: return@launch
-            logI(TAG, "Deep link resolved to: $destination")
-            emitEvent(
-                EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(
-                    EdifikanaWindowsEvent.NavigateToScreen(destination),
-                ),
-            )
         }
     }
 

@@ -34,6 +34,12 @@ class WebRoute<T : Destination>(val path: String, private val serializer: KSeria
      * Parses [url] and returns a typed destination, or null if the path or required
      * parameters do not match.
      *
+     * [url] may be a plain browser-relative path, an absolute `http(s)://host/path` URL, or a
+     * custom app-scheme URI (e.g. `myapp://host/path`) — a leading `<scheme>://<authority>`
+     * prefix, if present, is stripped via [stripSchemeAndAuthority] before matching, so every
+     * external entry point resolves through the same path-based lookup with no per-link
+     * alias table.
+     *
      * Both the query string (`?k=v`) and the fragment (`#k=v`) are parsed as parameter
      * sources, with fragment values taking precedence over query values on key collision.
      * This single shape covers every external entry point: a plain browser path/query,
@@ -41,17 +47,20 @@ class WebRoute<T : Destination>(val path: String, private val serializer: KSeria
      * (`#access_token=...&type=recovery`).
      */
     fun fromWebPath(url: String): T? {
-        val pathEndIdx = url.indexOfFirst { it == '?' || it == '#' }
-        val urlPath = if (pathEndIdx < 0) url else url.substring(0, pathEndIdx)
+        val canonicalUrl = url.stripSchemeAndAuthority()
+        val pathEndIdx = canonicalUrl.indexOfFirst { it == '?' || it == '#' }
+        val urlPath = if (pathEndIdx < 0) canonicalUrl else canonicalUrl.substring(0, pathEndIdx)
         if (urlPath != path) return null
 
         val queryStr =
-            if ('?' in url) {
-                url.substringAfter('?').let { afterQ -> if ('#' in afterQ) afterQ.substringBefore('#') else afterQ }
+            if ('?' in canonicalUrl) {
+                canonicalUrl.substringAfter('?').let { afterQ ->
+                    if ('#' in afterQ) afterQ.substringBefore('#') else afterQ
+                }
             } else {
                 null
             }
-        val fragmentStr = if ('#' in url) url.substringAfter('#') else null
+        val fragmentStr = if ('#' in canonicalUrl) canonicalUrl.substringAfter('#') else null
 
         // Fragment params win over query params on key collision.
         val params = paramsOf(queryStr) + paramsOf(fragmentStr)
@@ -90,6 +99,22 @@ class WebRoute<T : Destination>(val path: String, private val serializer: KSeria
  */
 @OptIn(ExperimentalSerializationApi::class)
 inline fun <reified T : Destination> webRoute(path: String): WebRoute<T> = WebRoute(path, serializer())
+
+/**
+ * Strips a leading `<scheme>://<authority>` prefix, if present, leaving only the
+ * path/query/fragment. Lets [WebRoute.fromWebPath] resolve an absolute `http(s)` URL or a
+ * custom app-scheme URI (e.g. `myapp://host/path`) exactly like a plain relative path, with no
+ * separate per-scheme alias table. Returns the input unchanged if it has no `scheme://` prefix.
+ */
+internal fun String.stripSchemeAndAuthority(): String {
+    val schemeEnd = indexOf(SCHEME_DELIMITER)
+    if (schemeEnd < 0) return this
+    val afterAuthority = substring(schemeEnd + SCHEME_DELIMITER.length)
+    val pathStart = afterAuthority.indexOf('/')
+    return if (pathStart < 0) "" else afterAuthority.substring(pathStart)
+}
+
+private const val SCHEME_DELIMITER = "://"
 
 private const val HEX_DIGITS = "0123456789ABCDEF"
 private val unreservedChars = (('A'..'Z') + ('a'..'z') + ('0'..'9') + listOf('-', '_', '.', '~')).toSet()

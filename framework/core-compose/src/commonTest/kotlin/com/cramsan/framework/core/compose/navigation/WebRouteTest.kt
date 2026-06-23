@@ -142,4 +142,27 @@ class WebRouteTest {
     fun `fromWebPath returns null when path does not match before fragment`() {
         assertNull(oneParamRoute.fromWebPath("/other#value=1"))
     }
+
+    @Test
+    fun `fromWebPath strips scheme and authority from an absolute http URL`() {
+        val destination = oneParamRoute.fromWebPath("http://127.0.0.1:8080/one?value=hello")
+        assertEquals(OneParam("hello"), destination)
+    }
+
+    @Test
+    fun `fromWebPath strips scheme and authority from a custom app-scheme URI`() {
+        val destination = oneParamRoute.fromWebPath("myapp://callback/one?value=hello")
+        assertEquals(OneParam("hello"), destination)
+    }
+
+    @Test
+    fun `fromWebPath resolves a custom app-scheme URI with an empty authority`() {
+        val destination = oneParamRoute.fromWebPath("myapp:///one?value=hello")
+        assertEquals(OneParam("hello"), destination)
+    }
+
+    @Test
+    fun `fromWebPath returns null for a custom app-scheme URI with no path`() {
+        assertNull(oneParamRoute.fromWebPath("myapp://callback?value=hello"))
+    }
 }

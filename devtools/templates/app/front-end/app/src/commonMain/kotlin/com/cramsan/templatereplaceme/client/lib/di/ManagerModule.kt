@@ -18,7 +18,8 @@ internal val ManagerModule =
         singleOf(::PreferencesManager)
 
         // TODO: If this app needs a native custom-scheme deep link (e.g. an auth-provider
-        //       callback), add a scheme-alias resolver next to TemplateReplaceMePathNavigation
-        //       (the KSP-generated path aggregator) instead of registering it here — see
-        //       Edifikana's EdifikanaExternalUrlResolver.kt for the pattern.
+        //       callback), make sure the redirect/callback URL embeds the destination's
+        //       @WebPath as its path (e.g. yourscheme://host/your-canonical-path) — WebRoute
+        //       strips the scheme/authority generically, so TemplateReplaceMePathNavigation
+        //       (the KSP-generated path aggregator) resolves it with no extra wiring here.
     }

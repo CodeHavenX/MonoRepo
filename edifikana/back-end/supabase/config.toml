@@ -92,8 +92,10 @@ enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
 site_url = "http://127.0.0.1:8080"
-# A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["http://127.0.0.1:8080", "edifikana://reset"]
+# A list of URLs that auth providers are permitted to redirect to post authentication. Entries
+# support glob wildcards (e.g. "**"), so a single entry allow-lists every canonical web path
+# (e.g. the password-reset redirect to /auth/set-new-password) without per-path edits here.
+additional_redirect_urls = ["http://127.0.0.1:8080", "http://127.0.0.1:8080/**"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # If disabled, the refresh token will never expire.

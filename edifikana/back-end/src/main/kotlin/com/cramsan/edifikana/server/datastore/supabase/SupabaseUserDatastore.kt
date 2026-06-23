@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.architecture.server.settings.SettingsHolder
+import com.cramsan.edifikana.lib.model.network.password.SET_NEW_PASSWORD_WEB_PATH
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.UserDatastore
@@ -7,6 +9,7 @@ import com.cramsan.edifikana.server.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserOrganizationMappingEntity
 import com.cramsan.edifikana.server.service.models.User
+import com.cramsan.edifikana.server.settings.EdifikanaSettingKey
 import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.core.SecureStringAccess
@@ -32,6 +35,7 @@ class SupabaseUserDatastore(
     private val postgrest: Postgrest,
     private val clock: Clock,
     private val auth: Auth,
+    private val settingsHolder: SettingsHolder,
 ) : UserDatastore {
     /**
      * Creates a new user with the given credentials. Transient users skip Supabase Auth.
@@ -382,12 +386,17 @@ class SupabaseUserDatastore(
     /**
      * Sends a password reset notification via Supabase Auth.
      * Email-based reset is supported. Phone-based reset is not yet implemented.
+     *
+     * The redirect link points at the web app's [SET_NEW_PASSWORD_WEB_PATH] (configured via
+     * [EdifikanaSettingKey.WebAppUrl]) rather than a native custom-scheme deep link, so the
+     * email link is openable from any browser regardless of which device receives it.
      */
     override suspend fun requestPasswordReset(email: String?, phoneNumber: String?): Result<Unit> =
         runSuspendCatching(TAG) {
             if (email != null) {
                 logD(TAG, "Requesting password reset for email: %s", email)
-                auth.resetPasswordForEmail(email)
+                val webAppUrl = settingsHolder.getString(EdifikanaSettingKey.WebAppUrl)
+                auth.resetPasswordForEmail(email, redirectUrl = webAppUrl?.let { "$it$SET_NEW_PASSWORD_WEB_PATH" })
             } else {
                 // TODO: Implement phone-based password reset when Supabase phone auth is fully supported
                 throw NotImplementedError("Phone-based password reset is not yet supported")

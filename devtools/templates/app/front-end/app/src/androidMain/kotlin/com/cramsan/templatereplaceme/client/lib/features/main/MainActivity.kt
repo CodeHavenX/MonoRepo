@@ -54,7 +54,9 @@ class MainActivity : ComponentActivity(), TemplateReplaceMeApplicationMainScreen
         val uri = intent.data ?: return
         // TODO: Filter by your app's custom URI scheme before proceeding.
         // TODO: If using Supabase Auth, call supabase.handleDeeplinks(intent) here first
-        //       to establish the auth session before navigating.
+        //       to establish the auth session before navigating. The redirect URL configured
+        //       with Supabase should embed the destination's @WebPath as its path so
+        //       windowViewModel.handleDeepLink resolves it with no extra wiring.
         lifecycleScope.launch {
             windowViewModel.handleDeepLink(uri.toString())
         }

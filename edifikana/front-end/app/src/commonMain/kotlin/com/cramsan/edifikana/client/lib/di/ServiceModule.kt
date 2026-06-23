@@ -54,8 +54,6 @@ internal val ServiceModule =
             ) {
                 install(Auth) {
                     sessionManager = SettingsSessionManager(key = "$supabaseUrl-client")
-                    scheme = "edifikana"
-                    host = "reset"
                 }
                 install(ComposeAuth) {
                     googleNativeLogin(

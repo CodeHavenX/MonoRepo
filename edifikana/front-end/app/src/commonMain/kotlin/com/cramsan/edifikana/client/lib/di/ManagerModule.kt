@@ -1,8 +1,6 @@
 package com.cramsan.edifikana.client.lib.di
 
-import com.cramsan.architecture.client.deeplink.DeepLinkManager
 import com.cramsan.architecture.client.manager.PreferencesManager
-import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
@@ -25,17 +23,4 @@ internal val ManagerModule =
         singleOf(::OrganizationManager)
         singleOf(::StorageManager)
         singleOf(::NotificationManager)
-
-        single(createdAtStart = true) {
-            get<DeepLinkManager>().register { params ->
-                // PKCE: edifikana://reset?code=CODE (no type param)
-                // Implicit: edifikana://reset#access_token=...&type=recovery
-                // Checking scheme+host handles both flows without coupling to flow type.
-                if (params.rawInput.startsWith("edifikana://reset")) {
-                    AuthDestination.SetNewPasswordDestination
-                } else {
-                    null
-                }
-            }
-        }
     }

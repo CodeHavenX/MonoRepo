@@ -286,15 +286,13 @@ fun generateActivity(
 
     return GenerationResult(
         createdFiles = fileMap.map { it.second.toString() },
-        postGenerationChecklist = activityChecklist(activityName, app, appPascal, activityPackage, windowClass),
+        postGenerationChecklist = activityChecklist(activityName, appPascal, windowClass),
     )
 }
 
 private fun activityChecklist(
     activityName: String,
-    app: String,
     appPascal: String,
-    activityPackage: String,
     windowClass: String,
 ): List<String> =
     listOf(
@@ -306,16 +304,7 @@ private fun activityChecklist(
         "# Call inside WindowNavigationHost in <App>WindowScreen.kt:",
         "${toLowerCamel(activityName)}NavGraphNavigation(typeMap)",
         "",
-        "# 2. Wire PathNavigation.kt (WASM / URL routing) — add to both handler lists:",
-        "import com.cramsan.$app.client.lib.features.$activityPackage.${activityName}Destination",
-        "",
-        "private val entryToPathHandlers: List<(NavBackStackEntry) -> String?> =",
-        "    listOf({ entry -> ${activityName}Destination.toWebPath(entry) })",
-        "",
-        "private val pathToDestinationHandlers: List<(String) -> Destination?> =",
-        "    listOf({ path -> ${activityName}Destination.fromWebPath(path) })",
-        "",
-        "# 3. If this is the app's first activity, update SplashViewModel.navigateToMainScreen",
+        "# 2. If this is the app's first activity, update SplashViewModel.navigateToMainScreen",
         "#    (features/splash/SplashViewModel.kt) — without this the app hangs on splash:",
         "emitWindowEvent(",
         "    ${appPascal}WindowsEvent.NavigateToNavGraph(",
@@ -324,9 +313,11 @@ private fun activityChecklist(
         "    ),",
         ")",
         "",
-        "# 4. Once you create your first real feature (see /create-feature), replace",
+        "# 3. Once you create your first real feature (see /create-feature), replace",
         "#    ${TEMPLATE_DEFAULT_FEATURE}Destination: remove it from ${activityName}Destination.kt and",
         "#    update startDestination in ${activityName}ActivityScreen.kt to point at the new feature.",
+        "#    (URL routing needs no manual wiring — every @WebPath-annotated destination is picked",
+        "#    up automatically by the KSP-generated <App>PathNavigation aggregator.)",
     )
 
 private fun findWindowNavGraphDestinationClass(repoRoot: Path, app: String): String {

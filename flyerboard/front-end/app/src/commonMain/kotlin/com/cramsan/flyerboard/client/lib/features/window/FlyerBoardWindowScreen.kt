@@ -30,8 +30,7 @@ import com.cramsan.flyerboard.client.lib.features.auth.authNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.main.MainDestination
 import com.cramsan.flyerboard.client.lib.features.main.mainNavGraphNavigation
 import com.cramsan.flyerboard.client.lib.features.splash.SplashScreen
-import com.cramsan.flyerboard.client.lib.navigation.flyerBoardEntryToPath
-import com.cramsan.flyerboard.client.lib.navigation.pathToDestination
+import com.cramsan.flyerboard.client.lib.navigation.FlyerBoardPathNavigation
 import com.cramsan.flyerboard.client.ui.components.FlyerBoardFooter
 import com.cramsan.flyerboard.client.ui.components.FlyerBoardMainTopBar
 import com.cramsan.flyerboard.client.ui.components.FlyerBoardTopBarTab
@@ -68,15 +67,17 @@ fun FlyerBoardWindowScreen(
     // clearStack navigation overwrites the target.
     val initialDestination: Destination? =
         remember {
-            browserNavigator.getInitialPath()?.let { pathToDestination(it) }
+            browserNavigator.getInitialPath()?.let { FlyerBoardPathNavigation.pathToDestination(it) }
         }
 
     LaunchedEffect(Unit) {
         browserNavigator.attach(
             navController,
-            ::flyerBoardEntryToPath,
+            FlyerBoardPathNavigation::entryToPath,
         ) { path ->
-            navController.navigate(pathToDestination(path))
+            navController.navigate(
+                FlyerBoardPathNavigation.pathToDestination(path) ?: MainDestination.FlyerListDestination,
+            )
         }
     }
 

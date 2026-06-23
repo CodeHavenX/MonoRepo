@@ -73,8 +73,8 @@ class WebDestinationProcessorTest {
             every { this@mockk.containingFile } returns mockk<KSFile>()
         }
 
-    private fun resolverFor(root: KSClassDeclaration): Resolver {
-        val file = mockk<KSFile> { every { declarations } returns sequenceOf(root) }
+    private fun resolverFor(vararg roots: KSClassDeclaration): Resolver {
+        val file = mockk<KSFile> { every { declarations } returns roots.asSequence() }
         return mockk { every { getAllFiles() } returns sequenceOf(file) }
     }
 
@@ -121,6 +121,45 @@ class WebDestinationProcessorTest {
             )
         }
         verify(exactly = 0) { codeGenerator.createNewFile(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `also generates an aggregator file when aggregator options are provided`() {
+        val foo = subclass("FooDestination", "/foo")
+        val root = sealedRoot("com.example", "MainDestination", listOf(foo))
+        val resolver = resolverFor(root)
+
+        val routesOutput = ByteArrayOutputStream()
+        val aggregatorOutput = ByteArrayOutputStream()
+        val codeGenerator =
+            mockk<CodeGenerator> {
+                every { createNewFile(any(), "com.example", "MainDestinationWebRoutes", "kt") } returns routesOutput
+                every { createNewFile(any(), "com.example.nav", "AppPathNavigation", "kt") } returns aggregatorOutput
+            }
+        val logger = mockk<KSPLogger>(relaxed = true)
+
+        WebDestinationProcessor(codeGenerator, logger, "com.example.nav", "AppPathNavigation").process(resolver)
+
+        val generated = aggregatorOutput.toByteArray().decodeToString()
+        assertTrue(generated.contains("internal object AppPathNavigation {"))
+        assertTrue(generated.contains("MainDestination.fromWebPath(path)"))
+    }
+
+    @Test
+    fun `does not generate an aggregator file when aggregator options are absent`() {
+        val foo = subclass("FooDestination", "/foo")
+        val root = sealedRoot("com.example", "MainDestination", listOf(foo))
+        val resolver = resolverFor(root)
+
+        val codeGenerator =
+            mockk<CodeGenerator> {
+                every { createNewFile(any(), any(), any(), any()) } returns ByteArrayOutputStream()
+            }
+        val logger = mockk<KSPLogger>(relaxed = true)
+
+        WebDestinationProcessor(codeGenerator, logger).process(resolver)
+
+        verify(exactly = 1) { codeGenerator.createNewFile(any(), any(), any(), any()) }
     }
 
     @Test

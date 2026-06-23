@@ -158,11 +158,13 @@ dependencies {
     // WebDestination routing codegen (commonMain only — generated routing objects are
     // shared across all targets, no per-platform variants needed)
     add("kspCommonMainMetadata", project(":framework:web-route-ksp"))
+}
 
-
-
-
-
+ksp {
+    // Generates FlyerBoardPathNavigation, chaining every WebDestination hierarchy in this
+    // module, replacing the hand-maintained PathNavigation.kt aggregator.
+    arg("webRouteAggregatorPackage", "com.cramsan.flyerboard.client.lib.navigation")
+    arg("webRouteAggregatorName", "FlyerBoardPathNavigation")
 }
 
 room {

@@ -1,7 +1,6 @@
 package com.cramsan.templatereplaceme.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
-import com.cramsan.architecture.client.deeplink.DeepLinkManager
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.EventEmitter
@@ -9,6 +8,7 @@ import com.cramsan.framework.core.compose.EventReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.logging.logI
+import com.cramsan.templatereplaceme.client.lib.navigation.TemplateReplaceMePathNavigation
 import kotlinx.coroutines.launch
 
 /**
@@ -19,7 +19,6 @@ class TemplateReplaceMeWindowViewModel(
     dependencies: ViewModelDependencies,
     private val windowEventEmitter: EventEmitter<WindowEvent>,
     private val delegatedEvents: EventReceiver<TemplateReplaceMeWindowDelegatedEvent>,
-    private val deepLinkManager: DeepLinkManager,
 ) : BaseViewModel<TemplateReplaceMeWindowViewModelEvent, TemplateReplaceMeWindowUIState>(
     dependencies,
     TemplateReplaceMeWindowUIState,
@@ -39,12 +38,17 @@ class TemplateReplaceMeWindowViewModel(
     }
 
     /**
-     * Resolves [rawUrl] via [DeepLinkManager] and navigates to the matching destination, if any.
-     * No-op when no handler is registered for the given URL.
+     * Resolves [rawUrl] and navigates to the matching destination, if any. No-op for
+     * unrecognized URLs.
+     *
+     * If this app needs to resolve a native custom-scheme deep link (e.g. an OAuth/auth-provider
+     * callback like `templatereplaceme://reset`) in addition to plain browser paths, add a small
+     * scheme-alias resolver here instead of calling [TemplateReplaceMePathNavigation] directly —
+     * see Edifikana's `EdifikanaExternalUrlResolver.kt` for the pattern.
      */
     fun handleDeepLink(rawUrl: String) {
         viewModelCoroutineScope.launch {
-            val destination = deepLinkManager.resolve(rawUrl) ?: return@launch
+            val destination = TemplateReplaceMePathNavigation.pathToDestination(rawUrl) ?: return@launch
             logI(TAG, "Deep link resolved to: $destination")
             emitEvent(
                 TemplateReplaceMeWindowViewModelEvent.TemplateReplaceMeWindowEventWrapper(

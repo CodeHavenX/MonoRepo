@@ -31,14 +31,13 @@ import com.cramsan.edifikana.client.lib.features.debug.debugNavGraphNavigation
 import com.cramsan.edifikana.client.lib.features.home.homeNavGraphNavigation
 import com.cramsan.edifikana.client.lib.features.settings.settingsNavGraphNavigation
 import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
+import com.cramsan.edifikana.client.lib.navigation.EdifikanaPathNavigation
 import com.cramsan.edifikana.client.lib.navigation.EmployeeIdNavType
 import com.cramsan.edifikana.client.lib.navigation.EventLogEntryIdNavType
 import com.cramsan.edifikana.client.lib.navigation.OrganizationIdNavType
 import com.cramsan.edifikana.client.lib.navigation.PropertyIdNavType
 import com.cramsan.edifikana.client.lib.navigation.TimeCardEventIdNavType
 import com.cramsan.edifikana.client.lib.navigation.UserIdNavType
-import com.cramsan.edifikana.client.lib.navigation.edifikanaEntryToPath
-import com.cramsan.edifikana.client.lib.navigation.edifikanaPathToDestination
 import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
@@ -88,7 +87,7 @@ private fun WindowsContent(
     // auth check, avoiding the race where Splash's navigation overwrites the target page.
     val initialDestination =
         remember {
-            browserNavigator.getInitialPath()?.let { edifikanaPathToDestination(it) }
+            browserNavigator.getInitialPath()?.let { EdifikanaPathNavigation.pathToDestination(it) }
         }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -113,9 +112,9 @@ private fun WindowsContent(
     LaunchedEffect(Unit) {
         browserNavigator.attach(
             navController,
-            ::edifikanaEntryToPath,
+            EdifikanaPathNavigation::entryToPath,
         ) { path ->
-            edifikanaPathToDestination(path)?.let { destination ->
+            EdifikanaPathNavigation.pathToDestination(path)?.let { destination ->
                 navigate { navController.navigate(destination) }
             }
         }

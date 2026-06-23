@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 
@@ -12,8 +13,12 @@ class AuthDestinationTest {
     }
 
     @Test
-    fun `fromWebPath returns SignUpDestination`() {
-        assertIs<AuthDestination.SignUpDestination>(AuthDestination.fromWebPath("/auth/sign-up?userEmail=test%40example.com"))
+    fun `fromWebPath returns SignUpDestination with decoded percent-encoded value`() {
+        val destination =
+            assertIs<AuthDestination.SignUpDestination>(
+                AuthDestination.fromWebPath("/auth/sign-up?userEmail=test%40example.com"),
+            )
+        assertEquals("test@example.com", destination.userEmail)
     }
 
     @Test

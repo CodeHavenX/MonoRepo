@@ -15,6 +15,7 @@ plugins {
     id("io.github.takahirom.roborazzi") apply false
     // Internal gradle plugins
     id("com.cramsan.detekt") apply false
+    id("com.cramsan.dev-shortcuts")
     id("com.cramsan.release-task") apply false
     id("com.cramsan.supabase-task") apply false
     id("com.cramsan.kotlin-jvm-lib") apply false
@@ -87,7 +88,7 @@ tasks.register("generateBuildArtifacts") {
  * all projects are running correctly.
  */
 val releaseAll = tasks.register("releaseAll") {
-    group = "release"
+    group = "dev shortcuts"
     description = "Builds all target"
 
     dependsOn("generateBuildArtifacts")

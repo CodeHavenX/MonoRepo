@@ -1,5 +1,7 @@
 package com.cramsan
 
+import org.gradle.api.tasks.JavaExec
+
 plugins {
     id("application")
     id("io.ktor.plugin")
@@ -18,6 +20,15 @@ afterEvaluate {
 
     tasks.named("releaseJvm") {
         dependsOn("buildFatJar")
+    }
+
+    // Local dev mode (hot reload, verbose errors) lives in application.debug.conf, layered on
+    // top of the base application.conf. Wire it into `run` automatically so the Gradle task
+    // behaves the same way as the checked-in IntelliJ run configurations.
+    if (file("src/main/resources/application.debug.conf").exists()) {
+        tasks.named<JavaExec>("run") {
+            args("-config=application.conf", "-config=application.debug.conf")
+        }
     }
 
     val isCiDeployable = project.extra.has("ciDeployable") && project.extra["ciDeployable"] == true

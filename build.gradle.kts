@@ -44,6 +44,10 @@ ideCheck {
         register("AndroidStudio") {
             minVersion.set("2026.1.2")
         }
+        register("Idea") {
+            minVersion.set("2026.2")
+        }
+        failOnUnsupportedIde.set(true)
     }
 }
 

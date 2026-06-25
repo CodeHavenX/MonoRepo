@@ -57,6 +57,42 @@ fun inferPlatformPrefix(): String? {
     return null
 }
 
+/**
+ * Formats a user-facing IDE check violation as a speech bubble spoken by a cute cat,
+ * followed by technical details. [title] is the one-line problem summary, [action] is
+ * what the developer should do to fix it, and [details] are the raw property values.
+ */
+fun formatViolation(title: String, action: String, details: String): String {
+    val bodyLines = listOf(
+        "Problem : $title",
+        "",
+        "Fix     : $action",
+        "",
+        "To disable this check:",
+        "  ideCheck { failOnUnsupportedIde.set(false) }",
+        "  in the root build.gradle.kts",
+    )
+    val innerWidth = bodyLines.maxOf { it.length } + 2
+    val bar = "-".repeat(innerWidth)
+    fun row(text: String) = "  | ${text.padEnd(innerWidth - 1)}|"
+    return buildString {
+        appendLine()
+        appendLine("  .$bar.")
+        appendLine(row(""))
+        bodyLines.forEach { appendLine(row(it)) }
+        appendLine(row(""))
+        appendLine("  `$bar'")
+        appendLine("           \\")
+        appendLine("            \\   /\\_/\\")
+        appendLine("             \\ ( o.o )  < IDE Check Failed!")
+        appendLine("               (> ^ <)")
+        appendLine("                \"   \"")
+        appendLine()
+        appendLine("  Technical details:")
+        details.lines().forEach { appendLine("    $it") }
+    }
+}
+
 /** Compares two dot-separated version strings component by component. */
 fun compareVersions(detected: String, minimum: String): Int {
     val detectedParts = detected.split(".").map { it.toIntOrNull() ?: 0 }
@@ -101,15 +137,17 @@ gradle.projectsEvaluated {
     }
 
     if (platformPrefix == null) {
-        val selector = System.getProperty("idea.paths.selector") ?: "(not set)"
         report(
-            "\n" +
-                "Could not identify the IDE in use.\n" +
-                "  idea.platform.prefix : (not set)\n" +
-                "  idea.paths.selector  : $selector\n" +
-                "  idea.version         : ${ideVersion.ifEmpty { "(not set)" }}\n" +
-                "  All IDE properties written to: ${diagnosticsFile.absolutePath}\n" +
-                "  Once identified, add the IDE to the ideCheck block in the root build.gradle.kts.\n"
+            formatViolation(
+                title = "Your IDE could not be identified.",
+                action = "Add your IDE to the ideCheck block in the root build.gradle.kts.",
+                details = buildString {
+                    appendLine("idea.platform.prefix : (not set)")
+                    appendLine("idea.paths.selector  : ${System.getProperty("idea.paths.selector") ?: "(not set)"}")
+                    appendLine("idea.version         : ${ideVersion.ifEmpty { "(not set)" }}")
+                    append("All IDE properties   : ${diagnosticsFile.absolutePath}")
+                },
+            )
         )
         return@projectsEvaluated
     }
@@ -119,12 +157,14 @@ gradle.projectsEvaluated {
     if (spec == null) {
         val supported = ideCheck.ides.names.joinToString(", ").ifEmpty { "(none configured)" }
         report(
-            "\n" +
-                "Unsupported IDE detected.\n" +
-                "  Detected : $platformPrefix${if (ideVersion.isNotEmpty()) " $ideVersion" else ""}\n" +
-                "  Supported: $supported\n" +
-                "  Using an unsupported IDE may cause unexpected sync or build behavior.\n" +
-                "  To update the supported IDE list, edit the ideCheck block in the root build.gradle.kts.\n"
+            formatViolation(
+                title = "\"$platformPrefix\" is not on the supported IDE list.",
+                action = "Switch to one of the supported IDEs: $supported.",
+                details = buildString {
+                    appendLine("Detected : $platformPrefix${if (ideVersion.isNotEmpty()) " $ideVersion" else ""}")
+                    append("Supported: $supported")
+                },
+            )
         )
         return@projectsEvaluated
     }
@@ -132,12 +172,14 @@ gradle.projectsEvaluated {
     val minVersion = spec.minVersion.orNull
     if (minVersion != null && ideVersion.isNotEmpty() && compareVersions(ideVersion, minVersion) < 0) {
         report(
-            "\n" +
-                "IDE version is below the minimum supported version.\n" +
-                "  Detected : $platformPrefix $ideVersion\n" +
-                "  Minimum  : $platformPrefix $minVersion\n" +
-                "  Please upgrade your IDE to avoid unexpected sync or build behavior.\n" +
-                "  To change the minimum version, edit the ideCheck block in the root build.gradle.kts.\n"
+            formatViolation(
+                title = "Your $platformPrefix $ideVersion is below the minimum required version.",
+                action = "Upgrade $platformPrefix to $minVersion or newer.",
+                details = buildString {
+                    appendLine("Detected : $platformPrefix $ideVersion")
+                    append("Minimum  : $platformPrefix $minVersion")
+                },
+            )
         )
     }
 }

@@ -121,6 +121,10 @@ fun formatViolation(
  *    `%LOCALAPPDATA%\JetBrains\Toolbox\apps` (Windows),
  *    `~/Library/Application Support/JetBrains/Toolbox/apps` (macOS),
  *    `~/.local/share/JetBrains/Toolbox/apps` (Linux).
+ * 5. IDE application bundle — plugins bundled inside the installed IDE application itself:
+ *    `~/Applications/Android Studio*.app/Contents/plugins/` or `/Applications/…` (macOS),
+ *    `%PROGRAMFILES%\<vendor>\<app>\plugins\` (Windows),
+ *    `/opt/<ide>/plugins/` or `/usr/local/<ide>/plugins/` (Linux).
  */
 fun resolvePluginDirs(): List<java.io.File> {
     val dirs = mutableListOf<java.io.File>()
@@ -220,6 +224,44 @@ fun resolvePluginDirs(): List<java.io.File> {
                     content.contains("\"dataDirectoryName\":\"$familyPrefix")) {
                     dirs.add(java.io.File(appDir, "plugins"))
                 }
+            }
+        }
+
+        // 5. IDE application bundle — bundled plugins ship inside the installed app itself.
+        //    macOS:   ~/Applications/<App>.app/Contents/plugins/ or /Applications/<App>.app/Contents/plugins/
+        //    Linux:   /opt/<ide>/plugins/ or /usr/local/<ide>/plugins/ or ~/.<ide>/plugins/
+        //    Windows: %PROGRAMFILES%\<vendor>\<app>\plugins\
+        val appBundleName = when (vendorName) {
+            "Google"    -> "Android Studio"
+            "JetBrains" -> "IntelliJ IDEA"
+            else        -> null
+        }
+        if (appBundleName != null) {
+            if (isMac) {
+                val appDirs = listOf(
+                    java.io.File(userHome, "Applications"),
+                    java.io.File("/Applications"),
+                )
+                for (appParent in appDirs) {
+                    appParent.listFiles()
+                        ?.filter { it.name.startsWith(appBundleName) && it.name.endsWith(".app") }
+                        ?.forEach { appBundle ->
+                            dirs.add(java.io.File(appBundle, "Contents/plugins"))
+                        }
+                }
+            } else if (isWindows) {
+                val programFiles = System.getenv("PROGRAMFILES") ?: "C:\\Program Files"
+                val winVendor = if (vendorName == "Google") "Google" else "JetBrains"
+                java.io.File(programFiles, winVendor).listFiles()
+                    ?.filter { it.isDirectory && it.name.startsWith(appBundleName) }
+                    ?.forEach { dirs.add(java.io.File(it, "plugins")) }
+            } else {
+                val linuxDirName = if (vendorName == "Google") "android-studio" else "idea"
+                listOf(
+                    java.io.File("/opt/$linuxDirName/plugins"),
+                    java.io.File("/usr/local/$linuxDirName/plugins"),
+                    java.io.File("/snap/$linuxDirName/current/plugins"),
+                ).forEach { dirs.add(it) }
             }
         }
     }

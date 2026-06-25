@@ -16,6 +16,7 @@ plugins {
     // Internal gradle plugins
     id("com.cramsan.detekt") apply false
     id("com.cramsan.dev-shortcuts")
+    id("com.cramsan.ide-check")
     id("com.cramsan.release-task") apply false
     id("com.cramsan.supabase-task") apply false
     id("com.cramsan.kotlin-jvm-lib") apply false
@@ -33,6 +34,17 @@ plugins {
     id("com.cramsan.kotlin-mpp-js") apply false
     id("com.cramsan.kotlin-mpp-wasm") apply false
     id("com.cramsan.kotlin-mpp-wasm-compose-app") apply false
+}
+
+ideCheck {
+    ides {
+        // idea.platform.prefix values: "AndroidStudio" for Android Studio, "Idea" for IntelliJ IDEA.
+        // Run ./gradlew --info help and grep "[ide-check] Detected IDE:" to see the exact values
+        // reported by your IDE, then set minVersion accordingly.
+        register("AndroidStudio") {
+            minVersion.set("2026.1.2")
+        }
+    }
 }
 
 subprojects {

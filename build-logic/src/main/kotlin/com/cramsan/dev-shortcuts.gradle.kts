@@ -79,6 +79,11 @@ gradle.projectsEvaluated {
         project {
             settings {
                 runConfigurations {
+                    create<GradleRunConfig>("releaseAll") {
+                        projectPath = rootDir.absolutePath
+                        taskNames = listOf("releaseAll")
+                    }
+
                     gradleTaskAliases.forEach { alias ->
                         create<GradleRunConfig>(alias.displayName) {
                             projectPath = rootDir.absolutePath

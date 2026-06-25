@@ -212,7 +212,7 @@ fun resolvePluginDirs(): List<java.io.File> {
         }
         toolboxApps.listFiles()?.forEach { appDir ->
             val productInfo = java.io.File(appDir, "product-info.json")
-            if (productInfo.isFile && productInfo.length() < 65536L) {
+            if (productInfo.isFile) {
                 val content = productInfo.readText()
                 // Prefix-match so "AndroidStudio2026.1" matches "AndroidStudio2026.1.1", etc.
                 // Two spacing variants cover standard pretty-print and compact JSON.

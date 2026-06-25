@@ -1,8 +1,11 @@
 package com.cramsan
 
+import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.create
 import org.jetbrains.gradle.ext.runConfigurations
 import org.jetbrains.gradle.ext.settings
+import org.jetbrains.gradle.ext.Application as ApplicationRunConfig
 import org.jetbrains.gradle.ext.Gradle as GradleRunConfig
 
 plugins {
@@ -17,10 +20,13 @@ plugins {
  * Generated from whichever subprojects are actually loaded under the active `focus` selection,
  * so adding a new app's back-end/launcher modules picks up its aliases automatically.
  *
- * Each alias is also mirrored as an IntelliJ/Android Studio "Gradle" run configuration via the
- * idea-ext plugin's `runConfigurations` DSL, since the IDE's run widget can only launch one
- * configuration/task at a time and won't surface arbitrary Gradle tasks on its own. The IDE reads
- * this declaratively from the project model on every sync (including the initial import), so the
+ * Each alias is also mirrored as an IntelliJ/Android Studio run configuration via the idea-ext
+ * plugin's `runConfigurations` DSL, since the IDE's run widget can only launch one
+ * configuration/task at a time and won't surface arbitrary Gradle tasks on its own. The back-end
+ * server and desktop app are plain `JavaExec`-backed `run` tasks, so those are mirrored as "Java
+ * Application" configs (faster startup, debuggable without going through the Gradle daemon); the
+ * rest (web, supabase, integTest) are mirrored as "Gradle" task configs. The IDE reads this
+ * declaratively from the project model on every sync (including the initial import), so the
  * configs stay current without any manually maintained files.
  *
  * Applied only to the root project (see root build.gradle.kts).
@@ -35,7 +41,8 @@ fun registerDevAlias(aliasName: String, subproject: Project, targetTaskName: Str
 }
 
 gradle.projectsEvaluated {
-    val aliasNames = mutableListOf<String>()
+    val gradleTaskAliases = mutableListOf<String>()
+    val javaAppAliases = mutableListOf<Pair<String, Project>>()
 
     subprojects.forEach { subproject ->
         val pathSegments = subproject.path.removePrefix(":").split(":")
@@ -44,26 +51,37 @@ gradle.projectsEvaluated {
 
         when {
             "back-end" in pathSegments && "run" in taskNames ->
-                aliasNames += registerDevAlias("${app}RunServer", subproject, "run")
+                javaAppAliases += registerDevAlias("${app}RunServer", subproject, "run") to subproject
             pathSegments.lastOrNull() == "launcher-desktop" && "run" in taskNames ->
-                aliasNames += registerDevAlias("${app}RunDesktop", subproject, "run")
-            pathSegments.lastOrNull() == "launcher-web" && "wasmJsBrowserDevelopmentRun" in taskNames ->
-                aliasNames += registerDevAlias("${app}RunWeb", subproject, "wasmJsBrowserDevelopmentRun")
+                javaAppAliases += registerDevAlias("${app}RunDesktop", subproject, "run") to subproject
         }
 
-        if ("supabaseStart" in taskNames) aliasNames += registerDevAlias("${app}SupabaseStart", subproject, "supabaseStart")
-        if ("supabaseStop" in taskNames) aliasNames += registerDevAlias("${app}SupabaseStop", subproject, "supabaseStop")
-        if ("back-end" in pathSegments && "integTest" in taskNames) aliasNames += registerDevAlias("${app}IntegTest", subproject, "integTest")
+        if ("supabaseStart" in taskNames) gradleTaskAliases += registerDevAlias("${app}SupabaseStart", subproject, "supabaseStart")
+        if ("supabaseStop" in taskNames) gradleTaskAliases += registerDevAlias("${app}SupabaseStop", subproject, "supabaseStop")
+        if ("back-end" in pathSegments && "integTest" in taskNames) gradleTaskAliases += registerDevAlias("${app}IntegTest", subproject, "integTest")
     }
 
     idea {
         project {
             settings {
                 runConfigurations {
-                    aliasNames.forEach { name ->
+                    gradleTaskAliases.forEach { name ->
                         create<GradleRunConfig>(name) {
                             projectPath = rootDir.absolutePath
                             taskNames = listOf(name)
+                        }
+                    }
+
+                    javaAppAliases.forEach { (name, subproject) ->
+                        val runTask = subproject.tasks.named<JavaExec>("run").get()
+                        val mainSourceSet = subproject.extensions.getByType<SourceSetContainer>().getByName("main")
+                        create<ApplicationRunConfig>(name) {
+                            mainClass = runTask.mainClass.get()
+                            moduleRef(subproject, mainSourceSet)
+                            workingDirectory = subproject.projectDir.absolutePath
+                            runTask.args?.takeIf { it.isNotEmpty() }?.let {
+                                programParameters = it.joinToString(" ")
+                            }
                         }
                     }
                 }

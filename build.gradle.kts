@@ -37,17 +37,27 @@ plugins {
 }
 
 ideCheck {
+    failOnUnsupportedIde.set(true)
+    failOnMissingPlugin.set(true)
     ides {
         // idea.platform.prefix values: "AndroidStudio" for Android Studio, "Idea" for IntelliJ IDEA.
-        // Run ./gradlew --info help and grep "[ide-check] Detected IDE:" to see the exact values
-        // reported by your IDE, then set minVersion accordingly.
+        // idea.version reports only the major.minor (e.g. "2026.1"), patch and RC labels are
+        // stripped by the IDE before passing the property to the Gradle daemon.
         register("AndroidStudio") {
-            minVersion.set("2026.1.2")
+            minVersion.set("2026.1")
         }
         register("Idea") {
             minVersion.set("2026.2")
         }
-        failOnUnsupportedIde.set(true)
+    }
+    // dirName must match the subdirectory name inside the IDE's plugins/ folder.
+    // Both the user-installed plugins dir and the bundled plugins dir are scanned.
+    // Set failOnMissingPlugin.set(false) to downgrade missing-plugin errors to warnings.
+    requiredPlugins {
+        register("Android") { dirName.set("android") }
+        register("Kotlin Multiplatform") { dirName.set("kmm-plugin") }
+        register("Jetpack Compose") { dirName.set("android-compose-ide-plugin") }
+        register("Android Design Tools") { dirName.set("design-tools") }
     }
 }
 

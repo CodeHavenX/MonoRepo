@@ -60,16 +60,23 @@ fun inferPlatformPrefix(): String? {
 /**
  * Formats a user-facing IDE check violation as a speech bubble spoken by a cute cat,
  * followed by technical details. [title] is the one-line problem summary, [action] is
- * what the developer should do to fix it, and [details] are the raw property values.
+ * what the developer should do to fix it, [details] are the raw property values, and
+ * [disableProperty] is the `ideCheck` property the developer can set to `false` to
+ * downgrade this violation to a warning.
  */
-fun formatViolation(title: String, action: String, details: String): String {
+fun formatViolation(
+    title: String,
+    action: String,
+    details: String,
+    disableProperty: String = "failOnUnsupportedIde",
+): String {
     val bodyLines = listOf(
         "Problem : $title",
         "",
         "Fix     : $action",
         "",
         "To disable this check:",
-        "  ideCheck { failOnUnsupportedIde.set(false) }",
+        "  ideCheck { $disableProperty.set(false) }",
         "  in the root build.gradle.kts",
     )
     val innerWidth = bodyLines.maxOf { it.length } + 2
@@ -92,6 +99,137 @@ fun formatViolation(title: String, action: String, details: String): String {
         details.lines().forEach { appendLine("    $it") }
     }
 }
+
+/**
+ * Returns every directory that an IntelliJ-platform IDE uses to store plugins.
+ *
+ * The primary signals are `idea.vendor.name` ("Google" / "JetBrains") and `idea.version`
+ * ("2026.1"), which are reliably injected even by IDE versions that set `idea.config.path`
+ * to a fake placeholder (observed in Android Studio 2026.1+). Four locations are probed:
+ *
+ * 1. `idea.plugins.path` / `idea.home.path` — explicit system properties when available.
+ * 2. `idea.config.path` (only when it is an absolute path) — traditional `<config>/plugins/`
+ *    layout (Windows / macOS), plus XDG data dir on Linux.
+ * 3. OS-specific vendor data dir scan — the vendor directory is scanned for subdirectories
+ *    whose name starts with the IDE family prefix + `idea.version` (e.g. `AndroidStudio2026.1`).
+ *    The base dir and whether to append `plugins/` differ by OS:
+ *      - Linux:   `~/.local/share/<vendor>/`              plugins are directly in selector dir
+ *      - macOS:   `~/Library/Application Support/<vendor>/`  plugins are in selector/plugins/
+ *      - Windows: `%APPDATA%\<vendor>\`                   plugins are in selector\plugins\
+ * 4. JetBrains Toolbox bundled plugins — `<toolbox-apps>/<app>/plugins/` matched by
+ *    `dataDirectoryName` prefix. Toolbox root is OS-specific:
+ *    `%LOCALAPPDATA%\JetBrains\Toolbox\apps` (Windows),
+ *    `~/Library/Application Support/JetBrains/Toolbox/apps` (macOS),
+ *    `~/.local/share/JetBrains/Toolbox/apps` (Linux).
+ */
+fun resolvePluginDirs(): List<java.io.File> {
+    val dirs = mutableListOf<java.io.File>()
+    val userHome = System.getProperty("user.home") ?: return dirs
+    val osName   = System.getProperty("os.name").orEmpty()
+    val isWindows = osName.startsWith("Windows")
+    val isMac     = osName.contains("Mac")
+
+    // 1. Explicit system properties (highest priority, not always injected)
+    System.getProperty("idea.plugins.path")?.let { dirs.add(java.io.File(it)) }
+    System.getProperty("idea.home.path")?.let { dirs.add(java.io.File(it, "plugins")) }
+
+    // 2. idea.config.path — only trusted when it resolves to an absolute path.
+    //    Some IDE versions inject a fake relative placeholder (e.g. "some/non/existent/path").
+    val configFile = System.getProperty("idea.config.path")?.let { java.io.File(it) }
+    if (configFile != null && configFile.isAbsolute) {
+        dirs.add(java.io.File(configFile, "plugins"))
+
+        // XDG layout (Linux only): user plugins live directly in <xdg-data>/<vendor>/<selector>/
+        if (!isWindows && !isMac) {
+            val vendor    = configFile.parentFile?.name
+            val xdgConfig = java.io.File(userHome, ".config")
+            val xdgData   = System.getenv("XDG_DATA_HOME")?.let { java.io.File(it) }
+                ?: java.io.File(userHome, ".local/share")
+            if (vendor != null && configFile.canonicalPath
+                    .startsWith(xdgConfig.canonicalPath + java.io.File.separator)) {
+                dirs.add(java.io.File(xdgData, "$vendor/${configFile.name}"))
+            }
+        }
+    }
+
+    // Build an IDE family prefix from vendor + version for fallback discovery.
+    // "Google" + "2026.1" → "AndroidStudio2026.1"  (matches 2026.1.1, 2026.1.2, …)
+    val vendorName   = System.getProperty("idea.vendor.name")
+    val ideVersion   = System.getProperty("idea.version").orEmpty()
+    val familyPrefix = when {
+        vendorName == "Google"    && ideVersion.isNotEmpty() -> "AndroidStudio$ideVersion"
+        vendorName == "JetBrains" && ideVersion.isNotEmpty() -> "IdeaIC$ideVersion"
+        else -> null
+    }
+
+    if (familyPrefix != null) {
+        // 3. OS-specific vendor data dir scan for user-installed plugin dirs.
+        //    Layout differences by OS:
+        //      Linux   — plugins are a direct child of the selector dir (no /plugins/ subdir)
+        //      macOS   — plugins are in <selector>/plugins/
+        //      Windows — plugins are in <selector>\plugins\
+        val vendorDataDir: java.io.File? = when {
+            isWindows -> {
+                val appData = System.getenv("APPDATA") ?: java.io.File(userHome, "AppData/Roaming").path
+                when (vendorName) {
+                    "Google"    -> java.io.File(appData, "Google")
+                    "JetBrains" -> java.io.File(appData, "JetBrains")
+                    else        -> null
+                }
+            }
+            isMac -> when (vendorName) {
+                "Google"    -> java.io.File(userHome, "Library/Application Support/Google")
+                "JetBrains" -> java.io.File(userHome, "Library/Application Support/JetBrains")
+                else        -> null
+            }
+            else -> {
+                val xdgData = System.getenv("XDG_DATA_HOME")?.let { java.io.File(it) }
+                    ?: java.io.File(userHome, ".local/share")
+                when (vendorName) {
+                    "Google"    -> java.io.File(xdgData, "Google")
+                    "JetBrains" -> java.io.File(xdgData, "JetBrains")
+                    else        -> null
+                }
+            }
+        }
+        vendorDataDir?.listFiles()
+            ?.filter { it.isDirectory && it.name.startsWith(familyPrefix) }
+            ?.forEach { selectorDir ->
+                // Linux: plugins live directly in the selector dir itself
+                // Windows / macOS: plugins live in <selector>/plugins/
+                if (isWindows || isMac) dirs.add(java.io.File(selectorDir, "plugins"))
+                else                    dirs.add(selectorDir)
+            }
+
+        // 4. Toolbox bundled plugins: prefix-match dataDirectoryName in product-info.json.
+        val toolboxApps = when {
+            isWindows ->
+                java.io.File(System.getenv("LOCALAPPDATA") ?: java.io.File(userHome, "AppData/Local").path, "JetBrains/Toolbox/apps")
+            isMac ->
+                java.io.File(userHome, "Library/Application Support/JetBrains/Toolbox/apps")
+            else ->
+                java.io.File(userHome, ".local/share/JetBrains/Toolbox/apps")
+        }
+        toolboxApps.listFiles()?.forEach { appDir ->
+            val productInfo = java.io.File(appDir, "product-info.json")
+            if (productInfo.isFile && productInfo.length() < 65536L) {
+                val content = productInfo.readText()
+                // Prefix-match so "AndroidStudio2026.1" matches "AndroidStudio2026.1.1", etc.
+                // Two spacing variants cover standard pretty-print and compact JSON.
+                if (content.contains("\"dataDirectoryName\": \"$familyPrefix") ||
+                    content.contains("\"dataDirectoryName\":\"$familyPrefix")) {
+                    dirs.add(java.io.File(appDir, "plugins"))
+                }
+            }
+        }
+    }
+
+    return dirs.filter { it.exists() && it.isDirectory }.distinct()
+}
+
+/** Returns `true` when a subdirectory named [dirName] exists in any of [pluginDirs]. */
+fun isPluginInstalled(dirName: String, pluginDirs: List<java.io.File>): Boolean =
+    pluginDirs.any { it.resolve(dirName).exists() }
 
 /** Compares two dot-separated version strings component by component. */
 fun compareVersions(detected: String, minimum: String): Int {
@@ -181,5 +319,49 @@ gradle.projectsEvaluated {
                 },
             )
         )
+    }
+
+    // --- Plugin presence check ---
+    val shouldFailOnPlugin = ideCheck.failOnMissingPlugin.get()
+
+    fun reportPlugin(message: String) {
+        if (shouldFailOnPlugin) throw GradleException(message) else logger.warn(message)
+    }
+
+    val pluginDirs = resolvePluginDirs()
+    val requiredPlugins = ideCheck.requiredPlugins.toList()
+
+    if (requiredPlugins.isNotEmpty()) {
+        val missing = requiredPlugins.filter { pluginSpec ->
+            val dir = pluginSpec.dirName.orNull
+            if (dir == null) {
+                logger.warn("ide-check: plugin '${pluginSpec.name}' has no dirName set — skipping.")
+                false
+            } else {
+                !isPluginInstalled(dir, pluginDirs)
+            }
+        }
+
+        if (missing.isNotEmpty()) {
+            val missingList = missing.joinToString(", ") { it.name }
+            reportPlugin(
+                formatViolation(
+                    title = "Required IDE plugin(s) not found: $missingList.",
+                    action = "Install them via Settings → Plugins or the JetBrains Marketplace.",
+                    disableProperty = "failOnMissingPlugin",
+                    details = buildString {
+                        appendLine("Searched directories:")
+                        if (pluginDirs.isEmpty()) {
+                            appendLine("  (none found — idea.plugins.path, idea.config.path, idea.home.path may be unset)")
+                        } else {
+                            pluginDirs.forEach { appendLine("  ${it.absolutePath}") }
+                        }
+                        appendLine()
+                        appendLine("Missing plugins (display name → expected dir name):")
+                        missing.forEach { appendLine("  ${it.name} → ${it.dirName.orNull ?: "(unset)"}") }
+                    },
+                )
+            )
+        }
     }
 }

@@ -399,7 +399,7 @@ a { text-decoration: none; }
    ================================================================ */
 .flyer-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--sp-5);
 }
 .flyer-card {
@@ -408,15 +408,14 @@ a { text-decoration: none; }
   overflow: hidden;
   box-shadow: var(--shadow-card);
   position: relative;
+  border-left: 4px solid transparent;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
 }
-.flyer-card-stripe {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 5px;
+.flyer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
 }
-.stripe-green  { background: var(--clr-success); }
-.stripe-red    { background: var(--clr-danger); }
-.stripe-accent { background: var(--clr-primary); }
 
 .flyer-card-image {
   width: 100%;
@@ -425,7 +424,6 @@ a { text-decoration: none; }
 }
 .flyer-card-body {
   padding: var(--sp-4) var(--sp-5) var(--sp-5);
-  background: var(--clr-bg-card-footer);
 }
 .flyer-card-title {
   font-size: var(--text-md);
@@ -448,22 +446,21 @@ a { text-decoration: none; }
    MY FLYERS CARDS
    ================================================================ */
 .my-flyer-card {
-  background: var(--clr-bg-card-footer);
+  background: var(--clr-bg-card);
   border-radius: var(--r-xl);
-  padding: var(--sp-5);
   box-shadow: var(--shadow-card);
   position: relative;
   overflow: hidden;
+  border-left: 4px solid transparent;
+  transition: box-shadow 0.15s, transform 0.15s;
 }
-.my-flyer-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
+.my-flyer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
 }
-.my-flyer-card.stripe-green::before  { background: var(--clr-success); }
-.my-flyer-card.stripe-red::before    { background: var(--clr-danger); }
-.my-flyer-card.stripe-crimson::before { background: var(--clr-secondary); }
+.my-flyer-card-body {
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
+}
 
 .my-flyer-card-header {
   display: flex;
@@ -500,12 +497,13 @@ a { text-decoration: none; }
   padding: var(--sp-5) var(--sp-6);
 }
 .mod-divider {
-  height: 3px;
-  background: linear-gradient(to right, var(--clr-primary) 75%, transparent);
+  height: 1px;
+  background: var(--clr-border);
+  margin: 0 var(--sp-6);
 }
 .mod-thumbnail {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 96px;
   border-radius: var(--r-md);
   background: var(--clr-bg-image);
   flex-shrink: 0;
@@ -531,10 +529,9 @@ a { text-decoration: none; }
 }
 .mod-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--sp-3);
-  flex-shrink: 0;
-  align-items: flex-end;
+  margin-top: var(--sp-4);
 }
 
 /* ================================================================
@@ -703,3 +700,79 @@ a { text-decoration: none; }
 .mt-6 { margin-top: var(--sp-6); }
 .mb-4 { margin-bottom: var(--sp-4); }
 .mb-6 { margin-bottom: var(--sp-6); }
+
+/* ================================================================
+   STATUS ACCENT (applied to .flyer-card and .my-flyer-card)
+   ================================================================ */
+.status-approved { border-left-color: var(--clr-success); }
+.status-pending  { border-left-color: var(--clr-secondary); }
+.status-rejected { border-left-color: var(--clr-danger); }
+.status-archived { border-left-color: var(--clr-archived); }
+.status-active   { border-left-color: var(--clr-primary); }
+
+/* ================================================================
+   PAGE HERO (Browse / Archive / My Flyers header band)
+   ================================================================ */
+.page-hero {
+  background: #fff;
+  border-bottom: 1px solid var(--clr-border);
+  padding: var(--sp-5) 0 var(--sp-4);
+}
+.page-hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--sp-6);
+}
+.page-hero-top {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.page-hero-title {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--clr-text-primary);
+  flex: 1;
+  margin: 0;
+}
+.page-hero .search-bar {
+  flex: 0 0 320px;
+  margin-bottom: 0;
+}
+.filter-chips {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-top: var(--sp-3);
+}
+.filter-chip {
+  padding: var(--sp-1) var(--sp-4);
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--clr-border);
+  background: transparent;
+  color: var(--clr-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.filter-chip:hover {
+  border-color: var(--clr-primary);
+  color: var(--clr-primary);
+}
+.filter-chip.active {
+  background: var(--clr-primary);
+  border-color: var(--clr-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ================================================================
+   CONTENT CONTAINER (max-width centering for list/grid screens)
+   ================================================================ */
+.content-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--sp-6) var(--sp-12);
+}

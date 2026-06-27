@@ -8,54 +8,74 @@
 </head>
 <body style="background: var(--clr-bg-page-white);">
 
-<div style="padding: var(--sp-6) var(--sp-6) var(--sp-12);">
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-top">
+      <h1 class="page-hero-title">My Flyers</h1>
+    </div>
+  </div>
+</div>
+
+<div class="content-container">
   <div class="flyer-grid">
 
     <!-- Card 1: Approved -->
-    <div class="my-flyer-card stripe-green">
-      <div class="my-flyer-card-header">
-        <div class="my-flyer-card-title">Community Yard Sale</div>
-        <span class="badge badge-approved">Approved</span>
-      </div>
-      <div class="my-flyer-card-desc">Everything must go! Furniture, clothes, books and more.</div>
-      <div class="my-flyer-card-date">2026-05-01</div>
-      <div class="my-flyer-card-footer">
-        <button class="btn btn-primary">Edit</button>
+    <div class="my-flyer-card status-approved">
+      <div class="flyer-card-image"></div>
+      <div class="my-flyer-card-body">
+        <div class="my-flyer-card-header">
+          <div class="my-flyer-card-title">Community Yard Sale</div>
+          <span class="badge badge-approved">Approved</span>
+        </div>
+        <div class="my-flyer-card-desc">Everything must go! Furniture, clothes, books and more.</div>
+        <div class="my-flyer-card-date">2026-05-01</div>
+        <div class="my-flyer-card-footer">
+          <button class="btn btn-primary">Edit</button>
+        </div>
       </div>
     </div>
 
     <!-- Card 2: Pending -->
-    <div class="my-flyer-card stripe-crimson">
-      <div class="my-flyer-card-header">
-        <div class="my-flyer-card-title">Lost Cat – Please Help</div>
-        <span class="badge badge-pending">Pending</span>
-      </div>
-      <div class="my-flyer-card-desc">Orange tabby, answers to Mango. Last seen near Oak Street.</div>
-      <div class="my-flyer-card-footer">
-        <button class="btn btn-primary">Edit</button>
+    <div class="my-flyer-card status-pending">
+      <div class="flyer-card-image"></div>
+      <div class="my-flyer-card-body">
+        <div class="my-flyer-card-header">
+          <div class="my-flyer-card-title">Lost Cat – Please Help</div>
+          <span class="badge badge-pending">Pending</span>
+        </div>
+        <div class="my-flyer-card-desc">Orange tabby, answers to Mango. Last seen near Oak Street.</div>
+        <div class="my-flyer-card-footer">
+          <button class="btn btn-primary">Edit</button>
+        </div>
       </div>
     </div>
 
     <!-- Card 3: Rejected -->
-    <div class="my-flyer-card stripe-red">
-      <div class="my-flyer-card-header">
-        <div class="my-flyer-card-title">Rejected Flyer</div>
-        <span class="badge badge-rejected">Rejected</span>
-      </div>
-      <div class="my-flyer-card-desc">This flyer was rejected by a moderator.</div>
-      <div class="my-flyer-card-footer">
-        <button class="btn btn-primary">Edit</button>
+    <div class="my-flyer-card status-rejected">
+      <div class="flyer-card-image"></div>
+      <div class="my-flyer-card-body">
+        <div class="my-flyer-card-header">
+          <div class="my-flyer-card-title">Rejected Flyer</div>
+          <span class="badge badge-rejected">Rejected</span>
+        </div>
+        <div class="my-flyer-card-desc">This flyer was rejected by a moderator.</div>
+        <div class="my-flyer-card-footer">
+          <button class="btn btn-primary">Edit</button>
+        </div>
       </div>
     </div>
 
-    <!-- Card 4: Archived (no edit button, no top stripe) -->
-    <div class="my-flyer-card">
-      <div class="my-flyer-card-header">
-        <div class="my-flyer-card-title">Old Event Flyer</div>
-        <span class="badge badge-archived">Archived</span>
+    <!-- Card 4: Archived (no edit button) -->
+    <div class="my-flyer-card status-archived">
+      <div class="flyer-card-image"></div>
+      <div class="my-flyer-card-body">
+        <div class="my-flyer-card-header">
+          <div class="my-flyer-card-title">Old Event Flyer</div>
+          <span class="badge badge-archived">Archived</span>
+        </div>
+        <div class="my-flyer-card-desc">This event has already passed.</div>
+        <div class="my-flyer-card-date">2026-03-01</div>
       </div>
-      <div class="my-flyer-card-desc">This event has already passed.</div>
-      <div class="my-flyer-card-date">2026-03-01</div>
     </div>
 
   </div>

@@ -8,19 +8,31 @@
 </head>
 <body style="background: var(--clr-bg-page-white);">
 
-<div style="padding: var(--sp-6) var(--sp-6) var(--sp-12);">
-
-  <div class="search-bar">
-    <span class="icon-search">🔍</span>
-    <input type="search" placeholder="Search flyers…">
-    <span class="icon-refresh">↻</span>
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-top">
+      <h1 class="page-hero-title">Browse Flyers</h1>
+      <div class="search-bar">
+        <span class="icon-search">🔍</span>
+        <input type="search" placeholder="Search flyers…">
+        <span class="icon-refresh">↻</span>
+      </div>
+    </div>
+    <div class="filter-chips">
+      <button class="filter-chip active">All</button>
+      <button class="filter-chip">Events</button>
+      <button class="filter-chip">Lost &amp; Found</button>
+      <button class="filter-chip">Services</button>
+    </div>
   </div>
+</div>
+
+<div class="content-container">
 
   <div class="flyer-grid">
 
     <!-- Card 1 — active, has expiry -->
-    <div class="flyer-card">
-      <div class="flyer-card-stripe stripe-green"></div>
+    <div class="flyer-card status-approved">
       <div class="flyer-card-image"></div>
       <div class="flyer-card-body">
         <div class="flyer-card-title">Community Yard Sale</div>
@@ -30,14 +42,24 @@
       </div>
     </div>
 
-    <!-- Card 2 — no expiry / pending-like -->
-    <div class="flyer-card">
-      <div class="flyer-card-stripe stripe-red"></div>
+    <!-- Card 2 — ongoing, no expiry -->
+    <div class="flyer-card status-active">
       <div class="flyer-card-image"></div>
       <div class="flyer-card-body">
         <div class="flyer-card-title">Lost Cat – Please Help</div>
         <div class="flyer-card-desc">Orange tabby, answers to Mango. Last seen near Oak Street.</div>
         <div class="flyer-card-meta">@user2</div>
+      </div>
+    </div>
+
+    <!-- Card 3 — active, has expiry -->
+    <div class="flyer-card status-approved">
+      <div class="flyer-card-image"></div>
+      <div class="flyer-card-body">
+        <div class="flyer-card-title">Piano Lessons Available</div>
+        <div class="flyer-card-desc">Experienced teacher offering lessons for all ages and skill levels.</div>
+        <div><span class="expire-chip">Expires: 2026-06-15</span></div>
+        <div class="flyer-card-meta">@user3</div>
       </div>
     </div>
 

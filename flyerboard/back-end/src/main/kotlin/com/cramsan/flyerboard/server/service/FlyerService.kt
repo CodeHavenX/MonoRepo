@@ -3,14 +3,18 @@ package com.cramsan.flyerboard.server.service
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.UserRole
+import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.datastore.FileDatastore
 import com.cramsan.flyerboard.server.datastore.FlyerDatastore
 import com.cramsan.flyerboard.server.datastore.SignedUpload
 import com.cramsan.flyerboard.server.service.models.Flyer
 import com.cramsan.flyerboard.server.service.models.PaginatedList
 import com.cramsan.framework.annotations.BackendService
+import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
+import com.cramsan.framework.logging.logI
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.uuid.UUID
 import kotlin.time.Instant
@@ -65,10 +69,37 @@ class FlyerService(private val flyerDatastore: FlyerDatastore, private val fileD
      * Retrieves a flyer by [flyerId] and attaches a signed URL for the file.
      * Returns null if not found.
      */
-    suspend fun getFlyer(flyerId: FlyerId): Result<Flyer?> {
+    suspend fun getFlyer(
+        context: ClientContext<FlyerBoardContextPayload>,
+        flyerId: FlyerId,
+    ): Result<Flyer?> {
         logD(TAG, "getFlyer: %s", flyerId)
         return flyerDatastore.getFlyer(flyerId).map { flyer ->
             if (flyer == null) return@map null
+
+            val isAdmin =
+                when (context) {
+                    is ClientContext.AuthenticatedClientContext<FlyerBoardContextPayload> -> {
+                        context.payload.role ==
+                            UserRole.ADMIN
+                    }
+
+                    is ClientContext.UnauthenticatedClientContext<*> -> {
+                        false
+                    }
+                }
+
+            val isAdminRequired =
+                when (flyer.status) {
+                    FlyerStatus.PENDING, FlyerStatus.REJECTED -> true
+                    FlyerStatus.APPROVED, FlyerStatus.ARCHIVED -> false
+                }
+
+            if (isAdminRequired && !isAdmin) {
+                logI(TAG, "Trying to fetch flyer that requires admin perms", flyerId)
+                return@map null
+            }
+
             val fileUrl =
                 fileDatastore
                     .getSignedUrl(flyer.filePath)

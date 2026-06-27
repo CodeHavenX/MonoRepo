@@ -1,6 +1,5 @@
 package com.cramsan.framework.core
 
-import com.cramsan.framework.logging.logE
 import kotlinx.coroutines.withContext
 
 /**
@@ -17,6 +16,4 @@ suspend inline fun <T> ManagerDependencies.getOrCatch(
         withContext(dispatcherProvider.ioDispatcher()) {
             block()
         }
-    }.onFailure {
-        logE(tag, "Operation failed. ", it)
     }

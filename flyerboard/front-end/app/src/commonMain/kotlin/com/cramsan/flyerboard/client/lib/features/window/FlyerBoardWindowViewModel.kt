@@ -2,7 +2,6 @@ package com.cramsan.flyerboard.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
 import com.cramsan.flyerboard.client.lib.managers.AuthManager
-import com.cramsan.flyerboard.client.lib.managers.UserManager
 import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -22,7 +21,6 @@ class FlyerBoardWindowViewModel(
     private val windowEventEmitter: EventEmitter<WindowEvent>,
     private val delegatedEvents: EventReceiver<FlyerBoardWindowDelegatedEvent>,
     private val authManager: AuthManager,
-    private val userManager: UserManager,
 ) : BaseViewModel<FlyerBoardWindowViewModelEvent, FlyerBoardWindowUIState>(
     dependencies,
     FlyerBoardWindowUIState.Initial,
@@ -42,13 +40,13 @@ class FlyerBoardWindowViewModel(
         viewModelCoroutineScope.launch {
             // This line is used to do an initial load of the auth library
             authManager.isAuthenticated()
-            authManager.activeUser().collect { userId ->
+            authManager.activeUser().collect { user ->
                 val authState =
-                    if (userId == null) {
+                    if (user == null) {
                         logI(TAG, "Auth state changed: unauthenticated")
                         AuthState.Unauthenticated
                     } else {
-                        val isAdmin = userManager.getCurrentUser().getOrNull()?.role == UserRole.ADMIN
+                        val isAdmin = user.role == UserRole.ADMIN
                         logI(TAG, "Auth state changed: authenticated, isAdmin=$isAdmin")
                         AuthState.Authenticated(isAdmin = isAdmin)
                     }

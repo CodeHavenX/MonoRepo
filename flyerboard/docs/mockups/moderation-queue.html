@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flyerboard — Moderation Queue</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background: var(--clr-bg-mod);">
+
+<!-- Top accent (represents the bottom edge of the nav bar in context) -->
+<div style="height: 3px; background: linear-gradient(to right, var(--clr-primary) 70%, transparent);"></div>
+
+<div class="mod-list">
+
+  <!-- Item 1 -->
+  <div class="mod-item">
+    <div class="mod-thumbnail"></div>
+    <div class="mod-info">
+      <div class="mod-title">Neighborhood Watch Meeting</div>
+      <div class="mod-desc">Join us to discuss safety improvements in our area. All welcome.</div>
+      <div class="mod-meta">
+        <span class="mod-meta-item">👤 user1</span>
+        <span class="mod-meta-item">📅 2026-04-14</span>
+      </div>
+    </div>
+    <div class="mod-actions">
+      <button class="btn btn-success">Approve</button>
+      <button class="btn btn-danger">Reject</button>
+    </div>
+  </div>
+
+  <div class="mod-divider"></div>
+
+  <!-- Item 2 -->
+  <div class="mod-item">
+    <div class="mod-thumbnail"></div>
+    <div class="mod-info">
+      <div class="mod-title">Piano Lessons Available</div>
+      <div class="mod-desc">Experienced teacher offering lessons for all ages and skill levels.</div>
+      <div class="mod-meta">
+        <span class="mod-meta-item">👤 user2</span>
+        <span class="mod-meta-item">📅 2026-04-13</span>
+      </div>
+    </div>
+    <div class="mod-actions">
+      <button class="btn btn-success">Approve</button>
+      <button class="btn btn-danger">Reject</button>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

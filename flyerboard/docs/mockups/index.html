@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flyerboard — Mockup Index</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: var(--clr-bg-page); padding: var(--sp-10); }
+    .index-title {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--clr-primary);
+      margin-bottom: var(--sp-2);
+    }
+    .index-subtitle {
+      font-size: var(--text-sm);
+      color: var(--clr-text-secondary);
+      margin-bottom: var(--sp-8);
+    }
+    .screen-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--sp-5);
+    }
+    .screen-card {
+      background: var(--clr-bg-card);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .screen-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+    .screen-preview {
+      height: 140px;
+      background: var(--clr-bg-image);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-3xl);
+    }
+    .screen-info {
+      padding: var(--sp-4) var(--sp-5) var(--sp-5);
+    }
+    .screen-name {
+      font-weight: 700;
+      font-size: var(--text-base);
+      color: var(--clr-text-primary);
+      margin-bottom: var(--sp-1);
+    }
+    .screen-desc {
+      font-size: var(--text-xs);
+      color: var(--clr-text-secondary);
+    }
+
+    /* Per-screen preview background tints */
+    .prev-splash    { background: linear-gradient(180deg, #3A34D4, #6B52E0); }
+    .prev-auth      { background: var(--clr-bg-page); }
+    .prev-list      { background: var(--clr-bg-page-white); }
+    .prev-archive   { background: var(--clr-bg-page); }
+    .prev-detail    { background: var(--clr-bg-page); }
+    .prev-form      { background: var(--clr-bg-page); }
+    .prev-mod       { background: var(--clr-bg-mod); }
+    .prev-window    { background: var(--clr-primary-dark); }
+  </style>
+</head>
+<body>
+
+<div class="index-title">Flyerboard</div>
+<p class="index-subtitle">UI Mockups — Tablet Screens</p>
+
+<div class="screen-grid">
+
+  <a href="splash.html" class="screen-card">
+    <div class="screen-preview prev-splash">🌟</div>
+    <div class="screen-info">
+      <div class="screen-name">Splash Screen</div>
+      <div class="screen-desc">App loading / launch screen</div>
+    </div>
+  </a>
+
+  <a href="window.html" class="screen-card">
+    <div class="screen-preview prev-window">🪟</div>
+    <div class="screen-info">
+      <div class="screen-name">App Window</div>
+      <div class="screen-desc">Navbar + content shell + footer</div>
+    </div>
+  </a>
+
+  <a href="sign-in.html" class="screen-card">
+    <div class="screen-preview prev-auth">🔑</div>
+    <div class="screen-info">
+      <div class="screen-name">Sign In</div>
+      <div class="screen-desc">Email + password login</div>
+    </div>
+  </a>
+
+  <a href="sign-up.html" class="screen-card">
+    <div class="screen-preview prev-auth">✍️</div>
+    <div class="screen-info">
+      <div class="screen-name">Sign Up</div>
+      <div class="screen-desc">New account registration</div>
+    </div>
+  </a>
+
+  <a href="flyer-list.html" class="screen-card">
+    <div class="screen-preview prev-list">📋</div>
+    <div class="screen-info">
+      <div class="screen-name">Browse Flyers</div>
+      <div class="screen-desc">Public flyer grid with search</div>
+    </div>
+  </a>
+
+  <a href="archive.html" class="screen-card">
+    <div class="screen-preview prev-archive">🗄️</div>
+    <div class="screen-info">
+      <div class="screen-name">Archive</div>
+      <div class="screen-desc">Expired / past flyers with search</div>
+    </div>
+  </a>
+
+  <a href="flyer-detail-approved.html" class="screen-card">
+    <div class="screen-preview prev-detail">✅</div>
+    <div class="screen-info">
+      <div class="screen-name">Flyer Detail — Approved</div>
+      <div class="screen-desc">Full flyer view, approved status</div>
+    </div>
+  </a>
+
+  <a href="flyer-detail-pending.html" class="screen-card">
+    <div class="screen-preview prev-detail">⏳</div>
+    <div class="screen-info">
+      <div class="screen-name">Flyer Detail — Pending</div>
+      <div class="screen-desc">Pending moderation with admin actions</div>
+    </div>
+  </a>
+
+  <a href="flyer-submit.html" class="screen-card">
+    <div class="screen-preview prev-form">📤</div>
+    <div class="screen-info">
+      <div class="screen-name">Submit Flyer</div>
+      <div class="screen-desc">Upload + title + description form</div>
+    </div>
+  </a>
+
+  <a href="flyer-edit.html" class="screen-card">
+    <div class="screen-preview prev-form">✏️</div>
+    <div class="screen-info">
+      <div class="screen-name">Edit Flyer</div>
+      <div class="screen-desc">Update existing flyer details</div>
+    </div>
+  </a>
+
+  <a href="my-flyers.html" class="screen-card">
+    <div class="screen-preview prev-list">📌</div>
+    <div class="screen-info">
+      <div class="screen-name">My Flyers</div>
+      <div class="screen-desc">User's own flyers with status</div>
+    </div>
+  </a>
+
+  <a href="moderation-queue.html" class="screen-card">
+    <div class="screen-preview prev-mod">⚖️</div>
+    <div class="screen-info">
+      <div class="screen-name">Moderation Queue</div>
+      <div class="screen-desc">Admin review list with approve/reject</div>
+    </div>
+  </a>
+
+</div>
+
+</body>
+</html>

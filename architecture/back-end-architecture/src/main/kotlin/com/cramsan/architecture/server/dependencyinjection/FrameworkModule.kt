@@ -23,6 +23,7 @@ import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
 import com.cramsan.framework.logging.implementation.Log4J2Helpers
 import com.cramsan.framework.logging.implementation.LoggerJVM
+import com.cramsan.framework.logging.implementation.NoopEventLoggerDelegate
 import com.cramsan.framework.logging.implementation.NoopEventLoggerErrorCallbackDelegate
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
@@ -60,7 +61,7 @@ val FrameworkModule =
 
         single<EventLoggerErrorCallback> {
             EventLoggerErrorCallbackImpl(
-                get(),
+                NoopEventLoggerDelegate(),
                 NoopEventLoggerErrorCallbackDelegate(),
             )
         }

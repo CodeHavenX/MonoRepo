@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flyerboard — Browse Flyers</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background: var(--clr-bg-page-white);">
+
+<div style="padding: var(--sp-6) var(--sp-6) var(--sp-12);">
+
+  <div class="search-bar">
+    <span class="icon-search">🔍</span>
+    <input type="search" placeholder="Search flyers…">
+    <span class="icon-refresh">↻</span>
+  </div>
+
+  <div class="flyer-grid">
+
+    <!-- Card 1 — active, has expiry -->
+    <div class="flyer-card">
+      <div class="flyer-card-stripe stripe-green"></div>
+      <div class="flyer-card-image"></div>
+      <div class="flyer-card-body">
+        <div class="flyer-card-title">Community Yard Sale</div>
+        <div class="flyer-card-desc">Everything must go! Furniture, clothes, books and more.</div>
+        <div><span class="expire-chip">Expires: 2026-05-01</span></div>
+        <div class="flyer-card-meta">@user1</div>
+      </div>
+    </div>
+
+    <!-- Card 2 — no expiry / pending-like -->
+    <div class="flyer-card">
+      <div class="flyer-card-stripe stripe-red"></div>
+      <div class="flyer-card-image"></div>
+      <div class="flyer-card-body">
+        <div class="flyer-card-title">Lost Cat – Please Help</div>
+        <div class="flyer-card-desc">Orange tabby, answers to Mango. Last seen near Oak Street.</div>
+        <div class="flyer-card-meta">@user2</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<button class="fab">+</button>
+
+</body>
+</html>

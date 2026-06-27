@@ -15,6 +15,7 @@ private fun ModerationFlyerCardNoImagePreview() =
             postedAt = "2026-04-17",
             onApprove = {},
             onReject = {},
+            onClick = {},
         )
     }
 
@@ -30,5 +31,6 @@ private fun ModerationFlyerCardWithImagePreview() =
             imageUrl = "https://example.com/flyer.jpg",
             onApprove = {},
             onReject = {},
+            onClick = {},
         )
     }

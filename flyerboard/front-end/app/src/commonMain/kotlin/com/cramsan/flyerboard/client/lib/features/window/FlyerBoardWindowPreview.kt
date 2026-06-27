@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.cramsan.flyerboard.client.ui.components.FlyerBoardTopBarTab
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
+import com.cramsan.ui.preview.DevicePreviews
 import com.cramsan.ui.preview.ScreenPreviews
 
 /**
@@ -62,7 +63,7 @@ private fun FlyerBoardWindowSignedOutPreview() =
  * Preview for the FlyerBoard window chrome on a top-level destination while signed in as an
  * admin, showing the Moderation tab.
  */
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun FlyerBoardWindowAdminSignedInPreview() =
     AppTheme {

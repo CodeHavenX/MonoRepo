@@ -4,7 +4,6 @@ import app.cash.turbine.turbineScope
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowNavGraphDestination
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import com.cramsan.flyerboard.client.lib.managers.AuthManager
-import com.cramsan.flyerboard.client.lib.managers.UserManager
 import com.cramsan.flyerboard.client.lib.models.UserModel
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.flyerboard.lib.model.UserRole
@@ -22,7 +21,9 @@ import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import net.bytebuddy.matcher.ElementMatchers.any
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertInstanceOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -30,7 +31,6 @@ import kotlin.test.assertTrue
 
 class SignUpViewModelTest : CoroutineTest() {
     private lateinit var authManager: AuthManager
-    private lateinit var userManager: UserManager
     private lateinit var viewModel: SignUpViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -40,7 +40,6 @@ class SignUpViewModelTest : CoroutineTest() {
     fun setUp() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
-        userManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         applicationEventBus = EventBus()
         windowEventBus = EventBus()
@@ -55,7 +54,6 @@ class SignUpViewModelTest : CoroutineTest() {
                     applicationEventReceiver = applicationEventBus,
                 ),
                 authManager = authManager,
-                userManager = userManager,
             )
     }
 
@@ -100,8 +98,7 @@ class SignUpViewModelTest : CoroutineTest() {
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
-                coEvery { authManager.signUp("jane@example.com", "pass123") } returns Result.success(Unit)
-                coEvery { userManager.createUser("Jane", "Doe") } returns Result.success(makeUserModel())
+                coEvery { authManager.signUp("jane@example.com", "pass123", "Jane", "Doe") } returns Result.success(Unit)
 
                 viewModel.onFirstNameChanged("Jane")
                 viewModel.onLastNameChanged("Doe")
@@ -110,8 +107,7 @@ class SignUpViewModelTest : CoroutineTest() {
                 viewModel.onConfirmPasswordChanged("pass123")
                 viewModel.signUp()
 
-                coVerify { authManager.signUp("jane@example.com", "pass123") }
-                coVerify { userManager.createUser("Jane", "Doe") }
+                coVerify { authManager.signUp("jane@example.com", "pass123", "Jane", "Doe") }
                 assertFalse(viewModel.uiState.value.isLoading)
 
                 val event = turbine.awaitItem()
@@ -127,13 +123,13 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `createUser failure after successful signUp does not block navigation`() =
+    fun `createUser failure after successful signUp should block navigation`() =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
-                coEvery { authManager.signUp("jane@example.com", "pass123") } returns Result.success(Unit)
-                coEvery { userManager.createUser("Jane", "Doe") } returns
-                    Result.failure(RuntimeException("Server error"))
+                coEvery { authManager.signUp("jane@example.com", "pass123", "Jane", "Doe") } returns Result.failure(
+                    RuntimeException("Unexpected error")
+                )
 
                 viewModel.onFirstNameChanged("Jane")
                 viewModel.onLastNameChanged("Doe")
@@ -142,17 +138,10 @@ class SignUpViewModelTest : CoroutineTest() {
                 viewModel.onConfirmPasswordChanged("pass123")
                 viewModel.signUp()
 
-                coVerify { userManager.createUser("Jane", "Doe") }
-                assertFalse(viewModel.uiState.value.isLoading)
-
                 val event = turbine.awaitItem()
-                assertEquals(
-                    FlyerBoardWindowsEvent.NavigateToNavGraph(
-                        destination = FlyerBoardWindowNavGraphDestination.MainNavGraphDestination,
-                        clearStack = true,
-                    ),
-                    event,
-                )
+
+                assertFalse(viewModel.uiState.value.isLoading)
+                assertInstanceOf<FlyerBoardWindowsEvent.ShowSnackbar>(event)
                 advanceUntilIdleAndAwaitComplete(turbine)
             }
         }
@@ -162,7 +151,7 @@ class SignUpViewModelTest : CoroutineTest() {
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
-                coEvery { authManager.signUp(any(), any()) } returns Result.failure(RuntimeException("Email taken"))
+                coEvery { authManager.signUp(any(), any(), any(), any()) } returns Result.failure(RuntimeException("Email taken"))
 
                 viewModel.onFirstNameChanged("Jane")
                 viewModel.onLastNameChanged("Doe")
@@ -171,7 +160,7 @@ class SignUpViewModelTest : CoroutineTest() {
                 viewModel.onConfirmPasswordChanged("pass123")
                 viewModel.signUp()
 
-                coVerify { authManager.signUp("taken@example.com", "pass123") }
+                coVerify { authManager.signUp("taken@example.com", "pass123","Jane", "Doe") }
                 assertFalse(viewModel.uiState.value.isLoading)
 
                 val event = turbine.awaitItem()
@@ -194,7 +183,7 @@ class SignUpViewModelTest : CoroutineTest() {
                 val snackbar = event as FlyerBoardWindowsEvent.ShowSnackbar
                 assertEquals(SignUpViewModel.MSG_FILL_ALL_FIELDS, snackbar.message)
                 assertFalse(viewModel.uiState.value.isLoading)
-                coVerify(exactly = 0) { authManager.signUp(any(), any()) }
+                coVerify(exactly = 0) { authManager.signUp(any(), any(), any(), any()) }
                 advanceUntilIdleAndAwaitComplete(turbine)
             }
         }
@@ -216,7 +205,7 @@ class SignUpViewModelTest : CoroutineTest() {
                 val snackbar = event as FlyerBoardWindowsEvent.ShowSnackbar
                 assertEquals(SignUpViewModel.MSG_PASSWORD_MISMATCH, snackbar.message)
                 assertFalse(viewModel.uiState.value.isLoading)
-                coVerify(exactly = 0) { authManager.signUp(any(), any()) }
+                coVerify(exactly = 0) { authManager.signUp(any(), any(), any(), any()) }
                 advanceUntilIdleAndAwaitComplete(turbine)
             }
         }
@@ -233,12 +222,4 @@ class SignUpViewModelTest : CoroutineTest() {
                 advanceUntilIdleAndAwaitComplete(turbine)
             }
         }
-
-    private fun makeUserModel() =
-        UserModel(
-            id = UserId("user-1"),
-            firstName = "Jane",
-            lastName = "Doe",
-            role = UserRole.USER,
-        )
 }

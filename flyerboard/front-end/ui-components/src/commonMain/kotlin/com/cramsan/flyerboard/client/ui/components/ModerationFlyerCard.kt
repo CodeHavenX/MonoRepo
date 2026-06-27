@@ -2,6 +2,7 @@ package com.cramsan.flyerboard.client.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,11 +53,15 @@ fun ModerationFlyerCard(
     postedAt: String,
     imageUrl: String? = null,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit,
     onApprove: () -> Unit,
     onReject: () -> Unit,
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier =
+        modifier
+            .clickable { onClick() }
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Box(

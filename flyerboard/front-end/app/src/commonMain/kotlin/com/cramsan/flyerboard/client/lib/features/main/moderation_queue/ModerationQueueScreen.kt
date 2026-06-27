@@ -72,6 +72,7 @@ fun ModerationQueueScreen(
     ModerationQueueContent(
         uiState = uiState,
         modifier = modifier,
+        onClick = { viewModel.navigateToFlyer(it.id) },
         onApprove = { viewModel.approveFlyer(it.id) },
         onRejectTapped = { viewModel.onRejectTapped(it.id) },
         onConfirmReject = { flyerId, reason -> viewModel.rejectFlyer(flyerId, reason) },
@@ -86,6 +87,7 @@ fun ModerationQueueScreen(
 internal fun ModerationQueueContent(
     uiState: ModerationQueueUIState,
     modifier: Modifier = Modifier,
+    onClick: (FlyerModel) -> Unit,
     onApprove: (FlyerModel) -> Unit,
     onRejectTapped: (FlyerModel) -> Unit,
     onConfirmReject: (FlyerId, String) -> Unit,
@@ -126,6 +128,7 @@ internal fun ModerationQueueContent(
                                     uploaderHandle = flyer.uploaderId.userId,
                                     postedAt = flyer.createdAt,
                                     imageUrl = flyer.fileUrl,
+                                    onClick = { onClick(flyer) },
                                     onApprove = { onApprove(flyer) },
                                     onReject = { onRejectTapped(flyer) },
                                 )

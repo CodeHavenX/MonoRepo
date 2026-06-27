@@ -13,6 +13,7 @@ import com.cramsan.framework.logging.EventLoggerInterface
 import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.logging.implementation.EventLoggerErrorCallbackImpl
 import com.cramsan.framework.logging.implementation.EventLoggerImpl
+import com.cramsan.framework.logging.implementation.NoopEventLoggerDelegate
 import com.cramsan.framework.preferences.Preferences
 import com.cramsan.framework.preferences.PreferencesDelegate
 import com.cramsan.framework.thread.ThreadUtilDelegate
@@ -39,7 +40,10 @@ internal val FrameworkModule =
         }
 
         single<EventLoggerErrorCallback> {
-            EventLoggerErrorCallbackImpl(get(), get())
+            EventLoggerErrorCallbackImpl(
+                NoopEventLoggerDelegate(),
+                get(),
+            )
         }
 
         single<Severity> {

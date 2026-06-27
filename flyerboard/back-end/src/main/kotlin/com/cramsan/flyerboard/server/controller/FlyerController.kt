@@ -50,7 +50,12 @@ class FlyerController(
 
     private fun OperationHandler.RegistrationBuilder<FlyerApi>.registerGetFlyer() {
         unauthenticatedHandler(api.getFlyer, contextRetriever) { request ->
-            flyerService.getFlyer(request.pathParam).getOrThrow()?.toFlyerNetworkResponse()
+            flyerService
+                .getFlyer(
+                    request.context,
+                    request.pathParam,
+                ).getOrThrow()
+                ?.toFlyerNetworkResponse()
         }
     }
 

@@ -1,5 +1,6 @@
 package com.cramsan.flyerboard.client.lib.features.main.moderation_queue
 
+import com.cramsan.flyerboard.client.lib.features.main.MainDestination
 import com.cramsan.flyerboard.client.lib.features.window.FlyerBoardWindowsEvent
 import com.cramsan.flyerboard.client.lib.managers.FlyerManager
 import com.cramsan.flyerboard.lib.model.FlyerId
@@ -139,6 +140,20 @@ class ModerationQueueViewModel(dependencies: ViewModelDependencies, private val 
         logI(TAG, "navigateBack")
         viewModelCoroutineScope.launch {
             emitWindowEvent(FlyerBoardWindowsEvent.NavigateBack)
+        }
+    }
+
+    /**
+     * Navigate to the flyer [id].
+     */
+    fun navigateToFlyer(id: FlyerId) {
+        logI(TAG, "navigateToFlyer")
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                FlyerBoardWindowsEvent.NavigateToScreen(
+                    MainDestination.FlyerDetailDestination(id.flyerId),
+                ),
+            )
         }
     }
 

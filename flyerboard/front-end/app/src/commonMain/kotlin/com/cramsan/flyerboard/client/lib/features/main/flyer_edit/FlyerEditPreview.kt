@@ -2,12 +2,13 @@ package com.cramsan.flyerboard.client.lib.features.main.flyer_edit
 
 import androidx.compose.runtime.Composable
 import com.cramsan.flyerboard.client.ui.theme.AppTheme
+import com.cramsan.ui.preview.DevicePreviews
 import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the Flyer Edit screen with content loaded.
  */
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun FlyerEditScreenPreview() =
     AppTheme {

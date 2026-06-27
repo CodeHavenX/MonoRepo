@@ -32,7 +32,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.mockk.coEvery
-import kotlinx.serialization.decodeFromString
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
@@ -192,7 +191,7 @@ class FlyerControllerTest :
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             val flyer = makeFlyer(id = "flyer-1")
-            coEvery { flyerService.getFlyer(FlyerId("flyer-1")) } returns Result.success(flyer)
+            coEvery { flyerService.getFlyer(any(), FlyerId("flyer-1")) } returns Result.success(flyer)
 
             val response = client.get("api/v1/flyers/flyer-1")
 
@@ -206,7 +205,7 @@ class FlyerControllerTest :
         testBackEndApplication {
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
-            coEvery { flyerService.getFlyer(FlyerId("missing")) } returns Result.success(null)
+            coEvery { flyerService.getFlyer(any(), FlyerId("missing")) } returns Result.success(null)
 
             val response = client.get("api/v1/flyers/missing")
 
@@ -219,7 +218,7 @@ class FlyerControllerTest :
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             coEvery {
-                flyerService.getFlyer(FlyerId("missing"))
+                flyerService.getFlyer(any(), FlyerId("missing"))
             } returns Result.failure(NotFoundException("Flyer not found: missing"))
 
             val response = client.get("api/v1/flyers/missing")

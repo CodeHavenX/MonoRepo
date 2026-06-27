@@ -45,6 +45,7 @@ private fun ModerationQueueLoadingPreview() =
             onRejectTapped = {},
             onConfirmReject = { _, _ -> },
             onDismissRejectDialog = {},
+            onClick = {},
         )
     }
 
@@ -61,6 +62,7 @@ private fun ModerationQueueEmptyPreview() =
             onRejectTapped = {},
             onConfirmReject = { _, _ -> },
             onDismissRejectDialog = {},
+            onClick = {},
         )
     }
 
@@ -77,6 +79,7 @@ private fun ModerationQueueContentPreview() =
             onRejectTapped = {},
             onConfirmReject = { _, _ -> },
             onDismissRejectDialog = {},
+            onClick = {},
         )
     }
 
@@ -97,5 +100,6 @@ private fun ModerationQueueRejectDialogPreview() =
             onRejectTapped = {},
             onConfirmReject = { _, _ -> },
             onDismissRejectDialog = {},
+            onClick = {},
         )
     }

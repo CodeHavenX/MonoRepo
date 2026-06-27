@@ -1,7 +1,7 @@
 package com.cramsan.flyerboard.client.lib.managers
 
+import com.cramsan.flyerboard.client.lib.models.UserModel
 import com.cramsan.flyerboard.client.lib.service.AuthService
-import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.getOrCatch
@@ -16,10 +16,10 @@ class AuthManager(private val dependencies: ManagerDependencies, private val aut
     /**
      * Registers a new user with [email] and [password].
      */
-    suspend fun signUp(email: String, password: String): Result<Unit> =
+    suspend fun signUp(email: String, password: String, firstName: String, lastName: String): Result<Unit> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "signUp")
-            authService.signUp(email, password).getOrThrow()
+            authService.signUp(email, password, firstName, lastName).getOrThrow()
         }
 
     /**
@@ -50,19 +50,9 @@ class AuthManager(private val dependencies: ManagerDependencies, private val aut
         }
 
     /**
-     * Returns the current session's access token for attaching to backend API calls.
-     */
-    fun getAccessToken(): String? = authService.getAccessToken()
-
-    /**
-     * Returns the current authenticated user's ID, or null if not authenticated.
-     */
-    fun currentUserId(): UserId? = authService.currentUserId()
-
-    /**
      * Observable flow of the current user ID. Emits null when signed out.
      */
-    fun activeUser(): StateFlow<UserId?> = authService.activeUser()
+    fun activeUser(): StateFlow<UserModel?> = authService.activeUser()
 
     companion object {
         private const val TAG = "AuthManager"

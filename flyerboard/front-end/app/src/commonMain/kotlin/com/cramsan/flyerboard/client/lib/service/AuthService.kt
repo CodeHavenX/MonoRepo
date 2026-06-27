@@ -1,5 +1,6 @@
 package com.cramsan.flyerboard.client.lib.service
 
+import com.cramsan.flyerboard.client.lib.models.UserModel
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.framework.annotations.FrontendService
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,12 @@ interface AuthService {
     /**
      * Registers a new user with the given [email] and [password].
      */
-    suspend fun signUp(email: String, password: String): Result<Unit>
+    suspend fun signUp(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+    ): Result<Unit>
 
     /**
      * Signs in an existing user with [email] and [password].
@@ -42,5 +48,5 @@ interface AuthService {
     /**
      * Observable flow of the current user ID. Emits null when signed out.
      */
-    fun activeUser(): StateFlow<UserId?>
+    fun activeUser(): StateFlow<UserModel?>
 }

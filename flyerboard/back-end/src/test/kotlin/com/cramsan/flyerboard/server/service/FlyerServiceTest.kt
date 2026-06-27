@@ -3,11 +3,15 @@ package com.cramsan.flyerboard.server.service
 import com.cramsan.flyerboard.lib.model.FlyerId
 import com.cramsan.flyerboard.lib.model.FlyerStatus
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.UserRole
+import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.datastore.FileDatastore
 import com.cramsan.flyerboard.server.datastore.FlyerDatastore
 import com.cramsan.flyerboard.server.datastore.PagedResult
 import com.cramsan.flyerboard.server.datastore.SignedUpload
 import com.cramsan.flyerboard.server.service.models.Flyer
+import com.cramsan.framework.assertlib.assertNull
+import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
@@ -15,6 +19,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -202,26 +207,64 @@ class FlyerServiceTest {
     fun `getFlyer returns flyer with fileUrl populated when found`() =
         runTest {
             val flyerId = FlyerId("flyer-1")
-            val flyer = makeFlyer(id = "flyer-1")
+            val flyer = makeFlyer(id = "flyer-1", status = FlyerStatus.APPROVED)
+            val context = ClientContext.UnauthenticatedClientContext<FlyerBoardContextPayload>()
 
             coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(flyer)
             coEvery { fileDatastore.getSignedUrl(flyer.filePath) } returns
                 Result.success("https://signed.example.com/file.png")
 
-            val result = flyerService.getFlyer(flyerId)
+            val result = flyerService.getFlyer(context, flyerId)
 
             assertTrue(result.isSuccess)
             assertEquals("https://signed.example.com/file.png", result.getOrThrow()?.fileUrl)
         }
 
     @Test
+    fun `getFlyer returns null when flyer is pending and user not authenticated`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val flyer = makeFlyer(id = "flyer-1", status = FlyerStatus.PENDING)
+            val context = ClientContext.UnauthenticatedClientContext<FlyerBoardContextPayload>()
+
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(flyer)
+
+            val result = flyerService.getFlyer(context, flyerId)
+
+            assertTrue(result.isSuccess)
+            assertNull(result.getOrNull())
+        }
+
+    @Test
+    fun `getFlyer returns null when flyer is pending and user is not admin`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val flyer = makeFlyer(id = "flyer-1", status = FlyerStatus.PENDING)
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    FlyerBoardContextPayload(
+                        userId = UserId("userId"),
+                        role = UserRole.USER,
+                    ),
+                )
+
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(flyer)
+
+            val result = flyerService.getFlyer(context, flyerId)
+
+            assertTrue(result.isSuccess)
+            assertNull(result.getOrNull())
+        }
+
+    @Test
     fun `getFlyer returns null when flyer is not found`() =
         runTest {
             val flyerId = FlyerId("nonexistent")
+            val context = ClientContext.UnauthenticatedClientContext<FlyerBoardContextPayload>()
 
             coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(null)
 
-            val result = flyerService.getFlyer(flyerId)
+            val result = flyerService.getFlyer(context, flyerId)
 
             assertTrue(result.isSuccess)
             assertEquals(null, result.getOrThrow())
@@ -232,11 +275,12 @@ class FlyerServiceTest {
         runTest {
             val flyerId = FlyerId("flyer-1")
             val flyer = makeFlyer(id = "flyer-1")
+            val context = ClientContext.UnauthenticatedClientContext<FlyerBoardContextPayload>()
 
             coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(flyer)
             coEvery { fileDatastore.getSignedUrl(flyer.filePath) } returns Result.failure(RuntimeException("boom"))
 
-            val result = flyerService.getFlyer(flyerId)
+            val result = flyerService.getFlyer(context, flyerId)
 
             assertTrue(result.isSuccess)
             assertEquals(null, result.getOrThrow()?.fileUrl)

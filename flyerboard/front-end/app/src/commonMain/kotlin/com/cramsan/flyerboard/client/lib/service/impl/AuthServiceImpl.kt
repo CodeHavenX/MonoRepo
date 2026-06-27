@@ -1,12 +1,17 @@
 package com.cramsan.flyerboard.client.lib.service.impl
 
+import com.cramsan.architecture.client.service.execute
+import com.cramsan.flyerboard.api.UserApi
+import com.cramsan.flyerboard.client.lib.models.UserModel
 import com.cramsan.flyerboard.client.lib.service.AuthService
 import com.cramsan.flyerboard.lib.model.UserId
+import com.cramsan.flyerboard.lib.model.network.CreateUserNetworkRequest
 import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.assertlib.assert
 import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logE
+import com.cramsan.framework.networkapi.buildRequest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.exception.AuthRestException
@@ -25,10 +30,40 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 @OptIn(ExperimentalAtomicApi::class)
 @FrontendService
 class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : AuthService {
-    private val _activeUser = MutableStateFlow<UserId?>(null)
+    private val _activeUser = MutableStateFlow<UserModel?>(null)
     private val isInitialized = AtomicBoolean(false)
 
-    override suspend fun signUp(email: String, password: String): Result<Unit> =
+    private suspend fun createUser(
+        firstName: String,
+        lastName: String,
+    ): Result<UserModel> =
+        runSuspendCatching(TAG) {
+            val response =
+                UserApi.createUser
+                    .buildRequest(
+                        CreateUserNetworkRequest(
+                            firstName = firstName,
+                            lastName = lastName,
+                        ),
+                    ).execute(http)
+            val userModel = response.toUserModel()
+            userModel
+        }
+
+    private suspend fun getCurrentUser(): Result<UserModel> =
+        runSuspendCatching(TAG) {
+            UserApi.getCurrentUser
+                .buildRequest()
+                .execute(http)
+                .toUserModel()
+        }
+
+    override suspend fun signUp(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+    ): Result<Unit> =
         runSuspendCatching(TAG) {
             logD(TAG, "signUp: %s", email)
             try {
@@ -37,7 +72,8 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
                     this.email = email
                     this.password = password
                 }
-                _activeUser.value = auth.currentUserOrNull()?.id?.let { UserId(it) }
+                val createdUser = createUser(firstName, lastName).getOrThrow()
+                _activeUser.value = createdUser
             } catch (e: AuthRestException) {
                 logE(TAG, "Error signing up", e)
                 throw ClientRequestExceptions.UnauthorizedException("Sign-up failed: ${e.message}", e)
@@ -52,7 +88,15 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
                     this.email = email
                     this.password = password
                 }
-                _activeUser.value = auth.currentUserOrNull()?.id?.let { UserId(it) }
+                // Here we want to detect null in case the user was not created previously even though the user exists
+                // in supabase
+                val user = getCurrentUser().getOrNull()
+                if (user == null) {
+                    val createdUser = createUser("", "").getOrThrow()
+                    _activeUser.value = createdUser
+                } else {
+                    _activeUser.value = user
+                }
             } catch (e: AuthRestException) {
                 logE(TAG, "Error signing in", e)
                 throw ClientRequestExceptions.UnauthorizedException("Invalid credentials", e)
@@ -78,7 +122,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             } else {
                 try {
                     auth.refreshCurrentSession()
-                    _activeUser.value = UserId(user.id)
+                    _activeUser.value = getCurrentUser().getOrThrow()
                     true
                 } catch (e: RestException) {
                     logE(TAG, "Failed to refresh session", e)
@@ -94,7 +138,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
 
     override fun currentUserId(): UserId? = auth.currentUserOrNull()?.id?.let { UserId(it) }
 
-    override fun activeUser(): StateFlow<UserId?> {
+    override fun activeUser(): StateFlow<UserModel?> {
         assert(isInitialized.load(), TAG, "Reading active user before initialization")
         return _activeUser.asStateFlow()
     }

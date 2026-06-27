@@ -8,38 +8,54 @@
 </head>
 <body>
 
-<div class="page-centered">
-  <div class="card-panel">
-    <div class="card-panel-accent"></div>
-    <div class="card-panel-body">
+<div class="form-page">
+  <div class="detail-container">
 
-      <h1 class="form-title">Edit Flyer</h1>
-      <p class="form-subtitle">Update your flyer's details below.</p>
+    <a href="my-flyers.html" class="detail-back">← My Flyers</a>
 
-      <div class="upload-zone">
-        <span class="upload-icon">☁️</span>
-        <p class="upload-text">Drag &amp; drop a replacement image or PDF here, or click to browse</p>
-        <p class="upload-hint">Max file size: 10MB</p>
+    <div class="detail-columns">
+
+      <!-- Left: current image preview with replace option -->
+      <div class="detail-image-col">
+        <div class="detail-image"></div>
+        <button class="btn btn-outline form-replace-btn">Replace Image</button>
       </div>
 
-      <div class="input-labeled mb-4">
-        <span class="label">Title</span>
-        <input class="input-rect" type="text" value="Community Yard Sale">
-      </div>
+      <!-- Right: form fields -->
+      <div class="detail-content-col">
+        <h1 class="form-page-title">Edit Flyer</h1>
+        <p class="form-page-subtitle">Update your flyer's details below.</p>
 
-      <div class="input-labeled mb-4">
-        <span class="label">Description</span>
-        <textarea class="input-rect textarea">Everything must go! Furniture, clothes, books and more.</textarea>
-      </div>
+        <div class="input-labeled">
+          <span class="label">Title</span>
+          <input class="input-rect" type="text" value="Community Yard Sale">
+        </div>
 
-      <div class="input-labeled mb-4">
-        <span class="label">Expires At (optional)</span>
-        <input class="input-rect" type="text" value="2026-05-01">
-      </div>
-      <p class="input-hint mb-6">Flyer will be archived after this date.</p>
+        <div class="input-labeled">
+          <span class="label">Description</span>
+          <textarea class="input-rect textarea">Everything must go! Furniture, clothes, books and more.</textarea>
+        </div>
 
-      <button class="btn btn-primary btn-block">Save</button>
-      <button class="btn btn-outline btn-block">Cancel</button>
+        <div class="form-group">
+          <p class="form-label-text">Category</p>
+          <div class="filter-chips">
+            <button class="filter-chip active">Events</button>
+            <button class="filter-chip">Lost &amp; Found</button>
+            <button class="filter-chip">Services</button>
+          </div>
+        </div>
+
+        <div class="input-labeled">
+          <span class="label">Expires on (optional)</span>
+          <input class="input-rect" type="text" value="2026-05-01">
+        </div>
+        <p class="input-hint mb-6">Flyer will be archived after this date.</p>
+
+        <div class="detail-actions">
+          <button class="btn btn-primary">Save Changes</button>
+          <button class="btn btn-outline">Cancel</button>
+        </div>
+      </div>
 
     </div>
   </div>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flyerboard — Account</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="form-page">
+  <div class="detail-container">
+
+    <a href="my-flyers.html" class="detail-back">← My Flyers</a>
+
+    <div class="settings-form">
+
+      <h1 class="form-page-title">Account Settings</h1>
+
+      <!-- Profile -->
+      <div class="settings-section">
+        <h2 class="settings-section-title">Profile</h2>
+        <div class="input-labeled">
+          <span class="label">Display name</span>
+          <input class="input-rect" type="text" value="cramsan">
+        </div>
+        <div class="input-labeled">
+          <span class="label">Email</span>
+          <input class="input-rect" type="email" value="cramsan@example.com">
+        </div>
+        <div class="settings-actions">
+          <button class="btn btn-primary">Save</button>
+        </div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Security -->
+      <div class="settings-section">
+        <h2 class="settings-section-title">Security</h2>
+        <div class="input-labeled">
+          <span class="label">Current password</span>
+          <input class="input-rect" type="password" placeholder="••••••••">
+        </div>
+        <div class="input-labeled">
+          <span class="label">New password</span>
+          <input class="input-rect" type="password" placeholder="••••••••">
+        </div>
+        <div class="input-labeled">
+          <span class="label">Confirm new password</span>
+          <input class="input-rect" type="password" placeholder="••••••••">
+        </div>
+        <div class="settings-actions">
+          <button class="btn btn-primary">Update Password</button>
+        </div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Notifications -->
+      <div class="settings-section">
+        <h2 class="settings-section-title">Notifications</h2>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Flyer approved</span>
+            <span class="toggle-desc">Email me when a moderator approves my flyer</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" checked>
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Flyer rejected</span>
+            <span class="toggle-desc">Email me when a moderator rejects my flyer</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" checked>
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Expiry reminder</span>
+            <span class="toggle-desc">Email me 7 days before a flyer expires</span>
+          </div>
+          <label class="toggle">
+            <input type="checkbox">
+            <span class="toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="settings-actions">
+          <button class="btn btn-primary">Save</button>
+        </div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Danger Zone -->
+      <div class="settings-section settings-danger">
+        <h2 class="settings-section-title">Danger Zone</h2>
+        <p class="settings-danger-desc">
+          Permanently delete your account and all your flyers.
+          This action cannot be undone.
+        </p>
+        <div class="settings-actions">
+          <button class="btn btn-danger">Delete Account</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -8,35 +8,57 @@
 </head>
 <body>
 
-<div class="page-centered">
-  <div class="card-panel">
-    <div class="card-panel-accent"></div>
-    <div class="card-panel-body">
+<div class="form-page">
+  <div class="detail-container">
 
-      <h1 class="form-title">New Flyer</h1>
-      <p class="form-subtitle">Upload your design and reach the neighborhood.</p>
+    <a href="my-flyers.html" class="detail-back">← My Flyers</a>
 
-      <div class="upload-zone">
-        <span class="upload-icon">☁️</span>
-        <p class="upload-text">Drag &amp; drop your image or PDF here, or click to browse</p>
-        <p class="upload-hint">Max file size: 10MB</p>
+    <div class="detail-columns">
+
+      <!-- Left: upload zone -->
+      <div class="detail-image-col">
+        <div class="form-upload-zone">
+          <span class="form-upload-icon">☁️</span>
+          <p class="form-upload-text">Drag &amp; drop your flyer here,<br>or click to browse</p>
+          <p class="form-upload-hint">JPG, PNG or PDF · Max 10 MB</p>
+        </div>
       </div>
 
-      <div class="input-labeled mb-4">
-        <input class="input-rect" type="text" placeholder="Title">
-      </div>
+      <!-- Right: form fields -->
+      <div class="detail-content-col">
+        <h1 class="form-page-title">New Flyer</h1>
+        <p class="form-page-subtitle">Upload your design and reach the neighborhood.</p>
 
-      <div class="input-labeled mb-4">
-        <textarea class="input-rect textarea" placeholder="Description"></textarea>
-      </div>
+        <div class="input-labeled">
+          <span class="label">Title</span>
+          <input class="input-rect" type="text" placeholder="Give your flyer a title">
+        </div>
 
-      <div class="input-labeled mb-4">
-        <input class="input-rect" type="text" placeholder="Expires on (optional)">
-      </div>
-      <p class="input-hint mb-6">Flyer will be archived after this date.</p>
+        <div class="input-labeled">
+          <span class="label">Description</span>
+          <textarea class="input-rect textarea" placeholder="What's this flyer about?"></textarea>
+        </div>
 
-      <button class="btn btn-primary btn-block">Submit for Review</button>
-      <button class="btn btn-outline btn-block">Cancel</button>
+        <div class="form-group">
+          <p class="form-label-text">Category</p>
+          <div class="filter-chips">
+            <button class="filter-chip active">Events</button>
+            <button class="filter-chip">Lost &amp; Found</button>
+            <button class="filter-chip">Services</button>
+          </div>
+        </div>
+
+        <div class="input-labeled">
+          <span class="label">Expires on (optional)</span>
+          <input class="input-rect" type="text" placeholder="YYYY-MM-DD">
+        </div>
+        <p class="input-hint mb-6">Flyer will be archived after this date.</p>
+
+        <div class="detail-actions">
+          <button class="btn btn-primary">Submit for Review</button>
+          <button class="btn btn-outline">Cancel</button>
+        </div>
+      </div>
 
     </div>
   </div>

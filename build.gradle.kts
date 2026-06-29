@@ -47,7 +47,7 @@ ideCheck {
             minVersion.set("2026.1")
         }
         register("Idea") {
-            minVersion.set("2026.2")
+            minVersion.set("2026.3")
         }
     }
     // dirName must match the subdirectory name inside the IDE's plugins/ folder.

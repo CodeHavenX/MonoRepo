@@ -10,6 +10,9 @@ repositories {
 }
 
 dependencies {
+    testImplementation(libs.test.junit.jupiter)
+    testRuntimeOnly(libs.test.junit.platform.launcher)
+
     implementation(libs.build.android.gradle.plugin)
     implementation(libs.build.compose.gradle.plugin)
     implementation(libs.build.detekt.gradle.plugin)
@@ -25,6 +28,10 @@ dependencies {
 // on the classpath. This flag tells the compiler to skip the version check and fall back
 // to reading types from JVM bytecode instead.
 // Remove once detekt ships with a Kotlin 2.3.x Analysis API: https://github.com/CodeHavenX/MonoRepo/issues/478
+tasks.test {
+    useJUnitPlatform()
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.add("-Xskip-metadata-version-check")

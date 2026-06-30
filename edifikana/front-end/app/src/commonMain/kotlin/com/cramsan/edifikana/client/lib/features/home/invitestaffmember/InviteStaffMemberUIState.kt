@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.invitestaffmember
 
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**
@@ -28,4 +28,4 @@ data class InviteStaffMemberUIState(
 /**
  * UI model representing a staff role option in the dropdown.
  */
-data class StaffRoleUIModel(val role: UserRole, val displayName: String)
+data class StaffRoleUIModel(val role: InviteRole, val displayName: String)

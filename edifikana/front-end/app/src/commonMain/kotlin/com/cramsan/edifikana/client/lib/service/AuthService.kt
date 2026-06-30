@@ -3,9 +3,9 @@ package com.cramsan.edifikana.client.lib.service
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
@@ -116,7 +116,7 @@ interface AuthService {
      * Invite an employee member to the organization with the provided [organizationId] using the given [email]
      * and assign them the specified [role].
      */
-    suspend fun inviteEmployee(email: String, organizationId: OrganizationId, role: UserRole): Result<Unit>
+    suspend fun inviteEmployee(email: String, organizationId: OrganizationId, role: InviteRole): Result<Unit>
 
     /**
      * Retrieves all pending invites for the given [organizationId].

@@ -4,8 +4,8 @@ import app.cash.turbine.turbineScope
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -59,11 +59,11 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
 
         assertEquals(organizationId, viewModel.uiState.value.orgId)
         assertEquals(3, viewModel.uiState.value.roles.size)
-        assertEquals(UserRole.ADMIN, viewModel.uiState.value.roles[0].role)
+        assertEquals(InviteRole.ADMIN, viewModel.uiState.value.roles[0].role)
         assertEquals("Admin", viewModel.uiState.value.roles[0].displayName)
-        assertEquals(UserRole.MANAGER, viewModel.uiState.value.roles[1].role)
+        assertEquals(InviteRole.MANAGER, viewModel.uiState.value.roles[1].role)
         assertEquals("Manager", viewModel.uiState.value.roles[1].displayName)
-        assertEquals(UserRole.EMPLOYEE, viewModel.uiState.value.roles[2].role)
+        assertEquals(InviteRole.EMPLOYEE, viewModel.uiState.value.roles[2].role)
         assertEquals("Employee", viewModel.uiState.value.roles[2].displayName)
     }
 
@@ -85,7 +85,7 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
     @Test
     fun `test sendInvitation with empty email shows error snackbar`() = runCoroutineTest {
         val organizationId = OrganizationId("org_id_1")
-        val role = StaffRoleUIModel(UserRole.ADMIN, "Admin")
+        val role = StaffRoleUIModel(InviteRole.ADMIN, "Admin")
 
         viewModel.initialize(organizationId)
 
@@ -107,7 +107,7 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
     @Test
     fun `test sendInvitation with blank email shows error snackbar`() = runCoroutineTest {
         val organizationId = OrganizationId("org_id_1")
-        val role = StaffRoleUIModel(UserRole.ADMIN, "Admin")
+        val role = StaffRoleUIModel(InviteRole.ADMIN, "Admin")
 
         viewModel.initialize(organizationId)
 
@@ -129,7 +129,7 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
     @Test
     fun `test sendInvitation with invalid email format shows error snackbar`() = runCoroutineTest {
         val organizationId = OrganizationId("org_id_1")
-        val role = StaffRoleUIModel(UserRole.ADMIN, "Admin")
+        val role = StaffRoleUIModel(InviteRole.ADMIN, "Admin")
 
         viewModel.initialize(organizationId)
 
@@ -174,9 +174,9 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
     fun `test sendInvitation with valid data sends invitation and navigates back`() = runCoroutineTest {
         val organizationId = OrganizationId("org_id_1")
         val email = "test@example.com"
-        val role = StaffRoleUIModel(UserRole.ADMIN, "Admin")
+        val role = StaffRoleUIModel(InviteRole.ADMIN, "Admin")
 
-        coEvery { authManager.inviteEmployee(email, organizationId, UserRole.ADMIN) } returns Result.success(Unit)
+        coEvery { authManager.inviteEmployee(email, organizationId, InviteRole.ADMIN) } returns Result.success(Unit)
 
         viewModel.initialize(organizationId)
 
@@ -193,7 +193,7 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
             advanceUntilIdleAndAwaitComplete(turbine)
         }
 
-        coVerify { authManager.inviteEmployee(email, organizationId, UserRole.ADMIN) }
+        coVerify { authManager.inviteEmployee(email, organizationId, InviteRole.ADMIN) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
     }
 
@@ -201,9 +201,9 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
     fun `test sendInvitation with failure shows error snackbar`() = runCoroutineTest {
         val organizationId = OrganizationId("org_id_1")
         val email = "test@example.com"
-        val role = StaffRoleUIModel(UserRole.ADMIN, "Admin")
+        val role = StaffRoleUIModel(InviteRole.ADMIN, "Admin")
 
-        coEvery { authManager.inviteEmployee(email, organizationId, UserRole.ADMIN) } returns Result.failure(
+        coEvery { authManager.inviteEmployee(email, organizationId, InviteRole.ADMIN) } returns Result.failure(
             Exception("Error"),
         )
 
@@ -221,7 +221,7 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
             advanceUntilIdleAndAwaitComplete(turbine)
         }
 
-        coVerify { authManager.inviteEmployee(email, organizationId, UserRole.ADMIN) }
+        coVerify { authManager.inviteEmployee(email, organizationId, InviteRole.ADMIN) }
         assertEquals(false, viewModel.uiState.value.isLoading)
     }
 }

@@ -4,7 +4,6 @@ import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.edifikana.lib.model.network.user.CheckUserNetworkResponse
 import com.cramsan.edifikana.lib.model.network.invite.InviteListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.invite.InviteNetworkResponse
@@ -603,13 +602,12 @@ class AuthServiceImplTest {
     /**
      * Verifies that inviteEmployee sends an invite successfully.
      */
-    @Ignore("Requires backend support for inviting employees, related to TODO() on method")
     @Test
     fun `inviteEmployee sends invite successfully`() = runTest {
         // Arrange
         val email = "invite@example.com"
         val organizationId = OrganizationId("org-123")
-        val role = UserRole.EMPLOYEE
+        val role = InviteRole.EMPLOYEE
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success("")
         }

@@ -2,8 +2,8 @@ package com.cramsan.edifikana.client.lib.features.home.invitestaffmember
 
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -27,9 +27,9 @@ class InviteStaffMemberViewModel(dependencies: ViewModelDependencies, private va
         viewModelCoroutineScope.launch {
             val roles =
                 listOf(
-                    StaffRoleUIModel(UserRole.ADMIN, "Admin"),
-                    StaffRoleUIModel(UserRole.MANAGER, "Manager"),
-                    StaffRoleUIModel(UserRole.EMPLOYEE, "Employee"),
+                    StaffRoleUIModel(InviteRole.ADMIN, "Admin"),
+                    StaffRoleUIModel(InviteRole.MANAGER, "Manager"),
+                    StaffRoleUIModel(InviteRole.EMPLOYEE, "Employee"),
                 )
             updateUiState { it.copy(orgId = orgId, roles = roles) }
         }

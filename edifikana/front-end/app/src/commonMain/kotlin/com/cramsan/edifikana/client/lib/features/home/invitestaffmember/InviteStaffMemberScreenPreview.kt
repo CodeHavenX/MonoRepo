@@ -2,7 +2,7 @@ package com.cramsan.edifikana.client.lib.features.home.invitestaffmember
 
 import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
-import com.cramsan.edifikana.lib.model.user.UserRole
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.ui.preview.ScreenPreviews
 
 /**
@@ -19,9 +19,9 @@ private fun InviteStaffMemberScreenPreview() =
                 orgId = null,
                 roles =
                 listOf(
-                    StaffRoleUIModel(UserRole.ADMIN, "Admin"),
-                    StaffRoleUIModel(UserRole.MANAGER, "Manager"),
-                    StaffRoleUIModel(UserRole.EMPLOYEE, "Employee"),
+                    StaffRoleUIModel(InviteRole.ADMIN, "Admin"),
+                    StaffRoleUIModel(InviteRole.MANAGER, "Manager"),
+                    StaffRoleUIModel(InviteRole.EMPLOYEE, "Employee"),
                 ),
             ),
             onBackSelected = {},
@@ -40,9 +40,9 @@ private fun InviteStaffMemberScreenPreview_ES() =
                 orgId = null,
                 roles =
                 listOf(
-                    StaffRoleUIModel(UserRole.ADMIN, "Administrador"),
-                    StaffRoleUIModel(UserRole.MANAGER, "Gerente"),
-                    StaffRoleUIModel(UserRole.EMPLOYEE, "Empleado"),
+                    StaffRoleUIModel(InviteRole.ADMIN, "Administrador"),
+                    StaffRoleUIModel(InviteRole.MANAGER, "Gerente"),
+                    StaffRoleUIModel(InviteRole.EMPLOYEE, "Empleado"),
                 ),
             ),
             onBackSelected = {},

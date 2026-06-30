@@ -13,6 +13,7 @@ import com.cramsan.framework.sample.shared.features.main.assertutil.AssertUtilVi
 import com.cramsan.framework.sample.shared.features.main.configuration.ConfigurationViewModel
 import com.cramsan.framework.sample.shared.features.main.crashhandler.CrashHandlerViewModel
 import com.cramsan.framework.sample.shared.features.main.dispatcher.DispatcherViewModel
+import com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogViewModel
 import com.cramsan.framework.sample.shared.features.main.halt.HaltUtilViewModel
 import com.cramsan.framework.sample.shared.features.main.logging.LoggingViewModel
 import com.cramsan.framework.sample.shared.features.main.menu.MainMenuViewModel
@@ -78,6 +79,7 @@ internal val ViewModelModule =
             viewModelOf(::UserEventsViewModel)
             viewModel { RemoteConfigViewModel(get(), get<RemoteConfig<SampleRemoteConfigPayload>>()) }
             viewModelOf(::DispatcherViewModel)
+            viewModelOf(::WelcomeDialogViewModel)
         }
     }
 

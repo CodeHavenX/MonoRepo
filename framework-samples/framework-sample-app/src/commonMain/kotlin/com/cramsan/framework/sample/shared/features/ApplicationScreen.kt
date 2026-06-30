@@ -81,6 +81,13 @@ private fun handleApplicationEvent(
             navController.popBackStack()
         }
 
+        is SampleWindowEvent.NavigateBackWithResult -> {
+            navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.set(event.resultKey, event.resultValue)
+            navController.popBackStack()
+        }
+
         is SampleWindowEvent.CloseNavGraph -> {
             val currentNavGraph =
                 navController.currentBackStack.value.reversed().find {

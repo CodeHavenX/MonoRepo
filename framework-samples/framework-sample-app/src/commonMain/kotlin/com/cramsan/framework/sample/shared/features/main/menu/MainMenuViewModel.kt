@@ -5,6 +5,7 @@ import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.sample.shared.features.SampleWindowEvent
 import com.cramsan.framework.sample.shared.features.main.MainDestination
+import com.cramsan.framework.sample.shared.features.main.welcome.ThemeSelection
 import kotlinx.coroutines.launch
 
 /**
@@ -109,6 +110,24 @@ class MainMenuViewModel(dependencies: ViewModelDependencies) :
     fun navigateToDispatcher() {
         viewModelCoroutineScope.launch {
             emitWindowEvent(SampleWindowEvent.NavigateToScreen(MainDestination.DispatcherDestination))
+        }
+    }
+
+    /**
+     * Navigate to the welcome dialog to pick a theme.
+     */
+    fun navigateToWelcomeDialog() {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(SampleWindowEvent.NavigateToScreen(MainDestination.WelcomeDialogDestination))
+        }
+    }
+
+    /**
+     * Called when the welcome dialog returns a [ThemeSelection] result.
+     */
+    fun onThemeSelected(theme: ThemeSelection) {
+        viewModelCoroutineScope.launch {
+            updateUiState { it.copy(selectedTheme = theme) }
         }
     }
 

@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.di
 import com.cramsan.edifikana.client.lib.features.account.account.AccountViewModel
 import com.cramsan.edifikana.client.lib.features.account.changepassword.ChangePasswordDialogViewModel
 import com.cramsan.edifikana.client.lib.features.account.notifications.NotificationsViewModel
+import com.cramsan.edifikana.client.lib.features.auth.invitationaccept.InvitationAcceptViewModel
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.createneworg.CreateNewOrgViewModel
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg.SelectOrgViewModel
 import com.cramsan.edifikana.client.lib.features.auth.passwordreset.PasswordResetViewModel
@@ -35,6 +36,7 @@ import org.koin.dsl.module
 internal val ViewModelModule =
     module {
         scope<String> {
+            viewModelOf(::InvitationAcceptViewModel)
             viewModelOf(::SignInViewModel)
             viewModelOf(::SignUpViewModel)
             viewModelOf(::SelectOrgViewModel)

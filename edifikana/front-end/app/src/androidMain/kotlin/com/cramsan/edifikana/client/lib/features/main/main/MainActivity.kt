@@ -60,6 +60,14 @@ class MainActivity :
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.data?.let { uri ->
+            val token = uri.lastPathSegment ?: return@let
+            viewModel.handleDeepLink(token)
+        }
+    }
+
     override fun openCamera(event: EdifikanaWindowsEvent.OpenCamera) {
         cameraLauncher.launch(event.filename)
     }

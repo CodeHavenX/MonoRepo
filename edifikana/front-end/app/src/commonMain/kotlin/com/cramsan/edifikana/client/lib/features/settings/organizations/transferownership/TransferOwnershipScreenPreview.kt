@@ -12,16 +12,16 @@ private fun TransferOwnershipScreenPreview() =
     AppTheme {
         TransferOwnershipContent(
             uiState =
-                TransferOwnershipUIState(
+            TransferOwnershipUIState(
                 isLoading = false,
                 eligibleAdmins =
-                    listOf(
+                listOf(
                     AdminUIModel(userId = UserId("user-1"), displayName = "Maria Garcia", email = "maria@example.com"),
                     AdminUIModel(userId = UserId("user-2"), displayName = "John Smith", email = "john@example.com"),
                 ),
                 confirmingTarget = null,
             ),
-                onBackSelected = {},
+            onBackSelected = {},
             onAdminSelected = {},
         )
     }
@@ -32,12 +32,12 @@ private fun TransferOwnershipScreenEmptyPreview() =
     AppTheme {
         TransferOwnershipContent(
             uiState =
-                TransferOwnershipUIState(
+            TransferOwnershipUIState(
                 isLoading = false,
                 eligibleAdmins = emptyList(),
                 confirmingTarget = null,
             ),
-                onBackSelected = {},
+            onBackSelected = {},
             onAdminSelected = {},
         )
     }

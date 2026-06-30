@@ -16,7 +16,6 @@ private fun InviteStaffMemberScreenPreview() =
             content =
             InviteStaffMemberUIState(
                 isLoading = false,
-                orgId = null,
                 roles =
                 listOf(
                     StaffRoleUIModel(InviteRole.ADMIN, "Admin"),
@@ -37,7 +36,6 @@ private fun InviteStaffMemberScreenPreview_ES() =
             content =
             InviteStaffMemberUIState(
                 isLoading = false,
-                orgId = null,
                 roles =
                 listOf(
                     StaffRoleUIModel(InviteRole.ADMIN, "Administrador"),

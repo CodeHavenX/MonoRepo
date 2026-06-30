@@ -52,12 +52,11 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test initialize sets orgId and roles`() = runCoroutineTest {
+    fun `test initialize sets roles`() = runCoroutineTest {
         val organizationId = OrganizationId("org_id_1")
 
         viewModel.initialize(organizationId)
 
-        assertEquals(organizationId, viewModel.uiState.value.orgId)
         assertEquals(3, viewModel.uiState.value.roles.size)
         assertEquals(InviteRole.ADMIN, viewModel.uiState.value.roles[0].role)
         assertEquals("Admin", viewModel.uiState.value.roles[0].displayName)

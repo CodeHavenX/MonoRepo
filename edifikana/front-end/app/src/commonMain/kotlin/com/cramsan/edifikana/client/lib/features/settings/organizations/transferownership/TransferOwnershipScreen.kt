@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +24,7 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.theme.Spacing
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -92,38 +91,33 @@ internal fun TransferOwnershipContent(
             )
         },
     ) { innerPadding ->
-        Column(
+        ScreenLayout(
             modifier =
-                Modifier
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-                ) {
-            if (!uiState.isLoading && uiState.eligibleAdmins.isEmpty()) {
-                Text(
-                    text = "No eligible admins. Promote a Staff member to Admin first.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(Spacing.lg),
-                )
-            } else {
-                LazyColumn(
-                    modifier =
-                        Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
-                        verticalArrangement = Arrangement.spacedBy(Spacing.sm),
-                ) {
-                    items(uiState.eligibleAdmins) { admin ->
+            sectionContent = { sectionModifier ->
+                if (!uiState.isLoading && uiState.eligibleAdmins.isEmpty()) {
+                    Text(
+                        text = "No eligible admins. Promote a Staff member to Admin first.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = sectionModifier,
+                    )
+                } else {
+                    uiState.eligibleAdmins.forEach { admin ->
                         AdminCard(
                             admin = admin,
                             onClick = { onAdminSelected(admin) },
+                            modifier = sectionModifier,
                         )
                     }
                 }
-            }
-        }
-
-        LoadingAnimationOverlay(uiState.isLoading)
+            },
+            overlay = {
+                LoadingAnimationOverlay(uiState.isLoading)
+            },
+        )
     }
 }
 
@@ -139,10 +133,10 @@ private fun AdminCard(
     ) {
         Row(
             modifier =
-                Modifier
+            Modifier
                 .fillMaxWidth()
                 .padding(Spacing.lg),
-                verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
             Column(modifier = Modifier.weight(1f)) {

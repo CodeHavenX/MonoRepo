@@ -46,17 +46,17 @@ class MyOrganizationsViewModel(
                 .onSuccess { orgs ->
                     val items =
                         orgs.mapNotNull { org ->
-                        val members = membershipManager.listMembers(org.id).getOrNull() ?: return@mapNotNull null
-                        val myMembership =
-                            members.firstOrNull { it.userId == currentUserId }
-                            ?: return@mapNotNull null
-                        OrgListItemUIModel(
-                            orgId = org.id,
-                            name = org.name,
-                            roleLabel = myMembership.role.toDisplayLabel(),
-                            isActive = org.id == activeOrgId,
-                        )
-                    }
+                            val members = membershipManager.listMembers(org.id).getOrNull() ?: return@mapNotNull null
+                            val myMembership =
+                                members.firstOrNull { it.userId == currentUserId }
+                                    ?: return@mapNotNull null
+                            OrgListItemUIModel(
+                                orgId = org.id,
+                                name = org.name,
+                                roleLabel = myMembership.role.toDisplayLabel(),
+                                isActive = org.id == activeOrgId,
+                            )
+                        }
                     updateUiState { it.copy(isLoading = false, organizations = items) }
                 }.onFailure {
                     updateUiState { it.copy(isLoading = false) }

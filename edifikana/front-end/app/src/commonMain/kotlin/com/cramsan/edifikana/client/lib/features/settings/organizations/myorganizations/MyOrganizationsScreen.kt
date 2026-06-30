@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
@@ -35,6 +33,7 @@ import com.cramsan.edifikana.client.ui.theme.Spacing
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
+import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -112,41 +111,33 @@ internal fun MyOrganizationsContent(
             )
         },
     ) { innerPadding ->
-        Column(
+        ScreenLayout(
             modifier =
-                Modifier
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-                ) {
-            LazyColumn(
-                modifier =
-                    Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.sm),
-            ) {
-                items(uiState.organizations) { org ->
+            fixedFooter = true,
+            sectionContent = { sectionModifier ->
+                uiState.organizations.forEach { org ->
                     OrgCard(
                         org = org,
                         onClick = { onOrgSelected(org.orgId, org.isActive) },
+                        modifier = sectionModifier,
                     )
                 }
-            }
-
-            HorizontalDivider(modifier = Modifier.padding(horizontal = Spacing.lg))
-
-            EdifikanaPrimaryButton(
-                text = "+ Join Organization",
-                modifier =
-                    Modifier
-                    .fillMaxWidth()
-                    .padding(Spacing.lg),
+                HorizontalDivider(modifier = sectionModifier)
+            },
+            buttonContent = { buttonModifier ->
+                EdifikanaPrimaryButton(
+                    text = "+ Join Organization",
+                    modifier = buttonModifier,
                     onClick = onJoinOrganizationSelected,
-            )
-        }
-
-        LoadingAnimationOverlay(uiState.isLoading)
+                )
+            },
+            overlay = {
+                LoadingAnimationOverlay(uiState.isLoading)
+            },
+        )
     }
 }
 
@@ -158,16 +149,16 @@ private fun OrgCard(
 ) {
     Card(
         modifier =
-            modifier
+        modifier
             .fillMaxWidth()
             .clickable { onClick() },
-            ) {
+    ) {
         Row(
             modifier =
-                Modifier
+            Modifier
                 .fillMaxWidth()
                 .padding(Spacing.lg),
-                verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
             Column(modifier = Modifier.weight(1f)) {

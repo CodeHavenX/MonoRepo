@@ -12,7 +12,7 @@ private fun OrgDetailScreenPreview() =
     AppTheme {
         OrgDetailContent(
             uiState =
-                OrgDetailUIState(
+            OrgDetailUIState(
                 isLoading = false,
                 orgName = "Sunrise Property Management",
                 isActiveOrg = true,
@@ -22,7 +22,7 @@ private fun OrgDetailScreenPreview() =
                 isSoleOwner = false,
                 showLeaveDialog = false,
             ),
-                onBackSelected = {},
+            onBackSelected = {},
             onLeaveOrganizationTapped = {},
             onTransferOwnershipTapped = {},
         )
@@ -34,7 +34,7 @@ private fun OrgDetailScreenSoleOwnerPreview() =
     AppTheme {
         OrgDetailContent(
             uiState =
-                OrgDetailUIState(
+            OrgDetailUIState(
                 isLoading = false,
                 orgName = "My Company",
                 isActiveOrg = true,
@@ -44,7 +44,7 @@ private fun OrgDetailScreenSoleOwnerPreview() =
                 isSoleOwner = true,
                 showLeaveDialog = false,
             ),
-                onBackSelected = {},
+            onBackSelected = {},
             onLeaveOrganizationTapped = {},
             onTransferOwnershipTapped = {},
         )

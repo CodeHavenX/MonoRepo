@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.ui.preview.DevicePreviews
-import com.cramsan.ui.preview.ScreenPreviews
 
 @DevicePreviews
 @Composable
@@ -12,10 +11,10 @@ private fun MyOrganizationsScreenPreview() =
     AppTheme {
         MyOrganizationsContent(
             uiState =
-                MyOrganizationsUIState(
+            MyOrganizationsUIState(
                 isLoading = false,
                 organizations =
-                    listOf(
+                listOf(
                     OrgListItemUIModel(
                         orgId = OrganizationId("org-1"),
                         name = "Sunrise Property Management",
@@ -35,8 +34,8 @@ private fun MyOrganizationsScreenPreview() =
                         isActive = false,
                     ),
                 ),
-                    ),
-                onBackSelected = {},
+            ),
+            onBackSelected = {},
             onOrgSelected = { _, _ -> },
             onJoinOrganizationSelected = {},
         )

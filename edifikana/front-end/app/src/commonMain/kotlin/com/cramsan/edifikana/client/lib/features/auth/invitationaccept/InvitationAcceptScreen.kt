@@ -91,12 +91,14 @@ internal fun InvitationAcceptContent(
         },
     ) { innerPadding ->
         ScreenLayout(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
             sectionContent = { sectionModifier ->
                 Text(
-                    text = if (uiState.isUserSignedIn) {
+                    text =
+                    if (uiState.isUserSignedIn) {
                         stringResource(Res.string.invitation_accept_screen_existing_user_subtitle)
                     } else {
                         stringResource(Res.string.invitation_accept_screen_new_user_subtitle)

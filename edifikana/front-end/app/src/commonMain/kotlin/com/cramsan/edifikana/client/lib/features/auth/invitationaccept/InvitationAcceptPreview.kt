@@ -7,7 +7,8 @@ import com.cramsan.ui.preview.ScreenPreviews
 @Composable
 internal fun InvitationAcceptNewUserPreview() {
     InvitationAcceptContent(
-        uiState = InvitationAcceptUIState(
+        uiState =
+        InvitationAcceptUIState(
             isLoading = false,
             inviteEmail = "jane@example.com",
             orgName = "Acme Corp",
@@ -27,7 +28,8 @@ internal fun InvitationAcceptNewUserPreview() {
 @Composable
 internal fun InvitationAcceptExistingUserPreview() {
     InvitationAcceptContent(
-        uiState = InvitationAcceptUIState(
+        uiState =
+        InvitationAcceptUIState(
             isLoading = false,
             orgName = "Acme Corp",
             role = "Staff",
@@ -46,7 +48,8 @@ internal fun InvitationAcceptExistingUserPreview() {
 @Composable
 internal fun InvitationAcceptErrorPreview() {
     InvitationAcceptContent(
-        uiState = InvitationAcceptUIState(
+        uiState =
+        InvitationAcceptUIState(
             isLoading = false,
             isUserSignedIn = false,
             isInviteValid = false,

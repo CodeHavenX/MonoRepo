@@ -107,10 +107,10 @@ internal fun OrgDetailContent(
     ) { innerPadding ->
         ScreenLayout(
             modifier =
-                Modifier
+            Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-                sectionContent = { sectionModifier ->
+            sectionContent = { sectionModifier ->
                 OrgHeaderCard(
                     orgName = uiState.orgName,
                     isActive = uiState.isActiveOrg,
@@ -156,10 +156,10 @@ private fun OrgHeaderCard(
     Card(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier =
-                Modifier
+            Modifier
                 .fillMaxWidth()
                 .padding(Spacing.lg),
-                verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Spacing.lg),
         ) {
             Column {
@@ -203,10 +203,10 @@ private fun InfoRow(
 ) {
     Row(
         modifier =
-            modifier
+        modifier
             .fillMaxWidth()
             .padding(vertical = Spacing.xs),
-            horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
             text = label,
@@ -224,16 +224,16 @@ private fun TransferOwnershipRow(
 ) {
     Card(
         modifier =
-            modifier
+        modifier
             .fillMaxWidth(),
-            onClick = onClick,
+        onClick = onClick,
     ) {
         Row(
             modifier =
-                Modifier
+            Modifier
                 .fillMaxWidth()
                 .padding(Spacing.lg),
-                verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = "Transfer Ownership", style = MaterialTheme.typography.bodyLarge)
@@ -262,11 +262,11 @@ private fun LeaveButton(
             onClick = onClick,
             enabled = !isSoleOwner,
             colors =
-                ButtonDefaults.buttonColors(
+            ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError,
             ),
-                modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Leave Organization")
         }

@@ -36,8 +36,8 @@ class TransferOwnershipViewModel(
                 .onSuccess { members ->
                     val admins =
                         members
-                        .filter { it.role == OrgRole.ADMIN && it.userId != currentUserId }
-                        .map { AdminUIModel(userId = it.userId, displayName = it.displayName, email = it.email) }
+                            .filter { it.role == OrgRole.ADMIN && it.userId != currentUserId }
+                            .map { AdminUIModel(userId = it.userId, displayName = it.displayName, email = it.email) }
                     updateUiState { it.copy(isLoading = false, eligibleAdmins = admins) }
                 }.onFailure {
                     updateUiState { it.copy(isLoading = false) }

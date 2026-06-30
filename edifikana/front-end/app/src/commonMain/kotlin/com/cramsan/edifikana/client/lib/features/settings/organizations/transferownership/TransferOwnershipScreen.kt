@@ -49,27 +49,33 @@ fun TransferOwnershipScreen(
         }
     }
 
-    uiState.confirmingTarget?.let { target ->
-        AlertDialog(
-            onDismissRequest = { viewModel.dismissConfirmDialog() },
-            title = { Text("Transfer ownership to ${target.displayName}?") },
-            text = { Text("You will become an Admin. This cannot be undone.") },
-            confirmButton = {
-                TextButton(
-                    onClick = { viewModel.confirmTransferOwnership(destination.orgId) },
-                ) { Text("Transfer", color = MaterialTheme.colorScheme.error) }
-            },
-            dismissButton = {
-                TextButton(onClick = { viewModel.dismissConfirmDialog() }) { Text("Cancel") }
-            },
-        )
-    }
-
     TransferOwnershipContent(
         uiState = uiState,
         onBackSelected = { viewModel.navigateBack() },
         onAdminSelected = { admin -> viewModel.onAdminSelected(admin) },
     )
+
+    when (val dialog = uiState.dialog) {
+        TransferOwnershipDialogState.None -> {
+            Unit
+        }
+
+        is TransferOwnershipDialogState.ConfirmTransfer -> {
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissDialog() },
+                title = { Text("Transfer ownership to ${dialog.target.displayName}?") },
+                text = { Text("You will become an Admin. This cannot be undone.") },
+                confirmButton = {
+                    TextButton(
+                        onClick = { viewModel.confirmTransferOwnership(destination.orgId) },
+                    ) { Text("Transfer", color = MaterialTheme.colorScheme.error) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.dismissDialog() }) { Text("Cancel") }
+                },
+            )
+        }
+    }
 }
 
 /**

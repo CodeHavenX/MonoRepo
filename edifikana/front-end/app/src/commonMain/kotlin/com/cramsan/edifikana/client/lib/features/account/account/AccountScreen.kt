@@ -28,7 +28,6 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaAccountInfoItem
 import com.cramsan.edifikana.client.ui.components.EdifikanaSecondaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
-import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -57,7 +56,6 @@ fun AccountScreen(
     viewModel: AccountViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val dialogController = rememberDialogController()
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.loadUserData()
@@ -81,8 +79,6 @@ fun AccountScreen(
         onPhoneNumberChange = { viewModel.updatePhoneNumber(it) },
         onEditPasswordClicked = { viewModel.editPassword() },
     )
-
-    dialogController.Render()
 }
 
 @Composable

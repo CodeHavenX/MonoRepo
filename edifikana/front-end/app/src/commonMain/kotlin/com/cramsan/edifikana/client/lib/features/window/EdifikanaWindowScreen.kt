@@ -216,6 +216,15 @@ private fun handleWindowEvent(
             navigate { navController.popBackStack() }
         }
 
+        is EdifikanaWindowsEvent.NavigateBackWithResult -> {
+            navigate {
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(event.resultKey, event.resultValue)
+                navController.popBackStack()
+            }
+        }
+
         is EdifikanaWindowsEvent.CloseNavGraph -> {
             navigate {
                 val currentNavGraph =

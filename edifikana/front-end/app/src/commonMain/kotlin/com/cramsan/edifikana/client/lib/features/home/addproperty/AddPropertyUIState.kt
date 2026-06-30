@@ -16,6 +16,7 @@ data class AddPropertyUIState(
     val selectedIcon: ImageOptionUIModel? = null,
     val isUploading: Boolean = false,
     val uploadError: String? = null,
+    val showImageSelector: Boolean = false,
 ) : ViewModelUIState {
     companion object {
         val Initial =
@@ -25,6 +26,7 @@ data class AddPropertyUIState(
                 selectedIcon = null,
                 isUploading = false,
                 uploadError = null,
+                showImageSelector = false,
             )
     }
 }

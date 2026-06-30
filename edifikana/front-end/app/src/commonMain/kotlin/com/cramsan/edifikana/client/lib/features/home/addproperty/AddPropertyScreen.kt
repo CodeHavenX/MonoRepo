@@ -23,9 +23,7 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSelectorBottomsheet
 import com.cramsan.framework.core.compose.EventEmitter
-import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveEventEmitterEvents
-import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -54,34 +52,8 @@ fun AddPropertyScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val dialogController = rememberDialogController()
-
-    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize(destination.orgId)
-    }
-    LifecycleEventEffect(Lifecycle.Event.ON_START) {
-        // Call this feature's viewModel
-    }
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        // Call this feature's viewModel
-    }
-
-    ObserveViewModelEvents(viewModel) { event ->
-        when (event) {
-            AddPropertyEvent.OpenImageSelector -> {
-                val modal =
-                    ImageSelectorBottomsheet(
-                        label = "Select Property Icon",
-                        options = PropertyIconOptions.getOptionsWithUpload(),
-                        selectedOption = uiState.selectedIcon,
-                        onOptionSelected = { option ->
-                            viewModel.selectPhoto(option)
-                        },
-                    )
-                dialogController.showDialog(modal)
-            }
-        }
     }
 
     ObserveEventEmitterEvents(eventEmitter) { event ->
@@ -100,7 +72,6 @@ fun AddPropertyScreen(
         }
     }
 
-    // Render the screen
     AddPropertyContent(
         uiState,
         onBackSelected = { viewModel.navigateBack() },
@@ -110,7 +81,15 @@ fun AddPropertyScreen(
         onOpenSelectorSelected = { viewModel.openImageSelector() },
     )
 
-    dialogController.Render()
+    if (uiState.showImageSelector) {
+        ImageSelectorBottomsheet(
+            label = "Select Property Icon",
+            options = PropertyIconOptions.getOptionsWithUpload(),
+            selectedOption = uiState.selectedIcon,
+            onOptionSelected = { option -> viewModel.selectPhoto(option) },
+            onDismiss = { viewModel.dismissImageSelector() },
+        )
+    }
 }
 
 /**

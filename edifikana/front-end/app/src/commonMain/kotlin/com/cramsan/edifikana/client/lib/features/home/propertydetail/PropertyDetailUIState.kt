@@ -4,6 +4,18 @@ import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
+/** Dialog state for the PropertyDetail screen. */
+sealed class PropertyDetailDialogState {
+    /** No dialog is shown. */
+    data object None : PropertyDetailDialogState()
+
+    /** Image selector bottom sheet. */
+    data object ShowImageSelector : PropertyDetailDialogState()
+
+    /** Delete confirmation dialog. */
+    data object ConfirmDelete : PropertyDetailDialogState()
+}
+
 /**
  * UI state of the PropertyDetail feature.
  *
@@ -20,6 +32,7 @@ data class PropertyDetailUIState(
     val selectedIcon: ImageOptionUIModel? = null,
     val isUploading: Boolean = false,
     val uploadError: String? = null,
+    val dialog: PropertyDetailDialogState = PropertyDetailDialogState.None,
 ) : ViewModelUIState {
     companion object {
         val Initial =
@@ -33,6 +46,7 @@ data class PropertyDetailUIState(
                 selectedIcon = null,
                 isUploading = false,
                 uploadError = null,
+                dialog = PropertyDetailDialogState.None,
             )
     }
 }

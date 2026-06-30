@@ -13,8 +13,8 @@ package com.cramsan.framework.core.compose.navigation
  * }
  * ```
  *
- * **Producing a result** — emit [com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent.NavigateBackWithResult]
- * via `key.navigateBackWith(value)` from the producer ViewModel.
+ * **Producing a result** — emit [NavigateBackWithResult] via `key.navigateBackWith(value)`
+ * from the producer ViewModel.
  *
  * **Consuming a result** — call [com.cramsan.framework.core.compose.ui.ObserveNavResult] inside
  * the consumer screen composable.

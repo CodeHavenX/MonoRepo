@@ -47,6 +47,7 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.core.compose.navigation.Destination
+import com.cramsan.framework.core.compose.navigation.navigateBackWithResult
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import kotlinx.coroutines.CoroutineScope
@@ -139,6 +140,9 @@ private fun WindowsContent(
                     windowEvent = event.event,
                 )
             }
+            is EdifikanaWindowViewModelEvent.NavBackWithResult -> {
+                navigate { navController.navigateBackWithResult(event.result) }
+            }
         }
     }
 
@@ -214,15 +218,6 @@ private fun handleWindowEvent(
 
         is EdifikanaWindowsEvent.NavigateBack -> {
             navigate { navController.popBackStack() }
-        }
-
-        is EdifikanaWindowsEvent.NavigateBackWithResult -> {
-            navigate {
-                navController.previousBackStackEntry
-                    ?.savedStateHandle
-                    ?.set(event.resultKey, event.resultValue)
-                navController.popBackStack()
-            }
         }
 
         is EdifikanaWindowsEvent.CloseNavGraph -> {

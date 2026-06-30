@@ -3,9 +3,9 @@ package com.cramsan.framework.sample.shared.features.main.welcome
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.navigation.navigateBackWith
 import com.cramsan.framework.sample.shared.features.SampleWindowEvent
 import com.cramsan.framework.sample.shared.features.main.MainDestination
-import com.cramsan.framework.sample.shared.features.navigateBackWith
 import kotlinx.coroutines.launch
 
 /**

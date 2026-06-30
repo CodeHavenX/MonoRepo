@@ -51,16 +51,16 @@ class TransferOwnershipViewModel(
      */
     fun onAdminSelected(admin: AdminUIModel) {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(confirmingTarget = admin) }
+            updateUiState { it.copy(dialog = TransferOwnershipDialogState.ConfirmTransfer(admin)) }
         }
     }
 
     /**
-     * Dismisses the confirmation dialog without action.
+     * Dismisses the active dialog without action.
      */
-    fun dismissConfirmDialog() {
+    fun dismissDialog() {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(confirmingTarget = null) }
+            updateUiState { it.copy(dialog = TransferOwnershipDialogState.None) }
         }
     }
 
@@ -69,8 +69,9 @@ class TransferOwnershipViewModel(
      */
     fun confirmTransferOwnership(orgId: OrganizationId) {
         viewModelCoroutineScope.launch {
-            val target = uiState.value.confirmingTarget ?: return@launch
-            updateUiState { it.copy(isLoading = true, confirmingTarget = null) }
+            val target =
+                (uiState.value.dialog as? TransferOwnershipDialogState.ConfirmTransfer)?.target ?: return@launch
+            updateUiState { it.copy(isLoading = true, dialog = TransferOwnershipDialogState.None) }
             membershipManager
                 .transferOwnership(orgId, target.userId)
                 .onSuccess {

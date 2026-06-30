@@ -33,6 +33,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class OrgDetailViewModelTest : CoroutineTest() {
@@ -139,18 +140,18 @@ class OrgDetailViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `onLeaveOrganizationTapped sets showLeaveDialog true`() = runCoroutineTest {
+    fun `onLeaveOrganizationTapped sets dialog to ConfirmLeave`() = runCoroutineTest {
         viewModel.onLeaveOrganizationTapped()
 
-        assertTrue(viewModel.uiState.value.showLeaveDialog)
+        assertIs<OrgDetailDialogState.ConfirmLeave>(viewModel.uiState.value.dialog)
     }
 
     @Test
-    fun `dismissLeaveDialog sets showLeaveDialog false`() = runCoroutineTest {
+    fun `dismissDialog sets dialog to None`() = runCoroutineTest {
         viewModel.onLeaveOrganizationTapped()
-        viewModel.dismissLeaveDialog()
+        viewModel.dismissDialog()
 
-        assertFalse(viewModel.uiState.value.showLeaveDialog)
+        assertIs<OrgDetailDialogState.None>(viewModel.uiState.value.dialog)
     }
 
     @Test

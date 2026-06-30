@@ -22,7 +22,9 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 /**
  * Unit tests for [SelectOrgViewModel].
@@ -91,9 +93,29 @@ class SelectOrgViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `test requestSignOut does not throw`() = runCoroutineTest {
-        // Act - should not throw
+    fun `requestSignOut sets dialog to ConfirmSignOut`() = runCoroutineTest {
         viewModel.requestSignOut()
+
+        assertIs<SelectOrgDialogState.ConfirmSignOut>(viewModel.uiState.value.dialog)
+    }
+
+    @Test
+    fun `requestJoinOrganization sets dialog to ConfirmJoinOrg`() = runCoroutineTest {
+        val inviteId = InviteId("invite-1")
+
+        viewModel.requestJoinOrganization(inviteId)
+
+        val dialog = assertIs<SelectOrgDialogState.ConfirmJoinOrg>(viewModel.uiState.value.dialog)
+        assertEquals(inviteId, dialog.inviteId)
+    }
+
+    @Test
+    fun `dismissDialog sets dialog to None`() = runCoroutineTest {
+        viewModel.requestSignOut()
+
+        viewModel.dismissDialog()
+
+        assertIs<SelectOrgDialogState.None>(viewModel.uiState.value.dialog)
     }
 
     @Test

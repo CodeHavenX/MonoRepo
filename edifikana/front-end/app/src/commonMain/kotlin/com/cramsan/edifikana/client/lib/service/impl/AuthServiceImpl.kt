@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.network.invite.InviteNetworkResponse
 import com.cramsan.edifikana.lib.model.network.invite.InviteUserNetworkRequest
 import com.cramsan.edifikana.lib.model.network.password.PasswordResetNetworkRequest
@@ -13,7 +14,6 @@ import com.cramsan.edifikana.lib.model.network.user.GetAllUsersQueryParams
 import com.cramsan.edifikana.lib.model.network.user.UserEmailQueryParam
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.annotations.FrontendService
 import com.cramsan.framework.assertlib.assertFalse
 import com.cramsan.framework.core.SecureString
@@ -266,7 +266,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
     override suspend fun inviteEmployee(
         email: String,
         organizationId: OrganizationId,
-        role: UserRole,
+        role: InviteRole,
     ): Result<Unit> =
         runSuspendCatching(
             TAG,
@@ -276,7 +276,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
                     InviteUserNetworkRequest(
                         email = email,
                         organizationId = organizationId,
-                        role = TODO(),
+                        role = role,
                     ),
                 ).execute(http)
         }
@@ -319,7 +319,7 @@ private fun InviteNetworkResponse.toInvite(): Invite {
         id = this.inviteId,
         email = this.email,
         organizationId = this.organizationId,
-        role = UserRole.valueOf(this.role.name),
+        role = this.role,
         expiresAt = this.expiresAt,
     )
 }

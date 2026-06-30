@@ -4,10 +4,10 @@ import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.logging.EventLogger
@@ -189,7 +189,7 @@ class AuthManagerTest : CoroutineTest() {
         // Arrange
         val email = "test@example.com"
         val organizationId = OrganizationId("org-1")
-        val role = UserRole.EMPLOYEE
+        val role = InviteRole.EMPLOYEE
         coEvery { authService.inviteEmployee(email, organizationId, role) } returns Result.success(Unit)
         // Act
         val result = manager.inviteEmployee(email, organizationId, role)

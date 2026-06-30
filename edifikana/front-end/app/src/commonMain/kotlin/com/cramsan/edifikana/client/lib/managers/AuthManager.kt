@@ -4,9 +4,9 @@ import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.user.UserRole
 import com.cramsan.framework.annotations.FrontendManager
 import com.cramsan.framework.core.ManagerDependencies
 import com.cramsan.framework.core.SecureString
@@ -199,7 +199,7 @@ class AuthManager(private val dependencies: ManagerDependencies, private val aut
     suspend fun inviteEmployee(
         email: String,
         orgId: OrganizationId,
-        role: UserRole,
+        role: InviteRole,
     ) = dependencies.getOrCatch(TAG) {
         logI(TAG, "inviteEmployee")
         authService

@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.ui.preview.DevicePreviews
-import com.cramsan.ui.preview.ScreenPreviews
 
 @DevicePreviews
 @Composable

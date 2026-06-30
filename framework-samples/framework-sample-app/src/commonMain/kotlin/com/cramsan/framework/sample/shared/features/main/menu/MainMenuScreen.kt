@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.cramsan.framework.core.compose.ui.ObserveNavResult
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
-import com.cramsan.framework.sample.shared.features.main.MainDestination
+import com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogViewModel
 import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -32,7 +32,7 @@ fun MainMenuScreen(
         }
     }
 
-    ObserveNavResult(MainDestination.WelcomeDialogDestination.themeResult) { theme ->
+    ObserveNavResult(WelcomeDialogViewModel.resultKey) { theme ->
         viewModel.onThemeSelected(theme)
     }
 

@@ -1,11 +1,10 @@
 package com.cramsan.framework.sample.shared.features.main.welcome
 
 import com.cramsan.framework.annotations.FrontendViewModel
-import com.cramsan.framework.core.compose.BaseViewModel
+import com.cramsan.framework.core.compose.BaseResultViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
-import com.cramsan.framework.core.compose.navigation.navigateBackWith
+import com.cramsan.framework.core.compose.navigation.NavResultKey
 import com.cramsan.framework.sample.shared.features.SampleWindowEvent
-import com.cramsan.framework.sample.shared.features.main.MainDestination
 import kotlinx.coroutines.launch
 
 /**
@@ -13,11 +12,15 @@ import kotlinx.coroutines.launch
  */
 @FrontendViewModel
 class WelcomeDialogViewModel(dependencies: ViewModelDependencies) :
-    BaseViewModel<Nothing, WelcomeDialogUIState>(dependencies, WelcomeDialogUIState.Initial, TAG) {
+    BaseResultViewModel<Nothing, WelcomeDialogUIState, ThemeSelection>(
+        dependencies,
+        WelcomeDialogUIState.Initial,
+        TAG,
+    ) {
 
     fun selectTheme(selection: ThemeSelection) {
         viewModelCoroutineScope.launch {
-            emitWindowEvent(MainDestination.WelcomeDialogDestination.themeResult.navigateBackWith(selection))
+            emitWindowEvent(navigateBackFrom(selection))
         }
     }
 
@@ -29,5 +32,6 @@ class WelcomeDialogViewModel(dependencies: ViewModelDependencies) :
 
     companion object {
         private const val TAG = "WelcomeDialogViewModel"
+        val resultKey = NavResultKey<ThemeSelection>(WelcomeDialogViewModel::class.simpleName!!)
     }
 }

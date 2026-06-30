@@ -99,15 +99,22 @@ fun PropertyDetailScreen(
     )
 
     when (uiState.dialog) {
-        PropertyDetailDialogState.None -> Unit
-        PropertyDetailDialogState.ShowImageSelector -> ImageSelectorBottomsheet(
+        PropertyDetailDialogState.None -> {
+            Unit
+        }
+
+        PropertyDetailDialogState.ShowImageSelector -> {
+            ImageSelectorBottomsheet(
             label = "Select Property Icon",
             options = PropertyIconOptions.getOptionsWithUpload(),
             selectedOption = uiState.selectedIcon,
             onOptionSelected = { option -> viewModel.selectPhoto(option) },
             onDismiss = { viewModel.dismissDialog() },
         )
-        PropertyDetailDialogState.ConfirmDelete -> AlertDialog(
+        }
+
+        PropertyDetailDialogState.ConfirmDelete -> {
+            AlertDialog(
             onDismissRequest = { viewModel.dismissDialog() },
             title = { Text(stringResource(Res.string.property_detail_screen_delete_label)) },
             text = { Text(stringResource(Res.string.property_detail_screen_delete_dialog_message)) },
@@ -123,6 +130,7 @@ fun PropertyDetailScreen(
                 }
             },
         )
+        }
     }
 }
 
@@ -142,7 +150,6 @@ internal fun PropertyDetailContent(
     onAddressChanged: (String) -> Unit,
     onOpenSelectorSelected: () -> Unit,
 ) {
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -288,5 +295,4 @@ internal fun PropertyDetailContent(
             },
         )
     }
-
 }

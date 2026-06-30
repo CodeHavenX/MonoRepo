@@ -34,7 +34,6 @@ abstract class BaseResultViewModel<E : ViewModelEvent, UI : ViewModelUIState, T 
     initialState: UI,
     tag: String,
 ) : BaseViewModel<E, UI>(dependencies, initialState, tag) {
-
     val resultKey: NavResultKey<T> = NavResultKey(this::class.simpleName!!)
 
     protected fun navigateBackFrom(value: T): NavigateBackWithResult =

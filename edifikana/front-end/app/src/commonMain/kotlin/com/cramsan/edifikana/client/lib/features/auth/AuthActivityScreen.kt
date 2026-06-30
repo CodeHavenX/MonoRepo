@@ -21,6 +21,7 @@ import kotlin.reflect.KType
 /**
  * Auth Nav Graph Route.
  */
+@Suppress("LongMethod")
 fun NavGraphBuilder.authNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {

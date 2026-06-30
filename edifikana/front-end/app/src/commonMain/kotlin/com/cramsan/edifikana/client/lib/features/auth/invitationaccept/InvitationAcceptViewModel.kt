@@ -13,7 +13,6 @@ import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
 import edifikana_lib.invitation_accept_screen_error_empty_name
-import edifikana_lib.invitation_accept_screen_error_invalid_invite
 import edifikana_lib.invitation_accept_screen_error_password_too_short
 import edifikana_lib.invitation_accept_screen_error_passwords_do_not_match
 import kotlinx.coroutines.launch
@@ -43,17 +42,18 @@ class InvitationAcceptViewModel(
     fun loadInvitation(inviteId: String) {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, error = null) }
-            val signedIn = authManager.isSignedIn()
-                .onFailure {
-                    updateUiState {
-                        it.copy(
-                            isLoading = false,
-                            error = stringProvider.getString(Res.string.error_message_unexpected_error),
-                        )
-                    }
-                    return@launch
-                }
-                .getOrThrow()
+            val signedIn =
+                authManager
+                    .isSignedIn()
+                    .onFailure {
+                        updateUiState {
+                            it.copy(
+                                isLoading = false,
+                                error = stringProvider.getString(Res.string.error_message_unexpected_error),
+                            )
+                        }
+                        return@launch
+                    }.getOrThrow()
 
             // Full invite detail population (org name, role, inviter) requires GET /invites/resolve
             // which is not yet available — tracked in issue #392.
@@ -97,48 +97,50 @@ class InvitationAcceptViewModel(
     fun acceptAsNewUser(inviteId: String) {
         viewModelCoroutineScope.launch {
             val state = uiState.value
-            val error = validateNewUserForm(state) ?: run {
-                updateUiState { it.copy(isLoading = true, error = null) }
+            val error =
+                validateNewUserForm(state) ?: run {
+                    updateUiState { it.copy(isLoading = true, error = null) }
 
-                val parts = state.fullName.trim().split(" ", limit = 2)
-                val firstName = parts.firstOrNull().orEmpty()
-                val lastName = parts.getOrNull(1).orEmpty()
+                    val parts = state.fullName.trim().split(" ", limit = 2)
+                    val firstName = parts.firstOrNull().orEmpty()
+                    val lastName = parts.getOrNull(1).orEmpty()
 
-                authManager
-                    .signUp(
-                        email = state.inviteEmail,
-                        phoneNumber = "",
-                        firstName = firstName,
-                        lastName = lastName,
-                    )
-                    .onFailure { e ->
-                        updateUiState {
-                            it.copy(
-                                isLoading = false,
-                                error = e.message
-                                    ?: stringProvider.getString(Res.string.error_message_unexpected_error),
-                            )
+                    authManager
+                        .signUp(
+                            email = state.inviteEmail,
+                            phoneNumber = "",
+                            firstName = firstName,
+                            lastName = lastName,
+                        ).onFailure { e ->
+                            updateUiState {
+                                it.copy(
+                                    isLoading = false,
+                                    error =
+                                    e.message
+                                        ?: stringProvider.getString(Res.string.error_message_unexpected_error),
+                                )
+                            }
+                            return@launch
                         }
-                        return@launch
-                    }
 
-                authManager
-                    .acceptInvite(InviteId(inviteId))
-                    .onFailure { e ->
-                        updateUiState {
-                            it.copy(
-                                isLoading = false,
-                                error = e.message
-                                    ?: stringProvider.getString(Res.string.error_message_unexpected_error),
-                            )
+                    authManager
+                        .acceptInvite(InviteId(inviteId))
+                        .onFailure { e ->
+                            updateUiState {
+                                it.copy(
+                                    isLoading = false,
+                                    error =
+                                    e.message
+                                        ?: stringProvider.getString(Res.string.error_message_unexpected_error),
+                                )
+                            }
+                            return@launch
                         }
-                        return@launch
-                    }
 
-                updateUiState { it.copy(isLoading = false) }
-                navigateAfterAccept()
-                return@launch
-            }
+                    updateUiState { it.copy(isLoading = false) }
+                    navigateAfterAccept()
+                    return@launch
+                }
             updateUiState { it.copy(error = error) }
         }
     }
@@ -158,7 +160,8 @@ class InvitationAcceptViewModel(
                     updateUiState {
                         it.copy(
                             isLoading = false,
-                            error = e.message
+                            error =
+                            e.message
                                 ?: stringProvider.getString(Res.string.error_message_unexpected_error),
                         )
                     }
@@ -183,13 +186,21 @@ class InvitationAcceptViewModel(
 
     private suspend fun validateNewUserForm(state: InvitationAcceptUIState): String? {
         return when {
-            state.fullName.isBlank() ->
+            state.fullName.isBlank() -> {
                 stringProvider.getString(Res.string.invitation_accept_screen_error_empty_name)
-            state.password.length < MIN_PASSWORD_LENGTH ->
+            }
+
+            state.password.length < MIN_PASSWORD_LENGTH -> {
                 stringProvider.getString(Res.string.invitation_accept_screen_error_password_too_short)
-            state.password != state.confirmPassword ->
+            }
+
+            state.password != state.confirmPassword -> {
                 stringProvider.getString(Res.string.invitation_accept_screen_error_passwords_do_not_match)
-            else -> null
+            }
+
+            else -> {
+                null
+            }
         }
     }
 

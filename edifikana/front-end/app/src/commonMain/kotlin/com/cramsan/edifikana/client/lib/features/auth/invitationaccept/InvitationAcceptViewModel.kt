@@ -196,15 +196,25 @@ class InvitationAcceptViewModel(
 
     private suspend fun validateNewUserForm(state: InvitationAcceptUIState): String? {
         return when {
-            state.inviteEmail.isBlank() ->
+            state.inviteEmail.isBlank() -> {
                 stringProvider.getString(Res.string.invitation_accept_screen_error_email_required)
-            state.fullName.isBlank() ->
+            }
+
+            state.fullName.isBlank() -> {
                 stringProvider.getString(Res.string.invitation_accept_screen_error_empty_name)
-            state.password.length < MIN_PASSWORD_LENGTH ->
+            }
+
+            state.password.length < MIN_PASSWORD_LENGTH -> {
                 stringProvider.getString(Res.string.invitation_accept_screen_error_password_too_short)
-            state.password != state.confirmPassword ->
+            }
+
+            state.password != state.confirmPassword -> {
                 stringProvider.getString(Res.string.invitation_accept_screen_error_passwords_do_not_match)
-            else -> null
+            }
+
+            else -> {
+                null
+            }
         }
     }
 

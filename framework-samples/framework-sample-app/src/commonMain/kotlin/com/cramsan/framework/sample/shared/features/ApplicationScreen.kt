@@ -39,6 +39,7 @@ fun ApplicationScreen(
                     applicationEvent = event.event,
                 )
             }
+
             is SampleApplicationViewModelEvent.NavBackWithResult -> {
                 navController.navigateBackWithResult(event.result)
             }

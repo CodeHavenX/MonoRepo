@@ -28,11 +28,12 @@ class ApplicationViewModel(
         }
         viewModelCoroutineScope.launch {
             eventEmitter.events.collect { event ->
-                val vmEvent = when (event) {
-                    is NavigateBackWithResult -> SampleApplicationViewModelEvent.NavBackWithResult(event)
-                    is SampleWindowEvent -> SampleApplicationViewModelEvent.SampleApplicationEventWrapper(event)
-                    else -> null
-                }
+                val vmEvent =
+                    when (event) {
+                        is NavigateBackWithResult -> SampleApplicationViewModelEvent.NavBackWithResult(event)
+                        is SampleWindowEvent -> SampleApplicationViewModelEvent.SampleApplicationEventWrapper(event)
+                        else -> null
+                    }
                 vmEvent?.let { emitEvent(it) }
             }
         }

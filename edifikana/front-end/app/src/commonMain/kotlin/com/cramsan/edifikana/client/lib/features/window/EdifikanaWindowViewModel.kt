@@ -33,10 +33,18 @@ class EdifikanaWindowViewModel(
         viewModelCoroutineScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")
-                val viewModelEvent = when (event) {
-                    is NavigateBackWithResult -> EdifikanaWindowViewModelEvent.NavBackWithResult(event)
-                    else -> EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(event as EdifikanaWindowsEvent)
-                }
+                val viewModelEvent =
+                    when (event) {
+                        is NavigateBackWithResult -> {
+                            EdifikanaWindowViewModelEvent.NavBackWithResult(event)
+                        }
+
+                        else -> {
+                            EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(
+                            event as EdifikanaWindowsEvent,
+                        )
+                        }
+                    }
                 emitEvent(viewModelEvent)
             }
         }

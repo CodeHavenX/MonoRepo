@@ -17,13 +17,18 @@ class WelcomeDialogViewModel(dependencies: ViewModelDependencies) :
         WelcomeDialogUIState.Initial,
         TAG,
     ) {
-
+    /**
+     * Select a theme. This function does not do anything, it is used for testing the result API.
+     */
     fun selectTheme(selection: ThemeSelection) {
         viewModelCoroutineScope.launch {
             emitWindowEvent(navigateBackFrom(selection))
         }
     }
 
+    /**
+     * Dismiss the dialog.
+     */
     fun dismiss() {
         viewModelCoroutineScope.launch {
             emitWindowEvent(SampleWindowEvent.NavigateBack)

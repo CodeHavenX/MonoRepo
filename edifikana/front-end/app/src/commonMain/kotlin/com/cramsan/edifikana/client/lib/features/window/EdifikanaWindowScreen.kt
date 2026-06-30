@@ -140,6 +140,7 @@ private fun WindowsContent(
                     windowEvent = event.event,
                 )
             }
+
             is EdifikanaWindowViewModelEvent.NavBackWithResult -> {
                 navigate { navController.navigateBackWithResult(event.result) }
             }

@@ -61,7 +61,10 @@ fun MyOrganizationsScreen(
     )
 
     when (val dialog = uiState.dialog) {
-        MyOrganizationsDialogState.None -> Unit
+        MyOrganizationsDialogState.None -> {
+            Unit
+        }
+
         is MyOrganizationsDialogState.ConfirmSwitchOrg -> {
             val orgName = uiState.organizations.firstOrNull { it.orgId == dialog.orgId }?.name ?: ""
             AlertDialog(

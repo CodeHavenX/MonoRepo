@@ -64,16 +64,16 @@ fun SelectOrgScreen(
 
         SelectOrgDialogState.ConfirmSignOut -> {
             SignOutConfirmationContent(
-            onConfirm = { viewModel.confirmSignOut() },
-            onDismiss = { viewModel.dismissDialog() },
-        )
+                onConfirm = { viewModel.confirmSignOut() },
+                onDismiss = { viewModel.dismissDialog() },
+            )
         }
 
         is SelectOrgDialogState.ConfirmJoinOrg -> {
             JoinOrgConfirmationContent(
-            onConfirm = { viewModel.acceptInvite(dialog.inviteId) },
-            onDismiss = { viewModel.dismissDialog() },
-        )
+                onConfirm = { viewModel.acceptInvite(dialog.inviteId) },
+                onDismiss = { viewModel.dismissDialog() },
+            )
         }
     }
 }

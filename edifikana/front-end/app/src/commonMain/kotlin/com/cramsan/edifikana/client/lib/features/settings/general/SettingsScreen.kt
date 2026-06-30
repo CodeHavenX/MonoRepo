@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
@@ -60,6 +64,9 @@ fun SettingsScreen(
         onBackSelected = {
             viewModel.navigateBack()
         },
+        onMyOrganizationsSelected = {
+            viewModel.navigateToMyOrganizations()
+        },
     )
 }
 
@@ -73,6 +80,7 @@ internal fun SettingsContent(
     uiState: SettingsUIState,
     onThemeSelected: (SelectedTheme) -> Unit,
     onBackSelected: () -> Unit,
+    onMyOrganizationsSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -96,6 +104,25 @@ internal fun SettingsContent(
                     modifier = mod,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
+                    Row(
+                        modifier =
+                            Modifier
+                            .fillMaxWidth()
+                            .clickable { onMyOrganizationsSelected() },
+                            verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = "My Organizations",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                        )
+                    }
+                    HorizontalDivider()
+
                     Text(
                         text = stringResource(Res.string.settings_screen_appearance_title),
                         style = MaterialTheme.typography.titleMedium,

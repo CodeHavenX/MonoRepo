@@ -25,6 +25,9 @@ import com.cramsan.edifikana.client.lib.features.home.propertiesoverview.Propert
 import com.cramsan.edifikana.client.lib.features.home.propertydetail.PropertyDetailViewModel
 import com.cramsan.edifikana.client.lib.features.home.propertyhome.PropertyHomeViewModel
 import com.cramsan.edifikana.client.lib.features.settings.general.SettingsViewModel
+import com.cramsan.edifikana.client.lib.features.settings.organizations.myorganizations.MyOrganizationsViewModel
+import com.cramsan.edifikana.client.lib.features.settings.organizations.orgdetail.OrgDetailViewModel
+import com.cramsan.edifikana.client.lib.features.settings.organizations.transferownership.TransferOwnershipViewModel
 import com.cramsan.edifikana.client.lib.features.splash.SplashViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -58,5 +61,8 @@ internal val ViewModelModule =
             viewModelOf(::PropertyDetailViewModel)
             viewModelOf(::EmployeeOverviewViewModel)
             viewModelOf(::InviteStaffMemberViewModel)
+            viewModelOf(::MyOrganizationsViewModel)
+            viewModelOf(::OrgDetailViewModel)
+            viewModelOf(::TransferOwnershipViewModel)
         }
     }

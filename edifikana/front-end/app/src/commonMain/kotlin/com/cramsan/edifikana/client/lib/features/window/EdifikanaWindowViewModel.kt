@@ -41,8 +41,8 @@ class EdifikanaWindowViewModel(
 
                         else -> {
                             EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(
-                            event as EdifikanaWindowsEvent,
-                        )
+                                event as EdifikanaWindowsEvent,
+                            )
                         }
                     }
                 emitEvent(viewModelEvent)

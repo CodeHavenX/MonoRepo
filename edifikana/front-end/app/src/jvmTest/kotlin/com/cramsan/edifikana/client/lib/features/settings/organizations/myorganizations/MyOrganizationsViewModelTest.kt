@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 class MyOrganizationsViewModelTest : CoroutineTest() {
 
@@ -130,6 +131,23 @@ class MyOrganizationsViewModelTest : CoroutineTest() {
             )
             advanceUntilIdleAndAwaitComplete(turbine)
         }
+    }
+
+    @Test
+    fun `requestSwitchOrg sets dialog to ConfirmSwitchOrg`() = runCoroutineTest {
+        viewModel.requestSwitchOrg(orgId)
+
+        val dialog = assertIs<MyOrganizationsDialogState.ConfirmSwitchOrg>(viewModel.uiState.value.dialog)
+        assertEquals(orgId, dialog.orgId)
+    }
+
+    @Test
+    fun `dismissDialog sets dialog to None`() = runCoroutineTest {
+        viewModel.requestSwitchOrg(orgId)
+
+        viewModel.dismissDialog()
+
+        assertIs<MyOrganizationsDialogState.None>(viewModel.uiState.value.dialog)
     }
 
     @Test

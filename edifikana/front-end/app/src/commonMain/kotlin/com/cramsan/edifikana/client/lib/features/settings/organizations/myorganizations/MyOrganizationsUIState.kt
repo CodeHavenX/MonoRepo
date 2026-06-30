@@ -3,11 +3,23 @@ package com.cramsan.edifikana.client.lib.features.settings.organizations.myorgan
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
+/** Dialog state for the MyOrganizations screen. */
+sealed class MyOrganizationsDialogState {
+    /** No dialog is shown. */
+    data object None : MyOrganizationsDialogState()
+
+    /** Confirmation dialog asking the user to switch to [orgId]. */
+    data class ConfirmSwitchOrg(val orgId: OrganizationId) : MyOrganizationsDialogState()
+}
+
 /**
  * UI state of the MyOrganizations feature.
  */
-data class MyOrganizationsUIState(val isLoading: Boolean, val organizations: List<OrgListItemUIModel>) :
-    ViewModelUIState {
+data class MyOrganizationsUIState(
+    val isLoading: Boolean,
+    val organizations: List<OrgListItemUIModel>,
+    val dialog: MyOrganizationsDialogState = MyOrganizationsDialogState.None,
+) : ViewModelUIState {
     companion object {
         /** Initial loading state. */
         val Initial = MyOrganizationsUIState(isLoading = true, organizations = emptyList())

@@ -7,7 +7,6 @@ import androidx.navigation.compose.dialog
 import com.cramsan.framework.core.compose.navigation.navigationGraph
 import com.cramsan.framework.sample.shared.features.ApplicationNavGraphDestination
 import com.cramsan.framework.sample.shared.features.main.assertutil.AssertUtilScreen
-import com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogScreen
 import com.cramsan.framework.sample.shared.features.main.configuration.ConfigurationScreen
 import com.cramsan.framework.sample.shared.features.main.crashhandler.CrashHandlerScreen
 import com.cramsan.framework.sample.shared.features.main.dispatcher.DispatcherScreen
@@ -19,6 +18,7 @@ import com.cramsan.framework.sample.shared.features.main.preferences.Preferences
 import com.cramsan.framework.sample.shared.features.main.remoteconfig.RemoteConfigScreen
 import com.cramsan.framework.sample.shared.features.main.threadutil.ThreadUtilScreen
 import com.cramsan.framework.sample.shared.features.main.userevents.UserEventsScreen
+import com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogScreen
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KType
 

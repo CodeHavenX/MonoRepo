@@ -6,9 +6,7 @@ import com.cramsan.framework.sample.shared.features.main.welcome.ThemeSelection
 /**
  * Main Menu UI state.
  */
-data class MainMenuUIState(
-    val selectedTheme: ThemeSelection? = null,
-) : ViewModelUIState {
+data class MainMenuUIState(val selectedTheme: ThemeSelection? = null) : ViewModelUIState {
     companion object {
         val Initial = MainMenuUIState()
     }

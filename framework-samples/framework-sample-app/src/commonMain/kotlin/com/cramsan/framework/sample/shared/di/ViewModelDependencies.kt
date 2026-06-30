@@ -13,7 +13,6 @@ import com.cramsan.framework.sample.shared.features.main.assertutil.AssertUtilVi
 import com.cramsan.framework.sample.shared.features.main.configuration.ConfigurationViewModel
 import com.cramsan.framework.sample.shared.features.main.crashhandler.CrashHandlerViewModel
 import com.cramsan.framework.sample.shared.features.main.dispatcher.DispatcherViewModel
-import com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogViewModel
 import com.cramsan.framework.sample.shared.features.main.halt.HaltUtilViewModel
 import com.cramsan.framework.sample.shared.features.main.logging.LoggingViewModel
 import com.cramsan.framework.sample.shared.features.main.menu.MainMenuViewModel
@@ -22,6 +21,7 @@ import com.cramsan.framework.sample.shared.features.main.preferences.Preferences
 import com.cramsan.framework.sample.shared.features.main.remoteconfig.RemoteConfigViewModel
 import com.cramsan.framework.sample.shared.features.main.threadutil.ThreadUtilViewModel
 import com.cramsan.framework.sample.shared.features.main.userevents.UserEventsViewModel
+import com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogViewModel
 import com.cramsan.framework.sample.shared.stubs.SampleRemoteConfigPayload
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.viewModel

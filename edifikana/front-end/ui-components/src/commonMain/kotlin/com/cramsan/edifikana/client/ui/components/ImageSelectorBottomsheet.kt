@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -9,21 +10,24 @@ import androidx.compose.ui.Modifier
 import com.cramsan.ui.theme.Padding
 
 /**
- * Bottom sheet dialog for selecting an image from a grid of options.
+ * Bottom sheet for selecting an image from a grid of options.
  *
  * @param label Title displayed at the top of the sheet
  * @param options List of image options to display in the grid
  * @param selectedOption Currently selected option, if any
- * @param onOptionSelected Callback when an option is selected; the sheet will automatically hide after selection
+ * @param onOptionSelected Callback when an option is selected
+ * @param onDismiss Callback when the sheet is dismissed
  */
-class ImageSelectorBottomsheet(
-    private val label: String,
-    private val options: List<ImageOptionUIModel>,
-    private val selectedOption: ImageOptionUIModel?,
-    private val onOptionSelected: (ImageOptionUIModel) -> Unit,
-) : EdifikanaBottomSheetDialog() {
-    @Composable
-    override fun BottomSheetContent() {
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ImageSelectorBottomsheet(
+    label: String,
+    options: List<ImageOptionUIModel>,
+    selectedOption: ImageOptionUIModel?,
+    onOptionSelected: (ImageOptionUIModel) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    EdifikanaBottomSheet(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier.padding(Padding.MEDIUM),
         ) {
@@ -38,7 +42,7 @@ class ImageSelectorBottomsheet(
                 selectedOption = selectedOption,
                 onOptionSelected = { option ->
                     onOptionSelected(option)
-                    hide()
+                    onDismiss()
                 },
                 columns = 3,
             )

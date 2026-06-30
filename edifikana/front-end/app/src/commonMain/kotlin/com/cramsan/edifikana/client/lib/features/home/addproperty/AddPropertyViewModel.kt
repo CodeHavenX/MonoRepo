@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.features.home.addproperty
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+
 import com.cramsan.edifikana.client.lib.managers.StorageManager
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
 import com.cramsan.edifikana.client.ui.components.ImageSource
@@ -28,7 +29,7 @@ class AddPropertyViewModel(
     private val propertyManager: PropertyManager,
     private val storageManager: StorageManager,
     private val stringProvider: StringProvider,
-) : BaseViewModel<AddPropertyEvent, AddPropertyUIState>(
+) : BaseViewModel<Nothing, AddPropertyUIState>(
     dependencies,
     AddPropertyUIState.Initial,
     TAG,
@@ -204,7 +205,16 @@ class AddPropertyViewModel(
      */
     fun openImageSelector() {
         viewModelCoroutineScope.launch {
-            emitEvent(AddPropertyEvent.OpenImageSelector)
+            updateUiState { it.copy(showImageSelector = true) }
+        }
+    }
+
+    /**
+     * Dismiss the image selector bottom sheet.
+     */
+    fun dismissImageSelector() {
+        viewModelCoroutineScope.launch {
+            updateUiState { it.copy(showImageSelector = false) }
         }
     }
 
@@ -215,6 +225,7 @@ class AddPropertyViewModel(
      */
     fun selectPhoto(option: ImageOptionUIModel) {
         viewModelCoroutineScope.launch {
+            updateUiState { it.copy(showImageSelector = false) }
             if (option.id == "custom_upload") {
                 triggerPhotoPicker()
             } else {

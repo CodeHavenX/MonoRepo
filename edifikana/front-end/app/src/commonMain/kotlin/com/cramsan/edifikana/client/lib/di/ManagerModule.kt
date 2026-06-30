@@ -4,6 +4,7 @@ import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.EmployeeManager
 import com.cramsan.edifikana.client.lib.managers.EventLogManager
+import com.cramsan.edifikana.client.lib.managers.MembershipManager
 import com.cramsan.edifikana.client.lib.managers.NotificationManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
@@ -23,4 +24,5 @@ internal val ManagerModule =
         singleOf(::OrganizationManager)
         singleOf(::StorageManager)
         singleOf(::NotificationManager)
+        singleOf(::MembershipManager)
     }

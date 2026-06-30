@@ -3,6 +3,8 @@
 package com.cramsan.framework.sample.shared.features.main
 
 import com.cramsan.framework.core.compose.navigation.Destination
+import com.cramsan.framework.core.compose.navigation.NavResultKey
+import com.cramsan.framework.sample.shared.features.main.welcome.ThemeSelection
 import kotlinx.serialization.Serializable
 
 /**
@@ -80,4 +82,13 @@ sealed class MainDestination : Destination {
      */
     @Serializable
     data object DispatcherDestination : MainDestination()
+
+    /**
+     * A dialog destination that asks the user to pick a theme and returns the selection
+     * to the caller via [themeResult].
+     */
+    @Serializable
+    data object WelcomeDialogDestination : MainDestination() {
+        val themeResult = NavResultKey<ThemeSelection>("welcome_theme_result")
+    }
 }

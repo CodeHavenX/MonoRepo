@@ -3,9 +3,11 @@ package com.cramsan.framework.sample.shared.features.main
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import com.cramsan.framework.core.compose.navigation.navigationGraph
 import com.cramsan.framework.sample.shared.features.ApplicationNavGraphDestination
 import com.cramsan.framework.sample.shared.features.main.assertutil.AssertUtilScreen
+import com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogScreen
 import com.cramsan.framework.sample.shared.features.main.configuration.ConfigurationScreen
 import com.cramsan.framework.sample.shared.features.main.crashhandler.CrashHandlerScreen
 import com.cramsan.framework.sample.shared.features.main.dispatcher.DispatcherScreen
@@ -66,6 +68,9 @@ fun NavGraphBuilder.mainNavGraphNavigation(
         }
         composable(MainDestination.DispatcherDestination::class, typeMap = typeMap) {
             DispatcherScreen()
+        }
+        dialog(MainDestination.WelcomeDialogDestination::class, typeMap = typeMap) {
+            WelcomeDialogScreen()
         }
     }
 }

@@ -57,6 +57,7 @@ fun InvitationAcceptScreen(
 
     InvitationAcceptContent(
         uiState = uiState,
+        onEmailChange = { viewModel.updateEmail(it) },
         onFullNameChange = { viewModel.updateFullName(it) },
         onPasswordChange = { viewModel.updatePassword(it) },
         onConfirmPasswordChange = { viewModel.updateConfirmPassword(it) },
@@ -78,6 +79,7 @@ fun InvitationAcceptScreen(
 internal fun InvitationAcceptContent(
     uiState: InvitationAcceptUIState,
     modifier: Modifier = Modifier,
+    onEmailChange: (String) -> Unit,
     onFullNameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
@@ -127,9 +129,8 @@ internal fun InvitationAcceptContent(
 
                     EdifikanaTextField(
                         value = uiState.inviteEmail,
-                        onValueChange = {},
+                        onValueChange = onEmailChange,
                         label = stringResource(Res.string.invitation_accept_screen_email_label),
-                        enabled = false,
                         modifier = sectionModifier,
                     )
 

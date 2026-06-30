@@ -12,6 +12,7 @@ import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
+import edifikana_lib.invitation_accept_screen_error_email_required
 import edifikana_lib.invitation_accept_screen_error_empty_name
 import edifikana_lib.invitation_accept_screen_error_password_too_short
 import edifikana_lib.invitation_accept_screen_error_passwords_do_not_match
@@ -55,8 +56,10 @@ class InvitationAcceptViewModel(
                         return@launch
                     }.getOrThrow()
 
-            // Full invite detail population (org name, role, inviter) requires GET /invites/resolve
-            // which is not yet available — tracked in issue #392.
+            // Full invite detail population (org name, role, email, inviter) requires a
+            // GET /invites/resolve endpoint that does not yet exist in the back-end.
+            // Once that endpoint is available, populate inviteEmail, orgName, role, and
+            // invitedByName here and switch the email field back to disabled/pre-filled.
             updateUiState {
                 it.copy(
                     isLoading = false,
@@ -64,6 +67,13 @@ class InvitationAcceptViewModel(
                     isInviteValid = inviteId.isNotBlank(),
                 )
             }
+        }
+    }
+
+    /** Updates the email field in the form. Required until GET /invites/resolve can pre-fill it. */
+    fun updateEmail(email: String) {
+        viewModelCoroutineScope.launch {
+            updateUiState { it.copy(inviteEmail = email) }
         }
     }
 
@@ -171,7 +181,7 @@ class InvitationAcceptViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.HomeNavGraphDestination,
-                    clearTop = true,
+                    clearStack = true,
                 ),
             )
         }
@@ -186,21 +196,15 @@ class InvitationAcceptViewModel(
 
     private suspend fun validateNewUserForm(state: InvitationAcceptUIState): String? {
         return when {
-            state.fullName.isBlank() -> {
+            state.inviteEmail.isBlank() ->
+                stringProvider.getString(Res.string.invitation_accept_screen_error_email_required)
+            state.fullName.isBlank() ->
                 stringProvider.getString(Res.string.invitation_accept_screen_error_empty_name)
-            }
-
-            state.password.length < MIN_PASSWORD_LENGTH -> {
+            state.password.length < MIN_PASSWORD_LENGTH ->
                 stringProvider.getString(Res.string.invitation_accept_screen_error_password_too_short)
-            }
-
-            state.password != state.confirmPassword -> {
+            state.password != state.confirmPassword ->
                 stringProvider.getString(Res.string.invitation_accept_screen_error_passwords_do_not_match)
-            }
-
-            else -> {
-                null
-            }
+            else -> null
         }
     }
 
@@ -210,14 +214,14 @@ class InvitationAcceptViewModel(
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
                     AuthDestination.SelectOrgDestination,
-                    clearTop = true,
+                    clearStack = true,
                 ),
             )
         } else {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToNavGraph(
                     EdifikanaNavGraphDestination.HomeNavGraphDestination,
-                    clearTop = true,
+                    clearStack = true,
                 ),
             )
         }

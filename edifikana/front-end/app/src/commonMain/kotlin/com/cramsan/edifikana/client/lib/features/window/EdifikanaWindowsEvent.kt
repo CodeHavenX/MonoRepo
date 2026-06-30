@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.lib.features.window
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.WindowEvent
 import com.cramsan.framework.core.compose.navigation.Destination
-import com.cramsan.framework.core.compose.navigation.NavResultKey
 
 /**
  * Events that can be triggered in the whole Window. These events are intended to be
@@ -64,19 +63,6 @@ sealed class EdifikanaWindowsEvent : WindowEvent {
      * Navigate back.
      */
     data object NavigateBack : EdifikanaWindowsEvent()
-
-    /**
-     * Navigate back and deposit a typed result into the previous back-stack entry's
-     * [androidx.lifecycle.SavedStateHandle], where it can be consumed via
-     * [com.cramsan.framework.core.compose.ui.ObserveNavResult].
-     *
-     * Prefer constructing this via [com.cramsan.framework.core.compose.navigation.NavResultKey.navigateBackWith]
-     * rather than directly, so the compiler enforces that [resultKey] and [resultValue] agree on type.
-     */
-    data class NavigateBackWithResult(
-        val resultKey: String,
-        val resultValue: Any,
-    ) : EdifikanaWindowsEvent()
 }
 
 /**
@@ -86,16 +72,3 @@ interface NavigationEvent {
     val clearTop: Boolean
     val clearStack: Boolean
 }
-
-/**
- * Creates a [EdifikanaWindowsEvent.NavigateBackWithResult] for this key and [value].
- *
- * Emit the returned event from a ViewModel to navigate back and deposit the result into the
- * previous back-stack entry's [androidx.lifecycle.SavedStateHandle]:
- *
- * ```kotlin
- * emitWindowEvent(MyDestination.result.navigateBackWith(selectedId))
- * ```
- */
-fun <T : Any> NavResultKey<T>.navigateBackWith(value: T): EdifikanaWindowsEvent.NavigateBackWithResult =
-    EdifikanaWindowsEvent.NavigateBackWithResult(resultKey = name, resultValue = value)

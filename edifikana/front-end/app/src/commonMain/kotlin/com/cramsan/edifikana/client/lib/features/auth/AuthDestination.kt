@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth
 
 import androidx.navigation.NavBackStackEntry
+import com.cramsan.edifikana.lib.model.network.invite.INVITE_ACCEPT_WEB_PATH
 import com.cramsan.edifikana.lib.model.network.password.SET_NEW_PASSWORD_WEB_PATH
 import com.cramsan.framework.annotations.WebPath
 import com.cramsan.framework.core.compose.navigation.WebDestination
@@ -66,6 +67,11 @@ sealed class AuthDestination : WebDestination {
         @SerialName("type")
         val type: String,
     ) : AuthDestination()
+
+    /** Invitation accept screen destination, reached via an invitation email link or deep link. */
+    @Serializable
+    @WebPath(INVITE_ACCEPT_WEB_PATH)
+    data class InvitationAcceptDestination(val inviteId: String) : AuthDestination()
 
     override fun toWebPath(): String = AuthDestinationWebRoutes.toWebPath(this)
 

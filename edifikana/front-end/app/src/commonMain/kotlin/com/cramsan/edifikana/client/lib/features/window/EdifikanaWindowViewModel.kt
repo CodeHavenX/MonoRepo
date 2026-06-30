@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -83,6 +84,22 @@ class EdifikanaWindowViewModel(
         viewModelCoroutineScope.launch {
             logI(TAG, "Result from snackbar: $result")
             delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleSnackbarResult(result))
+        }
+    }
+
+    /**
+     * Handles an invitation deep link by navigating to the invitation accept screen.
+     *
+     * Called from [com.cramsan.edifikana.client.lib.features.main.main.MainActivity.onNewIntent]
+     * when the app receives an `edifikana://invite/{token}` URI.
+     */
+    fun handleDeepLink(inviteId: String) {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.InvitationAcceptDestination(inviteId),
+                ),
+            )
         }
     }
 

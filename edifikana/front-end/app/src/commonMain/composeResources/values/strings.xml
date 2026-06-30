@@ -237,10 +237,10 @@
     <string name="invitation_accept_screen_confirm_password_label">Confirm password</string>
     <string name="invitation_accept_screen_accept_button">Accept Invitation</string>
     <string name="invitation_accept_screen_sign_in_link">Already have an account? Sign In</string>
+    <string name="invitation_accept_screen_error_email_required">Email address is required.</string>
     <string name="invitation_accept_screen_error_empty_name">Full name is required.</string>
     <string name="invitation_accept_screen_error_password_too_short">Password must be at least 8 characters.</string>
     <string name="invitation_accept_screen_error_passwords_do_not_match">Passwords do not match.</string>
-    <string name="invitation_accept_screen_error_invalid_invite">This invitation link is invalid or has expired.</string>
 
     <!-- Invite staff member screen -->
     <string name="invite_staff_member_screen_title">Invite Staff Member</string>

@@ -30,7 +30,15 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="edifikana" android:host="invite" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="edifikana.com" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="edifikana" />
             </intent-filter>
         </activity>
         <activity

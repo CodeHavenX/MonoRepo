@@ -11,7 +11,7 @@ import com.cramsan.ui.preview.ScreenPreviews
  *
  * Example:
  * ```
- * @ScreenPreviews
+ * @DevicePreviews
  * @Composable
  * private fun FeatureReplacemeScreenLoadingPreview() =
  *     AppTheme { FeatureReplacemeContent(uiState = FeatureReplacemeUIState(isLoading = true)) }
@@ -21,12 +21,27 @@ import com.cramsan.ui.preview.ScreenPreviews
  *  - @ScreenPreviews: It is used for generating a preview(s) for a complete screen.
  *  - @ComponentPreviews: It is used for generating a preview(s) for a sub-component such as a button, list item, etc.
  *  - @DevicePreviews: It is used for generating a set of previews to represent multiple device form factors.
+ *
+ *  For the primary preview we will use @DevicePreviews
  */
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun FeatureReplacemeScreenPreview() =
     AppTheme {
         FeatureReplacemeContent(
             uiState = FeatureReplacemeUIState(isLoading = false),
+        )
+    }
+
+
+/**
+ *  For a variant preview we will use @ScreenPreviews
+ */
+@ScreenPreviews
+@Composable
+private fun FeatureReplacemeScreenPreview_Loading() =
+    AppTheme {
+        FeatureReplacemeContent(
+            uiState = FeatureReplacemeUIState(isLoading = true),
         )
     }

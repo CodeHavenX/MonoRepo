@@ -16,5 +16,6 @@ private fun SettingsScreenPreview() =
             ),
             onThemeSelected = {},
             onBackSelected = { },
+            onMyOrganizationsSelected = {},
         )
     }

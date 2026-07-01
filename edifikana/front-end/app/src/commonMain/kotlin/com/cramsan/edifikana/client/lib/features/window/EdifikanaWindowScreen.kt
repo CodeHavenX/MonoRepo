@@ -47,6 +47,7 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.core.compose.navigation.Destination
+import com.cramsan.framework.core.compose.navigation.navigateBackWithResult
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.themetoggle.SelectedTheme
 import kotlinx.coroutines.CoroutineScope
@@ -138,6 +139,10 @@ private fun WindowsContent(
                     navigate = navigate,
                     windowEvent = event.event,
                 )
+            }
+
+            is EdifikanaWindowViewModelEvent.NavBackWithResult -> {
+                navigate { navController.navigateBackWithResult(event.result) }
             }
         }
     }

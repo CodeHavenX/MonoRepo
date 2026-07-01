@@ -33,6 +33,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.test.assertIs
 
 /**
  * Unit tests for [AddPropertyViewModel].
@@ -68,6 +69,22 @@ class AddPropertyViewModelTest : CoroutineTest() {
             storageManager = storageManager,
             stringProvider = stringProvider,
         )
+    }
+
+    @Test
+    fun `openImageSelector sets showImageSelector to true`() = runCoroutineTest {
+        viewModel.openImageSelector()
+
+        assertTrue(viewModel.uiState.value.showImageSelector)
+    }
+
+    @Test
+    fun `dismissImageSelector sets showImageSelector to false`() = runCoroutineTest {
+        viewModel.openImageSelector()
+
+        viewModel.dismissImageSelector()
+
+        assertFalse(viewModel.uiState.value.showImageSelector)
     }
 
     /**

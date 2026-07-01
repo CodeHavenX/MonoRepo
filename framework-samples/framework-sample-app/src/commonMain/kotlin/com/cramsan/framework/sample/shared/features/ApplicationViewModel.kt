@@ -4,6 +4,8 @@ import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.ViewModelDependencies
+import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.navigation.NavigateBackWithResult
 import com.cramsan.framework.sample.shared.init.Initializer
 import kotlinx.coroutines.launch
 
@@ -14,7 +16,7 @@ import kotlinx.coroutines.launch
 class ApplicationViewModel(
     private val initHandler: Initializer,
     dependencies: ViewModelDependencies,
-    private val eventEmitter: EventEmitter<SampleWindowEvent>,
+    private val eventEmitter: EventEmitter<WindowEvent>,
 ) : BaseViewModel<SampleApplicationViewModelEvent, ApplicationUIState>(
     dependencies,
     ApplicationUIState,
@@ -26,7 +28,13 @@ class ApplicationViewModel(
         }
         viewModelCoroutineScope.launch {
             eventEmitter.events.collect { event ->
-                emitEvent(SampleApplicationViewModelEvent.SampleApplicationEventWrapper(event))
+                val vmEvent =
+                    when (event) {
+                        is NavigateBackWithResult -> SampleApplicationViewModelEvent.NavBackWithResult(event)
+                        is SampleWindowEvent -> SampleApplicationViewModelEvent.SampleApplicationEventWrapper(event)
+                        else -> null
+                    }
+                vmEvent?.let { emitEvent(it) }
             }
         }
     }

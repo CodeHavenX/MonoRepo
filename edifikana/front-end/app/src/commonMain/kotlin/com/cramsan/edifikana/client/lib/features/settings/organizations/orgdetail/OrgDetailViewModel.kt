@@ -75,16 +75,16 @@ class OrgDetailViewModel(
      */
     fun onLeaveOrganizationTapped() {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(showLeaveDialog = true) }
+            updateUiState { it.copy(dialog = OrgDetailDialogState.ConfirmLeave) }
         }
     }
 
     /**
-     * Dismisses the leave organization dialog without action.
+     * Dismisses the active dialog without action.
      */
-    fun dismissLeaveDialog() {
+    fun dismissDialog() {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(showLeaveDialog = false) }
+            updateUiState { it.copy(dialog = OrgDetailDialogState.None) }
         }
     }
 
@@ -93,7 +93,7 @@ class OrgDetailViewModel(
      */
     fun confirmLeaveOrganization(orgId: OrganizationId) {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isLoading = true, showLeaveDialog = false) }
+            updateUiState { it.copy(isLoading = true, dialog = OrgDetailDialogState.None) }
             membershipManager
                 .leaveOrganization(orgId)
                 .onSuccess {

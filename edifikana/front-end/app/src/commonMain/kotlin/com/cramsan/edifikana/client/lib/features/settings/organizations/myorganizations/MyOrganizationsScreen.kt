@@ -20,9 +20,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -31,7 +28,6 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.theme.Spacing
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel
@@ -51,32 +47,6 @@ fun MyOrganizationsScreen(
         viewModel.initialize()
     }
 
-    ObserveViewModelEvents(viewModel) { event ->
-        when (event) {
-            MyOrganizationsEvent.Noop -> Unit
-        }
-    }
-
-    var pendingSwitchOrgId by remember { mutableStateOf<OrganizationId?>(null) }
-
-    pendingSwitchOrgId?.let { orgId ->
-        val orgName = uiState.organizations.firstOrNull { it.orgId == orgId }?.name ?: ""
-        AlertDialog(
-            onDismissRequest = { pendingSwitchOrgId = null },
-            title = { Text("Switch to $orgName?") },
-            text = { Text("You will be switched to this organization's dashboard.") },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.onConfirmSwitchOrg(orgId)
-                    pendingSwitchOrgId = null
-                }) { Text("Switch") }
-            },
-            dismissButton = {
-                TextButton(onClick = { pendingSwitchOrgId = null }) { Text("Cancel") }
-            },
-        )
-    }
-
     MyOrganizationsContent(
         uiState = uiState,
         onBackSelected = { viewModel.navigateBack() },
@@ -84,11 +54,32 @@ fun MyOrganizationsScreen(
             if (isActive) {
                 viewModel.onOrgSelected(orgId)
             } else {
-                pendingSwitchOrgId = orgId
+                viewModel.requestSwitchOrg(orgId)
             }
         },
         onJoinOrganizationSelected = { /* handled by issue #391 */ },
     )
+
+    when (val dialog = uiState.dialog) {
+        MyOrganizationsDialogState.None -> {
+            Unit
+        }
+
+        is MyOrganizationsDialogState.ConfirmSwitchOrg -> {
+            val orgName = uiState.organizations.firstOrNull { it.orgId == dialog.orgId }?.name ?: ""
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissDialog() },
+                title = { Text("Switch to $orgName?") },
+                text = { Text("You will be switched to this organization's dashboard.") },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.onConfirmSwitchOrg(dialog.orgId) }) { Text("Switch") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.dismissDialog() }) { Text("Cancel") }
+                },
+            )
+        }
+    }
 }
 
 /**

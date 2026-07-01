@@ -28,7 +28,7 @@ class PropertyDetailViewModel(
     private val propertyManager: PropertyManager,
     private val storageManager: StorageManager,
     private val stringProvider: StringProvider,
-) : BaseViewModel<PropertyDetailEvent, PropertyDetailUIState>(
+) : BaseViewModel<Nothing, PropertyDetailUIState>(
     dependencies,
     PropertyDetailUIState.Initial,
     TAG,
@@ -173,7 +173,25 @@ class PropertyDetailViewModel(
      */
     fun openImageSelector() {
         viewModelCoroutineScope.launch {
-            emitEvent(PropertyDetailEvent.OpenImageSelector)
+            updateUiState { it.copy(dialog = PropertyDetailDialogState.ShowImageSelector) }
+        }
+    }
+
+    /**
+     * Show the delete confirmation dialog.
+     */
+    fun showDeleteConfirmation() {
+        viewModelCoroutineScope.launch {
+            updateUiState { it.copy(dialog = PropertyDetailDialogState.ConfirmDelete) }
+        }
+    }
+
+    /**
+     * Dismiss the active dialog without action.
+     */
+    fun dismissDialog() {
+        viewModelCoroutineScope.launch {
+            updateUiState { it.copy(dialog = PropertyDetailDialogState.None) }
         }
     }
 
@@ -184,6 +202,7 @@ class PropertyDetailViewModel(
      */
     fun selectPhoto(option: ImageOptionUIModel) {
         viewModelCoroutineScope.launch {
+            updateUiState { it.copy(dialog = PropertyDetailDialogState.None) }
             if (option.id == "custom_upload") {
                 triggerPhotoPicker()
             } else {

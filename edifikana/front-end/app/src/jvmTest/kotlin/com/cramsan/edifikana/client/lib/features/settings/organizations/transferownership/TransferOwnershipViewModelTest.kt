@@ -28,7 +28,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNull
+import kotlin.test.assertIs
 
 class TransferOwnershipViewModelTest : CoroutineTest() {
 
@@ -111,22 +111,23 @@ class TransferOwnershipViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `onAdminSelected sets confirmingTarget`() = runCoroutineTest {
+    fun `onAdminSelected sets dialog to ConfirmTransfer`() = runCoroutineTest {
         val admin = AdminUIModel(userId = adminUserId, displayName = "Bob Admin", email = "bob@example.com")
 
         viewModel.onAdminSelected(admin)
 
-        assertEquals(admin, viewModel.uiState.value.confirmingTarget)
+        val dialog = assertIs<TransferOwnershipDialogState.ConfirmTransfer>(viewModel.uiState.value.dialog)
+        assertEquals(admin, dialog.target)
     }
 
     @Test
-    fun `dismissConfirmDialog clears confirmingTarget`() = runCoroutineTest {
+    fun `dismissDialog sets dialog to None`() = runCoroutineTest {
         val admin = AdminUIModel(userId = adminUserId, displayName = "Bob Admin", email = "bob@example.com")
         viewModel.onAdminSelected(admin)
 
-        viewModel.dismissConfirmDialog()
+        viewModel.dismissDialog()
 
-        assertNull(viewModel.uiState.value.confirmingTarget)
+        assertIs<TransferOwnershipDialogState.None>(viewModel.uiState.value.dialog)
     }
 
     @Test

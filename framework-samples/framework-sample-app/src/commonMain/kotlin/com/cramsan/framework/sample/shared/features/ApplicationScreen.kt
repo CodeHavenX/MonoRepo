@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.cramsan.framework.core.compose.navigation.navigateBackWithResult
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.framework.sample.shared.features.main.mainNavGraphNavigation
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +38,10 @@ fun ApplicationScreen(
                     snackbarHostState = snackbarHostState,
                     applicationEvent = event.event,
                 )
+            }
+
+            is SampleApplicationViewModelEvent.NavBackWithResult -> {
+                navController.navigateBackWithResult(event.result)
             }
         }
     }

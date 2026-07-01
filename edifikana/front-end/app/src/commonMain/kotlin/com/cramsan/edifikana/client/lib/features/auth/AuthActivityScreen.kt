@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.cramsan.edifikana.client.lib.features.auth.invitationaccept.InvitationAcceptScreen
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.createneworg.CreateNewOrgScreen
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg.SelectOrgScreen
 import com.cramsan.edifikana.client.lib.features.auth.passwordreset.PasswordResetScreen
@@ -20,6 +21,7 @@ import kotlin.reflect.KType
 /**
  * Auth Nav Graph Route.
  */
+@Suppress("LongMethod")
 fun NavGraphBuilder.authNavGraphNavigation(
     typeMap: Map<KType, @JvmSuppressWildcards NavType<*>> = emptyMap(),
 ) {
@@ -79,6 +81,12 @@ fun NavGraphBuilder.authNavGraphNavigation(
             typeMap = typeMap,
         ) {
             SetNewPasswordScreen()
+        }
+        composable(
+            AuthDestination.InvitationAcceptDestination::class,
+            typeMap = typeMap,
+        ) {
+            InvitationAcceptScreen(destination = it.toRoute())
         }
     }
 }

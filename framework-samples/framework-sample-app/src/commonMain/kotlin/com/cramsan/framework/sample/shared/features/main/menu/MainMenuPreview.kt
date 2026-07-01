@@ -7,6 +7,7 @@ import com.cramsan.ui.preview.ScreenPreviews
 @Composable
 private fun MainMenuScreenPreview() {
     MainMenuContent(
+        selectedTheme = null,
         onHaltUtilSelected = {},
         onLoggingSelected = {},
         onPreferencesSelected = {},
@@ -18,5 +19,6 @@ private fun MainMenuScreenPreview() {
         onUserEventsSelected = {},
         onRemoteConfigSelected = {},
         onDispatcherSelected = {},
+        onWelcomeSelected = {},
     )
 }

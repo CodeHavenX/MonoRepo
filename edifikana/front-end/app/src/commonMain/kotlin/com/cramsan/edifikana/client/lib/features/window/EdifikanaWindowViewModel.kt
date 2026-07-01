@@ -8,6 +8,7 @@ import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.navigation.NavigateBackWithResult
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.launch
 
@@ -32,11 +33,19 @@ class EdifikanaWindowViewModel(
         viewModelCoroutineScope.launch {
             windowEventEmitter.events.collect { event ->
                 logI(TAG, "Window event received: $event")
-                emitEvent(
-                    EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(
-                        event as EdifikanaWindowsEvent,
-                    ),
-                )
+                val viewModelEvent =
+                    when (event) {
+                        is NavigateBackWithResult -> {
+                            EdifikanaWindowViewModelEvent.NavBackWithResult(event)
+                        }
+
+                        else -> {
+                            EdifikanaWindowViewModelEvent.EdifikanaWindowEventWrapper(
+                                event as EdifikanaWindowsEvent,
+                            )
+                        }
+                    }
+                emitEvent(viewModelEvent)
             }
         }
     }

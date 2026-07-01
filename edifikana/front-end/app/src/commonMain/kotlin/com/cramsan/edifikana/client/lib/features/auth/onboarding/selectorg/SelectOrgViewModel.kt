@@ -22,7 +22,7 @@ class SelectOrgViewModel(
     private val authManager: AuthManager,
     private val notificationManager: NotificationManager,
     dependencies: ViewModelDependencies,
-) : BaseViewModel<SelectOrgEvent, SelectOrgUIState>(
+) : BaseViewModel<Nothing, SelectOrgUIState>(
     dependencies,
     SelectOrgUIState.Default,
     TAG,
@@ -81,12 +81,12 @@ class SelectOrgViewModel(
     }
 
     /**
-     * Request to show sign out confirmation dialog.
+     * Shows the sign out confirmation dialog.
      */
     fun requestSignOut() {
         logI(TAG, "Sign out requested")
         viewModelCoroutineScope.launch {
-            emitEvent(SelectOrgEvent.ShowSignOutConfirmation)
+            updateUiState { it.copy(dialog = SelectOrgDialogState.ConfirmSignOut) }
         }
     }
 
@@ -107,12 +107,21 @@ class SelectOrgViewModel(
     }
 
     /**
-     * Request to show join organization confirmation dialog for the given invite ID.
+     * Shows the join organization confirmation dialog for the given invite ID.
      */
     fun requestJoinOrganization(inviteId: InviteId) {
         logI(TAG, "Join organization requested for inviteId: $inviteId")
         viewModelCoroutineScope.launch {
-            emitEvent(SelectOrgEvent.ShowJoinOrgConfirmation(inviteId))
+            updateUiState { it.copy(dialog = SelectOrgDialogState.ConfirmJoinOrg(inviteId)) }
+        }
+    }
+
+    /**
+     * Dismisses the active dialog without action.
+     */
+    fun dismissDialog() {
+        viewModelCoroutineScope.launch {
+            updateUiState { it.copy(dialog = SelectOrgDialogState.None) }
         }
     }
 
@@ -122,7 +131,7 @@ class SelectOrgViewModel(
     fun acceptInvite(inviteId: InviteId) {
         logI(TAG, "Accept invite clicked for inviteId: $inviteId")
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isLoading = true) }
+            updateUiState { it.copy(isLoading = true, dialog = SelectOrgDialogState.None) }
             val acceptResult = authManager.acceptInvite(inviteId)
             if (acceptResult.isFailure) {
                 logI(TAG, "Failed to accept invite: ${acceptResult.exceptionOrNull()}")

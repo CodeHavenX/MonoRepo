@@ -29,7 +29,7 @@ import com.cramsan.framework.userevents.implementation.NoopUserEvents
 import org.koin.dsl.module
 
 internal val FrameworkModule =
-    module {
+    module(createdAtStart = true) {
 
         single<AssertUtilInterface> {
             AssertUtilImpl(

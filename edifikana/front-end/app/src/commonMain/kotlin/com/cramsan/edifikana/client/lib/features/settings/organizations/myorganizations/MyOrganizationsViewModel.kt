@@ -66,6 +66,24 @@ class MyOrganizationsViewModel(
     }
 
     /**
+     * Shows the switch organization confirmation dialog.
+     */
+    fun requestSwitchOrg(orgId: OrganizationId) {
+        viewModelCoroutineScope.launch {
+            updateUiState { it.copy(dialog = MyOrganizationsDialogState.ConfirmSwitchOrg(orgId)) }
+        }
+    }
+
+    /**
+     * Dismisses the active dialog without action.
+     */
+    fun dismissDialog() {
+        viewModelCoroutineScope.launch {
+            updateUiState { it.copy(dialog = MyOrganizationsDialogState.None) }
+        }
+    }
+
+    /**
      * Called when the user taps the active organization card. Navigates to its detail screen.
      */
     fun onOrgSelected(orgId: OrganizationId) {

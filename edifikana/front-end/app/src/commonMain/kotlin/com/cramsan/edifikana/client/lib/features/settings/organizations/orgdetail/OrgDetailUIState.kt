@@ -3,6 +3,15 @@ package com.cramsan.edifikana.client.lib.features.settings.organizations.orgdeta
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.framework.core.compose.ViewModelUIState
 
+/** Dialog state for the OrgDetail screen. */
+sealed class OrgDetailDialogState {
+    /** No dialog is shown. */
+    data object None : OrgDetailDialogState()
+
+    /** Confirmation dialog asking the user to leave the organization. */
+    data object ConfirmLeave : OrgDetailDialogState()
+}
+
 /**
  * UI state of the OrgDetail feature.
  */
@@ -14,7 +23,7 @@ data class OrgDetailUIState(
     val memberCount: Int,
     val joinedDate: String,
     val isSoleOwner: Boolean,
-    val showLeaveDialog: Boolean,
+    val dialog: OrgDetailDialogState = OrgDetailDialogState.None,
 ) : ViewModelUIState {
     companion object {
         /** Initial loading state. */
@@ -27,7 +36,7 @@ data class OrgDetailUIState(
                 memberCount = 0,
                 joinedDate = "",
                 isSoleOwner = false,
-                showLeaveDialog = false,
+                dialog = OrgDetailDialogState.None,
             )
     }
 }

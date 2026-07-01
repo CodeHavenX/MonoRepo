@@ -19,8 +19,6 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.OptionCard
 import com.cramsan.edifikana.lib.model.invite.InviteId
-import com.cramsan.framework.core.compose.rememberDialogController
-import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -46,36 +44,9 @@ fun SelectOrgScreen(
     viewModel: SelectOrgViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val dialogController = rememberDialogController()
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize()
-    }
-
-    ObserveViewModelEvents(viewModel) { event ->
-        when (event) {
-            SelectOrgEvent.Noop -> {
-                Unit
-            }
-
-            SelectOrgEvent.ShowSignOutConfirmation -> {
-                val signOutDialog =
-                    SignOutConfirmationDialog(
-                        onConfirm = { viewModel.confirmSignOut() },
-                        onDismiss = { /* User cancelled */ },
-                    )
-                dialogController.showDialog(signOutDialog)
-            }
-
-            is SelectOrgEvent.ShowJoinOrgConfirmation -> {
-                val joinOrgDialog =
-                    JoinOrgConfirmationDialog(
-                        onConfirm = { viewModel.acceptInvite(event.inviteId) },
-                        onDismiss = { /* User cancelled */ },
-                    )
-                dialogController.showDialog(joinOrgDialog)
-            }
-        }
     }
 
     SelectOrgContent(
@@ -86,7 +57,25 @@ fun SelectOrgScreen(
         modifier = modifier,
     )
 
-    dialogController.Render()
+    when (val dialog = uiState.dialog) {
+        SelectOrgDialogState.None -> {
+            Unit
+        }
+
+        SelectOrgDialogState.ConfirmSignOut -> {
+            SignOutConfirmationContent(
+                onConfirm = { viewModel.confirmSignOut() },
+                onDismiss = { viewModel.dismissDialog() },
+            )
+        }
+
+        is SelectOrgDialogState.ConfirmJoinOrg -> {
+            JoinOrgConfirmationContent(
+                onConfirm = { viewModel.acceptInvite(dialog.inviteId) },
+                onDismiss = { viewModel.dismissDialog() },
+            )
+        }
+    }
 }
 
 /**

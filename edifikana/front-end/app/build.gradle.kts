@@ -203,7 +203,7 @@ buildConfig {
 
     buildConfigField<String>(
         "DEFAULT_API_URL",
-        configProps.getProperty("DEFAULT_API_URL", "http://localhost:9292")
+        configProps.getProperty("DEFAULT_API_URL", "http://127.0.0.1:9292")
     )
     // Accepting risk of silent build failure here with default value being blank
     buildConfigField<String>(

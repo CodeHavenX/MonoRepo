@@ -36,7 +36,7 @@ cp edifikana/back-end/config.properties.integ.example \
 Open `config.properties.integ` and fill in the values printed by `supabase start`:
 
 ```properties
-supabase.url=http://localhost:54321
+supabase.url=http://127.0.0.1:54321
 supabase.key=<anon key from supabase start output>
 supabase.disable=false
 ```
@@ -46,7 +46,7 @@ supabase.disable=false
 Seeded users have **no password set** and log in via **OTP / magic link**.
 
 To sign in: enter a seed email in the app's sign-in screen, then check
-Supabase's local email inbox at **http://localhost:54324** (InBucket) for the
+Supabase's local email inbox at **http://127.0.0.1:54324** (InBucket) for the
 OTP code.
 
 Example accounts:

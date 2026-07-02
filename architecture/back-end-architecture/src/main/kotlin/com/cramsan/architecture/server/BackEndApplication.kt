@@ -69,29 +69,39 @@ fun Application.startKtor() =
 private fun Application.configureKtorEngine() {
     val json: Json by inject()
     val settingsHolder: SettingsHolder by inject()
-    val allowedHost: String = settingsHolder.getString(BackEndApplicationSettingKey.AllowedHost).orEmpty()
+    val allowedHost: List<String> =
+        settingsHolder
+            .getString(
+                BackEndApplicationSettingKey.AllowedHost,
+            ).orEmpty()
+            .split(",")
 
     install(CallLogging)
     install(ContentNegotiation) {
         json(json)
     }
 
-    if (allowedHost.isNotBlank()) {
+    if (allowedHost.isNotEmpty() && allowedHost.any { it.isNotBlank() }) {
         install(CORS) {
-            // Configure the host
-            allowHost(allowedHost)
+            allowedHost.forEach {
+                if (it.isBlank()) {
+                    return@forEach
+                }
+                // Configure the host
+                allowHost(it)
 
-            // Configure the headers that are allowed.
-            // If a header is requested by the client that is not allowed, the entire
-            // request will be rejected.
-            allowHeader(HttpHeaders.ContentType)
-            allowHeader(HttpHeaders.Authorization)
+                // Configure the headers that are allowed.
+                // If a header is requested by the client that is not allowed, the entire
+                // request will be rejected.
+                allowHeader(HttpHeaders.ContentType)
+                allowHeader(HttpHeaders.Authorization)
 
-            // Allow more methods. GET, POST, HEAD are allowed by default.
-            allowMethod(HttpMethod.Options)
-            allowMethod(HttpMethod.Put)
-            allowMethod(HttpMethod.Patch)
-            allowMethod(HttpMethod.Delete)
+                // Allow more methods. GET, POST, HEAD are allowed by default.
+                allowMethod(HttpMethod.Options)
+                allowMethod(HttpMethod.Put)
+                allowMethod(HttpMethod.Patch)
+                allowMethod(HttpMethod.Delete)
+            }
         }
     }
 }

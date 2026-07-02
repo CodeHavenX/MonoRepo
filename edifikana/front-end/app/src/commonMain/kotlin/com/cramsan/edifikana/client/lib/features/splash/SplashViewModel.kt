@@ -39,9 +39,24 @@ class SplashViewModel(
      * Enforce the authentication state and route the user to the right screen.
      * If [initialDestination] is non-null and auth succeeds, navigates to that destination
      * on top of the Home nav graph instead of stopping at the default hub screen.
+     *
+     * This function provides especial handling to some Destinations that may need to bypass
+     * auth checks.
      */
     fun enforceAuth(initialDestination: Destination? = null) =
         viewModelCoroutineScope.launch {
+            if (initialDestination is AuthDestination.SetNewPasswordDestination) {
+                // Skip auth checks — the recovery tokens in the destination establish the session.
+                // Route to the Auth nav graph so the back stack stays in the auth flow.
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.NavigateToNavGraph(
+                        EdifikanaNavGraphDestination.AuthNavGraphDestination,
+                        clearStack = true,
+                    ),
+                )
+                emitWindowEvent(EdifikanaWindowsEvent.NavigateToScreen(initialDestination))
+                return@launch
+            }
             val result = authManager.isSignedIn()
             if (result.isFailure) {
                 logW(TAG, "Failure when enforcing auth.", result.exceptionOrNull())

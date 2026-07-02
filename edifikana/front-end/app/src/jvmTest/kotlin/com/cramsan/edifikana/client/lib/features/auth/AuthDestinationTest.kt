@@ -69,6 +69,6 @@ class AuthDestinationTest {
 
     @Test
     fun `fromWebPath returns SetNewPasswordDestination`() {
-        assertIs<AuthDestination.SetNewPasswordDestination>(AuthDestination.fromWebPath("/auth/set-new-password"))
+        assertIs<AuthDestination.SetNewPasswordDestination>(AuthDestination.fromWebPath("/auth/set-new-password#access_token=token&expires_at=1783027428&expires_in=3600&refresh_token=f7ei5f5ctfnw&sb=&token_type=bearer&type=recovery"))
     }
 }

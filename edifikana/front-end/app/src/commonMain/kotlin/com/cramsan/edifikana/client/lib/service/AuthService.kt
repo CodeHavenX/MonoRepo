@@ -132,4 +132,16 @@ interface AuthService {
      * Decline an invitation.
      */
     suspend fun declineInvite(inviteId: InviteId): Result<Unit>
+
+    /**
+     * Restores a Supabase session from the individual token values delivered via a recovery or
+     * invitation deep-link. Must be called before any authenticated operation (e.g. [setNewPassword])
+     * when the session was not established through a regular sign-in.
+     */
+    suspend fun restoreSessionFromTokens(
+        accessToken: String,
+        refreshToken: String,
+        expiresIn: Long,
+        tokenType: String,
+    ): Result<Unit>
 }

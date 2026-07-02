@@ -237,6 +237,28 @@ class AuthManager(private val dependencies: ManagerDependencies, private val aut
             authService.declineInvite(inviteId).getOrThrow()
         }
 
+    /**
+     * Restores a Supabase session from the individual token values delivered via a recovery or
+     * invitation deep-link. Must be called before any authenticated operation when the session
+     * was not established through a regular sign-in.
+     */
+    suspend fun restoreSessionFromTokens(
+        accessToken: String,
+        refreshToken: String,
+        expiresIn: Long,
+        tokenType: String,
+    ): Result<Unit> =
+        dependencies.getOrCatch(TAG) {
+            logI(TAG, "restoreSessionFromTokens")
+            authService
+                .restoreSessionFromTokens(
+                    accessToken = accessToken,
+                    refreshToken = refreshToken,
+                    expiresIn = expiresIn,
+                    tokenType = tokenType,
+                ).getOrThrow()
+        }
+
     companion object {
         private const val TAG = "AuthManager"
     }

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.auth.setnewpassword
 
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
+import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.framework.annotations.FrontendViewModel
@@ -31,11 +32,30 @@ class SetNewPasswordViewModel(
     SetNewPasswordUIState.Initial,
     TAG,
 ) {
-    /** Marks the form as ready for input. Called once on first composition. */
+    /**
+     * Restores the Supabase session from the recovery tokens in [destination], then marks the
+     * form ready for input. Navigates back to sign-in if the session cannot be restored.
+     */
     @OptIn(SecureStringAccess::class)
-    fun initialize() {
+    fun initialize(destination: AuthDestination.SetNewPasswordDestination) {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isLoading = false) }
+            updateUiState { it.copy(isLoading = true) }
+            authManager
+                .restoreSessionFromTokens(
+                    accessToken = destination.accessToken,
+                    refreshToken = destination.refreshToken,
+                    expiresIn = destination.expiresIn,
+                    tokenType = destination.tokenType,
+                ).onSuccess {
+                    updateUiState { it.copy(isLoading = false) }
+                }.onFailure {
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.NavigateToNavGraph(
+                            EdifikanaNavGraphDestination.AuthNavGraphDestination,
+                            clearStack = true,
+                        ),
+                    )
+                }
         }
     }
 

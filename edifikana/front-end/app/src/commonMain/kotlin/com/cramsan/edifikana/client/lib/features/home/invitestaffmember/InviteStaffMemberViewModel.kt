@@ -20,10 +20,13 @@ class InviteStaffMemberViewModel(dependencies: ViewModelDependencies, private va
         InviteStaffMemberUIState.Initial,
         TAG,
     ) {
+    private var orgId: OrganizationId? = null
+
     /**
      * Initialize the ViewModel with the organization ID.
      */
     fun initialize(orgId: OrganizationId) {
+        this.orgId = orgId
         viewModelCoroutineScope.launch {
             val roles =
                 listOf(
@@ -31,7 +34,7 @@ class InviteStaffMemberViewModel(dependencies: ViewModelDependencies, private va
                     StaffRoleUIModel(InviteRole.MANAGER, "Manager"),
                     StaffRoleUIModel(InviteRole.EMPLOYEE, "Employee"),
                 )
-            updateUiState { it.copy(orgId = orgId, roles = roles) }
+            updateUiState { it.copy(roles = roles) }
         }
     }
 
@@ -49,7 +52,7 @@ class InviteStaffMemberViewModel(dependencies: ViewModelDependencies, private va
      */
     fun sendInvitation(email: String, role: StaffRoleUIModel?) {
         viewModelCoroutineScope.launch {
-            val organizationId = requireNotNull(uiState.value.orgId)
+            val organizationId = requireNotNull(orgId)
 
             val emailErrors = validateEmail(email)
             if (emailErrors.isNotEmpty()) {

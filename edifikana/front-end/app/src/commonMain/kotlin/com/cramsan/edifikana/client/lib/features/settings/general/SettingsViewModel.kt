@@ -2,6 +2,7 @@ package com.cramsan.edifikana.client.lib.features.settings.general
 
 import com.cramsan.architecture.client.manager.PreferencesEvent
 import com.cramsan.architecture.client.manager.PreferencesManager
+import com.cramsan.edifikana.client.lib.features.settings.SettingsDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
@@ -79,6 +80,17 @@ class SettingsViewModel(dependencies: ViewModelDependencies, private val prefere
     fun navigateBack() {
         viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+        }
+    }
+
+    /**
+     * Navigate to the My Organizations screen.
+     */
+    fun navigateToMyOrganizations() {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(SettingsDestination.MyOrganizationsDestination),
+            )
         }
     }
 

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.settings
 
 import androidx.navigation.NavBackStackEntry
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.annotations.WebPath
 import com.cramsan.framework.core.compose.navigation.WebDestination
 import kotlinx.serialization.Serializable
@@ -14,6 +15,21 @@ sealed class SettingsDestination : WebDestination {
     @Serializable
     @WebPath("/settings")
     data object GeneralSettingsDestination : SettingsDestination()
+
+    /** My Organizations list screen destination. */
+    @Serializable
+    @WebPath("/settings/organizations")
+    data object MyOrganizationsDestination : SettingsDestination()
+
+    /** Organization detail screen destination. */
+    @Serializable
+    @WebPath("/settings/organizations/detail")
+    data class OrganizationDetailDestination(val orgId: OrganizationId) : SettingsDestination()
+
+    /** Transfer ownership screen destination. */
+    @Serializable
+    @WebPath("/settings/organizations/transfer")
+    data class TransferOwnershipDestination(val orgId: OrganizationId) : SettingsDestination()
 
     override fun toWebPath(): String = SettingsDestinationWebRoutes.toWebPath(this)
 

@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.BuildConfig
 import com.cramsan.edifikana.client.lib.service.AuthService
 import com.cramsan.edifikana.client.lib.service.EmployeeService
 import com.cramsan.edifikana.client.lib.service.EventLogService
+import com.cramsan.edifikana.client.lib.service.MembershipService
 import com.cramsan.edifikana.client.lib.service.NotificationService
 import com.cramsan.edifikana.client.lib.service.OrganizationService
 import com.cramsan.edifikana.client.lib.service.PropertyService
@@ -14,6 +15,7 @@ import com.cramsan.edifikana.client.lib.service.impl.AuthRequestPlugin
 import com.cramsan.edifikana.client.lib.service.impl.AuthServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.EmployeeServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.EventLogServiceImpl
+import com.cramsan.edifikana.client.lib.service.impl.MembershipServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.NotificationServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.OrganizationServiceImpl
 import com.cramsan.edifikana.client.lib.service.impl.PropertyServiceImpl
@@ -110,6 +112,9 @@ internal val ServiceModule =
         }
         singleOf(::NotificationServiceImpl) {
             bind<NotificationService>()
+        }
+        singleOf(::MembershipServiceImpl) {
+            bind<MembershipService>()
         }
 
         single {

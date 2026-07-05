@@ -4,7 +4,6 @@ import app.cash.turbine.turbineScope
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.framework.core.SecureString
 import com.cramsan.framework.core.SecureStringAccess
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -39,6 +38,16 @@ import kotlin.test.assertTrue
  */
 class SetNewPasswordViewModelTest : CoroutineTest() {
 
+    private val destination = AuthDestination.SetNewPasswordDestination(
+        accessToken = "test_access_token",
+        expiresAt = 9999999999L,
+        expiresIn = 3600L,
+        refreshToken = "test_refresh_token",
+        sb = "",
+        tokenType = "bearer",
+        type = "recovery",
+    )
+
     private lateinit var authManager: AuthManager
     private lateinit var stringProvider: StringProvider
     private lateinit var viewModel: SetNewPasswordViewModel
@@ -71,15 +80,47 @@ class SetNewPasswordViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test the [SetNewPasswordViewModel.initialize] method sets isLoading to false.
+     * Test the [SetNewPasswordViewModel.initialize] method restores the session and sets isLoading to false.
      */
     @Test
-    fun `test initialize sets isLoading to false`() = runCoroutineTest {
+    fun `test initialize restores session and sets isLoading to false`() = runCoroutineTest {
+        // Arrange
+        coEvery { authManager.restoreSessionFromTokens(any(), any(), any(), any()) } returns Result.success(Unit)
+
         // Act
-        viewModel.initialize()
+        viewModel.initialize(destination)
 
         // Assert
         assertFalse(viewModel.uiState.value.isLoading)
+        coVerify {
+            authManager.restoreSessionFromTokens(
+                accessToken = destination.accessToken,
+                refreshToken = destination.refreshToken,
+                expiresIn = destination.expiresIn,
+                tokenType = destination.tokenType,
+            )
+        }
+    }
+
+    /**
+     * Test the [SetNewPasswordViewModel.initialize] method navigates to sign-in on session restore failure.
+     */
+    @Test
+    fun `test initialize navigates to auth graph on session restore failure`() = runCoroutineTest {
+        // Arrange
+        coEvery { authManager.restoreSessionFromTokens(any(), any(), any(), any()) } returns Result.failure(Exception("token expired"))
+
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.initialize(destination)
+
+            // Assert
+            val event = turbine.awaitItem()
+            assertTrue(event is EdifikanaWindowsEvent.NavigateToNavGraph)
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
     }
 
     /**

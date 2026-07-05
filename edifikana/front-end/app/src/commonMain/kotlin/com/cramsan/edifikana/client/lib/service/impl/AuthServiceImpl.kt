@@ -30,6 +30,8 @@ import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.OTP
+import io.github.jan.supabase.auth.status.SessionSource
+import io.github.jan.supabase.auth.user.UserSession
 import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -306,6 +308,25 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
                 .buildRequest(
                     argument = inviteId,
                 ).execute(http)
+        }
+
+    override suspend fun restoreSessionFromTokens(
+        accessToken: String,
+        refreshToken: String,
+        expiresIn: Long,
+        tokenType: String,
+    ): Result<Unit> =
+        runSuspendCatching(TAG) {
+            auth.importSession(
+                session =
+                UserSession(
+                    accessToken = accessToken,
+                    refreshToken = refreshToken,
+                    expiresIn = expiresIn,
+                    tokenType = tokenType,
+                ),
+                source = SessionSource.External,
+            )
         }
 
     companion object {

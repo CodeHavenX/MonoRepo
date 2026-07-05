@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaPasswordTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
@@ -32,12 +33,13 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun SetNewPasswordScreen(
+    destination: AuthDestination.SetNewPasswordDestination,
     viewModel: SetNewPasswordViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.initialize()
+        viewModel.initialize(destination)
     }
 
     ObserveViewModelEvents(viewModel) { event ->

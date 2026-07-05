@@ -4,6 +4,7 @@ import androidx.navigation.NavBackStackEntry
 import com.cramsan.edifikana.lib.model.network.password.SET_NEW_PASSWORD_WEB_PATH
 import com.cramsan.framework.annotations.WebPath
 import com.cramsan.framework.core.compose.navigation.WebDestination
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -49,7 +50,22 @@ sealed class AuthDestination : WebDestination {
     /** Set-new-password screen destination, reached via the recovery email link. */
     @Serializable
     @WebPath(SET_NEW_PASSWORD_WEB_PATH)
-    data object SetNewPasswordDestination : AuthDestination()
+    data class SetNewPasswordDestination(
+        @SerialName("access_token")
+        val accessToken: String,
+        @SerialName("expires_at")
+        val expiresAt: Long,
+        @SerialName("expires_in")
+        val expiresIn: Long,
+        @SerialName("refresh_token")
+        val refreshToken: String,
+        @SerialName("sb")
+        val sb: String,
+        @SerialName("token_type")
+        val tokenType: String,
+        @SerialName("type")
+        val type: String,
+    ) : AuthDestination()
 
     override fun toWebPath(): String = AuthDestinationWebRoutes.toWebPath(this)
 

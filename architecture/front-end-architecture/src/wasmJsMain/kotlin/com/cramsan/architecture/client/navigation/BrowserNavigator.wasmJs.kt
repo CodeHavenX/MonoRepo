@@ -39,9 +39,9 @@ actual class BrowserNavigator actual constructor() {
         }
     }
 
-    /** Returns the current browser URL path if it represents a deep-link, or null for the root path. */
+    /** Returns the current browser URL path+query+fragment if it represents a deep-link, or null for the root path. */
     actual fun getInitialPath(): String? {
-        val path = window.location.pathname + window.location.search
+        val path = window.location.pathname + window.location.search + window.location.hash
         return if (path.isBlank() || path == "/") null else path
     }
 }

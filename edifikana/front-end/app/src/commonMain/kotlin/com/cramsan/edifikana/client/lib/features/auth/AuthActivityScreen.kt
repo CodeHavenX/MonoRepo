@@ -78,7 +78,7 @@ fun NavGraphBuilder.authNavGraphNavigation(
             AuthDestination.SetNewPasswordDestination::class,
             typeMap = typeMap,
         ) {
-            SetNewPasswordScreen()
+            SetNewPasswordScreen(destination = it.toRoute())
         }
     }
 }

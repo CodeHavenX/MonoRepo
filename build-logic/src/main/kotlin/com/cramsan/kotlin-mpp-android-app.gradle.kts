@@ -60,6 +60,7 @@ android {
             isReturnDefaultValues = true
             all { test ->
                 test.failOnNoDiscoveredTests = false
+                test.systemProperties["robolectric.pixelCopyRenderMode"] = "hardware"
                 test.testLogging {
                     events("passed", "skipped", "failed")
                 }

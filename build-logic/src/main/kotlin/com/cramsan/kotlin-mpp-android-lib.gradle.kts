@@ -67,6 +67,10 @@ kotlin {
     }
 }
 
+tasks.withType<Test>().configureEach {
+    systemProperty("robolectric.pixelCopyRenderMode", "hardware")
+}
+
 tasks.register("releaseAndroid") {
     group = "release"
     description = "Run all the steps to build a releaseAndroid artifact"

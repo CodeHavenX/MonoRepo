@@ -10,5 +10,5 @@ val compose = extensions.getByType<org.jetbrains.compose.ComposeExtension>()
 
 dependencies {
     "implementation"(compose.desktop.currentOs)
-    "implementation"(compose.material3)
+    "implementation"("org.jetbrains.compose.material3:material3:_")
 }

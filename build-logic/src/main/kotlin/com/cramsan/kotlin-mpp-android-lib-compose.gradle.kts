@@ -1,4 +1,8 @@
+@file:OptIn(ExperimentalRoborazziApi::class)
+
 package com.cramsan
+
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")

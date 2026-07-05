@@ -1,4 +1,8 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
 package com.cramsan
+
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")

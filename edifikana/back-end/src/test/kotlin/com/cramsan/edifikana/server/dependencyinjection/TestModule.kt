@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
+import com.cramsan.architecture.server.dependencyinjection.EndpointsToLoad
 import com.cramsan.edifikana.server.controller.CommonAreaController
 import com.cramsan.edifikana.server.controller.EmployeeController
 import com.cramsan.edifikana.server.controller.EventLogController
@@ -91,4 +92,6 @@ internal fun testApplicationModule(json: Json) =
         single<Json> { json }
 
         single<ContextRetriever<*>> { mockk() }
+
+        single { EndpointsToLoad.IGNORE_EXTRAS }
     }

@@ -1,6 +1,7 @@
 package com.cramsan.architecture.server
 
 import com.cramsan.architecture.server.dependencyinjection.ArchitectureModule
+import com.cramsan.architecture.server.dependencyinjection.EndpointsToLoad
 import com.cramsan.architecture.server.dependencyinjection.FrameworkModule
 import com.cramsan.architecture.server.dependencyinjection.KtorModule
 import com.cramsan.architecture.server.settings.BackEndApplicationSettingKey
@@ -56,9 +57,18 @@ fun Application.startKtor() =
         configureKtorEngine()
 
         val controllerList: List<Controller> by inject()
+        val loadExtraControllers: EndpointsToLoad by inject()
 
-        configureHealthEndpoint()
-        configureOpenApiEndpoint()
+        when (loadExtraControllers) {
+            EndpointsToLoad.ALL -> {
+                configureHealthEndpoint()
+                configureOpenApiEndpoint()
+            }
+
+            EndpointsToLoad.IGNORE_EXTRAS -> {
+                Unit
+            }
+        }
         configureEntryPoints(controllerList)
         startApplication()
     }

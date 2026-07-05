@@ -31,4 +31,16 @@ val ArchitectureModule =
         single {
             SettingsHolder(get())
         }
+
+        single {
+            EndpointsToLoad.ALL
+        }
     }
+
+/**
+ * Select how the endpoints will load.
+ */
+enum class EndpointsToLoad {
+    ALL,
+    IGNORE_EXTRAS,
+}

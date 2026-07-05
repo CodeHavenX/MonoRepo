@@ -10,7 +10,7 @@ import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.model.user.UserRole
+import com.cramsan.edifikana.lib.model.invite.InviteRole
 import kotlinx.datetime.Instant
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -99,7 +99,7 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
                 id = InviteId("invite-1"),
                 email = "pending@example.com",
                 organizationId = organizationId,
-                role = UserRole.EMPLOYEE,
+                role = InviteRole.EMPLOYEE,
                 expiresAt = Instant.fromEpochSeconds(0),
             ),
         )
@@ -143,7 +143,7 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
                 id = InviteId("invite-1"),
                 email = "mike@example.com",
                 organizationId = organizationId,
-                role = UserRole.EMPLOYEE,
+                role = InviteRole.EMPLOYEE,
                 expiresAt = Instant.fromEpochSeconds(0),
             ),
         )
@@ -283,7 +283,7 @@ class EmployeeOverviewViewModelTest : CoroutineTest() {
                 id = InviteId("invite-1"),
                 email = "pending@example.com",
                 organizationId = organizationId,
-                role = UserRole.EMPLOYEE,
+                role = InviteRole.EMPLOYEE,
                 expiresAt = Instant.fromEpochSeconds(0),
             ),
         )

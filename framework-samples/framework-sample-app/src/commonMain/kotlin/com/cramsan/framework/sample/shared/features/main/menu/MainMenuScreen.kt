@@ -6,8 +6,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.cramsan.framework.core.compose.ui.ObserveNavResult
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
+import com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogViewModel
 import com.cramsan.ui.components.ScreenLayout
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -20,13 +24,20 @@ import org.koin.compose.viewmodel.koinViewModel
 fun MainMenuScreen(
     viewModel: MainMenuViewModel = koinViewModel(),
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     ObserveViewModelEvents(viewModel) { event ->
         when (event) {
             MainMenuEvent.Noop -> Unit
         }
     }
 
+    ObserveNavResult(WelcomeDialogViewModel.resultKey) { theme ->
+        viewModel.onThemeSelected(theme)
+    }
+
     MainMenuContent(
+        selectedTheme = uiState.selectedTheme?.name,
         onHaltUtilSelected = { viewModel.navigateToHaltUtil() },
         onLoggingSelected = { viewModel.navigateToLogging() },
         onPreferencesSelected = { viewModel.navigateToPreferences() },
@@ -38,6 +49,7 @@ fun MainMenuScreen(
         onUserEventsSelected = { viewModel.navigateToUserEvents() },
         onRemoteConfigSelected = { viewModel.navigateToRemoteConfig() },
         onDispatcherSelected = { viewModel.navigateToDispatcher() },
+        onWelcomeSelected = { viewModel.navigateToWelcomeDialog() },
     )
 }
 
@@ -46,6 +58,7 @@ fun MainMenuScreen(
  */
 @Composable
 internal fun MainMenuContent(
+    selectedTheme: String?,
     onHaltUtilSelected: () -> Unit,
     onLoggingSelected: () -> Unit,
     onPreferencesSelected: () -> Unit,
@@ -57,6 +70,7 @@ internal fun MainMenuContent(
     onUserEventsSelected: () -> Unit,
     onRemoteConfigSelected: () -> Unit,
     onDispatcherSelected: () -> Unit,
+    onWelcomeSelected: () -> Unit,
 ) {
     Scaffold { innerPadding ->
         ScreenLayout(
@@ -73,6 +87,9 @@ internal fun MainMenuContent(
                 Button(onClick = onUserEventsSelected, modifier = modifier) { Text("User Events") }
                 Button(onClick = onRemoteConfigSelected, modifier = modifier) { Text("Remote Config") }
                 Button(onClick = onDispatcherSelected, modifier = modifier) { Text("Dispatcher Provider") }
+                Button(onClick = onWelcomeSelected, modifier = modifier) {
+                    Text(if (selectedTheme != null) "Welcome (theme: $selectedTheme)" else "Welcome Dialog")
+                }
             },
         )
     }

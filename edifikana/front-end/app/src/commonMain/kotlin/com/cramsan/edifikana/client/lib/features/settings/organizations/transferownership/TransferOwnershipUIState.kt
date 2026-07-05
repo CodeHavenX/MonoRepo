@@ -3,14 +3,22 @@ package com.cramsan.edifikana.client.lib.features.settings.organizations.transfe
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
+/** Dialog state for the TransferOwnership screen. */
+sealed class TransferOwnershipDialogState {
+    /** No dialog is shown. */
+    data object None : TransferOwnershipDialogState()
+
+    /** Confirmation dialog for transferring ownership to [target]. */
+    data class ConfirmTransfer(val target: AdminUIModel) : TransferOwnershipDialogState()
+}
+
 /**
  * UI state of the TransferOwnership feature.
  */
 data class TransferOwnershipUIState(
     val isLoading: Boolean,
     val eligibleAdmins: List<AdminUIModel>,
-    /** Non-null while the confirmation dialog is open; identifies the chosen transfer target. */
-    val confirmingTarget: AdminUIModel?,
+    val dialog: TransferOwnershipDialogState = TransferOwnershipDialogState.None,
 ) : ViewModelUIState {
     companion object {
         /** Initial loading state. */
@@ -18,7 +26,7 @@ data class TransferOwnershipUIState(
             TransferOwnershipUIState(
                 isLoading = true,
                 eligibleAdmins = emptyList(),
-                confirmingTarget = null,
+                dialog = TransferOwnershipDialogState.None,
             )
     }
 }

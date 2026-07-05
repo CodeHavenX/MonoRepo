@@ -19,7 +19,7 @@ private fun TransferOwnershipScreenPreview() =
                     AdminUIModel(userId = UserId("user-1"), displayName = "Maria Garcia", email = "maria@example.com"),
                     AdminUIModel(userId = UserId("user-2"), displayName = "John Smith", email = "john@example.com"),
                 ),
-                confirmingTarget = null,
+                dialog = TransferOwnershipDialogState.None,
             ),
             onBackSelected = {},
             onAdminSelected = {},
@@ -35,7 +35,7 @@ private fun TransferOwnershipScreenEmptyPreview() =
             TransferOwnershipUIState(
                 isLoading = false,
                 eligibleAdmins = emptyList(),
-                confirmingTarget = null,
+                dialog = TransferOwnershipDialogState.None,
             ),
             onBackSelected = {},
             onAdminSelected = {},

@@ -21,6 +21,7 @@ import com.cramsan.framework.sample.shared.features.main.preferences.Preferences
 import com.cramsan.framework.sample.shared.features.main.remoteconfig.RemoteConfigViewModel
 import com.cramsan.framework.sample.shared.features.main.threadutil.ThreadUtilViewModel
 import com.cramsan.framework.sample.shared.features.main.userevents.UserEventsViewModel
+import com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogViewModel
 import com.cramsan.framework.sample.shared.stubs.SampleRemoteConfigPayload
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.viewModel
@@ -78,6 +79,7 @@ internal val ViewModelModule =
             viewModelOf(::UserEventsViewModel)
             viewModel { RemoteConfigViewModel(get(), get<RemoteConfig<SampleRemoteConfigPayload>>()) }
             viewModelOf(::DispatcherViewModel)
+            viewModelOf(::WelcomeDialogViewModel)
         }
     }
 

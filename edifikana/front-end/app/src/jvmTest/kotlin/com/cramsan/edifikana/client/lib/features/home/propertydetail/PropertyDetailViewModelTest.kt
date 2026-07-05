@@ -28,6 +28,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import kotlin.test.Test
+import kotlin.test.assertIs
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -65,6 +66,29 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             storageManager = storageManager,
             stringProvider = stringProvider,
         )
+    }
+
+    @Test
+    fun `openImageSelector sets dialog to ShowImageSelector`() = runCoroutineTest {
+        viewModel.openImageSelector()
+
+        assertIs<PropertyDetailDialogState.ShowImageSelector>(viewModel.uiState.value.dialog)
+    }
+
+    @Test
+    fun `showDeleteConfirmation sets dialog to ConfirmDelete`() = runCoroutineTest {
+        viewModel.showDeleteConfirmation()
+
+        assertIs<PropertyDetailDialogState.ConfirmDelete>(viewModel.uiState.value.dialog)
+    }
+
+    @Test
+    fun `dismissDialog sets dialog to None`() = runCoroutineTest {
+        viewModel.showDeleteConfirmation()
+
+        viewModel.dismissDialog()
+
+        assertIs<PropertyDetailDialogState.None>(viewModel.uiState.value.dialog)
     }
 
     @Test

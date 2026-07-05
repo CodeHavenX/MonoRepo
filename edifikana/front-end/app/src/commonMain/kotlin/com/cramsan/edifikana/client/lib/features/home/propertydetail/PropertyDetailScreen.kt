@@ -15,9 +15,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -36,9 +33,7 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.ImageSelectorBottomsheet
 import com.cramsan.framework.core.compose.EventEmitter
-import com.cramsan.framework.core.compose.rememberDialogController
 import com.cramsan.framework.core.compose.ui.ObserveEventEmitterEvents
-import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
 import edifikana_lib.Res
@@ -71,28 +66,8 @@ fun PropertyDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val dialogController = rememberDialogController()
-
-    // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         viewModel.initialize(destination.propertyId)
-    }
-
-    ObserveViewModelEvents(viewModel) { event ->
-        when (event) {
-            PropertyDetailEvent.OpenImageSelector -> {
-                val modal =
-                    ImageSelectorBottomsheet(
-                        label = "Select Property Icon",
-                        options = PropertyIconOptions.getOptionsWithUpload(),
-                        selectedOption = uiState.selectedIcon,
-                        onOptionSelected = { option ->
-                            viewModel.selectPhoto(option)
-                        },
-                    )
-                dialogController.showDialog(modal)
-            }
-        }
     }
 
     ObserveEventEmitterEvents(eventEmitter) { event ->
@@ -111,20 +86,52 @@ fun PropertyDetailScreen(
         }
     }
 
-    // Render the screen
     PropertyDetailContent(
         uiState,
         onBackSelected = { viewModel.navigateBack() },
         onEditSelected = { viewModel.toggleEditMode() },
         onCancelEdit = { viewModel.cancelEdit() },
         onSaveProperty = { viewModel.saveProperty() },
-        onDeleteProperty = { viewModel.deleteProperty() },
+        onDeleteConfirmationRequired = { viewModel.showDeleteConfirmation() },
         onNameChanged = { viewModel.onNameChanged(it) },
         onAddressChanged = { viewModel.onAddressChanged(it) },
         onOpenSelectorSelected = { viewModel.openImageSelector() },
     )
 
-    dialogController.Render()
+    when (uiState.dialog) {
+        PropertyDetailDialogState.None -> {
+            Unit
+        }
+
+        PropertyDetailDialogState.ShowImageSelector -> {
+            ImageSelectorBottomsheet(
+                label = "Select Property Icon",
+                options = PropertyIconOptions.getOptionsWithUpload(),
+                selectedOption = uiState.selectedIcon,
+                onOptionSelected = { option -> viewModel.selectPhoto(option) },
+                onDismiss = { viewModel.dismissDialog() },
+            )
+        }
+
+        PropertyDetailDialogState.ConfirmDelete -> {
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissDialog() },
+                title = { Text(stringResource(Res.string.property_detail_screen_delete_label)) },
+                text = { Text(stringResource(Res.string.property_detail_screen_delete_dialog_message)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        viewModel.dismissDialog()
+                        viewModel.deleteProperty()
+                    }) { Text(stringResource(Res.string.edifikana_string_delete)) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.dismissDialog() }) {
+                        Text(stringResource(Res.string.edifikana_string_cancel))
+                    }
+                },
+            )
+        }
+    }
 }
 
 /**
@@ -138,13 +145,11 @@ internal fun PropertyDetailContent(
     onEditSelected: () -> Unit,
     onCancelEdit: () -> Unit,
     onSaveProperty: () -> Unit,
-    onDeleteProperty: () -> Unit,
+    onDeleteConfirmationRequired: () -> Unit,
     onNameChanged: (String) -> Unit,
     onAddressChanged: (String) -> Unit,
     onOpenSelectorSelected: () -> Unit,
 ) {
-    var showDeleteDialog by remember { mutableStateOf(false) }
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -166,7 +171,7 @@ internal fun PropertyDetailContent(
                                 contentDescription = stringResource(Res.string.property_detail_screen_edit_title),
                             )
                         }
-                        IconButton(onClick = { showDeleteDialog = true }) {
+                        IconButton(onClick = onDeleteConfirmationRequired) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = stringResource(Res.string.property_detail_screen_delete_label),
@@ -287,29 +292,6 @@ internal fun PropertyDetailContent(
             },
             overlay = {
                 LoadingAnimationOverlay(content.isLoading || content.isUploading)
-            },
-        )
-    }
-
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text(stringResource(Res.string.property_detail_screen_delete_label)) },
-            text = { Text(stringResource(Res.string.property_detail_screen_delete_dialog_message)) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDeleteDialog = false
-                        onDeleteProperty()
-                    },
-                ) {
-                    Text(stringResource(Res.string.edifikana_string_delete))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text(stringResource(Res.string.edifikana_string_cancel))
-                }
             },
         )
     }

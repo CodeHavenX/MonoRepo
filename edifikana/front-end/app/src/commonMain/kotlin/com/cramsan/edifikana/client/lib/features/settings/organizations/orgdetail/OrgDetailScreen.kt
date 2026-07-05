@@ -56,33 +56,39 @@ fun OrgDetailScreen(
         }
     }
 
-    if (uiState.showLeaveDialog) {
-        AlertDialog(
-            onDismissRequest = { viewModel.dismissLeaveDialog() },
-            title = { Text("Leave ${uiState.orgName}?") },
-            text = {
-                Text(
-                    "You will lose access to all properties and data in this organization. " +
-                        "This cannot be undone.",
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = { viewModel.confirmLeaveOrganization(destination.orgId) },
-                ) { Text("Leave", color = MaterialTheme.colorScheme.error) }
-            },
-            dismissButton = {
-                TextButton(onClick = { viewModel.dismissLeaveDialog() }) { Text("Cancel") }
-            },
-        )
-    }
-
     OrgDetailContent(
         uiState = uiState,
         onBackSelected = { viewModel.navigateBack() },
         onLeaveOrganizationTapped = { viewModel.onLeaveOrganizationTapped() },
         onTransferOwnershipTapped = { viewModel.onTransferOwnershipTapped(destination.orgId) },
     )
+
+    when (uiState.dialog) {
+        OrgDetailDialogState.None -> {
+            Unit
+        }
+
+        OrgDetailDialogState.ConfirmLeave -> {
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissDialog() },
+                title = { Text("Leave ${uiState.orgName}?") },
+                text = {
+                    Text(
+                        "You will lose access to all properties and data in this organization. " +
+                            "This cannot be undone.",
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { viewModel.confirmLeaveOrganization(destination.orgId) },
+                    ) { Text("Leave", color = MaterialTheme.colorScheme.error) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.dismissDialog() }) { Text("Cancel") }
+                },
+            )
+        }
+    }
 }
 
 /**

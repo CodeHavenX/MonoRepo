@@ -80,4 +80,11 @@ sealed class MainDestination : Destination {
      */
     @Serializable
     data object DispatcherDestination : MainDestination()
+
+    /**
+     * A dialog destination that asks the user to pick a theme and returns the selection
+     * to the caller via [com.cramsan.framework.sample.shared.features.main.welcome.WelcomeDialogViewModel.resultKey].
+     */
+    @Serializable
+    data object WelcomeDialogDestination : MainDestination()
 }

@@ -12,10 +12,7 @@ import com.cramsan.framework.core.compose.WindowEvent
  * internal constructor prevents direct construction from outside the framework, ensuring
  * [resultKey] and [resultValue] always agree on type.
  */
-data class NavigateBackWithResult internal constructor(
-    val resultKey: String,
-    val resultValue: Any,
-) : WindowEvent
+data class NavigateBackWithResult internal constructor(val resultKey: String, val resultValue: Any) : WindowEvent
 
 /**
  * Deposits the result from [event] into the previous back-stack entry's

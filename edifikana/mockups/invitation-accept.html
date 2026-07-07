@@ -16,80 +16,23 @@
 
           <div class="auth-form">
 
-            <!-- Invitation details card -->
-            <div class="card mb-4">
-              <div class="flex-col gap-3">
-                <div>
-                  <div class="text-caption text-muted">Organization</div>
-                  <div class="text-body text-bold">Sunrise Property Management</div>
-                </div>
-                <div>
-                  <div class="text-caption text-muted">Role</div>
-                  <div class="text-body text-bold">Staff</div>
-                </div>
-                <div class="divider" style="margin: 0;"></div>
-                <div class="text-small text-secondary">Invited by: Admin User</div>
-              </div>
+            <!--
+              This screen only routes the user to real auth — it never collects credentials
+              itself, and it deliberately shows no org/role/inviter details: there is no
+              unauthenticated endpoint to resolve an invite token to those details. Sign-up
+              (with OTP verification) and sign-in are handled by sign-up.html / sign-in.html,
+              which carry the invite context forward and land the user back on
+              invitation-accept-authenticated.html once a session exists.
+            -->
+            <p class="text-body text-secondary mb-6">
+              You&rsquo;ve been invited to join an organization on Edifikana. Sign in or create an account to accept this invitation.
+            </p>
+
+            <div class="form-group">
+              <a href="sign-up.html" class="btn btn-primary btn--full-width">Create Account</a>
             </div>
-
-            <!-- Account path tab switcher -->
-            <div class="tab-bar mb-4" style="border-radius: var(--radius-md); overflow: hidden;">
-              <button class="tab tab--active" data-path="new-account">New Account</button>
-              <button class="tab" data-path="existing-account">I have an account</button>
-            </div>
-
-            <!-- New Account Path -->
-            <div id="new-account" class="path-panel">
-              <form>
-                <div class="form-group">
-                  <label class="form-label" for="full-name">Full Name</label>
-                  <input class="input" type="text" id="full-name" placeholder="Jane Smith" value="Jane Smith" autocomplete="name">
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="email">Email</label>
-                  <input class="input" type="email" id="email" value="jane.smith@example.com" disabled style="opacity: 0.7; cursor: not-allowed;">
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="password">Create Password</label>
-                  <input class="input" type="password" id="password" placeholder="Create a password" autocomplete="new-password">
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="confirm-password">Confirm Password</label>
-                  <input class="input" type="password" id="confirm-password" placeholder="Confirm your password" autocomplete="new-password">
-                </div>
-
-                <div class="form-group">
-                  <a href="dashboard.html" class="btn btn-primary btn--full-width">Accept &amp; Create Account</a>
-                </div>
-              </form>
-            </div>
-
-            <!-- Existing Account Path -->
-            <div id="existing-account" class="path-panel" style="display: none;">
-              <div class="card mb-4" style="background: var(--color-primary-50); border-color: var(--color-primary-300);">
-                <p class="text-small" style="color: var(--color-primary-700);">
-                  You&rsquo;ll be signed in and added to <strong>Sunrise Property Management</strong> as Staff.
-                </p>
-              </div>
-
-              <form>
-                <div class="form-group">
-                  <label class="form-label" for="existing-email">Email</label>
-                  <input class="input" type="email" id="existing-email" value="jane.smith@example.com" disabled style="opacity: 0.7; cursor: not-allowed;">
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="existing-password">Password</label>
-                  <input class="input" type="password" id="existing-password" placeholder="Enter your password" autocomplete="current-password">
-                </div>
-
-                <div class="form-group">
-                  <a href="dashboard.html" class="btn btn-primary btn--full-width">Sign In &amp; Accept</a>
-                </div>
-              </form>
+            <div class="form-group">
+              <a href="sign-in.html" class="btn btn-secondary btn--full-width">Sign In</a>
             </div>
 
           </div>
@@ -97,17 +40,5 @@
       </div>
     </div>
   </div>
-
-  <script>
-    document.querySelectorAll('.tab-bar .tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        const path = tab.dataset.path;
-        document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('tab--active'));
-        tab.classList.add('tab--active');
-        document.querySelectorAll('.path-panel').forEach(p => p.style.display = 'none');
-        document.getElementById(path).style.display = 'block';
-      });
-    });
-  </script>
 </body>
 </html>

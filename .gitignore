@@ -107,6 +107,7 @@ build-artifacts.txt
 
 # Claude Files
 .claude/settings.local.json
+.claude/worktrees/
 edifikana/.claude/settings.local.json
 .mcp.json
 

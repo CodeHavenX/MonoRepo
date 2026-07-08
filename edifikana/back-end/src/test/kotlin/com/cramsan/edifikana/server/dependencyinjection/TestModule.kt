@@ -35,6 +35,7 @@ import com.cramsan.edifikana.server.service.UserService
 import com.cramsan.edifikana.server.service.authorization.RBACService
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.mcp.McpToolProvider
 import io.mockk.mockk
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
@@ -49,7 +50,10 @@ internal val TestControllerModule =
         singleOf(::UserController) { bind<Controller>() }
         singleOf(::EventLogController) { bind<Controller>() }
         singleOf(::HealthCheckController) { bind<Controller>() }
-        singleOf(::PropertyController) { bind<Controller>() }
+        singleOf(::PropertyController) {
+            bind<Controller>()
+            bind<McpToolProvider>()
+        }
         singleOf(::EmployeeController) { bind<Controller>() }
         singleOf(::TimeCardController) { bind<Controller>() }
         singleOf(::StorageController) { bind<Controller>() }

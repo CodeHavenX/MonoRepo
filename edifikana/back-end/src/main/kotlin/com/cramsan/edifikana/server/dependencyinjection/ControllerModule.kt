@@ -18,6 +18,7 @@ import com.cramsan.edifikana.server.controller.TimeCardController
 import com.cramsan.edifikana.server.controller.UnitController
 import com.cramsan.edifikana.server.controller.UserController
 import com.cramsan.framework.core.ktor.Controller
+import com.cramsan.framework.core.mcp.McpToolProvider
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -32,7 +33,10 @@ internal val ControllerModule =
         singleOf(::MembershipController) { bind<Controller>() }
         singleOf(::EventLogController) { bind<Controller>() }
         singleOf(::HealthCheckController) { bind<Controller>() }
-        singleOf(::PropertyController) { bind<Controller>() }
+        singleOf(::PropertyController) {
+            bind<Controller>()
+            bind<McpToolProvider>()
+        }
         singleOf(::EmployeeController) { bind<Controller>() }
         singleOf(::TimeCardController) { bind<Controller>() }
         singleOf(::StorageController) { bind<Controller>() }

@@ -21,8 +21,13 @@ import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
+import com.cramsan.framework.core.mcp.McpToolProvider
+import com.cramsan.framework.core.mcp.mcpTool
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.routing.Routing
+import io.modelcontextprotocol.kotlin.sdk.server.Server
+import kotlinx.serialization.json.Json
 
 /**
  * Controller for property related operations.
@@ -32,7 +37,9 @@ class PropertyController(
     private val propertyService: PropertyService,
     private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
-) : Controller {
+    private val json: Json,
+) : Controller,
+    McpToolProvider {
     val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -180,6 +187,36 @@ class PropertyController(
             handler(api.deleteProperty, contextRetriever) { request ->
                 deleteProperty(request)
             }
+        }
+    }
+
+    /**
+     * Registers this controller's read-only MCP tools: [getAssignedProperties] and [getProperty]. Both delegate
+     * to the same methods backing the REST routes above, so RBAC and business logic run identically regardless
+     * of transport.
+     */
+    override fun registerMcpTools(server: Server, call: ApplicationCall) {
+        server.mcpTool(
+            operation = PropertyApi.getAssignedProperties,
+            name = "property_get_assigned_properties",
+            description = "Lists the properties assigned to the currently authenticated user.",
+            call = call,
+            contextRetriever = contextRetriever,
+            json = json,
+        ) { request ->
+            getAssignedProperties(request)
+        }
+
+        server.mcpTool(
+            operation = PropertyApi.getProperty,
+            name = "property_get_property",
+            description = "Retrieves a single property by its ID. Requires MANAGER role or higher on the property.",
+            call = call,
+            contextRetriever = contextRetriever,
+            json = json,
+            pathParamName = "propertyId",
+        ) { request ->
+            getProperty(request)
         }
     }
 }

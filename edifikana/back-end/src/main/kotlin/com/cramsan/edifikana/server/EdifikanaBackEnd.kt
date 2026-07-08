@@ -7,6 +7,7 @@ import com.cramsan.edifikana.server.dependencyinjection.ControllerModule
 import com.cramsan.edifikana.server.dependencyinjection.DatastoreModule
 import com.cramsan.edifikana.server.dependencyinjection.ServicesModule
 import io.ktor.server.application.Application
+import org.koin.ktor.ext.getKoin
 
 /**
  * Main entry point of the application, used only during testing/local development.
@@ -18,15 +19,26 @@ fun main(args: Array<String>) =
 /**
  * Entry point of the application.
  */
-fun Application.module() =
+fun Application.module() {
     startBackEndApplication(
         applicationModule = ApplicationModule,
         controllerModule = ControllerModule,
         serviceModule = ServicesModule,
         dataStoreModule = DatastoreModule,
     )
+    configureMcpEndpoint(getKoin().getAll())
+}
 
 /**
  * Starts the ktor component directly and skipping the configuring dependencies.
  */
 fun Application.startServer() = startKtor()
+
+/**
+ * Like [startServer], but also mounts the MCP endpoint. Used only by tests exercising the MCP surface, so
+ * unrelated controller tests (which use [startServer]) are unaffected.
+ */
+fun Application.startServerWithMcp() {
+    startServer()
+    configureMcpEndpoint(getKoin().getAll())
+}

@@ -18,17 +18,21 @@ sealed class AuthDestination : WebDestination {
     /** Sign-in screen destination. */
     @Serializable
     @WebPath("/auth/sign-in")
-    data object SignInDestination : AuthDestination()
+    data class SignInDestination(val inviteId: InviteId? = null) : AuthDestination()
 
     /** Sign-up screen destination. */
     @Serializable
     @WebPath("/auth/sign-up")
-    data class SignUpDestination(val userEmail: String) : AuthDestination()
+    data class SignUpDestination(val userEmail: String, val inviteId: InviteId? = null) : AuthDestination()
 
     /** Email validation screen destination, shown after sign-up or when re-verification is needed. */
     @Serializable
     @WebPath("/auth/validation")
-    data class ValidationDestination(val userEmail: String, val accountCreationFlow: Boolean) : AuthDestination()
+    data class ValidationDestination(
+        val userEmail: String,
+        val accountCreationFlow: Boolean,
+        val inviteId: InviteId? = null,
+    ) : AuthDestination()
 
     /** Organization selection screen destination. */
     @Serializable

@@ -249,7 +249,7 @@ class InvitationAcceptViewModelTest : CoroutineTest() {
             // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthDestination.SignInDestination,
+                    AuthDestination.SignInDestination(),
                     clearStack = true,
                 ),
                 turbine.awaitItem(),
@@ -277,20 +277,21 @@ class InvitationAcceptViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test [InvitationAcceptViewModel.navigateToSignUp] navigates to the sign-up screen.
+     * Test [InvitationAcceptViewModel.navigateToSignUp] navigates to the sign-up screen, carrying
+     * the invite id as a navigation argument.
      */
     @Test
-    fun `test navigateToSignUp navigates to sign-up`() = runCoroutineTest {
+    fun `test navigateToSignUp navigates to sign-up with inviteId`() = runCoroutineTest {
         turbineScope {
             val turbine = windowEventBus.events.testIn(backgroundScope)
 
             // Act
-            viewModel.navigateToSignUp()
+            viewModel.navigateToSignUp(INVITE_ID)
 
             // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthDestination.SignUpDestination(userEmail = ""),
+                    AuthDestination.SignUpDestination(userEmail = "", inviteId = INVITE_ID),
                 ),
                 turbine.awaitItem(),
             )
@@ -299,19 +300,20 @@ class InvitationAcceptViewModelTest : CoroutineTest() {
     }
 
     /**
-     * Test [InvitationAcceptViewModel.navigateToSignIn] navigates to the sign-in screen.
+     * Test [InvitationAcceptViewModel.navigateToSignIn] navigates to the sign-in screen, carrying
+     * the invite id as a navigation argument.
      */
     @Test
-    fun `test navigateToSignIn navigates to sign-in`() = runCoroutineTest {
+    fun `test navigateToSignIn navigates to sign-in with inviteId`() = runCoroutineTest {
         turbineScope {
             val turbine = windowEventBus.events.testIn(backgroundScope)
 
             // Act
-            viewModel.navigateToSignIn()
+            viewModel.navigateToSignIn(INVITE_ID)
 
             // Assert
             assertEquals(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignInDestination),
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignInDestination(inviteId = INVITE_ID)),
                 turbine.awaitItem(),
             )
             advanceUntilIdleAndAwaitComplete(turbine)

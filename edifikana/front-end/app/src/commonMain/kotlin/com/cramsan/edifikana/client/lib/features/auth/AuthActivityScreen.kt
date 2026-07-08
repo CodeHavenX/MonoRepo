@@ -28,14 +28,14 @@ fun NavGraphBuilder.authNavGraphNavigation(
 ) {
     navigationGraph(
         graphDestination = EdifikanaNavGraphDestination.AuthNavGraphDestination::class,
-        startDestination = AuthDestination.SignInDestination,
+        startDestination = AuthDestination.SignInDestination(inviteId = null),
         typeMap = typeMap,
     ) {
         composable(
             AuthDestination.SignInDestination::class,
             typeMap = typeMap,
         ) {
-            SignInScreen()
+            SignInScreen(it.toRoute())
         }
         composable(
             AuthDestination.SignUpDestination::class,

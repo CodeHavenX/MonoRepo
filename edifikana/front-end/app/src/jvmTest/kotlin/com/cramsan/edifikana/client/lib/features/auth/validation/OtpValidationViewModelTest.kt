@@ -14,6 +14,9 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.test.CollectorCoroutineExceptionHandler
 import com.cramsan.framework.test.CoroutineTest
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -28,6 +31,7 @@ import kotlin.test.assertEquals
 @Suppress("UNCHECKED_CAST")
 class OtpValidationViewModelTest : CoroutineTest() {
     private lateinit var authManager: AuthManager
+    private lateinit var organizationManager: OrganizationManager
     private lateinit var viewModel: OtpValidationViewModel
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -41,6 +45,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
     fun setupTest() {
         EventLogger.setInstance(PassthroughEventLogger(StdOutEventLoggerDelegate()))
         authManager = mockk()
+        organizationManager = mockk()
         exceptionHandler = CollectorCoroutineExceptionHandler()
         windowEventBus = EventBus()
         applicationEventReceiver = EventBus()
@@ -53,7 +58,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
                 windowEventReceiver = windowEventBus,
             ),
             auth = authManager,
-            organizationManager = mockk(),
+            organizationManager = organizationManager,
             stringProvider = mockk(),
         )
     }
@@ -68,7 +73,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
         coEvery { authManager.sendOtpCode(email) } returns Result.success(Unit)
 
         // Act
-        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
+        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false, inviteId = null)
         this.testScheduler.advanceUntilIdle()
 
         // Assert
@@ -83,7 +88,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
     fun `signInWithOtp does not call signInWithOtp due to incorrect params`() = runCoroutineTest {
         // Arrange
         val email = "user@domain.com"
-        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
+        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false, inviteId = null)
         this.testScheduler.advanceUntilIdle()
         viewModel.updateOtpCode("123")
 
@@ -103,7 +108,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
         // Arrange
         val email = "user@domain.com"
         val otpString = "123456"
-        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false)
+        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = false, inviteId = null)
         this.testScheduler.advanceUntilIdle()
         viewModel.updateOtpCode(otpString)
 
@@ -112,6 +117,7 @@ class OtpValidationViewModelTest : CoroutineTest() {
             otpString,
             createUser = false,
         ) } returns Result.success(mockk())
+        coEvery { organizationManager.getOrganizations() } returns Result.success(listOf(mockk()))
 
         // Act
         viewModel.signInWithOtp()
@@ -123,6 +129,41 @@ class OtpValidationViewModelTest : CoroutineTest() {
             otpString,
             createUser = false,
         ) }
+    }
+
+    /**
+     * Test that signInWithOtp redirects to the invitation accept/decline screen when the screen
+     * was reached with a pending invite id, instead of the normal organization-count branching.
+     */
+    @Test
+    fun `signInWithOtp redirects to InvitationAcceptConfirmDestination when invite pending`() = runCoroutineTest {
+        // Arrange
+        val email = "user@domain.com"
+        val otpString = "123456"
+        val inviteId = InviteId("invite-123")
+        viewModel.initializeOTPValidationScreen(email, accountCreationFlow = true, inviteId = inviteId)
+        this.testScheduler.advanceUntilIdle()
+        viewModel.updateOtpCode(otpString)
+
+        coEvery { authManager.signInWithOtp(email, otpString, createUser = true) } returns Result.success(mockk())
+
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.signInWithOtp()
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.InvitationAcceptConfirmDestination(inviteId),
+                    clearTop = true,
+                ),
+                turbine.awaitItem(),
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
+        coVerify(exactly = 0) { organizationManager.getOrganizations() }
     }
 
     /**

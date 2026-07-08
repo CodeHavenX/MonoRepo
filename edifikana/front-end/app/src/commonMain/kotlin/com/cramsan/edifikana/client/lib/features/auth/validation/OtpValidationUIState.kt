@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**
@@ -16,6 +17,7 @@ data class OtpValidationUIState(
     val errorMessage: String?,
     val accountCreationFlow: Boolean,
     val otpLength: Int,
+    val inviteId: InviteId? = null,
 ) : ViewModelUIState {
     companion object {
         val Initial =
@@ -27,6 +29,7 @@ data class OtpValidationUIState(
                 accountCreationFlow = true,
                 enabledContinueButton = false,
                 otpLength = 6,
+                inviteId = null,
             )
     }
 }

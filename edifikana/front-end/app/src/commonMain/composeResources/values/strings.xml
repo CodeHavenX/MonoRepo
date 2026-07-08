@@ -227,6 +227,17 @@
     <string name="go_to_org_screen_no_properties_message">You don't have any properties yet. Create your first property to get started!</string>
     <string name="go_to_org_screen_get_started_button">Get Started!</string>
 
+    <!-- Invitation accept screens -->
+    <string name="invitation_accept_screen_title">Accept Invitation</string>
+    <string name="invitation_landing_screen_body">You\'ve been invited to join an organization on Edifikana. Sign in or create an account to accept this invitation.</string>
+    <string name="invitation_landing_screen_create_account_button">Create Account</string>
+    <string name="invitation_landing_screen_sign_in_button">Sign In</string>
+    <string name="invitation_confirm_screen_body">Review the invitation above, then accept or decline below.</string>
+    <string name="invitation_confirm_screen_summary_fallback">You\'ve been invited to join an organization on Edifikana.</string>
+    <string name="invitation_confirm_screen_accept_button">Accept Invitation</string>
+    <string name="invitation_confirm_screen_decline_button">Decline</string>
+    <string name="invitation_accept_screen_error_invalid_invite">This invitation link is invalid or has expired.</string>
+
     <!-- Invite staff member screen -->
     <string name="invite_staff_member_screen_title">Invite Staff Member</string>
     <string name="invite_staff_member_screen_email_label">Email address</string>

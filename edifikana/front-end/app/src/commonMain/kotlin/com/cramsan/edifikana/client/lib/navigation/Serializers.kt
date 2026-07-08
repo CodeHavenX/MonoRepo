@@ -5,6 +5,7 @@ import androidx.savedstate.SavedState
 import androidx.savedstate.read
 import androidx.savedstate.write
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
@@ -175,5 +176,33 @@ class OrganizationIdNavType : NavType<OrganizationId>(isNullableAllowed = false)
 
     override fun parseValue(value: String): OrganizationId {
         return OrganizationId(value)
+    }
+}
+
+/**
+ * Custom NavType for InviteId, allowing it to be passed as a navigation argument.
+ */
+class InviteIdNavType : NavType<InviteId>(isNullableAllowed = false) {
+    override fun put(
+        bundle: SavedState,
+        key: String,
+        value: InviteId,
+    ) {
+        bundle.write {
+            this.putString(key, value.id)
+        }
+    }
+
+    override fun get(
+        bundle: SavedState,
+        key: String,
+    ): InviteId? {
+        return bundle.read {
+            this.getStringOrNull(key)?.let { parseValue(it) }
+        }
+    }
+
+    override fun parseValue(value: String): InviteId {
+        return InviteId(value)
     }
 }

@@ -4,12 +4,13 @@ import androidx.compose.runtime.Composable
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.notification.NotificationId
+import com.cramsan.ui.preview.DevicePreviews
 import com.cramsan.ui.preview.ScreenPreviews
 
 /**
  * Preview for the Notifications feature screen.
  */
-@ScreenPreviews
+@DevicePreviews
 @Composable
 private fun NotificationsScreenPreview() =
     AppTheme {
@@ -44,8 +45,7 @@ private fun NotificationsScreenPreview() =
                 ),
             ),
             onBackSelected = {},
-            onAcceptInvite = {},
-            onDeclineInvite = {},
+            onInviteClicked = {},
             onMarkAsRead = {},
             onDeleteNotification = {},
         )
@@ -63,8 +63,7 @@ private fun NotificationsScreenEmptyPreview() =
                 notifications = emptyList(),
             ),
             onBackSelected = {},
-            onAcceptInvite = {},
-            onDeclineInvite = {},
+            onInviteClicked = {},
             onMarkAsRead = {},
             onDeleteNotification = {},
         )
@@ -98,8 +97,7 @@ private fun NotificationsScreenPreview_ES() =
                 ),
             ),
             onBackSelected = {},
-            onAcceptInvite = {},
-            onDeclineInvite = {},
+            onInviteClicked = {},
             onMarkAsRead = {},
             onDeleteNotification = {},
         )
@@ -117,8 +115,7 @@ private fun NotificationsScreenEmptyPreview_ES() =
                 notifications = emptyList(),
             ),
             onBackSelected = {},
-            onAcceptInvite = {},
-            onDeclineInvite = {},
+            onInviteClicked = {},
             onMarkAsRead = {},
             onDeleteNotification = {},
         )

@@ -2,8 +2,8 @@ package com.cramsan.edifikana.client.lib.features.account.notifications
 
 import app.cash.turbine.turbineScope
 import com.cramsan.framework.test.advanceUntilIdleAndAwaitComplete
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.NotificationManager
 import com.cramsan.edifikana.client.lib.models.Notification
 import com.cramsan.edifikana.lib.model.invite.InviteId
@@ -37,7 +37,6 @@ import kotlin.time.Instant
 class NotificationsViewModelTest : CoroutineTest() {
 
     private lateinit var viewModel: NotificationsViewModel
-    private lateinit var authManager: AuthManager
     private lateinit var notificationManager: NotificationManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
@@ -52,7 +51,6 @@ class NotificationsViewModelTest : CoroutineTest() {
         applicationEventReceiver = EventBus()
         windowEventBus = EventBus()
         exceptionHandler = CollectorCoroutineExceptionHandler()
-        authManager = mockk(relaxed = true)
         notificationManager = mockk(relaxed = true)
         viewModel = NotificationsViewModel(
             dependencies = ViewModelDependencies(
@@ -62,7 +60,6 @@ class NotificationsViewModelTest : CoroutineTest() {
                 applicationEventReceiver = applicationEventReceiver,
                 windowEventReceiver = windowEventBus,
             ),
-            authManager = authManager,
             notificationManager = notificationManager,
         )
     }
@@ -143,103 +140,30 @@ class NotificationsViewModelTest : CoroutineTest() {
         assertEquals(emptyList(), viewModel.uiState.value.notifications)
     }
 
+    /**
+     * Test the [NotificationsViewModel.navigateToInviteConfirm] method navigates to the
+     * invitation accept/decline screen for the given invite id.
+     */
     @Test
-    fun `test acceptInvite calls authManager and reloads`() = runCoroutineTest {
+    fun `test navigateToInviteConfirm navigates to InvitationAcceptConfirmDestination`() = runCoroutineTest {
         val inviteId = InviteId("invite1")
-
-        coEvery { authManager.acceptInvite(inviteId) } returns Result.success(Unit)
-        coEvery { notificationManager.getNotifications() } returns Result.success(emptyList())
 
         turbineScope {
             // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
 
             // Act
-            viewModel.acceptInvite(inviteId)
+            viewModel.navigateToInviteConfirm(inviteId)
 
             // Assert
             assertEquals(
-                EdifikanaWindowsEvent.ShowSnackbar("Invitation accepted successfully"),
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.InvitationAcceptConfirmDestination(inviteId),
+                ),
                 turbine.awaitItem()
             )
             advanceUntilIdleAndAwaitComplete(turbine)
         }
-
-        coVerify { authManager.acceptInvite(inviteId) }
-        coVerify(atLeast = 1) { notificationManager.getNotifications() }
-    }
-
-    @Test
-    fun `test acceptInvite with failure shows error snackbar`() = runCoroutineTest {
-        val inviteId = InviteId("invite1")
-
-        coEvery { authManager.acceptInvite(inviteId) } returns Result.failure(Exception("Accept failed"))
-
-        turbineScope {
-            // Arrange
-            val turbine = windowEventBus.events.testIn(backgroundScope)
-
-            // Act
-            viewModel.acceptInvite(inviteId)
-
-            // Assert
-            assertEquals(
-                EdifikanaWindowsEvent.ShowSnackbar("Failed to accept invitation: Accept failed"),
-                turbine.awaitItem()
-            )
-            advanceUntilIdleAndAwaitComplete(turbine)
-        }
-
-        assertEquals(false, viewModel.uiState.value.isLoading)
-    }
-
-    @Test
-    fun `test declineInvite calls authManager and reloads`() = runCoroutineTest {
-        val inviteId = InviteId("invite1")
-
-        coEvery { authManager.declineInvite(inviteId) } returns Result.success(Unit)
-        coEvery { notificationManager.getNotifications() } returns Result.success(emptyList())
-
-        turbineScope {
-            // Arrange
-            val turbine = windowEventBus.events.testIn(backgroundScope)
-
-            // Act
-            viewModel.declineInvite(inviteId)
-
-            // Assert
-            assertEquals(
-                EdifikanaWindowsEvent.ShowSnackbar("Invitation declined"),
-                turbine.awaitItem()
-            )
-            advanceUntilIdleAndAwaitComplete(turbine)
-        }
-
-        coVerify { authManager.declineInvite(inviteId) }
-    }
-
-    @Test
-    fun `test declineInvite with failure shows error snackbar`() = runCoroutineTest {
-        val inviteId = InviteId("invite1")
-
-        coEvery { authManager.declineInvite(inviteId) } returns Result.failure(Exception("Decline failed"))
-
-        turbineScope {
-            // Arrange
-            val turbine = windowEventBus.events.testIn(backgroundScope)
-
-            // Act
-            viewModel.declineInvite(inviteId)
-
-            // Assert
-            assertEquals(
-                EdifikanaWindowsEvent.ShowSnackbar("Failed to decline invitation: Decline failed"),
-                turbine.awaitItem()
-            )
-            advanceUntilIdleAndAwaitComplete(turbine)
-        }
-
-        assertEquals(false, viewModel.uiState.value.isLoading)
     }
 
     @Test

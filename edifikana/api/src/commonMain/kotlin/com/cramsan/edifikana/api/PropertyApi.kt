@@ -23,7 +23,11 @@ object PropertyApi : Api("property") {
             NoQueryParam,
             NoPathParam,
             PropertyNetworkResponse,
-            >(HttpMethod.Post)
+            >(
+            method = HttpMethod.Post,
+            summary = "Create a property",
+            description = "Creates a new property within the caller's organization. Requires the ADMIN role.",
+        )
 
     val getProperty =
         operation<
@@ -31,7 +35,11 @@ object PropertyApi : Api("property") {
             NoQueryParam,
             PropertyId,
             PropertyNetworkResponse,
-            >(HttpMethod.Get)
+            >(
+            method = HttpMethod.Get,
+            summary = "Get a property",
+            description = "Retrieves a single property by its identifier. Requires the MANAGER role or higher.",
+        )
 
     val getAssignedProperties =
         operation<
@@ -39,7 +47,11 @@ object PropertyApi : Api("property") {
             NoQueryParam,
             NoPathParam,
             PropertyListNetworkResponse,
-            >(HttpMethod.Get)
+            >(
+            method = HttpMethod.Get,
+            summary = "List assigned properties",
+            description = "Returns all properties the authenticated user has been assigned access to.",
+        )
 
     val updateProperty =
         operation<
@@ -47,7 +59,11 @@ object PropertyApi : Api("property") {
             NoQueryParam,
             PropertyId,
             PropertyNetworkResponse,
-            >(HttpMethod.Put)
+            >(
+            method = HttpMethod.Put,
+            summary = "Update a property",
+            description = "Updates the mutable fields of an existing property. Requires the ADMIN role.",
+        )
 
     val deleteProperty =
         operation<
@@ -55,5 +71,9 @@ object PropertyApi : Api("property") {
             NoQueryParam,
             PropertyId,
             NoResponseBody,
-            >(HttpMethod.Delete)
+            >(
+            method = HttpMethod.Delete,
+            summary = "Delete a property",
+            description = "Permanently deletes a property by its identifier. Requires the ADMIN role.",
+        )
 }

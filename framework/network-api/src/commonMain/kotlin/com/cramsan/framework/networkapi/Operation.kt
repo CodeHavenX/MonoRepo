@@ -26,6 +26,10 @@ import kotlin.reflect.KClass
  * @property queryParamType The KClass of the query parameter type.
  * @property pathParamType The KClass of the path parameter type.
  * @property responseBodyType The KClass of the response body type.
+ * @property summary A short, human-readable summary of what the operation does, surfaced in OpenAPI.
+ * @property description A verbose explanation of the operation behavior, surfaced in OpenAPI.
+ * @property tags OpenAPI tags used to group this operation. When empty, a tag is derived from the API path.
+ * @property deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
  * @throws IllegalArgumentException if a GET operation is defined with a request body.
  */
 data class Operation<
@@ -41,6 +45,10 @@ data class Operation<
     val queryParamType: KClass<QueryParamType>,
     val pathParamType: KClass<PathParamType>,
     val responseBodyType: KClass<ResponseType>,
+    val summary: String? = null,
+    val description: String? = null,
+    val tags: List<String> = emptyList(),
+    val deprecated: Boolean = false,
 ) {
     init {
         if (requestBodyType != NoRequestBody::class && method == HttpMethod.Get) {
@@ -96,6 +104,10 @@ data class Operation<
             queryParamType = queryParamType,
             pathParamType = pathParamType,
             responseBodyType = responseBodyType,
+            summary = summary,
+            description = description,
+            tags = tags,
+            deprecated = deprecated,
         )
     }
 }
@@ -432,6 +444,10 @@ data class OperationRequest<
  * @property requestBodyType The KClass of the request body type.
  * @property queryParamType The KClass of the query parameter type.
  * @property responseBodyType The KClass of the response body type.
+ * @property summary A short, human-readable summary of what the operation does, surfaced in OpenAPI.
+ * @property description A verbose explanation of the operation behavior, surfaced in OpenAPI.
+ * @property tags OpenAPI tags used to group this operation. When empty, a tag is derived from the API path.
+ * @property deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
  */
 data class OperationHandler<
     RequestType : RequestBody,
@@ -446,4 +462,8 @@ data class OperationHandler<
     val queryParamType: KClass<QueryParamType>,
     val pathParamType: KClass<PathParamType>,
     val responseBodyType: KClass<ResponseType>,
+    val summary: String? = null,
+    val description: String? = null,
+    val tags: List<String> = emptyList(),
+    val deprecated: Boolean = false,
 )

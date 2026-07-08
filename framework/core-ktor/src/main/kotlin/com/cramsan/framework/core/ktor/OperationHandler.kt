@@ -219,8 +219,6 @@ object OperationHandler {
     }
 }
 
-@OptIn(InternalSerializationApi::class)
-@Suppress("LongMethod")
 private fun <
     RequestType : RequestBody,
     QueryParamType : QueryParam,
@@ -230,48 +228,117 @@ private fun <
     method: HttpMethod,
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
     apiPath: String,
-): Route {
-    return describe {
-        operationId =
-            buildList {
-                add(method.value.lowercase())
-                addAll(apiPath.split("/").filter { it.isNotEmpty() })
-                val cleanSubPath = handler.path.replace("{", "").replace("}", "")
-                addAll(cleanSubPath.split("/").filter { it.isNotEmpty() })
-            }.joinToString("-")
+): Route =
+    describe {
+        describeMetadata(method, handler, apiPath)
+        describeParameters(handler)
+        describeRequestBody(handler)
+        describeResponses(handler)
+    }
+
+/**
+ * Emits the operation id, summary, description, deprecation flag, and tags into the OpenAPI operation.
+ */
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeMetadata(
+    method: HttpMethod,
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+    apiPath: String,
+) {
+    operationId =
+        buildList {
+            add(method.value.lowercase())
+            addAll(apiPath.split("/").filter { it.isNotEmpty() })
+            val cleanSubPath = handler.path.replace("{", "").replace("}", "")
+            addAll(cleanSubPath.split("/").filter { it.isNotEmpty() })
+        }.joinToString("-")
+
+    handler.summary?.let { summary = it }
+    handler.description?.let { description = it }
+    if (handler.deprecated) {
+        deprecated = true
+    }
+
+    if (handler.tags.isNotEmpty()) {
+        handler.tags.forEach { tag(it) }
+    } else {
         tag(apiPath.split("/").firstOrNull { it.isNotEmpty() } ?: "api")
+    }
+}
 
-        val hasPathParam = handler.pathParamType != NoPathParam::class
-        val hasQueryParams = handler.queryParamType != NoQueryParam::class
+/**
+ * Emits the path and query parameter schemas into the OpenAPI operation.
+ */
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeParameters(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+) {
+    val hasPathParam = handler.pathParamType != NoPathParam::class
+    val hasQueryParams = handler.queryParamType != NoQueryParam::class
 
-        if (hasPathParam || hasQueryParams) {
-            parameters {
-                if (hasPathParam) {
-                    path(handler.param ?: "param") {
-                        required = true
-                        schema =
-                            handler.pathParamType
-                                .serializer()
-                                .descriptor
-                                .buildJsonSchema(visiting = mutableSetOf())
-                    }
-                }
-                if (hasQueryParams) {
-                    val queryDescriptor = handler.queryParamType.serializer().descriptor
-                    for (i in 0 until queryDescriptor.elementsCount) {
-                        val elementName = queryDescriptor.getElementName(i)
-                        val elementDescriptor = queryDescriptor.getElementDescriptor(i)
-                        val isRequired = !queryDescriptor.isElementOptional(i) && !elementDescriptor.isNullable
-                        query(elementName) {
-                            required = isRequired
-                            schema = elementDescriptor.buildJsonSchema(visiting = mutableSetOf())
-                        }
-                    }
+    if (!hasPathParam && !hasQueryParams) {
+        return
+    }
+
+    parameters {
+        if (hasPathParam) {
+            path(handler.param ?: "param") {
+                required = true
+                schema =
+                    handler.pathParamType
+                        .serializer()
+                        .descriptor
+                        .buildJsonSchema(visiting = mutableSetOf())
+            }
+        }
+        if (hasQueryParams) {
+            val queryDescriptor = handler.queryParamType.serializer().descriptor
+            for (i in 0 until queryDescriptor.elementsCount) {
+                val elementName = queryDescriptor.getElementName(i)
+                val elementDescriptor = queryDescriptor.getElementDescriptor(i)
+                val isRequired = !queryDescriptor.isElementOptional(i) && !elementDescriptor.isNullable
+                query(elementName) {
+                    required = isRequired
+                    schema = elementDescriptor.buildJsonSchema(visiting = mutableSetOf())
                 }
             }
         }
+    }
+}
 
-        if (handler.requestBodyType != NoRequestBody::class && handler.requestBodyType != BytesRequestBody::class) {
+/**
+ * Emits the request body schema into the OpenAPI operation.
+ */
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeRequestBody(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+) {
+    when (handler.requestBodyType) {
+        NoRequestBody::class -> {
+            Unit
+        }
+
+        BytesRequestBody::class -> {
+            requestBody {
+                required = true
+            }
+        }
+
+        else -> {
             requestBody {
                 required = true
                 schema =
@@ -280,27 +347,36 @@ private fun <
                         .descriptor
                         .buildJsonSchema(visiting = mutableSetOf())
             }
-        } else if (handler.requestBodyType == BytesRequestBody::class) {
-            requestBody {
-                required = true
-            }
         }
+    }
+}
 
-        responses {
-            if (handler.responseBodyType != NoResponseBody::class) {
-                HttpStatusCode.OK {
-                    schema =
-                        handler.responseBodyType
-                            .serializer()
-                            .descriptor
-                            .buildJsonSchema(visiting = mutableSetOf())
-                }
-            } else {
-                HttpStatusCode.NoContent {}
+/**
+ * Emits the response schemas into the OpenAPI operation.
+ */
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeResponses(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+) {
+    responses {
+        if (handler.responseBodyType != NoResponseBody::class) {
+            HttpStatusCode.OK {
+                schema =
+                    handler.responseBodyType
+                        .serializer()
+                        .descriptor
+                        .buildJsonSchema(visiting = mutableSetOf())
             }
-            HttpStatusCode.Unauthorized {}
-            HttpStatusCode.BadRequest {}
+        } else {
+            HttpStatusCode.NoContent {}
         }
+        HttpStatusCode.Unauthorized {}
+        HttpStatusCode.BadRequest {}
     }
 }
 

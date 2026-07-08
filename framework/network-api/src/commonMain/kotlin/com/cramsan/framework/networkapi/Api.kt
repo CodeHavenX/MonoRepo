@@ -43,6 +43,10 @@ open class Api(val path: String) {
      *
      * @param method The HTTP method for the operation (e.g., GET, POST).
      * @param path Optional sub-path for the operation, relative to the API base path.
+     * @param summary A short, human-readable summary of what the operation does, surfaced in OpenAPI.
+     * @param description A verbose explanation of the operation behavior, surfaced in OpenAPI.
+     * @param tags OpenAPI tags used to group this operation. When empty, a tag is derived from the API path.
+     * @param deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
      * @param requestBodyType The KClass of the request body type.
      * @param queryParamType The KClass of the query parameter type.
      * @param pathParamType The KClass of the path parameter type.
@@ -57,6 +61,10 @@ open class Api(val path: String) {
         > operation(
         method: HttpMethod,
         path: String? = null,
+        summary: String? = null,
+        description: String? = null,
+        tags: List<String> = emptyList(),
+        deprecated: Boolean = false,
         requestBodyType: KClass<RequestType> = RequestType::class,
         queryParamType: KClass<QueryParamType> = QueryParamType::class,
         pathParamType: KClass<PathParamType> = PathParamType::class,
@@ -70,6 +78,10 @@ open class Api(val path: String) {
             queryParamType,
             pathParamType,
             responseBodyType,
+            summary,
+            description,
+            tags,
+            deprecated,
         ).also {
             registerOperation(it)
         }

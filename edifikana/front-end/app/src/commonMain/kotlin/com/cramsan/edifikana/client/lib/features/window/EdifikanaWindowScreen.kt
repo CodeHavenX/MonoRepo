@@ -96,7 +96,11 @@ private fun WindowsContent(
     // wins; otherwise it's derived from the browser's URL (wasmJs) — a no-op elsewhere.
     val resolvedInitialDestination =
         remember {
-            initialDestination ?: browserNavigator.getInitialPath()?.let { EdifikanaPathNavigation.pathToDestination(it) }
+            initialDestination ?: browserNavigator.getInitialPath()?.let {
+                EdifikanaPathNavigation.pathToDestination(
+                    it,
+                )
+            }
         }
 
     val snackbarHostState = remember { SnackbarHostState() }

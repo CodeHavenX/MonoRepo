@@ -8,6 +8,7 @@ import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.navigation.NavigateBackWithResult
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.launch
@@ -83,6 +84,22 @@ class EdifikanaWindowViewModel(
         viewModelCoroutineScope.launch {
             logI(TAG, "Result from snackbar: $result")
             delegatedEvents.push(EdifikanaWindowDelegatedEvent.HandleSnackbarResult(result))
+        }
+    }
+
+    /**
+     * Navigates directly to [destination], clearing the top of the back stack.
+     *
+     * Called from [com.cramsan.edifikana.client.lib.features.main.main.MainActivity.onNewIntent]
+     * when a deep link is received while the app is already running (warm start) — [destination]
+     * is resolved from the incoming URI via `EdifikanaPathNavigation.pathToDestination`, the same
+     * resolver used for cold start and for browser-URL navigation on wasmJs.
+     */
+    fun handleDeepLink(destination: Destination) {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(destination, clearTop = true),
+            )
         }
     }
 

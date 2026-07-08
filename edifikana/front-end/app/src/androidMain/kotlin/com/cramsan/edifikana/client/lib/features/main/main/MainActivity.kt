@@ -15,8 +15,10 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaMainScreenEvent
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowScreen
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowViewModel
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.navigation.EdifikanaPathNavigation
 import com.cramsan.edifikana.client.lib.utils.shareContent
 import com.cramsan.framework.core.CoreUri
+import com.cramsan.framework.core.compose.navigation.Destination
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.compose.scope.KoinScope
@@ -48,17 +50,38 @@ class MainActivity :
     @Suppress("LongMethod")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Cold start: onNewIntent only fires for an already-running Activity instance, so a
+        // deep link that launches the app fresh (the common case for an email link) must be
+        // read from the launching intent here, before composition.
+        val initialDestination = intent.toDestination()
         setContent {
             ComposableKoinContext {
                 KoinScope<String>("root-window") {
                     EdifikanaWindowScreen(
                         eventHandler = this@MainActivity,
                         viewModel = viewModel,
+                        initialDestination = initialDestination,
                     )
                 }
             }
         }
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.toDestination()?.let { viewModel.handleDeepLink(it) }
+    }
+
+    /**
+     * Resolves this intent's data URI to a [Destination] via the same
+     * `EdifikanaPathNavigation`/`WebRoute` resolver used for browser-URL routing on wasmJs.
+     * `WebRoute.fromWebPath` strips a leading `scheme://authority` generically, so the raw
+     * `https://edifikana.com/...` URI string can be passed through as-is — any
+     * `@WebPath`-annotated destination is reachable here with no app- or feature-specific
+     * parsing.
+     */
+    private fun Intent.toDestination(): Destination? =
+        data?.toString()?.let { EdifikanaPathNavigation.pathToDestination(it) }
 
     override fun openCamera(event: EdifikanaWindowsEvent.OpenCamera) {
         cameraLauncher.launch(event.filename)

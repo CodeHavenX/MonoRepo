@@ -90,4 +90,15 @@ class AuthDestinationTest {
             )
         assertEquals(InviteId("abc123"), destination.inviteId)
     }
+
+    @Test
+    fun `fromWebPath returns InvitationAcceptDestination from a full https universal-link URL`() {
+        // Proves the exact shape MainActivity's generic deep-link intake passes through: a raw
+        // `https://edifikana.com/...` intent data URI, scheme/authority and all.
+        val destination =
+            assertIs<AuthDestination.InvitationAcceptDestination>(
+                AuthDestination.fromWebPath("https://edifikana.com/auth/invite?inviteId=abc123"),
+            )
+        assertEquals(InviteId("abc123"), destination.inviteId)
+    }
 }

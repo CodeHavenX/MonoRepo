@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.client.lib.features.auth
 
 import androidx.navigation.NavBackStackEntry
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.network.invite.INVITE_ACCEPT_CONFIRM_WEB_PATH
 import com.cramsan.edifikana.lib.model.network.invite.INVITE_ACCEPT_WEB_PATH
 import com.cramsan.edifikana.lib.model.network.password.SET_NEW_PASSWORD_WEB_PATH
 import com.cramsan.framework.annotations.WebPath
@@ -16,17 +18,21 @@ sealed class AuthDestination : WebDestination {
     /** Sign-in screen destination. */
     @Serializable
     @WebPath("/auth/sign-in")
-    data object SignInDestination : AuthDestination()
+    data class SignInDestination(val inviteId: InviteId? = null) : AuthDestination()
 
     /** Sign-up screen destination. */
     @Serializable
     @WebPath("/auth/sign-up")
-    data class SignUpDestination(val userEmail: String) : AuthDestination()
+    data class SignUpDestination(val userEmail: String, val inviteId: InviteId? = null) : AuthDestination()
 
     /** Email validation screen destination, shown after sign-up or when re-verification is needed. */
     @Serializable
     @WebPath("/auth/validation")
-    data class ValidationDestination(val userEmail: String, val accountCreationFlow: Boolean) : AuthDestination()
+    data class ValidationDestination(
+        val userEmail: String,
+        val accountCreationFlow: Boolean,
+        val inviteId: InviteId? = null,
+    ) : AuthDestination()
 
     /** Organization selection screen destination. */
     @Serializable
@@ -68,10 +74,23 @@ sealed class AuthDestination : WebDestination {
         val type: String,
     ) : AuthDestination()
 
-    /** Invitation accept screen destination, reached via an invitation email link or deep link. */
+    /**
+     * Invitation landing screen destination, reached via an invitation email link or deep link
+     * when no session exists yet. Routes to [SignUpDestination] / [SignInDestination]; never
+     * collects credentials itself.
+     */
     @Serializable
     @WebPath(INVITE_ACCEPT_WEB_PATH)
-    data class InvitationAcceptDestination(val inviteId: String) : AuthDestination()
+    data class InvitationAcceptDestination(val inviteId: InviteId) : AuthDestination()
+
+    /**
+     * Invitation accept/decline screen destination, reached once a session exists — either
+     * already active when the deep link opened, or established immediately afterward via
+     * Sign Up + OTP verification or Sign In.
+     */
+    @Serializable
+    @WebPath(INVITE_ACCEPT_CONFIRM_WEB_PATH)
+    data class InvitationAcceptConfirmDestination(val inviteId: InviteId) : AuthDestination()
 
     override fun toWebPath(): String = AuthDestinationWebRoutes.toWebPath(this)
 

@@ -4,30 +4,31 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
-import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.client.lib.managers.NotificationManager
 import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.notification.NotificationType
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.resources.StringProvider
 import edifikana_lib.Res
 import edifikana_lib.error_message_unexpected_error
-import edifikana_lib.invitation_accept_screen_error_email_required
-import edifikana_lib.invitation_accept_screen_error_empty_name
-import edifikana_lib.invitation_accept_screen_error_password_too_short
-import edifikana_lib.invitation_accept_screen_error_passwords_do_not_match
+import edifikana_lib.invitation_accept_screen_error_invalid_invite
 import kotlinx.coroutines.launch
 
 /**
- * ViewModel for the invitation accept screen.
+ * ViewModel backing both the invitation landing screen and the invitation accept/decline screen.
  *
- * Handles both the new-user path (sign-up + accept) and the existing-user path (accept only).
+ * Account creation and sign-in are delegated entirely to the existing Sign Up / Sign In / OTP
+ * flows — this ViewModel never collects credentials. It only resolves session state, surfaces an
+ * invitation summary sourced from the matching invite notification (there is no endpoint to
+ * resolve structured invite details by token), and calls accept/decline once a session exists.
  */
 @FrontendViewModel
 class InvitationAcceptViewModel(
     dependencies: ViewModelDependencies,
     private val authManager: AuthManager,
-    private val organizationManager: OrganizationManager,
+    private val notificationManager: NotificationManager,
     private val stringProvider: StringProvider,
 ) : BaseViewModel<InvitationAcceptEvent, InvitationAcceptUIState>(
     dependencies,
@@ -35,14 +36,34 @@ class InvitationAcceptViewModel(
     TAG,
 ) {
     /**
-     * Loads and validates the invitation identified by [inviteId].
+     * Loads session state for the invitation identified by [inviteId].
      *
-     * Sets [InvitationAcceptUIState.isUserSignedIn] based on the current session state.
-     * On an invalid or expired token, sets [InvitationAcceptUIState.error].
+     * Sets [InvitationAcceptUIState.error] if [inviteId] is blank (a malformed deep link).
+     * Otherwise sets [InvitationAcceptUIState.isUserSignedIn], and when signed in, also
+     * populates [InvitationAcceptUIState.invitationSummary] from the matching invite
+     * notification, if one is found. No match is not an error — the screen falls back to
+     * generic copy.
+     *
+     * When [redirectIfSignedIn] is true and the user turns out to already be signed in,
+     * immediately navigates to [AuthDestination.InvitationAcceptConfirmDestination] instead of
+     * leaving the landing screen's Create Account / Sign In buttons showing. Only the landing
+     * screen opts into this — the confirm screen also calls this function to refresh its own
+     * state and must not re-navigate to itself.
      */
-    fun loadInvitation(inviteId: String) {
+    fun loadInvitation(inviteId: InviteId, redirectIfSignedIn: Boolean = false) {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, error = null) }
+
+            if (inviteId.id.isBlank()) {
+                updateUiState {
+                    it.copy(
+                        isLoading = false,
+                        error = stringProvider.getString(Res.string.invitation_accept_screen_error_invalid_invite),
+                    )
+                }
+                return@launch
+            }
+
             val signedIn =
                 authManager
                     .isSignedIn()
@@ -56,116 +77,36 @@ class InvitationAcceptViewModel(
                         return@launch
                     }.getOrThrow()
 
-            // Full invite detail population (org name, role, email, inviter) requires a
-            // GET /invites/resolve endpoint that does not yet exist in the back-end.
-            // Once that endpoint is available, populate inviteEmail, orgName, role, and
-            // invitedByName here and switch the email field back to disabled/pre-filled.
+            val summary = if (signedIn) findInvitationSummary(inviteId) else null
+
             updateUiState {
                 it.copy(
                     isLoading = false,
                     isUserSignedIn = signedIn,
-                    isInviteValid = inviteId.isNotBlank(),
+                    invitationSummary = summary,
+                )
+            }
+
+            if (signedIn && redirectIfSignedIn) {
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.NavigateToScreen(
+                        AuthDestination.InvitationAcceptConfirmDestination(inviteId),
+                        clearTop = true,
+                    ),
                 )
             }
         }
     }
 
-    /** Updates the email field in the form. Required until GET /invites/resolve can pre-fill it. */
-    fun updateEmail(email: String) {
-        viewModelCoroutineScope.launch {
-            updateUiState { it.copy(inviteEmail = email) }
-        }
-    }
-
-    /** Updates the full-name field in the form. */
-    fun updateFullName(name: String) {
-        viewModelCoroutineScope.launch {
-            updateUiState { it.copy(fullName = name) }
-        }
-    }
-
-    /** Updates the password field in the form. */
-    fun updatePassword(password: String) {
-        viewModelCoroutineScope.launch {
-            updateUiState { it.copy(password = password) }
-        }
-    }
-
-    /** Updates the confirm-password field in the form. */
-    fun updateConfirmPassword(password: String) {
-        viewModelCoroutineScope.launch {
-            updateUiState { it.copy(confirmPassword = password) }
-        }
-    }
-
     /**
-     * Accepts the invitation as a new user.
-     *
-     * Validates the form, calls [AuthManager.signUp] then [AuthManager.acceptInvite], and
-     * navigates to the org-selection screen (if no org exists yet) or the home nav graph.
+     * Accepts the invitation identified by [inviteId] for the current, already-authenticated
+     * session, then navigates to the home nav graph with the back stack cleared.
      */
-    fun acceptAsNewUser(inviteId: String) {
-        viewModelCoroutineScope.launch {
-            val state = uiState.value
-            val error =
-                validateNewUserForm(state) ?: run {
-                    updateUiState { it.copy(isLoading = true, error = null) }
-
-                    val parts = state.fullName.trim().split(" ", limit = 2)
-                    val firstName = parts.firstOrNull().orEmpty()
-                    val lastName = parts.getOrNull(1).orEmpty()
-
-                    authManager
-                        .signUp(
-                            email = state.inviteEmail,
-                            phoneNumber = "",
-                            firstName = firstName,
-                            lastName = lastName,
-                        ).onFailure { e ->
-                            updateUiState {
-                                it.copy(
-                                    isLoading = false,
-                                    error =
-                                    e.message
-                                        ?: stringProvider.getString(Res.string.error_message_unexpected_error),
-                                )
-                            }
-                            return@launch
-                        }
-
-                    authManager
-                        .acceptInvite(InviteId(inviteId))
-                        .onFailure { e ->
-                            updateUiState {
-                                it.copy(
-                                    isLoading = false,
-                                    error =
-                                    e.message
-                                        ?: stringProvider.getString(Res.string.error_message_unexpected_error),
-                                )
-                            }
-                            return@launch
-                        }
-
-                    updateUiState { it.copy(isLoading = false) }
-                    navigateAfterAccept()
-                    return@launch
-                }
-            updateUiState { it.copy(error = error) }
-        }
-    }
-
-    /**
-     * Accepts the invitation for an already-signed-in user.
-     *
-     * Calls [AuthManager.acceptInvite] and navigates to the home nav graph with the back
-     * stack cleared.
-     */
-    fun acceptAsExistingUser(inviteId: String) {
+    fun acceptInvitation(inviteId: InviteId) {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, error = null) }
             authManager
-                .acceptInvite(InviteId(inviteId))
+                .acceptInvite(inviteId)
                 .onFailure { e ->
                     updateUiState {
                         it.copy(
@@ -187,58 +128,75 @@ class InvitationAcceptViewModel(
         }
     }
 
-    /** Navigates to the sign-in screen, carrying the current invite context implicitly. */
-    fun navigateToSignIn() {
+    /**
+     * Declines the invitation identified by [inviteId] for the current, already-authenticated
+     * session, then navigates to the sign-in screen.
+     */
+    fun declineInvitation(inviteId: InviteId) {
         viewModelCoroutineScope.launch {
-            emitWindowEvent(EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignInDestination))
-        }
-    }
-
-    private suspend fun validateNewUserForm(state: InvitationAcceptUIState): String? {
-        return when {
-            state.inviteEmail.isBlank() -> {
-                stringProvider.getString(Res.string.invitation_accept_screen_error_email_required)
-            }
-
-            state.fullName.isBlank() -> {
-                stringProvider.getString(Res.string.invitation_accept_screen_error_empty_name)
-            }
-
-            state.password.length < MIN_PASSWORD_LENGTH -> {
-                stringProvider.getString(Res.string.invitation_accept_screen_error_password_too_short)
-            }
-
-            state.password != state.confirmPassword -> {
-                stringProvider.getString(Res.string.invitation_accept_screen_error_passwords_do_not_match)
-            }
-
-            else -> {
-                null
-            }
-        }
-    }
-
-    private suspend fun navigateAfterAccept() {
-        val organizations = organizationManager.getOrganizations().getOrNull()
-        if (organizations.isNullOrEmpty()) {
+            updateUiState { it.copy(isLoading = true, error = null) }
+            authManager
+                .declineInvite(inviteId)
+                .onFailure { e ->
+                    updateUiState {
+                        it.copy(
+                            isLoading = false,
+                            error =
+                            e.message
+                                ?: stringProvider.getString(Res.string.error_message_unexpected_error),
+                        )
+                    }
+                    return@launch
+                }
+            updateUiState { it.copy(isLoading = false) }
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthDestination.SelectOrgDestination,
-                    clearStack = true,
-                ),
-            )
-        } else {
-            emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToNavGraph(
-                    EdifikanaNavGraphDestination.HomeNavGraphDestination,
+                    AuthDestination.SignInDestination(),
                     clearStack = true,
                 ),
             )
         }
     }
 
+    /**
+     * Navigates to the sign-up screen, deferring invite acceptance until after account creation
+     * and OTP verification complete.
+     */
+    fun navigateToSignUp(inviteId: InviteId) {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.SignUpDestination(
+                        userEmail = "",
+                        inviteId = inviteId,
+                    ),
+                ),
+            )
+        }
+    }
+
+    /**
+     * Navigates to the sign-in screen, deferring invite acceptance until after sign-in
+     * completes.
+     */
+    fun navigateToSignIn(inviteId: InviteId) {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.SignInDestination(inviteId = inviteId),
+                ),
+            )
+        }
+    }
+
+    private suspend fun findInvitationSummary(inviteId: InviteId): String? =
+        notificationManager
+            .getNotifications()
+            .getOrNull()
+            ?.firstOrNull { it.type == NotificationType.INVITE && it.inviteId == inviteId }
+            ?.description
+
     companion object {
-        private const val MIN_PASSWORD_LENGTH = 8
         private const val TAG = "InvitationAcceptViewModel"
     }
 }

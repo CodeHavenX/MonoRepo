@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth.signup
 
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
 /**
@@ -14,6 +15,7 @@ data class SignUpUIState(
     val policyChecked: Boolean,
     val registerEnabled: Boolean,
     val errorMessages: List<String>?,
+    val inviteId: InviteId? = null,
 ) : ViewModelUIState {
     companion object {
         val Initial =
@@ -26,6 +28,7 @@ data class SignUpUIState(
                 policyChecked = false,
                 registerEnabled = false,
                 errorMessages = null,
+                inviteId = null,
             )
     }
 }

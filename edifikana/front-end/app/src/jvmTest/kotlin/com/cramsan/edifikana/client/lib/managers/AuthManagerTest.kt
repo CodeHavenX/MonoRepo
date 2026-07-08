@@ -339,5 +339,4 @@ class AuthManagerTest : CoroutineTest() {
         assertTrue(result.isFailure)
         coVerify { authService.setNewPassword(newPassword) }
     }
-
 }

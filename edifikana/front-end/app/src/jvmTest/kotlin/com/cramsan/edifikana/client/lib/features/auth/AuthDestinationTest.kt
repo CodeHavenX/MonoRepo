@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.auth
 
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -70,5 +71,34 @@ class AuthDestinationTest {
     @Test
     fun `fromWebPath returns SetNewPasswordDestination`() {
         assertIs<AuthDestination.SetNewPasswordDestination>(AuthDestination.fromWebPath("/auth/set-new-password#access_token=token&expires_at=1783027428&expires_in=3600&refresh_token=f7ei5f5ctfnw&sb=&token_type=bearer&type=recovery"))
+    }
+
+    @Test
+    fun `fromWebPath returns InvitationAcceptDestination`() {
+        val destination =
+            assertIs<AuthDestination.InvitationAcceptDestination>(
+                AuthDestination.fromWebPath("/auth/invite?inviteId=abc123"),
+            )
+        assertEquals(InviteId("abc123"), destination.inviteId)
+    }
+
+    @Test
+    fun `fromWebPath returns InvitationAcceptConfirmDestination`() {
+        val destination =
+            assertIs<AuthDestination.InvitationAcceptConfirmDestination>(
+                AuthDestination.fromWebPath("/auth/invite/confirm?inviteId=abc123"),
+            )
+        assertEquals(InviteId("abc123"), destination.inviteId)
+    }
+
+    @Test
+    fun `fromWebPath returns InvitationAcceptDestination from a full https universal-link URL`() {
+        // Proves the exact shape MainActivity's generic deep-link intake passes through: a raw
+        // `https://edifikana.com/...` intent data URI, scheme/authority and all.
+        val destination =
+            assertIs<AuthDestination.InvitationAcceptDestination>(
+                AuthDestination.fromWebPath("https://edifikana.com/auth/invite?inviteId=abc123"),
+            )
+        assertEquals(InviteId("abc123"), destination.inviteId)
     }
 }

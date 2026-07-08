@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.auth.invitationaccept
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -17,27 +19,30 @@ import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
+import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
 import edifikana_lib.invitation_accept_screen_title
-import edifikana_lib.invitation_landing_screen_body
-import edifikana_lib.invitation_landing_screen_create_account_button
-import edifikana_lib.invitation_landing_screen_sign_in_button
+import edifikana_lib.invitation_confirm_screen_accept_button
+import edifikana_lib.invitation_confirm_screen_body
+import edifikana_lib.invitation_confirm_screen_decline_button
+import edifikana_lib.invitation_confirm_screen_summary_fallback
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * Invitation landing screen — presented when the user taps an invitation link and has no active
- * session. Routes to the existing Sign Up / Sign In screens; never collects credentials itself.
+ * Invitation accept/decline screen — presented once an authenticated session exists, whether
+ * that session was already active when the deep link opened, or was just established via
+ * Sign Up + OTP verification or Sign In from [InvitationAcceptScreen].
  */
 @Composable
-fun InvitationAcceptScreen(
-    destination: AuthDestination.InvitationAcceptDestination,
+fun InvitationAcceptConfirmScreen(
+    destination: AuthDestination.InvitationAcceptConfirmDestination,
     viewModel: InvitationAcceptViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(destination.inviteId) {
-        viewModel.loadInvitation(destination.inviteId, redirectIfSignedIn = true)
+        viewModel.loadInvitation(destination.inviteId)
     }
 
     ObserveViewModelEvents(viewModel) { event ->
@@ -46,22 +51,22 @@ fun InvitationAcceptScreen(
         }
     }
 
-    InvitationAcceptContent(
+    InvitationAcceptConfirmContent(
         uiState = uiState,
-        onCreateAccountClicked = { viewModel.navigateToSignUp(destination.inviteId) },
-        onSignInClicked = { viewModel.navigateToSignIn(destination.inviteId) },
+        onAcceptClicked = { viewModel.acceptInvitation(destination.inviteId) },
+        onDeclineClicked = { viewModel.declineInvitation(destination.inviteId) },
     )
 }
 
 /**
- * Content of the invitation landing screen.
+ * Content of the invitation accept/decline screen.
  */
 @Composable
-internal fun InvitationAcceptContent(
+internal fun InvitationAcceptConfirmContent(
     uiState: InvitationAcceptUIState,
     modifier: Modifier = Modifier,
-    onCreateAccountClicked: () -> Unit,
-    onSignInClicked: () -> Unit,
+    onAcceptClicked: () -> Unit,
+    onDeclineClicked: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -75,8 +80,18 @@ internal fun InvitationAcceptContent(
                 .padding(innerPadding)
                 .fillMaxSize(),
             sectionContent = { sectionModifier ->
+                Card(modifier = sectionModifier.fillMaxWidth()) {
+                    Text(
+                        text =
+                        uiState.invitationSummary
+                            ?: stringResource(Res.string.invitation_confirm_screen_summary_fallback),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(Padding.MEDIUM),
+                    )
+                }
+
                 Text(
-                    text = stringResource(Res.string.invitation_landing_screen_body),
+                    text = stringResource(Res.string.invitation_confirm_screen_body),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = sectionModifier,
@@ -93,15 +108,15 @@ internal fun InvitationAcceptContent(
             },
             buttonContent = { buttonModifier ->
                 EdifikanaPrimaryButton(
-                    text = stringResource(Res.string.invitation_landing_screen_create_account_button),
-                    onClick = onCreateAccountClicked,
+                    text = stringResource(Res.string.invitation_confirm_screen_accept_button),
+                    onClick = onAcceptClicked,
                     enabled = !uiState.isLoading,
                     modifier = buttonModifier,
                 )
 
                 EdifikanaSecondaryButton(
-                    text = stringResource(Res.string.invitation_landing_screen_sign_in_button),
-                    onClick = onSignInClicked,
+                    text = stringResource(Res.string.invitation_confirm_screen_decline_button),
+                    onClick = onDeclineClicked,
                     enabled = !uiState.isLoading,
                     modifier = buttonModifier,
                 )

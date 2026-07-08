@@ -34,6 +34,8 @@ import com.cramsan.edifikana.client.lib.features.splash.SplashScreen
 import com.cramsan.edifikana.client.lib.navigation.EdifikanaPathNavigation
 import com.cramsan.edifikana.client.lib.navigation.EmployeeIdNavType
 import com.cramsan.edifikana.client.lib.navigation.EventLogEntryIdNavType
+import com.cramsan.edifikana.client.lib.navigation.InviteIdNavType
+import com.cramsan.edifikana.client.lib.navigation.NullableInviteIdNavType
 import com.cramsan.edifikana.client.lib.navigation.OrganizationIdNavType
 import com.cramsan.edifikana.client.lib.navigation.PropertyIdNavType
 import com.cramsan.edifikana.client.lib.navigation.TimeCardEventIdNavType
@@ -42,6 +44,7 @@ import com.cramsan.edifikana.client.lib.ui.di.Coil3Provider
 import com.cramsan.edifikana.client.ui.theme.AppTheme
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
@@ -64,12 +67,14 @@ fun EdifikanaWindowScreen(
     viewModel: EdifikanaWindowViewModel,
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
     startDestination: EdifikanaNavGraphDestination = EdifikanaNavGraphDestination.SplashNavGraphDestination,
+    initialDestination: Destination? = null,
 ) {
     WindowsContent(
         eventHandler = eventHandler,
         viewModel = viewModel,
         applicationViewModel = applicationViewModel,
         startDestination = startDestination,
+        initialDestination = initialDestination,
     )
 }
 
@@ -79,6 +84,7 @@ private fun WindowsContent(
     viewModel: EdifikanaWindowViewModel,
     applicationViewModel: EdifikanaApplicationViewModel,
     eventHandler: EdifikanaMainScreenEventHandler,
+    initialDestination: Destination?,
 ) {
     val navController = rememberNavController()
     val browserNavigator = remember { BrowserNavigator() }
@@ -86,9 +92,15 @@ private fun WindowsContent(
     // Resolve the initial deep-link destination once at composition time. This is passed to
     // SplashScreen so that enforceAuth() can navigate directly there after a successful
     // auth check, avoiding the race where Splash's navigation overwrites the target page.
-    val initialDestination =
+    // On platforms that supply it externally (Android, from the launching Intent), that value
+    // wins; otherwise it's derived from the browser's URL (wasmJs) — a no-op elsewhere.
+    val resolvedInitialDestination =
         remember {
-            browserNavigator.getInitialPath()?.let { EdifikanaPathNavigation.pathToDestination(it) }
+            initialDestination ?: browserNavigator.getInitialPath()?.let {
+                EdifikanaPathNavigation.pathToDestination(
+                    it,
+                )
+            }
         }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -165,7 +177,7 @@ private fun WindowsContent(
             WindowNavigationHost(
                 navHostController = navController,
                 startDestination = startDestination,
-                initialDestination = initialDestination,
+                initialDestination = resolvedInitialDestination,
             )
         }
     }
@@ -293,6 +305,8 @@ private fun WindowNavigationHost(
                 typeOf<UserId>() to UserIdNavType(),
                 typeOf<EmployeeId>() to EmployeeIdNavType(),
                 typeOf<OrganizationId>() to OrganizationIdNavType(),
+                typeOf<InviteId>() to InviteIdNavType(),
+                typeOf<InviteId?>() to NullableInviteIdNavType(),
             )
         }
     NavHost(

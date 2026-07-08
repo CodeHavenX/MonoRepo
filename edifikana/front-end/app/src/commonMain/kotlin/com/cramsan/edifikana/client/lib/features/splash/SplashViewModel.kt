@@ -45,8 +45,13 @@ class SplashViewModel(
      */
     fun enforceAuth(initialDestination: Destination? = null) =
         viewModelCoroutineScope.launch {
-            if (initialDestination is AuthDestination.SetNewPasswordDestination) {
-                // Skip auth checks — the recovery tokens in the destination establish the session.
+            if (initialDestination is AuthDestination.SetNewPasswordDestination ||
+                initialDestination is AuthDestination.InvitationAcceptDestination ||
+                initialDestination is AuthDestination.InvitationAcceptConfirmDestination
+            ) {
+                // Skip auth checks — these destinations are explicitly meant to be reachable
+                // regardless of auth state (recovery tokens establish a new session; the invite
+                // landing/confirm screens resolve signed-in state themselves once loaded).
                 // Route to the Auth nav graph so the back stack stays in the auth flow.
                 emitWindowEvent(
                     EdifikanaWindowsEvent.NavigateToNavGraph(

@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.window
 
 import androidx.compose.material3.SnackbarResult
-import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.CoreUri
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -9,6 +8,7 @@ import com.cramsan.framework.core.compose.EventEmitter
 import com.cramsan.framework.core.compose.EventReceiver
 import com.cramsan.framework.core.compose.ViewModelDependencies
 import com.cramsan.framework.core.compose.WindowEvent
+import com.cramsan.framework.core.compose.navigation.Destination
 import com.cramsan.framework.core.compose.navigation.NavigateBackWithResult
 import com.cramsan.framework.logging.logI
 import kotlinx.coroutines.launch
@@ -88,17 +88,17 @@ class EdifikanaWindowViewModel(
     }
 
     /**
-     * Handles an invitation deep link by navigating to the invitation accept screen.
+     * Navigates directly to [destination], clearing the top of the back stack.
      *
      * Called from [com.cramsan.edifikana.client.lib.features.main.main.MainActivity.onNewIntent]
-     * when the app receives an `edifikana://invite/{token}` URI.
+     * when a deep link is received while the app is already running (warm start) — [destination]
+     * is resolved from the incoming URI via `EdifikanaPathNavigation.pathToDestination`, the same
+     * resolver used for cold start and for browser-URL navigation on wasmJs.
      */
-    fun handleDeepLink(inviteId: String) {
+    fun handleDeepLink(destination: Destination) {
         viewModelCoroutineScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthDestination.InvitationAcceptDestination(inviteId),
-                ),
+                EdifikanaWindowsEvent.NavigateToScreen(destination, clearTop = true),
             )
         }
     }

@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.cramsan.edifikana.client.lib.features.auth.invitationaccept.InvitationAcceptConfirmScreen
 import com.cramsan.edifikana.client.lib.features.auth.invitationaccept.InvitationAcceptScreen
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.createneworg.CreateNewOrgScreen
 import com.cramsan.edifikana.client.lib.features.auth.onboarding.selectorg.SelectOrgScreen
@@ -27,14 +28,14 @@ fun NavGraphBuilder.authNavGraphNavigation(
 ) {
     navigationGraph(
         graphDestination = EdifikanaNavGraphDestination.AuthNavGraphDestination::class,
-        startDestination = AuthDestination.SignInDestination,
+        startDestination = AuthDestination.SignInDestination(inviteId = null),
         typeMap = typeMap,
     ) {
         composable(
             AuthDestination.SignInDestination::class,
             typeMap = typeMap,
         ) {
-            SignInScreen()
+            SignInScreen(it.toRoute())
         }
         composable(
             AuthDestination.SignUpDestination::class,
@@ -87,6 +88,12 @@ fun NavGraphBuilder.authNavGraphNavigation(
             typeMap = typeMap,
         ) {
             InvitationAcceptScreen(destination = it.toRoute())
+        }
+        composable(
+            AuthDestination.InvitationAcceptConfirmDestination::class,
+            typeMap = typeMap,
+        ) {
+            InvitationAcceptConfirmScreen(destination = it.toRoute())
         }
     }
 }

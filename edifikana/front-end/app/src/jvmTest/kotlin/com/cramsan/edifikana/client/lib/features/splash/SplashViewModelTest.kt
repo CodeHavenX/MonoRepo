@@ -1,10 +1,12 @@
 package com.cramsan.edifikana.client.lib.features.splash
 
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -128,5 +130,70 @@ class SplashViewModelTest : CoroutineTest() {
                 EdifikanaWindowsEvent.NavigateToScreen(initialDestination)
             )
         }
+    }
+
+    @Test
+    fun `test enforceAuth bypasses auth check for SetNewPasswordDestination`() = runCoroutineTest {
+        val destination = AuthDestination.SetNewPasswordDestination(
+            accessToken = "test_access_token",
+            expiresAt = 9999999999L,
+            expiresIn = 3600L,
+            refreshToken = "test_refresh_token",
+            sb = "",
+            tokenType = "bearer",
+            type = "recovery",
+        )
+
+        viewModel.enforceAuth(destination)
+
+        assertTrue(exceptionHandler.exceptions.isEmpty())
+        coVerify(exactly = 0) { authManager.isSignedIn() }
+        coVerify {
+            windowEventBus.push(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.AuthNavGraphDestination,
+                    clearStack = true,
+                )
+            )
+        }
+        coVerify { windowEventBus.push(EdifikanaWindowsEvent.NavigateToScreen(destination)) }
+    }
+
+    @Test
+    fun `test enforceAuth bypasses auth check for InvitationAcceptDestination`() = runCoroutineTest {
+        val destination = AuthDestination.InvitationAcceptDestination(InviteId("invite-123"))
+
+        viewModel.enforceAuth(destination)
+
+        assertTrue(exceptionHandler.exceptions.isEmpty())
+        coVerify(exactly = 0) { authManager.isSignedIn() }
+        coVerify {
+            windowEventBus.push(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.AuthNavGraphDestination,
+                    clearStack = true,
+                )
+            )
+        }
+        coVerify { windowEventBus.push(EdifikanaWindowsEvent.NavigateToScreen(destination)) }
+    }
+
+    @Test
+    fun `test enforceAuth bypasses auth check for InvitationAcceptConfirmDestination`() = runCoroutineTest {
+        val destination = AuthDestination.InvitationAcceptConfirmDestination(InviteId("invite-123"))
+
+        viewModel.enforceAuth(destination)
+
+        assertTrue(exceptionHandler.exceptions.isEmpty())
+        coVerify(exactly = 0) { authManager.isSignedIn() }
+        coVerify {
+            windowEventBus.push(
+                EdifikanaWindowsEvent.NavigateToNavGraph(
+                    EdifikanaNavGraphDestination.AuthNavGraphDestination,
+                    clearStack = true,
+                )
+            )
+        }
+        coVerify { windowEventBus.push(EdifikanaWindowsEvent.NavigateToScreen(destination)) }
     }
 }

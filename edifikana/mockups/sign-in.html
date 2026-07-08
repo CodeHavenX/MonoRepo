@@ -14,7 +14,24 @@
           <div class="auth-logo">Edifikana</div>
           <div class="auth-subtitle">Property Management</div>
 
+          <!--
+            Invite context banner — shown only when this screen is reached from
+            invitation-accept.html (i.e. the user tapped an invitation link and already has
+            an account). Hidden for the normal Sign In entry point. Kept generic (no org name)
+            since there's no unauthenticated endpoint to resolve invite details from the token yet.
+          -->
+          <div class="card mb-4" style="background: var(--color-info-100); border-color: var(--color-info-500);">
+            <p class="text-small" style="color: var(--color-text-primary);">
+              Sign in to accept your invitation.
+            </p>
+          </div>
+
           <form class="auth-form">
+            <!--
+              A user arriving via an invite link returns to
+              invitation-accept-authenticated.html after signing in, instead of the normal
+              post-login destination.
+            -->
             <div class="form-group">
               <label class="form-label" for="email">Email</label>
               <input class="input" type="email" id="email" placeholder="you@example.com" autocomplete="email">

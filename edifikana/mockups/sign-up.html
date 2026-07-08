@@ -20,7 +20,25 @@
           <h1 class="text-h1 mb-2">Create Account</h1>
           <p class="text-small text-secondary mb-6">Join Edifikana to manage your properties.</p>
 
+          <!--
+            Invite context banner — shown only when this screen is reached from
+            invitation-accept.html (i.e. the user tapped an invitation link and doesn't
+            have an account yet). Hidden for the normal "Sign Up" entry point from sign-in.html.
+            Kept generic (no org name) since there's no unauthenticated endpoint to resolve
+            invite details from the token yet.
+          -->
+          <div class="card mb-4" style="background: var(--color-info-100); border-color: var(--color-info-500);">
+            <p class="text-small" style="color: var(--color-text-primary);">
+              You&rsquo;re creating an account to accept an invitation.
+            </p>
+          </div>
+
           <form class="auth-form">
+            <!--
+              After OTP verification (otp-validation.html), a user arriving via an invite
+              link returns to invitation-accept-authenticated.html to accept/decline instead
+              of the normal organization-picker.html destination.
+            -->
             <div class="form-group">
               <label class="form-label" for="full-name">Full Name</label>
               <input class="input" type="text" id="full-name" placeholder="John Doe" autocomplete="name">

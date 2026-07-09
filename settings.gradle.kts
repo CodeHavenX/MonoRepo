@@ -34,7 +34,7 @@ refreshVersions {
 
 // "templates" excludes devtools/templates (scaffolding templates, not real modules) and
 // "intellij-plugin" is a standalone build not wired into this root project.
-val excludedDirNames = setOf(".git", ".gradle", ".kotlin", "build", "node_modules", "build-logic", "templates", "intellij-plugin")
+val excludedDirNames = setOf(".claude", ".git", ".gradle", ".kotlin", "build", "node_modules", "build-logic", "templates", "intellij-plugin")
 
 fun discoverAllModules(rootDir: File): Map<String, File> {
     return rootDir.walkTopDown()

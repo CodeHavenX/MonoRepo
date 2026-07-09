@@ -145,12 +145,13 @@ object OperationHandler {
                             contextRetriever(call)
                         }
                     if (contextResult.isFailure) {
+                        // A ClientRequestException (e.g. the 401 thrown for an unauthenticated client)
+                        // maps to its own status. Any other failure means the context could not be
+                        // retrieved at all (e.g. the auth provider is unreachable) and must surface as a
+                        // 5xx rather than masquerading as a 401.
                         call.validateClientError(
                             tag = TAG,
-                            exception =
-                            ClientRequestExceptions.UnauthorizedException(
-                                "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}",
-                            ),
+                            result = contextResult,
                         )
                         return@handle
                     }

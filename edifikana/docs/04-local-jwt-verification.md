@@ -1,6 +1,6 @@
 # Plan 4 — Local JWT verification
 
-**Type:** Performance / resilience &nbsp;·&nbsp; **Severity:** Medium &nbsp;·&nbsp; **Effort:** Medium
+**Type:** Performance / resilience &nbsp;·&nbsp; **Severity:** Medium &nbsp;·&nbsp; **Effort:** Medium &nbsp;·&nbsp; **Tracking:** [#532](https://github.com/CodeHavenX/MonoRepo/issues/532)
 
 ## Problem
 

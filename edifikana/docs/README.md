@@ -24,7 +24,7 @@ gaining structural route protection.
 | 1 | [Context retriever error handling](01-context-retriever-error-handling.md) | Correctness bug | High | Small | ✅ Done |
 | 2 | [Remove dead `handleCall` path](02-remove-dead-handlecall-path.md) | Cleanup | Medium | Small | ✅ Done |
 | 3 | [Structural route authentication (hybrid)](03-structural-route-authentication.md) | Architecture | Medium | Large | Backlog |
-| 4 | [Local JWT verification](04-local-jwt-verification.md) | Performance | Medium | Medium | Backlog |
+| 4 | [Local JWT verification](04-local-jwt-verification.md) | Performance | Medium | Medium | [Tracked (#532)](https://github.com/CodeHavenX/MonoRepo/issues/532) |
 | 5 | [OpenAPI security inference](05-openapi-security-inference.md) | Maintainability | Low | — (folded into #3) | Backlog |
 
 > Plans 1 and 2 were implemented together (they share the auth request-handling path in

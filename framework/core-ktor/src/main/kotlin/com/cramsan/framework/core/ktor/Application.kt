@@ -1,8 +1,9 @@
 package com.cramsan.framework.core.ktor
 
 import com.cramsan.framework.logging.EventLoggerInterface
-import io.ktor.http.ContentType
+import com.cramsan.framework.networkapi.ApiInfo
 import io.ktor.http.HttpStatusCode
+import io.ktor.openapi.OpenApiInfo
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStarted
 import io.ktor.server.application.ApplicationStarting
@@ -10,12 +11,12 @@ import io.ktor.server.application.ApplicationStopPreparing
 import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.application.ApplicationStopping
 import io.ktor.server.application.ServerReady
-import io.ktor.server.plugins.openapi.openAPI
 import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.head
 import io.ktor.server.routing.openapi.OpenApiDocSource
+import io.ktor.server.routing.openapi.registerJWTSecurityScheme
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.routing.routingRoot
@@ -64,20 +65,32 @@ fun Application.configureHealthEndpoint() {
 }
 
 /**
+ * Name of the JWT bearer security scheme registered for authenticated operations. Referenced by the
+ * per-operation security requirement emitted in the OpenAPI documentation.
+ */
+internal const val BEARER_SECURITY_SCHEME = "bearerAuth"
+
+/**
  * Configure the OpenApi endpoint
  * https://ktor.io/docs/server-openapi.html
+ *
+ * @param info Metadata (title/version/description) describing the API, surfaced as the OpenAPI
+ * `info` object.
  */
-fun Application.configureOpenApiEndpoint() {
+fun Application.configureOpenApiEndpoint(info: ApiInfo) {
+    registerJWTSecurityScheme(BEARER_SECURITY_SCHEME)
+    val openApiInfo =
+        OpenApiInfo(
+            title = info.title,
+            version = info.version,
+            description = info.description,
+            contact = null,
+        )
     routing {
-        openAPI(path = "openapi") {
+        swaggerUI("swaggerUI") {
+            this.info = openApiInfo
             source =
                 OpenApiDocSource.Routing {
-                    routingRoot.descendants()
-                }
-        }
-        swaggerUI("swaggerUI") {
-            source =
-                OpenApiDocSource.Routing(ContentType.Application.Json) {
                     routingRoot.descendants()
                 }
         }

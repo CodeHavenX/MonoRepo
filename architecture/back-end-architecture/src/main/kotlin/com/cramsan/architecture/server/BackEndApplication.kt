@@ -10,6 +10,7 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
 import com.cramsan.framework.core.ktor.configureOpenApiEndpoint
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.networkapi.ApiInfo
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
@@ -23,6 +24,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.ktor.ext.getKoin
 import org.koin.ktor.ext.inject
 
 /**
@@ -62,7 +64,8 @@ fun Application.startKtor() =
         when (loadExtraControllers) {
             EndpointsToLoad.ALL -> {
                 configureHealthEndpoint()
-                configureOpenApiEndpoint()
+                val apiInfo = getKoin().get<ApiInfo>()
+                configureOpenApiEndpoint(apiInfo)
             }
 
             EndpointsToLoad.IGNORE_EXTRAS -> {

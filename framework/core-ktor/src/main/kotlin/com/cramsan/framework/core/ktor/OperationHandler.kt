@@ -78,6 +78,8 @@ object OperationHandler {
      *
      * @param route The Ktor route where the operation will be handled.
      * @param contextRetriever A suspend function to retrieve the context from the [ApplicationCall].
+     * @param authenticated Whether the operation requires authentication. Drives the documented
+     * security requirement and whether 401 is an expected response. Defaults to true.
      * @param handler A suspend function that processes the request and returns an [HttpResponse].
      */
     fun <
@@ -90,11 +92,12 @@ object OperationHandler {
         > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
         route: Route,
         contextRetriever: suspend ApplicationCall.() -> C,
+        authenticated: Boolean = true,
         handler: suspend ApplicationCall.(
             OperationRequest<RequestType, QueryParamType, PathParamType, C>,
         ) -> HttpResponse<ResponseType>,
     ) {
-        this.handleImpl(route, contextRetriever) { request ->
+        this.handleImpl(route, contextRetriever, authenticated) { request ->
             handler(request)
         }
     }
@@ -108,6 +111,7 @@ object OperationHandler {
      *
      * @param route The Ktor route where the operation will be handled.
      * @param contextRetriever A suspend function to retrieve the context from the [ApplicationCall].
+     * @param authenticated Whether the operation requires authentication (drives security docs and 401).
      * @param block A suspend function that processes the request and returns an [HttpResponse].
      */
     @OptIn(InternalSerializationApi::class, ExperimentalKtorApi::class)
@@ -122,6 +126,7 @@ object OperationHandler {
         > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handleImpl(
         route: Route,
         contextRetriever: suspend (ApplicationCall) -> Context,
+        authenticated: Boolean,
         block: suspend ApplicationCall.(
             OperationRequest<RequestType, QueryParamType, PathParamType, Context>,
         ) -> HttpResponse<ResponseType>,
@@ -200,7 +205,7 @@ object OperationHandler {
 
                     if (responseResult.isFailure) {
                         val status = responseResult.statusCodeForFailure()
-                        if (handler.responses.permits(status)) {
+                        if (handler.responses.permits(status, authenticated)) {
                             call.validateClientError(
                                 tag = TAG,
                                 result = responseResult,
@@ -212,7 +217,7 @@ object OperationHandler {
                     }
 
                     val response = responseResult.getOrThrow()
-                    if (!handler.responses.permits(response.status)) {
+                    if (!handler.responses.permits(response.status, authenticated)) {
                         call.respondUndeclaredStatus(response.status, null)
                         return@handle
                     }
@@ -229,7 +234,7 @@ object OperationHandler {
                         call.respond(Unit)
                     }
                 }
-            }.rounteDescription(method, handler, apiPath)
+            }.rounteDescription(method, handler, apiPath, authenticated)
     }
 }
 
@@ -242,16 +247,18 @@ private fun <
     method: HttpMethod,
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
     apiPath: String,
+    authenticated: Boolean,
 ): Route =
     describe {
-        describeMetadata(method, handler, apiPath)
+        describeMetadata(method, handler, apiPath, authenticated)
         describeParameters(handler)
         describeRequestBody(handler)
-        describeResponses(handler)
+        describeResponses(handler, authenticated)
     }
 
 /**
- * Emits the operation id, summary, description, deprecation flag, and tags into the OpenAPI operation.
+ * Emits the operation id, summary, description, deprecation flag, tags, and (for authenticated
+ * operations) the security requirement into the OpenAPI operation.
  */
 private fun <
     RequestType : RequestBody,
@@ -262,6 +269,7 @@ private fun <
     method: HttpMethod,
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
     apiPath: String,
+    authenticated: Boolean,
 ) {
     operationId =
         buildList {
@@ -281,6 +289,12 @@ private fun <
         handler.tags.forEach { tag(it) }
     } else {
         tag(apiPath.split("/").firstOrNull { it.isNotEmpty() } ?: "api")
+    }
+
+    if (authenticated) {
+        security {
+            requirement(BEARER_SECURITY_SCHEME)
+        }
     }
 }
 
@@ -379,6 +393,7 @@ private fun <
     ResponseType : ResponseBody,
     > io.ktor.openapi.Operation.Builder.describeResponses(
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+    authenticated: Boolean,
 ) {
     when (val policy = handler.responses) {
         AllowAnyResponse -> {
@@ -394,25 +409,27 @@ private fun <
                 } else {
                     HttpStatusCode.NoContent {}
                 }
-                HttpStatusCode.Unauthorized {}
+                if (authenticated) {
+                    HttpStatusCode.Unauthorized {}
+                }
                 HttpStatusCode.BadRequest {}
             }
         }
 
         UniversalResponsesOnly -> {
-            describeStrictResponses(handler, emptyMap())
+            describeStrictResponses(handler, emptyMap(), authenticated)
         }
 
         is AdditionalResponses -> {
-            describeStrictResponses(handler, policy.responses)
+            describeStrictResponses(handler, policy.responses, authenticated)
         }
     }
 }
 
 /**
- * Emits the success response, the universal responses (400/401/500), and each explicitly [declared]
- * domain-specific response for an operation with a strict response policy. Declared descriptions
- * override the universal defaults for the same status code.
+ * Emits the success response, the universal responses (400/500, plus 401 when [authenticated]), and
+ * each explicitly [declared] domain-specific response for an operation with a strict response
+ * policy. Declared descriptions override the universal defaults for the same status code.
  */
 @OptIn(InternalSerializationApi::class)
 private fun <
@@ -423,6 +440,7 @@ private fun <
     > io.ktor.openapi.Operation.Builder.describeStrictResponses(
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
     declared: Map<HttpStatusCode, String>,
+    authenticated: Boolean,
 ) {
     responses {
         if (handler.responseBodyType != NoResponseBody::class) {
@@ -440,14 +458,17 @@ private fun <
         HttpStatusCode.BadRequest {
             description = declared[HttpStatusCode.BadRequest] ?: "The request was malformed or failed validation."
         }
-        HttpStatusCode.Unauthorized {
-            description = declared[HttpStatusCode.Unauthorized] ?: "Authentication is required or has failed."
+        if (authenticated) {
+            HttpStatusCode.Unauthorized {
+                description = declared[HttpStatusCode.Unauthorized] ?: "Authentication is required or has failed."
+            }
         }
         HttpStatusCode.InternalServerError {
             description = declared[HttpStatusCode.InternalServerError] ?: "An unexpected server error occurred."
         }
+        val universal = universalStatusValues(authenticated)
         declared.forEach { (status, statusDescription) ->
-            if (status.value !in UNIVERSAL_STATUS_VALUES) {
+            if (status.value !in universal) {
                 status { description = statusDescription }
             }
         }
@@ -455,35 +476,40 @@ private fun <
 }
 
 /**
- * HTTP status codes that are always permitted and documented for an operation under a strict
- * policy: the success code, request-validation failures, authentication failures, and unexpected
- * server errors.
+ * HTTP status codes that are always permitted and documented for an operation under a strict policy:
+ * the success code, request-validation failures, unexpected server errors, and — for authenticated
+ * operations only — authentication failures (401). Public operations do not produce a 401.
  */
-private val UNIVERSAL_STATUS_VALUES =
-    setOf(
-        HttpStatusCode.OK.value,
-        HttpStatusCode.BadRequest.value,
-        HttpStatusCode.Unauthorized.value,
-        HttpStatusCode.InternalServerError.value,
-    )
+private fun universalStatusValues(authenticated: Boolean): Set<Int> =
+    buildSet {
+        add(HttpStatusCode.OK.value)
+        add(HttpStatusCode.BadRequest.value)
+        add(HttpStatusCode.InternalServerError.value)
+        if (authenticated) {
+            add(HttpStatusCode.Unauthorized.value)
+        }
+    }
 
 /**
- * Returns whether the given [status] is permitted by this policy. [AllowAnyResponse] permits
- * everything; [UniversalResponsesOnly] permits only the universal statuses; [AdditionalResponses]
- * permits the universal statuses plus any explicitly declared status.
+ * Returns whether the given [status] is permitted by this policy for an operation with the given
+ * [authenticated] flag. [AllowAnyResponse] permits everything; [UniversalResponsesOnly] permits only
+ * the universal statuses; [AdditionalResponses] permits the universal statuses plus any declared one.
  */
-private fun ResponsePolicy.permits(status: HttpStatusCode): Boolean =
+private fun ResponsePolicy.permits(
+    status: HttpStatusCode,
+    authenticated: Boolean,
+): Boolean =
     when (this) {
         AllowAnyResponse -> {
             true
         }
 
         UniversalResponsesOnly -> {
-            status.value in UNIVERSAL_STATUS_VALUES
+            status.value in universalStatusValues(authenticated)
         }
 
         is AdditionalResponses -> {
-            status.value in UNIVERSAL_STATUS_VALUES ||
+            status.value in universalStatusValues(authenticated) ||
                 responses.keys.any { it.value == status.value }
         }
     }

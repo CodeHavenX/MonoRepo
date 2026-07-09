@@ -43,6 +43,7 @@ inline fun <
     operation.handle(
         route,
         { requireAuthenticatedClientContext(contextRetriever.getContext(this)) },
+        authenticated = true,
     ) { request ->
         val response = handler(request)
 
@@ -83,6 +84,7 @@ inline fun <
     operation.handle(
         route,
         { contextRetriever.getContext(this) },
+        authenticated = false,
     ) { request ->
         val response = handler(request)
 

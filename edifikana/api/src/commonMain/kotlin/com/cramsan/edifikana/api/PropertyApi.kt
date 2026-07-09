@@ -9,8 +9,9 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.annotations.api.NoResponseBody
-import com.cramsan.framework.networkapi.AllowedResponses
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 
@@ -29,7 +30,7 @@ object PropertyApi : Api("property") {
             method = HttpMethod.Post,
             summary = "Create a property",
             description = "Creates a new property within the caller's organization. Requires the ADMIN role.",
-            responses = AllowedResponses { },
+            responses = UniversalResponsesOnly,
         )
 
     val getProperty =
@@ -43,7 +44,7 @@ object PropertyApi : Api("property") {
             summary = "Get a property",
             description = "Retrieves a single property by its identifier. Requires the MANAGER role or higher.",
             responses =
-            AllowedResponses {
+            AdditionalResponses {
                 HttpStatusCode.NotFound describedAs "No property exists for the given id."
             },
         )
@@ -58,7 +59,7 @@ object PropertyApi : Api("property") {
             method = HttpMethod.Get,
             summary = "List assigned properties",
             description = "Returns all properties the authenticated user has been assigned access to.",
-            responses = AllowedResponses { },
+            responses = UniversalResponsesOnly,
         )
 
     val updateProperty =
@@ -71,7 +72,7 @@ object PropertyApi : Api("property") {
             method = HttpMethod.Put,
             summary = "Update a property",
             description = "Updates the mutable fields of an existing property. Requires the ADMIN role.",
-            responses = AllowedResponses { },
+            responses = UniversalResponsesOnly,
         )
 
     val deleteProperty =
@@ -84,6 +85,6 @@ object PropertyApi : Api("property") {
             method = HttpMethod.Delete,
             summary = "Delete a property",
             description = "Permanently deletes a property by its identifier. Requires the ADMIN role.",
-            responses = AllowedResponses { },
+            responses = UniversalResponsesOnly,
         )
 }

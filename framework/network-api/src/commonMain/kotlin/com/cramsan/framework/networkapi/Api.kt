@@ -48,7 +48,7 @@ open class Api(val path: String) {
      * @param tags OpenAPI tags used to group this operation. When empty, a tag is derived from the API path.
      * @param deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
      * @param responses Declares the responses the operation is allowed to produce (docs + runtime
-     * enforcement). Defaults to [AllowAll].
+     * enforcement). Defaults to [AllowAnyResponse].
      * @param requestBodyType The KClass of the request body type.
      * @param queryParamType The KClass of the query parameter type.
      * @param pathParamType The KClass of the path parameter type.
@@ -67,7 +67,7 @@ open class Api(val path: String) {
         description: String? = null,
         tags: List<String> = emptyList(),
         deprecated: Boolean = false,
-        responses: ResponsePolicy = AllowAll,
+        responses: ResponsePolicy = AllowAnyResponse,
         requestBodyType: KClass<RequestType> = RequestType::class,
         queryParamType: KClass<QueryParamType> = QueryParamType::class,
         pathParamType: KClass<PathParamType> = PathParamType::class,

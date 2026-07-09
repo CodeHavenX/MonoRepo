@@ -10,8 +10,9 @@ import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.logging.EventLogger
 import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
-import com.cramsan.framework.networkapi.AllowedResponses
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.request.get
 import io.ktor.http.HttpMethod
@@ -29,9 +30,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * Verifies that an operation's [AllowedResponses] policy is enforced at runtime: a response whose
+ * Verifies that an operation's strict response policy is enforced at runtime: a response whose
  * status is not declared (nor part of the universal set) is coerced to a 500, while declared
- * responses and the permissive [com.cramsan.framework.networkapi.AllowAll] policy pass through.
+ * responses and the permissive [com.cramsan.framework.networkapi.AllowAnyResponse] policy pass
+ * through.
  */
 class ResponsePolicyEnforcementTest {
     @Serializable
@@ -42,7 +44,7 @@ class ResponsePolicyEnforcementTest {
             operation<NoRequestBody, NoQueryParam, NoPathParam, DummyResponse>(
                 HttpMethod.Get,
                 path = "strict",
-                responses = AllowedResponses { },
+                responses = UniversalResponsesOnly,
             )
 
         val declaresNotFound =
@@ -50,7 +52,7 @@ class ResponsePolicyEnforcementTest {
                 HttpMethod.Get,
                 path = "declares-not-found",
                 responses =
-                AllowedResponses {
+                AdditionalResponses {
                     HttpStatusCode.NotFound describedAs "Not found."
                 },
             )
@@ -60,7 +62,7 @@ class ResponsePolicyEnforcementTest {
                 HttpMethod.Get,
                 path = "declares-forbidden",
                 responses =
-                AllowedResponses {
+                AdditionalResponses {
                     HttpStatusCode.Forbidden describedAs "Forbidden."
                 },
             )
@@ -164,7 +166,7 @@ class ResponsePolicyEnforcementTest {
         }
 
     @Test
-    fun `AllowAll policy leaves a 404 untouched`() =
+    fun `AllowAnyResponse policy leaves a 404 untouched`() =
         runTest {
             testApplication {
                 application {

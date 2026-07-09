@@ -13,12 +13,13 @@ import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.httpserializers.decodeFromValue
 import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logV
-import com.cramsan.framework.networkapi.AllowAll
-import com.cramsan.framework.networkapi.AllowedResponses
+import com.cramsan.framework.networkapi.AdditionalResponses
+import com.cramsan.framework.networkapi.AllowAnyResponse
 import com.cramsan.framework.networkapi.Api
 import com.cramsan.framework.networkapi.Operation
 import com.cramsan.framework.networkapi.OperationHandler
 import com.cramsan.framework.networkapi.ResponsePolicy
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -365,9 +366,10 @@ private fun <
 }
 
 /**
- * Emits the response schemas into the OpenAPI operation. When the operation declares an
- * [AllowedResponses] policy, the documented responses (and their descriptions) reflect that
- * allow-list plus the universal responses. Otherwise a generic set of responses is emitted.
+ * Emits the response schemas into the OpenAPI operation. For a strict policy
+ * ([UniversalResponsesOnly] or [AdditionalResponses]) the documented responses (and their
+ * descriptions) reflect the universal responses plus any declared ones. For [AllowAnyResponse] a
+ * generic set of responses is emitted.
  */
 @OptIn(InternalSerializationApi::class)
 private fun <
@@ -379,7 +381,7 @@ private fun <
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
 ) {
     when (val policy = handler.responses) {
-        AllowAll -> {
+        AllowAnyResponse -> {
             responses {
                 if (handler.responseBodyType != NoResponseBody::class) {
                     HttpStatusCode.OK {
@@ -397,16 +399,20 @@ private fun <
             }
         }
 
-        is AllowedResponses -> {
-            describeAllowedResponses(handler, policy)
+        UniversalResponsesOnly -> {
+            describeStrictResponses(handler, emptyMap())
+        }
+
+        is AdditionalResponses -> {
+            describeStrictResponses(handler, policy.responses)
         }
     }
 }
 
 /**
- * Emits the success response, the universal responses (400/401/500), and each explicitly declared
- * response for an operation with an [AllowedResponses] policy. Declared descriptions override the
- * universal defaults for the same status code.
+ * Emits the success response, the universal responses (400/401/500), and each explicitly [declared]
+ * domain-specific response for an operation with a strict response policy. Declared descriptions
+ * override the universal defaults for the same status code.
  */
 @OptIn(InternalSerializationApi::class)
 private fun <
@@ -414,11 +420,10 @@ private fun <
     QueryParamType : QueryParam,
     PathParamType : PathParam,
     ResponseType : ResponseBody,
-    > io.ktor.openapi.Operation.Builder.describeAllowedResponses(
+    > io.ktor.openapi.Operation.Builder.describeStrictResponses(
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
-    policy: AllowedResponses,
+    declared: Map<HttpStatusCode, String>,
 ) {
-    val declared = policy.responses
     responses {
         if (handler.responseBodyType != NoResponseBody::class) {
             HttpStatusCode.OK {
@@ -450,9 +455,9 @@ private fun <
 }
 
 /**
- * HTTP status codes that are always permitted and documented for an operation, regardless of its
- * declared [AllowedResponses]: the success code, request-validation failures, authentication
- * failures, and unexpected server errors.
+ * HTTP status codes that are always permitted and documented for an operation under a strict
+ * policy: the success code, request-validation failures, authentication failures, and unexpected
+ * server errors.
  */
 private val UNIVERSAL_STATUS_VALUES =
     setOf(
@@ -463,16 +468,21 @@ private val UNIVERSAL_STATUS_VALUES =
     )
 
 /**
- * Returns whether the given [status] is permitted by this policy. [AllowAll] permits everything;
- * [AllowedResponses] permits the universal statuses plus any explicitly declared status.
+ * Returns whether the given [status] is permitted by this policy. [AllowAnyResponse] permits
+ * everything; [UniversalResponsesOnly] permits only the universal statuses; [AdditionalResponses]
+ * permits the universal statuses plus any explicitly declared status.
  */
 private fun ResponsePolicy.permits(status: HttpStatusCode): Boolean =
     when (this) {
-        AllowAll -> {
+        AllowAnyResponse -> {
             true
         }
 
-        is AllowedResponses -> {
+        UniversalResponsesOnly -> {
+            status.value in UNIVERSAL_STATUS_VALUES
+        }
+
+        is AdditionalResponses -> {
             status.value in UNIVERSAL_STATUS_VALUES ||
                 responses.keys.any { it.value == status.value }
         }

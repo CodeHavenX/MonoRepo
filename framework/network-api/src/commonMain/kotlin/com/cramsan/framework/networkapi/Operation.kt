@@ -31,7 +31,7 @@ import kotlin.reflect.KClass
  * @property tags OpenAPI tags used to group this operation. When empty, a tag is derived from the API path.
  * @property deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
  * @property responses Declares the responses the operation is allowed to produce. Drives OpenAPI docs
- * and runtime enforcement. Defaults to [AllowAll] (no enforcement).
+ * and runtime enforcement. Defaults to [AllowAnyResponse] (no enforcement).
  * @throws IllegalArgumentException if a GET operation is defined with a request body.
  */
 data class Operation<
@@ -51,7 +51,7 @@ data class Operation<
     val description: String? = null,
     val tags: List<String> = emptyList(),
     val deprecated: Boolean = false,
-    val responses: ResponsePolicy = AllowAll,
+    val responses: ResponsePolicy = AllowAnyResponse,
 ) {
     init {
         if (requestBodyType != NoRequestBody::class && method == HttpMethod.Get) {
@@ -453,7 +453,7 @@ data class OperationRequest<
  * @property tags OpenAPI tags used to group this operation. When empty, a tag is derived from the API path.
  * @property deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
  * @property responses Declares the responses the operation is allowed to produce. Drives OpenAPI docs
- * and runtime enforcement. Defaults to [AllowAll] (no enforcement).
+ * and runtime enforcement. Defaults to [AllowAnyResponse] (no enforcement).
  */
 data class OperationHandler<
     RequestType : RequestBody,
@@ -472,5 +472,5 @@ data class OperationHandler<
     val description: String? = null,
     val tags: List<String> = emptyList(),
     val deprecated: Boolean = false,
-    val responses: ResponsePolicy = AllowAll,
+    val responses: ResponsePolicy = AllowAnyResponse,
 )

@@ -11,10 +11,14 @@ import com.cramsan.framework.annotations.api.RequestBody
 import com.cramsan.framework.annotations.api.ResponseBody
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.httpserializers.decodeFromValue
+import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logV
+import com.cramsan.framework.networkapi.AllowAll
+import com.cramsan.framework.networkapi.AllowedResponses
 import com.cramsan.framework.networkapi.Api
 import com.cramsan.framework.networkapi.Operation
 import com.cramsan.framework.networkapi.OperationHandler
+import com.cramsan.framework.networkapi.ResponsePolicy
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -194,14 +198,23 @@ object OperationHandler {
                         }
 
                     if (responseResult.isFailure) {
-                        call.validateClientError(
-                            tag = TAG,
-                            result = responseResult,
-                        )
+                        val status = responseResult.statusCodeForFailure()
+                        if (handler.responses.permits(status)) {
+                            call.validateClientError(
+                                tag = TAG,
+                                result = responseResult,
+                            )
+                        } else {
+                            call.respondUndeclaredStatus(status, responseResult.exceptionOrNull())
+                        }
                         return@handle
                     }
 
                     val response = responseResult.getOrThrow()
+                    if (!handler.responses.permits(response.status)) {
+                        call.respondUndeclaredStatus(response.status, null)
+                        return@handle
+                    }
                     call.response.status(response.status)
                     val body = response.body
                     if (body == null) {
@@ -352,7 +365,9 @@ private fun <
 }
 
 /**
- * Emits the response schemas into the OpenAPI operation.
+ * Emits the response schemas into the OpenAPI operation. When the operation declares an
+ * [AllowedResponses] policy, the documented responses (and their descriptions) reflect that
+ * allow-list plus the universal responses. Otherwise a generic set of responses is emitted.
  */
 @OptIn(InternalSerializationApi::class)
 private fun <
@@ -363,9 +378,51 @@ private fun <
     > io.ktor.openapi.Operation.Builder.describeResponses(
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
 ) {
+    when (val policy = handler.responses) {
+        AllowAll -> {
+            responses {
+                if (handler.responseBodyType != NoResponseBody::class) {
+                    HttpStatusCode.OK {
+                        schema =
+                            handler.responseBodyType
+                                .serializer()
+                                .descriptor
+                                .buildJsonSchema(visiting = mutableSetOf())
+                    }
+                } else {
+                    HttpStatusCode.NoContent {}
+                }
+                HttpStatusCode.Unauthorized {}
+                HttpStatusCode.BadRequest {}
+            }
+        }
+
+        is AllowedResponses -> {
+            describeAllowedResponses(handler, policy)
+        }
+    }
+}
+
+/**
+ * Emits the success response, the universal responses (400/401/500), and each explicitly declared
+ * response for an operation with an [AllowedResponses] policy. Declared descriptions override the
+ * universal defaults for the same status code.
+ */
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeAllowedResponses(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+    policy: AllowedResponses,
+) {
+    val declared = policy.responses
     responses {
         if (handler.responseBodyType != NoResponseBody::class) {
             HttpStatusCode.OK {
+                description = declared[HttpStatusCode.OK] ?: "Successful response."
                 schema =
                     handler.responseBodyType
                         .serializer()
@@ -373,11 +430,77 @@ private fun <
                         .buildJsonSchema(visiting = mutableSetOf())
             }
         } else {
-            HttpStatusCode.NoContent {}
+            HttpStatusCode.OK { description = declared[HttpStatusCode.OK] ?: "The operation completed successfully." }
         }
-        HttpStatusCode.Unauthorized {}
-        HttpStatusCode.BadRequest {}
+        HttpStatusCode.BadRequest {
+            description = declared[HttpStatusCode.BadRequest] ?: "The request was malformed or failed validation."
+        }
+        HttpStatusCode.Unauthorized {
+            description = declared[HttpStatusCode.Unauthorized] ?: "Authentication is required or has failed."
+        }
+        HttpStatusCode.InternalServerError {
+            description = declared[HttpStatusCode.InternalServerError] ?: "An unexpected server error occurred."
+        }
+        declared.forEach { (status, statusDescription) ->
+            if (status.value !in UNIVERSAL_STATUS_VALUES) {
+                status { description = statusDescription }
+            }
+        }
     }
+}
+
+/**
+ * HTTP status codes that are always permitted and documented for an operation, regardless of its
+ * declared [AllowedResponses]: the success code, request-validation failures, authentication
+ * failures, and unexpected server errors.
+ */
+private val UNIVERSAL_STATUS_VALUES =
+    setOf(
+        HttpStatusCode.OK.value,
+        HttpStatusCode.BadRequest.value,
+        HttpStatusCode.Unauthorized.value,
+        HttpStatusCode.InternalServerError.value,
+    )
+
+/**
+ * Returns whether the given [status] is permitted by this policy. [AllowAll] permits everything;
+ * [AllowedResponses] permits the universal statuses plus any explicitly declared status.
+ */
+private fun ResponsePolicy.permits(status: HttpStatusCode): Boolean =
+    when (this) {
+        AllowAll -> {
+            true
+        }
+
+        is AllowedResponses -> {
+            status.value in UNIVERSAL_STATUS_VALUES ||
+                responses.keys.any { it.value == status.value }
+        }
+    }
+
+/**
+ * Maps a failed handler [Result] to the HTTP status it would produce: the status of a
+ * [ClientRequestExceptions], or 500 for any other failure.
+ */
+private fun Result<*>.statusCodeForFailure(): HttpStatusCode =
+    (exceptionOrNull() as? ClientRequestExceptions)
+        ?.let { HttpStatusCode.fromValue(it.statusCode) }
+        ?: HttpStatusCode.InternalServerError
+
+/**
+ * Logs and responds with a 500 when an operation produced a [status] not permitted by its
+ * [ResponsePolicy], enforcing that only declared responses are returned.
+ */
+private suspend fun ApplicationCall.respondUndeclaredStatus(
+    status: HttpStatusCode,
+    cause: Throwable?,
+) {
+    logE(
+        TAG,
+        "Operation produced undeclared response status ${status.value}; coercing to 500",
+        cause,
+    )
+    respond(HttpStatusCode.InternalServerError, "Internal server error")
 }
 
 @OptIn(InternalSerializationApi::class)

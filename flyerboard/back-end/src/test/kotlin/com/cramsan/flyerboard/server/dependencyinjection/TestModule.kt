@@ -1,5 +1,6 @@
 package com.cramsan.flyerboard.server.dependencyinjection
 
+import com.cramsan.architecture.server.dependencyinjection.EndpointsToLoad
 import com.cramsan.flyerboard.server.controller.FlyerController
 import com.cramsan.flyerboard.server.controller.HealthController
 import com.cramsan.flyerboard.server.controller.ModerationController
@@ -20,6 +21,8 @@ internal fun testApplicationModule(json: Json) =
         single<Json> { json }
 
         single<ContextRetriever<*>> { mockk() }
+
+        single { EndpointsToLoad.IGNORE_EXTRAS }
 
         // Add additional test bindings if necessary
     }

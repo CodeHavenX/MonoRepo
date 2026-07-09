@@ -11,6 +11,8 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.user.UserInfo
+import io.github.jan.supabase.exceptions.HttpRequestException
+import io.github.jan.supabase.exceptions.RestException
 import io.ktor.http.Headers
 import io.ktor.http.headersOf
 import io.ktor.server.application.ApplicationCall
@@ -26,6 +28,7 @@ import org.junit.jupiter.api.Test
 import org.koin.core.context.stopKoin
 import kotlin.test.AfterTest
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -92,14 +95,28 @@ class FlyerBoardContextRetrieverTest {
         }
 
     @Test
-    fun `getContext returns unauthenticated when retrieveUser throws`() =
+    fun `getContext returns unauthenticated when Supabase rejects the token`() =
         runTest {
             val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
-            coEvery { auth.retrieveUser(any()) } throws RuntimeException("invalid token")
+            coEvery { auth.retrieveUser(any()) } throws mockk<RestException>(relaxed = true)
 
             val result = contextRetriever.getContext(applicationCall)
 
             assertTrue(result is ClientContext.UnauthenticatedClientContext)
+            coVerify(exactly = 0) { userProfileDatastore.getUserProfile(any()) }
+        }
+
+    @Test
+    fun `getContext propagates the failure when Supabase is unreachable`() =
+        runTest {
+            val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
+            coEvery { auth.retrieveUser(any()) } throws mockk<HttpRequestException>(relaxed = true)
+
+            // A transport failure must NOT be swallowed into an unauthenticated context; it propagates
+            // so the handler surfaces a 5xx instead of a misleading 401.
+            assertFailsWith<HttpRequestException> {
+                contextRetriever.getContext(applicationCall)
+            }
             coVerify(exactly = 0) { userProfileDatastore.getUserProfile(any()) }
         }
 
@@ -166,7 +183,7 @@ class FlyerBoardContextRetrieverTest {
         }
 
     @Test
-    fun `getContext returns unauthenticated when getUserProfile fails`() =
+    fun `getContext propagates the failure when getUserProfile fails`() =
         runTest {
             val applicationCall = makeApplicationCall(headerValue = "Bearer sometoken")
             val userInfo = makeUserInfo(userId = "user-1")
@@ -175,9 +192,11 @@ class FlyerBoardContextRetrieverTest {
             coEvery { userProfileDatastore.getUserProfile(UserId("user-1")) } returns
                 Result.failure(RuntimeException("db error"))
 
-            val result = contextRetriever.getContext(applicationCall)
-
-            assertTrue(result is ClientContext.UnauthenticatedClientContext)
+            // A datastore failure is a server-side problem, not an auth failure: it must propagate so the
+            // handler surfaces a 5xx instead of a misleading 401.
+            assertFailsWith<RuntimeException> {
+                contextRetriever.getContext(applicationCall)
+            }
         }
 
     @Test

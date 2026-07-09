@@ -9,6 +9,7 @@ import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.exceptions.RestException
 import io.ktor.server.application.ApplicationCall
 
 /**
@@ -35,8 +36,11 @@ class FlyerBoardContextRetriever(private val auth: Auth, private val userProfile
         val userInfo =
             try {
                 auth.retrieveUser(token)
-            } catch (e: Exception) {
-                logW(TAG, "Failed to validate Supabase token: ${e.message}")
+            } catch (e: RestException) {
+                // Supabase rejected the token (invalid/expired): the client is unauthenticated.
+                // Transport failures (e.g. HttpRequestException when Supabase is unreachable) are NOT
+                // caught here so they propagate and surface as a 5xx instead of a misleading 401.
+                logW(TAG, "Supabase rejected the auth token: ${e.message}")
                 return ClientContext.UnauthenticatedClientContext()
             }
 
@@ -46,8 +50,10 @@ class FlyerBoardContextRetriever(private val auth: Auth, private val userProfile
             userProfileDatastore
                 .getUserProfile(userId)
                 .getOrElse { e ->
+                    // A datastore failure is a server-side problem, not an auth failure. Propagate it so
+                    // the handler surfaces a 5xx instead of returning a misleading 401.
                     logW(TAG, "Failed to retrieve user profile for ${userId.userId}: ${e.message}")
-                    return ClientContext.UnauthenticatedClientContext()
+                    throw e
                 }
 
         return ClientContext.AuthenticatedClientContext(

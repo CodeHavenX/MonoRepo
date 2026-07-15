@@ -1,18 +1,20 @@
 package com.cramsan.flyerboard.client.lib.service
 
-import com.cramsan.flyerboard.lib.serialization.HEADER_TOKEN_AUTH
 import io.github.jan.supabase.auth.Auth
 import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.http.HttpHeaders
 
 /**
- * A plugin that adds the current access token to the request headers.
+ * A plugin that attaches the current Supabase access token to each request as a standard
+ * `Authorization: Bearer <token>` credential. The token is read fresh on every request so that
+ * Supabase remains the single authority over the token lifecycle (issuance and refresh).
  */
 @Suppress("FunctionName")
 fun AuthRequestPlugin(auth: Auth) =
     createClientPlugin("AuthRequestPlugin") {
         onRequest { request, _ ->
             auth.currentAccessTokenOrNull()?.let {
-                request.headers.append(HEADER_TOKEN_AUTH, it)
+                request.headers.append(HttpHeaders.Authorization, "Bearer $it")
             }
         }
     }

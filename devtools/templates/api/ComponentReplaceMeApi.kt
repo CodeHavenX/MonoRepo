@@ -13,7 +13,15 @@ import io.ktor.http.HttpMethod
  * Defines the routes and HTTP operations exposed by the backend for this resource.
  * Both the front-end service ([ComponentReplaceMeServiceImpl]) and back-end controller
  * ([ComponentReplaceMeController]) reference this object — it is the single source of
- * truth for the API contract.
+ * truth for the API contract, including each operation's authentication requirement.
+ *
+ * Declare the authentication gate by choosing the factory. This is the single source of truth for auth:
+ * the back-end `handler(...)` and the generated OpenAPI security are derived from it automatically.
+ * - `operation<...>()` — requires a valid bearer token (secure by default); the handler gets an
+ *   authenticated context.
+ * - `publicOperation<...>()` — open, no token required.
+ * - `optionalOperation<...>()` — served with or without a token; the handler gets a context that may or
+ *   may not be authenticated.
  *
  * To add a new operation:
  * ```

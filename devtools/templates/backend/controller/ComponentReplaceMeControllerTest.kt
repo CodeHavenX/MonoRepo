@@ -65,7 +65,7 @@ class ComponentReplaceMeControllerTest :
 
     @Test
     fun `test create`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/componentreplaceme_request.json")
             val expectedResponse = readFileContent("requests/componentreplaceme_response.json")

@@ -403,6 +403,22 @@ class SupabaseUserDatastore(
             }
         }
 
+    /**
+     * Sets canPasswordAuth to true for the given [id]. Returns the updated [User].
+     */
+    override suspend fun setPasswordAuthEnabled(id: UserId): Result<User> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "setPasswordAuthEnabled: %s", id)
+            val currentEntity =
+                getUserImpl(id) ?: throw ClientRequestExceptions.NotFoundException(
+                    message = "Error: User with ID $id not found in our database.",
+                )
+            updateUserImpl(
+                id,
+                authMetadata = currentEntity.authMetadata.copy(canPasswordAuth = true),
+            ).toUser()
+        }
+
     companion object {
         const val TAG = "SupabaseUserDatastore"
     }

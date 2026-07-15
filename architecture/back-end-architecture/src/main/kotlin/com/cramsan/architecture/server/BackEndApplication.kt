@@ -74,7 +74,10 @@ fun Application.startKtor() =
                 configureHealthEndpoint()
                 val apiInfo = getKoin().getOrNull<ApiInfo>()
                 if (apiInfo == null) {
-                    assertFailure(TAG, "AppInfo is not configured. Ensure it is defined in the ApplicationModule,")
+                    assertFailure(
+                        TAG,
+                        "ApiInfo not defined for this application. Ensure that one is defined in the ApplicationModule.",
+                    )
                 } else {
                     configureOpenApiEndpoint(apiInfo)
                 }

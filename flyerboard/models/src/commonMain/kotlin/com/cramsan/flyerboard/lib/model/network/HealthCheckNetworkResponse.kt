@@ -2,6 +2,7 @@ package com.cramsan.flyerboard.lib.model.network
 
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
+import io.ktor.openapi.JsonSchema
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,4 +10,9 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class HealthCheckNetworkResponse(val message: String) : ResponseBody
+@JsonSchema.Description("Response body for a health check request.")
+data class HealthCheckNetworkResponse(
+    @JsonSchema.Description("Health status message.")
+    @JsonSchema.Example("\"ok\"")
+    val message: String,
+) : ResponseBody

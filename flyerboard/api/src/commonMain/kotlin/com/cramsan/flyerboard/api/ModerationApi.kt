@@ -8,8 +8,10 @@ import com.cramsan.flyerboard.lib.model.network.PaginationParams
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 
 /**
  * API definition for moderation operations. All operations require admin role.
@@ -19,12 +21,21 @@ object ModerationApi : Api("api/v1/moderation") {
     /**
      * List all flyers with pending status. Admin-only.
      */
-    val listPending = operation<
-        NoRequestBody,
-        PaginationParams,
-        NoPathParam,
-        FlyerListNetworkResponse,
-    >(HttpMethod.Get)
+    val listPending =
+        operation<
+            NoRequestBody,
+            PaginationParams,
+            NoPathParam,
+            FlyerListNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            summary = "List pending flyers",
+            description = "Returns all flyers awaiting moderation, with pagination. Requires the ADMIN role.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.Forbidden describedAs "Caller does not hold the ADMIN role."
+            },
+        )
 
     /**
      * Apply a moderation action to a flyer. Admin-only.
@@ -36,10 +47,22 @@ object ModerationApi : Api("api/v1/moderation") {
      * support directly. The controller dispatches to the appropriate service method based on
      * the `action` value ("approve" or "reject").
      */
-    val moderate = operation<
-        ModerationActionNetworkRequest,
-        NoQueryParam,
-        FlyerId,
-        FlyerNetworkResponse,
-    >(HttpMethod.Post)
+    val moderate =
+        operation<
+            ModerationActionNetworkRequest,
+            NoQueryParam,
+            FlyerId,
+            FlyerNetworkResponse,
+            >(
+            method = HttpMethod.Post,
+            summary = "Moderate a flyer",
+            description =
+            "Applies a moderation action (approve or reject) to a pending flyer. Requires the ADMIN role. " +
+                "Approve and reject share this endpoint; the action is selected via the 'action' request field.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.Forbidden describedAs "Caller does not hold the ADMIN role."
+                HttpStatusCode.NotFound describedAs "No flyer exists for the given id."
+            },
+        )
 }

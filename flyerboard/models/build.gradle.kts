@@ -30,6 +30,7 @@ kotlin {
                 implementation(project(":framework:interfacelib"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
+                implementation("io.ktor:ktor-openapi-schema:_")
             }
         }
     }

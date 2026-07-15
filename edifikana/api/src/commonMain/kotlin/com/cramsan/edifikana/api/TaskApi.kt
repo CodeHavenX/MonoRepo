@@ -25,43 +25,38 @@ import io.ktor.http.HttpMethod
  */
 
 object TaskApi : Api("task") {
-    val createTask =
-        operation<
-            CreateTaskNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            TaskNetworkResponse,
-            >(HttpMethod.Post)
+    val createTask = operation<
+        CreateTaskNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        TaskNetworkResponse,
+    >(HttpMethod.Post)
 
-    val getTask =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            TaskId,
-            TaskNetworkResponse,
-            >(HttpMethod.Get)
+    val getTask = operation<
+        NoRequestBody,
+        NoQueryParam,
+        TaskId,
+        TaskNetworkResponse,
+    >(HttpMethod.Get)
 
-    val getTasks =
-        operation<
-            NoRequestBody,
-            GetTasksQueryParams,
-            NoPathParam,
-            TaskListNetworkResponse,
-            >(HttpMethod.Get, "list")
+    val getTasks = operation<
+        NoRequestBody,
+        GetTasksQueryParams,
+        NoPathParam,
+        TaskListNetworkResponse,
+    >(HttpMethod.Get, "list")
 
-    val updateTask =
-        operation<
-            UpdateTaskNetworkRequest,
-            NoQueryParam,
-            TaskId,
-            TaskNetworkResponse,
-            >(HttpMethod.Put)
+    val updateTask = operation<
+        UpdateTaskNetworkRequest,
+        NoQueryParam,
+        TaskId,
+        TaskNetworkResponse,
+    >(HttpMethod.Put)
 
-    val deleteTask =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            TaskId,
-            NoResponseBody,
-            >(HttpMethod.Delete)
+    val deleteTask = operation<
+        NoRequestBody,
+        NoQueryParam,
+        TaskId,
+        NoResponseBody,
+    >(HttpMethod.Delete)
 }

@@ -22,43 +22,38 @@ import io.ktor.http.HttpMethod
  */
 
 object CommonAreaApi : Api("common-area") {
-    val createCommonArea =
-        operation<
-            CreateCommonAreaNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            CommonAreaNetworkResponse,
-            >(HttpMethod.Post)
+    val createCommonArea = operation<
+        CreateCommonAreaNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        CommonAreaNetworkResponse,
+    >(HttpMethod.Post)
 
-    val getCommonArea =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            CommonAreaId,
-            CommonAreaNetworkResponse,
-            >(HttpMethod.Get)
+    val getCommonArea = operation<
+        NoRequestBody,
+        NoQueryParam,
+        CommonAreaId,
+        CommonAreaNetworkResponse,
+    >(HttpMethod.Get)
 
-    val getCommonAreasForProperty =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            PropertyId,
-            CommonAreaListNetworkResponse,
-            >(HttpMethod.Get, "by-property")
+    val getCommonAreasForProperty = operation<
+        NoRequestBody,
+        NoQueryParam,
+        PropertyId,
+        CommonAreaListNetworkResponse,
+    >(HttpMethod.Get, "by-property")
 
-    val updateCommonArea =
-        operation<
-            UpdateCommonAreaNetworkRequest,
-            NoQueryParam,
-            CommonAreaId,
-            CommonAreaNetworkResponse,
-            >(HttpMethod.Put)
+    val updateCommonArea = operation<
+        UpdateCommonAreaNetworkRequest,
+        NoQueryParam,
+        CommonAreaId,
+        CommonAreaNetworkResponse,
+    >(HttpMethod.Put)
 
-    val deleteCommonArea =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            CommonAreaId,
-            NoResponseBody,
-            >(HttpMethod.Delete)
+    val deleteCommonArea = operation<
+        NoRequestBody,
+        NoQueryParam,
+        CommonAreaId,
+        NoResponseBody,
+    >(HttpMethod.Delete)
 }

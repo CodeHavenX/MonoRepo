@@ -49,3 +49,11 @@ indent_size = 2
 
 [*.{json,json5}]
 indent_size = 2
+
+# API definition files declare each operation as `val x = operation<...>(...)`. The ktlint_official
+# multiline-expression-wrapping rule forces the multiline `operation<...>` expression onto its own line
+# after `=`, which reads awkwardly for these type-heavy declarations. Disabling it here keeps the
+# expression on the declaration line (type arguments indent under it, closing brackets de-indent to the
+# declaration level), which is clearer for this file type.
+[**/*Api.kt]
+ktlint_standard_multiline-expression-wrapping = disabled

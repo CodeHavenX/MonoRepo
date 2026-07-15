@@ -19,13 +19,12 @@ object ModerationApi : Api("api/v1/moderation") {
     /**
      * List all flyers with pending status. Admin-only.
      */
-    val listPending =
-        operation<
-            NoRequestBody,
-            PaginationParams,
-            NoPathParam,
-            FlyerListNetworkResponse,
-            >(HttpMethod.Get)
+    val listPending = operation<
+        NoRequestBody,
+        PaginationParams,
+        NoPathParam,
+        FlyerListNetworkResponse,
+    >(HttpMethod.Get)
 
     /**
      * Apply a moderation action to a flyer. Admin-only.
@@ -37,11 +36,10 @@ object ModerationApi : Api("api/v1/moderation") {
      * support directly. The controller dispatches to the appropriate service method based on
      * the `action` value ("approve" or "reject").
      */
-    val moderate =
-        operation<
-            ModerationActionNetworkRequest,
-            NoQueryParam,
-            FlyerId,
-            FlyerNetworkResponse,
-            >(HttpMethod.Post)
+    val moderate = operation<
+        ModerationActionNetworkRequest,
+        NoQueryParam,
+        FlyerId,
+        FlyerNetworkResponse,
+    >(HttpMethod.Post)
 }

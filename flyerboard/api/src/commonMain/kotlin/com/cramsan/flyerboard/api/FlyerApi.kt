@@ -23,24 +23,22 @@ object FlyerApi : Api("api/v1/flyers") {
     /**
      * List publicly visible flyers with optional status filter and pagination.
      */
-    val listFlyers =
-        publicOperation<
-            NoRequestBody,
-            ListFlyersQueryParams,
-            NoPathParam,
-            FlyerListNetworkResponse,
-            >(HttpMethod.Get)
+    val listFlyers = publicOperation<
+        NoRequestBody,
+        ListFlyersQueryParams,
+        NoPathParam,
+        FlyerListNetworkResponse,
+    >(HttpMethod.Get)
 
     /**
      * Get a single flyer by ID.
      */
-    val getFlyer =
-        optionalOperation<
-            NoRequestBody,
-            NoQueryParam,
-            FlyerId,
-            FlyerNetworkResponse,
-            >(HttpMethod.Get)
+    val getFlyer = optionalOperation<
+        NoRequestBody,
+        NoQueryParam,
+        FlyerId,
+        FlyerNetworkResponse,
+    >(HttpMethod.Get)
 
     /**
      * Create a new flyer.
@@ -49,13 +47,12 @@ object FlyerApi : Api("api/v1/flyers") {
      * [com.cramsan.flyerboard.lib.model.FlyerStatus.PENDING] status. The response includes a
      * signed upload URL the client should use to upload the flyer's asset.
      */
-    val createFlyer =
-        operation<
-            CreateFlyerNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            CreateFlyerNetworkResponse,
-            >(HttpMethod.Post)
+    val createFlyer = operation<
+        CreateFlyerNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        CreateFlyerNetworkResponse,
+    >(HttpMethod.Post)
 
     /**
      * Update an existing flyer.
@@ -64,33 +61,30 @@ object FlyerApi : Api("api/v1/flyers") {
      * URL for this flyer's asset. Any edit, including requesting an upload, resets status to
      * [com.cramsan.flyerboard.lib.model.FlyerStatus.PENDING].
      */
-    val updateFlyer =
-        operation<
-            UpdateFlyerNetworkRequest,
-            NoQueryParam,
-            FlyerId,
-            UpdateFlyerNetworkResponse,
-            >(HttpMethod.Put)
+    val updateFlyer = operation<
+        UpdateFlyerNetworkRequest,
+        NoQueryParam,
+        FlyerId,
+        UpdateFlyerNetworkResponse,
+    >(HttpMethod.Put)
 
     /**
      * List archived flyers with optional search and pagination.
      */
-    val listArchived =
-        publicOperation<
-            NoRequestBody,
-            ListFlyersQueryParams,
-            NoPathParam,
-            FlyerListNetworkResponse,
-            >(HttpMethod.Get, path = "archive")
+    val listArchived = publicOperation<
+        NoRequestBody,
+        ListFlyersQueryParams,
+        NoPathParam,
+        FlyerListNetworkResponse,
+    >(HttpMethod.Get, path = "archive")
 
     /**
      * List the authenticated user's own flyers with pagination.
      */
-    val listMyFlyers =
-        operation<
-            NoRequestBody,
-            PaginationParams,
-            NoPathParam,
-            FlyerListNetworkResponse,
-            >(HttpMethod.Get, path = "mine")
+    val listMyFlyers = operation<
+        NoRequestBody,
+        PaginationParams,
+        NoPathParam,
+        FlyerListNetworkResponse,
+    >(HttpMethod.Get, path = "mine")
 }

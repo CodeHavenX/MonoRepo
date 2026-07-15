@@ -20,71 +20,66 @@ import io.ktor.http.HttpStatusCode
  */
 
 object PropertyApi : Api("property") {
-    val createProperty =
-        operation<
-            CreatePropertyNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            PropertyNetworkResponse,
-            >(
-            method = HttpMethod.Post,
-            summary = "Create a property",
-            description = "Creates a new property within the caller's organization. Requires the ADMIN role.",
-            responses = UniversalResponsesOnly,
-        )
+    val createProperty = operation<
+        CreatePropertyNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        PropertyNetworkResponse,
+    >(
+        method = HttpMethod.Post,
+        summary = "Create a property",
+        description = "Creates a new property within the caller's organization. Requires the ADMIN role.",
+        responses = UniversalResponsesOnly,
+    )
 
-    val getProperty =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            PropertyId,
-            PropertyNetworkResponse,
-            >(
-            method = HttpMethod.Get,
-            summary = "Get a property",
-            description = "Retrieves a single property by its identifier. Requires the MANAGER role or higher.",
-            responses =
-            AdditionalResponses {
-                HttpStatusCode.NotFound describedAs "No property exists for the given id."
-            },
-        )
+    val getProperty = operation<
+        NoRequestBody,
+        NoQueryParam,
+        PropertyId,
+        PropertyNetworkResponse,
+    >(
+        method = HttpMethod.Get,
+        summary = "Get a property",
+        description = "Retrieves a single property by its identifier. Requires the MANAGER role or higher.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No property exists for the given id."
+        },
+    )
 
-    val getAssignedProperties =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            NoPathParam,
-            PropertyListNetworkResponse,
-            >(
-            method = HttpMethod.Get,
-            summary = "List assigned properties",
-            description = "Returns all properties the authenticated user has been assigned access to.",
-            responses = UniversalResponsesOnly,
-        )
+    val getAssignedProperties = operation<
+        NoRequestBody,
+        NoQueryParam,
+        NoPathParam,
+        PropertyListNetworkResponse,
+    >(
+        method = HttpMethod.Get,
+        summary = "List assigned properties",
+        description = "Returns all properties the authenticated user has been assigned access to.",
+        responses = UniversalResponsesOnly,
+    )
 
-    val updateProperty =
-        operation<
-            UpdatePropertyNetworkRequest,
-            NoQueryParam,
-            PropertyId,
-            PropertyNetworkResponse,
-            >(
-            method = HttpMethod.Put,
-            summary = "Update a property",
-            description = "Updates the mutable fields of an existing property. Requires the ADMIN role.",
-            responses = UniversalResponsesOnly,
-        )
+    val updateProperty = operation<
+        UpdatePropertyNetworkRequest,
+        NoQueryParam,
+        PropertyId,
+        PropertyNetworkResponse,
+    >(
+        method = HttpMethod.Put,
+        summary = "Update a property",
+        description = "Updates the mutable fields of an existing property. Requires the ADMIN role.",
+        responses = UniversalResponsesOnly,
+    )
 
-    val deleteProperty =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            PropertyId,
-            NoResponseBody,
-            >(
-            method = HttpMethod.Delete,
-            summary = "Delete a property",
-            description = "Permanently deletes a property by its identifier. Requires the ADMIN role.",
-            responses = UniversalResponsesOnly,
-        )
+    val deleteProperty = operation<
+        NoRequestBody,
+        NoQueryParam,
+        PropertyId,
+        NoResponseBody,
+    >(
+        method = HttpMethod.Delete,
+        summary = "Delete a property",
+        description = "Permanently deletes a property by its identifier. Requires the ADMIN role.",
+        responses = UniversalResponsesOnly,
+    )
 }

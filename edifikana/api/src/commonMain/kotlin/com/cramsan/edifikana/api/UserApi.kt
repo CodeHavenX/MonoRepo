@@ -25,141 +25,128 @@ import io.ktor.http.HttpMethod
  */
 
 object UserApi : Api("user") {
-    val createUser =
-        publicOperation<
-            CreateUserNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            UserNetworkResponse,
-            >(HttpMethod.Post)
+    val createUser = publicOperation<
+        CreateUserNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        UserNetworkResponse,
+    >(HttpMethod.Post)
 
-    val getUser =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            UserId,
-            UserNetworkResponse,
-            >(HttpMethod.Get)
+    val getUser = operation<
+        NoRequestBody,
+        NoQueryParam,
+        UserId,
+        UserNetworkResponse,
+    >(HttpMethod.Get)
 
-    val getAllUsers =
-        operation<
-            NoRequestBody,
-            GetAllUsersQueryParams,
-            NoPathParam,
-            UserListNetworkResponse,
-            >(
-            HttpMethod.Get,
-        )
+    val getAllUsers = operation<
+        NoRequestBody,
+        GetAllUsersQueryParams,
+        NoPathParam,
+        UserListNetworkResponse,
+    >(
+        HttpMethod.Get,
+    )
 
-    val updateUser =
-        operation<
-            UpdateUserNetworkRequest,
-            NoQueryParam,
-            UserId,
-            UserNetworkResponse,
-            >(HttpMethod.Put)
+    val updateUser = operation<
+        UpdateUserNetworkRequest,
+        NoQueryParam,
+        UserId,
+        UserNetworkResponse,
+    >(HttpMethod.Put)
 
-    val deleteUser =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            UserId,
-            NoResponseBody,
-            >(HttpMethod.Delete)
+    val deleteUser = operation<
+        NoRequestBody,
+        NoQueryParam,
+        UserId,
+        NoResponseBody,
+    >(HttpMethod.Delete)
 
-    val associateUser =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            NoPathParam,
-            UserNetworkResponse,
-            >(HttpMethod.Post, "associate")
+    val associateUser = operation<
+        NoRequestBody,
+        NoQueryParam,
+        NoPathParam,
+        UserNetworkResponse,
+    >(HttpMethod.Post, "associate")
 
-    val inviteUser =
-        operation<
-            InviteUserNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            NoResponseBody,
-            >(HttpMethod.Post, "invite")
+    val inviteUser = operation<
+        InviteUserNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        NoResponseBody,
+    >(HttpMethod.Post, "invite")
 
-    val getInvites =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            OrganizationId,
-            InviteListNetworkResponse,
-            >(
-            HttpMethod.Get,
-            "invites",
-        )
+    val getInvites = operation<
+        NoRequestBody,
+        NoQueryParam,
+        OrganizationId,
+        InviteListNetworkResponse,
+    >(
+        HttpMethod.Get,
+        "invites",
+    )
 
     /**
      * Accept a pending invitation.
      * Route: POST /user/invite/accept/{inviteId}
      */
-    val acceptInvite =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            InviteId,
-            NoResponseBody,
-            >(
-            HttpMethod.Post,
-            "invite/accept",
-        )
+    val acceptInvite = operation<
+        NoRequestBody,
+        NoQueryParam,
+        InviteId,
+        NoResponseBody,
+    >(
+        HttpMethod.Post,
+        "invite/accept",
+    )
 
     /**
      * Decline a pending invitation.
      * Route: POST /user/invite/decline/{inviteId}
      */
-    val declineInvite =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            InviteId,
-            NoResponseBody,
-            >(
-            HttpMethod.Post,
-            "invite/decline",
-        )
+    val declineInvite = operation<
+        NoRequestBody,
+        NoQueryParam,
+        InviteId,
+        NoResponseBody,
+    >(
+        HttpMethod.Post,
+        "invite/decline",
+    )
 
     /**
      * Cancel a pending invite (manager action).
      * Route: DELETE /user/invites/{inviteId}
      */
-    val cancelInvite =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            InviteId,
-            NoResponseBody,
-            >(
-            HttpMethod.Delete,
-            "invites",
-        )
+    val cancelInvite = operation<
+        NoRequestBody,
+        NoQueryParam,
+        InviteId,
+        NoResponseBody,
+    >(
+        HttpMethod.Delete,
+        "invites",
+    )
 
-    val checkUserExists =
-        publicOperation<
-            NoRequestBody,
-            UserEmailQueryParam,
-            NoPathParam,
-            CheckUserNetworkResponse,
-            >(
-            HttpMethod.Get,
-            "checkUser",
-        )
+    val checkUserExists = publicOperation<
+        NoRequestBody,
+        UserEmailQueryParam,
+        NoPathParam,
+        CheckUserNetworkResponse,
+    >(
+        HttpMethod.Get,
+        "checkUser",
+    )
 
     /**
      * Request a password reset email for the given email address.
      * Route: POST /user/request-password-reset
      * Always returns 200 regardless of whether the email exists.
      */
-    val requestPasswordReset =
-        publicOperation<
-            PasswordResetNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            NoResponseBody,
-            >(HttpMethod.Post, "request-password-reset")
+    val requestPasswordReset = publicOperation<
+        PasswordResetNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        NoResponseBody,
+    >(HttpMethod.Post, "request-password-reset")
 }

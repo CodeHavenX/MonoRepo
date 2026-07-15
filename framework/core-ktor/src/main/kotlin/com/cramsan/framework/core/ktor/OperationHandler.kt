@@ -100,7 +100,7 @@ object OperationHandler {
         ResponseType : ResponseBody,
         P,
         C : ClientContext<P>,
-        > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
+        > Operation<RequestType, QueryParamType, PathParamType, ResponseType, *>.handle(
         route: Route,
         contextRetriever: suspend ApplicationCall.() -> C,
         authenticated: Boolean = true,
@@ -134,7 +134,7 @@ object OperationHandler {
         ResponseType : ResponseBody,
         P,
         Context : ClientContext<P>,
-        > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handleImpl(
+        > Operation<RequestType, QueryParamType, PathParamType, ResponseType, *>.handleImpl(
         route: Route,
         contextRetriever: suspend (ApplicationCall) -> Context,
         authenticated: Boolean,

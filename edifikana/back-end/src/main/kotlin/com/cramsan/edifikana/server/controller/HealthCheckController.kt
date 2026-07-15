@@ -6,7 +6,7 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
-import com.cramsan.framework.core.ktor.unauthenticatedHandler
+import com.cramsan.framework.core.ktor.handler
 import io.ktor.server.routing.Routing
 
 /**
@@ -26,7 +26,7 @@ class HealthCheckController : Controller {
      */
     override fun registerRoutes(route: Routing) {
         HealthApi.register(route, SupabaseContextPayload::class) {
-            unauthenticatedHandler(api.healthCheck) { _ ->
+            handler(api.healthCheck) { _ ->
                 healthCheck()
             }
         }

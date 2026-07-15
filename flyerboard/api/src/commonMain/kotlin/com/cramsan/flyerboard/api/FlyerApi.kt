@@ -24,7 +24,7 @@ object FlyerApi : Api("api/v1/flyers") {
      * List publicly visible flyers with optional status filter and pagination.
      */
     val listFlyers =
-        operation<
+        publicOperation<
             NoRequestBody,
             ListFlyersQueryParams,
             NoPathParam,
@@ -35,7 +35,7 @@ object FlyerApi : Api("api/v1/flyers") {
      * Get a single flyer by ID.
      */
     val getFlyer =
-        operation<
+        optionalOperation<
             NoRequestBody,
             NoQueryParam,
             FlyerId,
@@ -76,7 +76,7 @@ object FlyerApi : Api("api/v1/flyers") {
      * List archived flyers with optional search and pagination.
      */
     val listArchived =
-        operation<
+        publicOperation<
             NoRequestBody,
             ListFlyersQueryParams,
             NoPathParam,

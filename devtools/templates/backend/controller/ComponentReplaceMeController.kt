@@ -3,7 +3,7 @@ package com.cramsan.templatereplaceme.server.controller
 import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
-import com.cramsan.framework.core.ktor.unauthenticatedHandler
+import com.cramsan.framework.core.ktor.handler
 import com.cramsan.templatereplaceme.api.ComponentReplaceMeApi
 import com.cramsan.templatereplaceme.lib.model.network.ComponentReplaceMeNetworkResponse
 import com.cramsan.templatereplaceme.lib.model.network.CreateComponentReplaceMeNetworkRequest
@@ -51,7 +51,7 @@ class ComponentReplaceMeController(
 
     override fun registerRoutes(route: Routing) {
         ComponentReplaceMeApi.register(route, Unit::class) {
-            unauthenticatedHandler(api.create) { request ->
+            handler(api.create) { request ->
                 create(request.requestBody)
             }
         }

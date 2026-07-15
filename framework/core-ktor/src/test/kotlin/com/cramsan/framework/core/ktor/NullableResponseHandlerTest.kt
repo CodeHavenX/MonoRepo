@@ -44,6 +44,14 @@ class NullableResponseHandlerTest {
                 NoPathParam,
                 DummyResponse,
                 >(HttpMethod.Get)
+
+        val getPublic =
+            publicOperation<
+                NoRequestBody,
+                NoQueryParam,
+                NoPathParam,
+                DummyResponse,
+                >(HttpMethod.Get, path = "public")
     }
 
     private val authenticatedContextRetriever =
@@ -58,19 +66,19 @@ class NullableResponseHandlerTest {
     }
 
     @Test
-    fun `unauthenticatedHandler returning null responds with 404, not 500`() =
+    fun `public handler returning null responds with 404, not 500`() =
         runTest {
             testApplication {
                 application {
                     install(ContentNegotiation) { json() }
                     routing {
                         DummyApi.register(this, Unit::class) {
-                            unauthenticatedHandler(api.get) { null }
+                            handler(api.getPublic) { null }
                         }
                     }
                 }
 
-                val response = client.get("dummy")
+                val response = client.get("dummy/public")
 
                 assertEquals(HttpStatusCode.NotFound, response.status)
             }

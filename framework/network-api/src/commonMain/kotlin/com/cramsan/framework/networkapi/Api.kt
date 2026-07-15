@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
  */
 open class Api(val path: String) {
     // List of registered operations
-    private val operations = mutableListOf<Operation<RequestBody, QueryParam, PathParam, ResponseBody>>()
+    private val operations = mutableListOf<Operation<RequestBody, QueryParam, PathParam, ResponseBody, *>>()
 
     /**
      * Registers an operation with the controller.
@@ -29,17 +29,19 @@ open class Api(val path: String) {
         QueryParamType : QueryParam,
         PathParamType : PathParam,
         ResponseType : ResponseBody,
+        AuthType : AuthMode,
         > registerOperation(
-        registrar: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
+        registrar: Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthType>,
     ) {
-        operations.add(registrar as Operation<RequestBody, QueryParam, PathParam, ResponseBody>)
+        operations.add(registrar as Operation<RequestBody, QueryParam, PathParam, ResponseBody, *>)
     }
 
     /**
-     * Creates and registers an [Operation] with the controller.
+     * Creates and registers an authenticated ([AuthMode.Required]) [Operation].
      *
-     * This function constructs an [Operation] using the provided HTTP method, optional path, and type information.
-     * The operation is automatically registered with this API instance for later routing and handling.
+     * This is the secure-by-default factory: an operation declared with it requires a valid bearer token,
+     * and its handler is statically given an authenticated context. Use [publicOperation] or
+     * [optionalOperation] to opt out of the requirement.
      *
      * @param method The HTTP method for the operation (e.g., GET, POST).
      * @param path Optional sub-path for the operation, relative to the API base path.
@@ -72,8 +74,96 @@ open class Api(val path: String) {
         queryParamType: KClass<QueryParamType> = QueryParamType::class,
         pathParamType: KClass<PathParamType> = PathParamType::class,
         responseBodyType: KClass<ResponseType> = ResponseType::class,
-    ): Operation<RequestType, QueryParamType, PathParamType, ResponseType> =
-        Operation(
+    ): Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Required> =
+        buildOperation(
+            method, path, summary, description, tags, deprecated, responses,
+            requestBodyType, queryParamType, pathParamType, responseBodyType,
+        )
+
+    /**
+     * Creates and registers a public ([AuthMode.Public]) [Operation]. The endpoint requires no
+     * authentication and its handler is statically given an unauthenticated context.
+     *
+     * See [operation] for the parameter documentation.
+     */
+    inline fun <
+        reified RequestType : RequestBody,
+        reified QueryParamType : QueryParam,
+        reified PathParamType : PathParam,
+        reified ResponseType : ResponseBody,
+        > publicOperation(
+        method: HttpMethod,
+        path: String? = null,
+        summary: String? = null,
+        description: String? = null,
+        tags: List<String> = emptyList(),
+        deprecated: Boolean = false,
+        responses: ResponsePolicy = AllowAnyResponse,
+        requestBodyType: KClass<RequestType> = RequestType::class,
+        queryParamType: KClass<QueryParamType> = QueryParamType::class,
+        pathParamType: KClass<PathParamType> = PathParamType::class,
+        responseBodyType: KClass<ResponseType> = ResponseType::class,
+    ): Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Public> =
+        buildOperation(
+            method, path, summary, description, tags, deprecated, responses,
+            requestBodyType, queryParamType, pathParamType, responseBodyType,
+        )
+
+    /**
+     * Creates and registers an optionally-authenticated ([AuthMode.Optional]) [Operation]. A request with
+     * a valid token identifies the caller while a request with no token is still served; the handler is
+     * given a context that may or may not be authenticated.
+     *
+     * See [operation] for the parameter documentation.
+     */
+    inline fun <
+        reified RequestType : RequestBody,
+        reified QueryParamType : QueryParam,
+        reified PathParamType : PathParam,
+        reified ResponseType : ResponseBody,
+        > optionalOperation(
+        method: HttpMethod,
+        path: String? = null,
+        summary: String? = null,
+        description: String? = null,
+        tags: List<String> = emptyList(),
+        deprecated: Boolean = false,
+        responses: ResponsePolicy = AllowAnyResponse,
+        requestBodyType: KClass<RequestType> = RequestType::class,
+        queryParamType: KClass<QueryParamType> = QueryParamType::class,
+        pathParamType: KClass<PathParamType> = PathParamType::class,
+        responseBodyType: KClass<ResponseType> = ResponseType::class,
+    ): Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Optional> =
+        buildOperation(
+            method, path, summary, description, tags, deprecated, responses,
+            requestBodyType, queryParamType, pathParamType, responseBodyType,
+        )
+
+    /**
+     * Shared construction for the mode-specific factories. The auth mode [AuthType] is a phantom type
+     * pinned by the caller's declared return type; it does not appear in any value argument.
+     */
+    @PublishedApi
+    internal fun <
+        RequestType : RequestBody,
+        QueryParamType : QueryParam,
+        PathParamType : PathParam,
+        ResponseType : ResponseBody,
+        AuthType : AuthMode,
+        > buildOperation(
+        method: HttpMethod,
+        path: String?,
+        summary: String?,
+        description: String?,
+        tags: List<String>,
+        deprecated: Boolean,
+        responses: ResponsePolicy,
+        requestBodyType: KClass<RequestType>,
+        queryParamType: KClass<QueryParamType>,
+        pathParamType: KClass<PathParamType>,
+        responseBodyType: KClass<ResponseType>,
+    ): Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthType> =
+        Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthType>(
             method,
             this.path,
             path,

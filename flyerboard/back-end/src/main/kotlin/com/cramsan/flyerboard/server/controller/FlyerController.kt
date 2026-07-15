@@ -11,8 +11,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.handler
-import com.cramsan.framework.core.ktor.optionalAuthHandler
-import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import io.ktor.server.routing.Routing
 import kotlin.time.Instant
 
@@ -33,7 +31,7 @@ class FlyerController(private val flyerService: FlyerService) : Controller {
     }
 
     private fun OperationHandler.RegistrationBuilder<FlyerApi, FlyerBoardContextPayload>.registerListFlyers() {
-        unauthenticatedHandler(api.listFlyers) { request ->
+        handler(api.listFlyers) { request ->
             flyerService
                 .listFlyers(
                     status = request.queryParam.status,
@@ -46,7 +44,7 @@ class FlyerController(private val flyerService: FlyerService) : Controller {
     }
 
     private fun OperationHandler.RegistrationBuilder<FlyerApi, FlyerBoardContextPayload>.registerGetFlyer() {
-        optionalAuthHandler(api.getFlyer) { request ->
+        handler(api.getFlyer) { request ->
             flyerService
                 .getFlyer(
                     request.context,
@@ -57,7 +55,7 @@ class FlyerController(private val flyerService: FlyerService) : Controller {
     }
 
     private fun OperationHandler.RegistrationBuilder<FlyerApi, FlyerBoardContextPayload>.registerListArchived() {
-        unauthenticatedHandler(api.listArchived) { request ->
+        handler(api.listArchived) { request ->
             flyerService
                 .listFlyers(
                     status = FlyerStatus.ARCHIVED,

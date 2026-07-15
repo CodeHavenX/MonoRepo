@@ -4,7 +4,7 @@ import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
-import com.cramsan.framework.core.ktor.unauthenticatedHandler
+import com.cramsan.framework.core.ktor.handler
 import com.cramsan.runasimi.api.RunasimiApi
 import com.cramsan.runasimi.server.service.RunasimiService
 import io.ktor.server.routing.Routing
@@ -21,7 +21,7 @@ class RunasimiController(private val runasimiService: RunasimiService) : Control
 
     override fun registerRoutes(route: Routing) {
         RunasimiApi.register(route, Unit::class) {
-            unauthenticatedHandler(api.ping) { _ ->
+            handler(api.ping) { _ ->
                 ping()
             }
         }

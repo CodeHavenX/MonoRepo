@@ -35,7 +35,7 @@ object ComponentReplaceMeApi : Api("componentreplaceme") {
      * Response: [ComponentReplaceMeNetworkResponse]
      */
     val create =
-        operation<
+        publicOperation<
             CreateComponentReplaceMeNetworkRequest,
             NoQueryParam,
             NoPathParam,

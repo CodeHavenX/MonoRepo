@@ -26,7 +26,7 @@ import io.ktor.http.HttpMethod
 
 object UserApi : Api("user") {
     val createUser =
-        operation<
+        publicOperation<
             CreateUserNetworkRequest,
             NoQueryParam,
             NoPathParam,
@@ -140,7 +140,7 @@ object UserApi : Api("user") {
         )
 
     val checkUserExists =
-        operation<
+        publicOperation<
             NoRequestBody,
             UserEmailQueryParam,
             NoPathParam,
@@ -156,7 +156,7 @@ object UserApi : Api("user") {
      * Always returns 200 regardless of whether the email exists.
      */
     val requestPasswordReset =
-        operation<
+        publicOperation<
             PasswordResetNetworkRequest,
             NoQueryParam,
             NoPathParam,

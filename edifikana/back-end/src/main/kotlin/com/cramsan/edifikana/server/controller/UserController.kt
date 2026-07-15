@@ -27,7 +27,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.handler
-import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import com.cramsan.framework.utils.exceptions.requireAll
 import io.ktor.server.routing.Routing
@@ -336,7 +335,7 @@ class UserController(private val userService: UserService, private val rbacServi
             handler(api.getUser) { request ->
                 getUser(request.context, request.pathParam)
             }
-            unauthenticatedHandler(api.createUser) { request ->
+            handler(api.createUser) { request ->
                 createUser(request.requestBody)
             }
             handler(api.getAllUsers) { request ->
@@ -366,10 +365,10 @@ class UserController(private val userService: UserService, private val rbacServi
             handler(api.cancelInvite) { request ->
                 cancelInvite(request.context, request.pathParam)
             }
-            unauthenticatedHandler(api.checkUserExists) { request ->
+            handler(api.checkUserExists) { request ->
                 checkUserIsRegistered(request.queryParam.email)
             }
-            unauthenticatedHandler(api.requestPasswordReset) { request ->
+            handler(api.requestPasswordReset) { request ->
                 requestPasswordReset(request.requestBody)
             }
         }

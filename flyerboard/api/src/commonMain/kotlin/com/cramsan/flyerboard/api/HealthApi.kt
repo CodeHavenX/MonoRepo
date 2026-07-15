@@ -16,7 +16,7 @@ object HealthApi : Api("api/v1/health") {
      * Health check endpoint. Returns service status.
      */
     val check =
-        operation<
+        publicOperation<
             NoRequestBody,
             NoQueryParam,
             NoPathParam,

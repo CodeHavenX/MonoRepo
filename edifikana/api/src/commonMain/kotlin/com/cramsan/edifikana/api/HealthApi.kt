@@ -13,10 +13,10 @@ import io.ktor.http.HttpMethod
 
 object HealthApi : Api("health") {
     val healthCheck =
-        operation<
+        publicOperation<
             NoRequestBody,
             NoQueryParam,
             NoPathParam,
             HealthCheckNetworkResponse,
-            >(HttpMethod.Get)
+            >(method = HttpMethod.Get)
 }

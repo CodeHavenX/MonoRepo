@@ -32,6 +32,9 @@ import kotlin.reflect.KClass
  * @property deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
  * @property responses Declares the responses the operation is allowed to produce. Drives OpenAPI docs
  * and runtime enforcement. Defaults to [AllowAnyResponse] (no enforcement).
+ * @param AuthType Phantom type tag declaring the operation's authentication gate (see [AuthMode]). It
+ * does not appear in any property; it exists so the server selects the matching gate and
+ * handler-context type at compile time, keeping the API definition the source of truth for auth.
  * @throws IllegalArgumentException if a GET operation is defined with a request body.
  */
 data class Operation<
@@ -39,6 +42,7 @@ data class Operation<
     QueryParamType : QueryParam,
     PathParamType : PathParam,
     ResponseType : ResponseBody,
+    AuthType : AuthMode,
     >(
     val method: HttpMethod,
     val apiPath: String,
@@ -128,7 +132,7 @@ fun <
     QueryParamType : QueryParam,
     PathParamType : PathParam,
     ResponseType : ResponseBody,
-    > Operation<NoRequestBody, QueryParamType, PathParamType, ResponseType>.buildRequest(
+    > Operation<NoRequestBody, QueryParamType, PathParamType, ResponseType, *>.buildRequest(
     argument: PathParamType,
     queryParam: QueryParamType,
 ): OperationRequest<NoRequestBody, QueryParamType, PathParamType, ResponseType> =
@@ -148,7 +152,7 @@ fun <
 fun <
     QueryParamType : QueryParam,
     ResponseType : ResponseBody,
-    > Operation<NoRequestBody, QueryParamType, NoPathParam, ResponseType>.buildRequest(
+    > Operation<NoRequestBody, QueryParamType, NoPathParam, ResponseType, *>.buildRequest(
     queryParam: QueryParamType,
 ): OperationRequest<NoRequestBody, QueryParamType, NoPathParam, ResponseType> =
     buildRequest(
@@ -169,7 +173,7 @@ fun <
     RequestType : RequestBody,
     PathParamType : PathParam,
     ResponseType : ResponseBody,
-    > Operation<RequestType, NoQueryParam, PathParamType, ResponseType>.buildRequest(
+    > Operation<RequestType, NoQueryParam, PathParamType, ResponseType, *>.buildRequest(
     argument: PathParamType,
     body: RequestType,
 ): OperationRequest<RequestType, NoQueryParam, PathParamType, ResponseType> = buildRequest(argument, body, NoQueryParam)
@@ -184,7 +188,7 @@ fun <
 fun <
     RequestType : RequestBody,
     ResponseType : ResponseBody,
-    > Operation<RequestType, NoQueryParam, NoPathParam, ResponseType>.buildRequest(
+    > Operation<RequestType, NoQueryParam, NoPathParam, ResponseType, *>.buildRequest(
     body: RequestType,
 ): OperationRequest<RequestType, NoQueryParam, NoPathParam, ResponseType> =
     buildRequest(
@@ -206,7 +210,7 @@ fun <
     RequestType : RequestBody,
     QueryParamType : QueryParam,
     PathParamType : PathParam,
-    > Operation<RequestType, QueryParamType, PathParamType, NoResponseBody>.buildRequest(
+    > Operation<RequestType, QueryParamType, PathParamType, NoResponseBody, *>.buildRequest(
     argument: PathParamType,
     body: RequestType,
     queryParam: QueryParamType,
@@ -228,7 +232,7 @@ fun <
 fun <
     RequestType : RequestBody,
     QueryParamType : QueryParam,
-    > Operation<RequestType, QueryParamType, NoPathParam, NoResponseBody>.buildRequest(
+    > Operation<RequestType, QueryParamType, NoPathParam, NoResponseBody, *>.buildRequest(
     body: RequestType,
     queryParam: QueryParamType,
 ): OperationRequest<RequestType, QueryParamType, NoPathParam, NoResponseBody> =
@@ -249,7 +253,7 @@ fun <
 fun <
     RequestType : RequestBody,
     PathParamType : PathParam,
-    > Operation<RequestType, NoQueryParam, PathParamType, NoResponseBody>.buildRequest(
+    > Operation<RequestType, NoQueryParam, PathParamType, NoResponseBody, *>.buildRequest(
     argument: PathParamType,
     body: RequestType,
 ): OperationRequest<RequestType, NoQueryParam, PathParamType, NoResponseBody> =
@@ -268,7 +272,7 @@ fun <
 @JvmName("buildRequestOnlyRequestBodyNoArg")
 fun <
     RequestType : RequestBody,
-    > Operation<RequestType, NoQueryParam, NoPathParam, NoResponseBody>.buildRequest(
+    > Operation<RequestType, NoQueryParam, NoPathParam, NoResponseBody, *>.buildRequest(
     body: RequestType,
 ): OperationRequest<RequestType, NoQueryParam, NoPathParam, NoResponseBody> =
     buildRequest(
@@ -288,7 +292,7 @@ fun <
 fun <
     QueryParamType : QueryParam,
     PathParamType : PathParam,
-    > Operation<NoRequestBody, QueryParamType, PathParamType, NoResponseBody>.buildRequest(
+    > Operation<NoRequestBody, QueryParamType, PathParamType, NoResponseBody, *>.buildRequest(
     argument: PathParamType,
     queryParam: QueryParamType,
 ): OperationRequest<NoRequestBody, QueryParamType, PathParamType, NoResponseBody> =
@@ -307,7 +311,7 @@ fun <
 @JvmName("buildRequestOnlyQueryParamNoArg")
 fun <
     QueryParamType : QueryParam,
-    > Operation<NoRequestBody, QueryParamType, NoPathParam, NoResponseBody>.buildRequest(
+    > Operation<NoRequestBody, QueryParamType, NoPathParam, NoResponseBody, *>.buildRequest(
     queryParam: QueryParamType,
 ): OperationRequest<NoRequestBody, QueryParamType, NoPathParam, NoResponseBody> =
     buildRequest(
@@ -326,7 +330,7 @@ fun <
 fun <
     ResponseType : ResponseBody,
     PathParamType : PathParam,
-    > Operation<NoRequestBody, NoQueryParam, PathParamType, ResponseType>.buildRequest(
+    > Operation<NoRequestBody, NoQueryParam, PathParamType, ResponseType, *>.buildRequest(
     argument: PathParamType,
 ): OperationRequest<NoRequestBody, NoQueryParam, PathParamType, ResponseType> =
     buildRequest(
@@ -348,6 +352,7 @@ fun <
     NoQueryParam,
     NoPathParam,
     ResponseType,
+    *,
     >.buildRequest(): OperationRequest<NoRequestBody, NoQueryParam, NoPathParam, ResponseType> =
     buildRequest(
         NoPathParam,
@@ -363,7 +368,7 @@ fun <
  * @return An [OperationRequest] for the operation.
  */
 @JvmName("buildRequestNoRequestNoQueryParamNoResponse")
-fun <PathParamType : PathParam> Operation<NoRequestBody, NoQueryParam, PathParamType, NoResponseBody>.buildRequest(
+fun <PathParamType : PathParam> Operation<NoRequestBody, NoQueryParam, PathParamType, NoResponseBody, *>.buildRequest(
     argument: PathParamType,
 ): OperationRequest<NoRequestBody, NoQueryParam, PathParamType, NoResponseBody> =
     buildRequest(
@@ -384,6 +389,7 @@ fun Operation<
     NoQueryParam,
     NoPathParam,
     NoResponseBody,
+    *,
     >.buildRequest(): OperationRequest<NoRequestBody, NoQueryParam, NoPathParam, NoResponseBody> =
     buildRequest(
         NoPathParam,

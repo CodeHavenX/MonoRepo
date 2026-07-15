@@ -15,5 +15,5 @@ object RunasimiApi : Api("example") {
     /**
      * A simple ping operation to check if the service is alive.
      */
-    val ping = operation<NoRequestBody, NoQueryParam, NoPathParam, NoResponseBody>(HttpMethod.Get)
+    val ping = publicOperation<NoRequestBody, NoQueryParam, NoPathParam, NoResponseBody>(HttpMethod.Get)
 }

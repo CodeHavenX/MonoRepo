@@ -7,6 +7,7 @@ import com.cramsan.framework.annotations.api.ResponseBody
 import com.cramsan.framework.core.ktor.OperationHandler.handle
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.AuthMode
 import com.cramsan.framework.networkapi.Operation
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.http.HttpStatusCode
@@ -15,16 +16,21 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.principal
 
 /**
- * Registers a handler for an operation that requires authentication.
+ * Registers a handler for an [AuthMode.Required] operation.
  *
  * The route is wrapped in `authenticate([BEARER_SECURITY_SCHEME])`, so the bearer provider installed by
  * `configureBearerAuthentication` validates the token and rejects unauthenticated requests with a 401
  * before the handler runs. The handler receives an [OperationRequest] carrying the authenticated context
  * resolved from the request principal.
  *
+ * This overload is selected automatically because the operation declares [AuthMode.Required] in its type;
+ * there is no separate authenticated-vs-public handler to choose. The sibling overloads serve
+ * [AuthMode.Public] and [AuthMode.Optional] operations.
+ *
  * @param operation The operation to register the handler for.
  * @param handler The suspend function to handle the request, receives the authenticated context.
  */
+@JvmName("handlerRequired")
 inline fun <
     RequestType : RequestBody,
     QueryParamType : QueryParam,
@@ -33,7 +39,7 @@ inline fun <
     T : Api,
     P,
     > OperationHandler.RegistrationBuilder<T, P>.handler(
-    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
+    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Required>,
     crossinline handler: suspend (
         OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext.AuthenticatedClientContext<P>>,
     ) -> ResponseType?,
@@ -43,30 +49,20 @@ inline fun <
             this,
             { authenticatedClientContext<P>() },
             authenticated = true,
-        ) { request ->
-            val response = handler(request)
-
-            HttpResponse(
-                status =
-                if (response == null) {
-                    HttpStatusCode.NotFound
-                } else {
-                    HttpStatusCode.OK
-                },
-                body = response,
-            )
-        }
+        ) { request -> httpResponseFor(handler(request)) }
     }
 }
 
 /**
- * Registers a handler for an operation that does not require authentication. The route is not placed
- * behind an authentication gate; the handler receives an [OperationRequest] with an unauthenticated
- * context.
+ * Registers a handler for an [AuthMode.Public] operation. The route is not placed behind an
+ * authentication gate; the handler receives an [OperationRequest] with an unauthenticated context.
+ *
+ * This overload is selected automatically because the operation declares [AuthMode.Public] in its type.
  *
  * @param operation The operation to register the handler for.
- * @param handler The suspend function to handle the request, receives the context.
+ * @param handler The suspend function to handle the request, receives the unauthenticated context.
  */
+@JvmName("handlerPublic")
 inline fun <
     RequestType : RequestBody,
     QueryParamType : QueryParam,
@@ -74,8 +70,8 @@ inline fun <
     ResponseType : ResponseBody,
     T : Api,
     P,
-    > OperationHandler.RegistrationBuilder<T, P>.unauthenticatedHandler(
-    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
+    > OperationHandler.RegistrationBuilder<T, P>.handler(
+    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Public>,
     crossinline handler: suspend (
         OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
     ) -> ResponseType?,
@@ -84,31 +80,21 @@ inline fun <
         route,
         { ClientContext.UnauthenticatedClientContext() },
         authenticated = false,
-    ) { request ->
-        val response = handler(request)
-
-        HttpResponse(
-            status =
-            if (response == null) {
-                HttpStatusCode.NotFound
-            } else {
-                HttpStatusCode.OK
-            },
-            body = response,
-        )
-    }
+    ) { request -> httpResponseFor(handler(request)) }
 }
 
 /**
- * Registers a handler for an operation with optional authentication. The route is wrapped in
+ * Registers a handler for an [AuthMode.Optional] operation. The route is wrapped in
  * `authenticate([BEARER_SECURITY_SCHEME], optional = true)`, so a request with a valid token is
  * authenticated (the handler sees an [ClientContext.AuthenticatedClientContext]) while a request with no
- * token is still served (the handler sees an [ClientContext.UnauthenticatedClientContext]). Use this for
- * endpoints that tailor their response to the caller when authenticated but remain publicly accessible.
+ * token is still served (the handler sees an [ClientContext.UnauthenticatedClientContext]).
+ *
+ * This overload is selected automatically because the operation declares [AuthMode.Optional] in its type.
  *
  * @param operation The operation to register the handler for.
  * @param handler The suspend function to handle the request, receives the (possibly authenticated) context.
  */
+@JvmName("handlerOptional")
 inline fun <
     RequestType : RequestBody,
     QueryParamType : QueryParam,
@@ -116,8 +102,8 @@ inline fun <
     ResponseType : ResponseBody,
     T : Api,
     P,
-    > OperationHandler.RegistrationBuilder<T, P>.optionalAuthHandler(
-    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
+    > OperationHandler.RegistrationBuilder<T, P>.handler(
+    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Optional>,
     crossinline handler: suspend (
         OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
     ) -> ResponseType?,
@@ -127,21 +113,20 @@ inline fun <
             this,
             { optionalClientContext<P>() },
             authenticated = false,
-        ) { request ->
-            val response = handler(request)
-
-            HttpResponse(
-                status =
-                if (response == null) {
-                    HttpStatusCode.NotFound
-                } else {
-                    HttpStatusCode.OK
-                },
-                body = response,
-            )
-        }
+        ) { request -> httpResponseFor(handler(request)) }
     }
 }
+
+/**
+ * Wraps a handler's nullable return into an [HttpResponse]: a non-null body responds 200, while `null`
+ * signals "not found" and responds 404. Shared by the [handler] overloads.
+ */
+@PublishedApi
+internal fun <ResponseType : ResponseBody> httpResponseFor(response: ResponseType?): HttpResponse<ResponseType> =
+    HttpResponse(
+        status = if (response == null) HttpStatusCode.NotFound else HttpStatusCode.OK,
+        body = response,
+    )
 
 /**
  * Returns the authenticated client context from the request principal set by the bearer authentication

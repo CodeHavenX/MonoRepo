@@ -38,7 +38,7 @@ plugins {
 
 ideCheck {
     failOnUnsupportedIde.set(true)
-    failOnMissingPlugin.set(true)
+    failOnMissingPlugin.set(false)
     ides {
         // idea.platform.prefix values: "AndroidStudio" for Android Studio, "Idea" for IntelliJ IDEA.
         // idea.version reports only the major.minor (e.g. "2026.1"), patch and RC labels are

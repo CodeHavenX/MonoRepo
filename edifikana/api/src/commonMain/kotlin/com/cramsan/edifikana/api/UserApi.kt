@@ -144,9 +144,20 @@ object UserApi : Api("user") {
      * Always returns 200 regardless of whether the email exists.
      */
     val requestPasswordReset = publicOperation<
-        PasswordResetNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        NoResponseBody,
-    >(HttpMethod.Post, "request-password-reset")
+            PasswordResetNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            NoResponseBody,
+            >(HttpMethod.Post, "request-password-reset")
+
+    /**
+     * Mark that the authenticated user has set a password.
+     * Route: PATCH /user/password-auth/{userId}
+     */
+    val setPasswordAuth = operation<
+            NoRequestBody,
+            NoQueryParam,
+            UserId,
+            NoResponseBody,
+            >(HttpMethod.Patch, "password-auth")
 }

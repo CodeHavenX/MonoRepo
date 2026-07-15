@@ -1,33 +1,18 @@
 package com.cramsan.edifikana.server.controller.authentication
 
 import com.cramsan.edifikana.lib.model.user.UserId
-import com.cramsan.edifikana.lib.serialization.HEADER_TOKEN_AUTH
 import com.cramsan.framework.assertlib.assertNull
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
-import com.cramsan.framework.logging.logD
 import com.cramsan.framework.logging.logW
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.exceptions.RestException
-import io.ktor.server.application.ApplicationCall
 
 /**
- * A [ContextRetriever] that retrieves the client context from a Supabase auth token.
+ * A [ContextRetriever] that resolves the client context from a Supabase auth token.
  */
 class SupabaseContextRetriever(private val auth: Auth) : ContextRetriever<SupabaseContextPayload> {
-    override suspend fun getContext(applicationCall: ApplicationCall): ClientContext<SupabaseContextPayload> {
-        val headerMap =
-            applicationCall.request.headers.entries().associate {
-                it.key to it.value
-            }
-
-        val token = headerMap[HEADER_TOKEN_AUTH]?.firstOrNull()
-
-        if (token.isNullOrBlank()) {
-            logD(TAG, "Missing token in request")
-            return ClientContext.UnauthenticatedClientContext()
-        }
-
+    override suspend fun getContext(token: String): ClientContext<SupabaseContextPayload> {
         val user =
             try {
                 auth.retrieveUser(token)

@@ -7,6 +7,8 @@ import com.cramsan.architecture.server.dependencyinjection.KtorModule
 import com.cramsan.architecture.server.settings.BackEndApplicationSettingKey
 import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.framework.core.ktor.Controller
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.configureBearerAuthentication
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
 import com.cramsan.framework.core.ktor.configureOpenApiEndpoint
 import com.cramsan.framework.logging.logI
@@ -60,6 +62,11 @@ fun Application.startKtor() =
 
         val controllerList: List<Controller> by inject()
         val loadExtraControllers: EndpointsToLoad by inject()
+        val contextRetriever: ContextRetriever<*> by inject()
+
+        // Install the bearer authentication provider before routes are registered so authenticated
+        // controllers can wrap their routes in `authenticate(BEARER_SECURITY_SCHEME)`.
+        configureBearerAuthentication(contextRetriever)
 
         when (loadExtraControllers) {
             EndpointsToLoad.ALL -> {

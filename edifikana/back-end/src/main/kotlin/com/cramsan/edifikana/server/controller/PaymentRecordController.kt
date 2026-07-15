@@ -19,7 +19,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
@@ -41,7 +40,6 @@ import io.ktor.server.routing.Routing
 class PaymentRecordController(
     private val paymentRecordService: PaymentRecordService,
     private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
 ) : Controller {
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
@@ -142,17 +140,17 @@ class PaymentRecordController(
      * Registers all payment record routes.
      */
     override fun registerRoutes(route: Routing) {
-        PaymentRecordApi.register(route) {
-            handler(api.createPaymentRecord, contextRetriever) { request ->
+        PaymentRecordApi.register(route, SupabaseContextPayload::class) {
+            handler(api.createPaymentRecord) { request ->
                 createPaymentRecord(request)
             }
-            handler(api.getPaymentRecord, contextRetriever) { request ->
+            handler(api.getPaymentRecord) { request ->
                 getPaymentRecord(request)
             }
-            handler(api.listPaymentRecords, contextRetriever) { request ->
+            handler(api.listPaymentRecords) { request ->
                 listPaymentRecords(request)
             }
-            handler(api.updatePaymentRecord, contextRetriever) { request ->
+            handler(api.updatePaymentRecord) { request ->
                 updatePaymentRecord(request)
             }
         }

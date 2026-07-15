@@ -68,7 +68,7 @@ class OccupantControllerTest :
 
     @Test
     fun `createOccupant persists name and email on the response`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val unitId = UnitId("unit123")
             val callerId = UserId("user123")
             val occupantService = get<OccupantService>()
@@ -140,7 +140,7 @@ class OccupantControllerTest :
 
     @Test
     fun `getOccupant returns occupant when Resident is reading their own record`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val occupantId = OccupantId("occupant123")
             val callerId = UserId("user123")
             val occupantService = get<OccupantService>()
@@ -179,7 +179,7 @@ class OccupantControllerTest :
 
     @Test
     fun `getOccupant returns 404 when Resident tries to read another user's record`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val occupantId = OccupantId("occupant123")
             val callerId = UserId("user123")
             val occupantService = get<OccupantService>()
@@ -216,7 +216,7 @@ class OccupantControllerTest :
 
     @Test
     fun `getOccupant returns 404 when Resident tries to read an occupant with no linked user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val occupantId = OccupantId("occupant123")
             val callerId = UserId("user123")
             val occupantService = get<OccupantService>()
@@ -257,7 +257,7 @@ class OccupantControllerTest :
 
     @Test
     fun `removeOccupant returns 409 when primary occupant has other active occupants`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val occupantId = OccupantId("occupant123")
             val callerId = UserId("user123")
             val occupantService = get<OccupantService>()

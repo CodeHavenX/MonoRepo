@@ -15,7 +15,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
@@ -32,11 +31,8 @@ import io.ktor.server.routing.Routing
  * TODO: Resident read-only access via unit_occupants is deferred to a future phase.
  */
 @BackendController
-class RentConfigController(
-    private val rentConfigService: RentConfigService,
-    private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-) : Controller {
+class RentConfigController(private val rentConfigService: RentConfigService, private val rbacService: RBACService) :
+    Controller {
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -86,11 +82,11 @@ class RentConfigController(
      * Registers all rent config routes.
      */
     override fun registerRoutes(route: Routing) {
-        RentConfigApi.register(route) {
-            handler(api.getRentConfig, contextRetriever) { request ->
+        RentConfigApi.register(route, SupabaseContextPayload::class) {
+            handler(api.getRentConfig) { request ->
                 getRentConfig(request)
             }
-            handler(api.setRentConfig, contextRetriever) { request ->
+            handler(api.setRentConfig) { request ->
                 setRentConfig(request)
             }
         }

@@ -20,7 +20,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
@@ -36,11 +35,7 @@ import kotlin.time.ExperimentalTime
  */
 @BackendController
 @OptIn(ExperimentalTime::class)
-class TaskController(
-    private val taskService: TaskService,
-    private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-) : Controller {
+class TaskController(private val taskService: TaskService, private val rbacService: RBACService) : Controller {
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -167,20 +162,20 @@ class TaskController(
      * Registers all task routes.
      */
     override fun registerRoutes(route: Routing) {
-        TaskApi.register(route) {
-            handler(api.createTask, contextRetriever) { request ->
+        TaskApi.register(route, SupabaseContextPayload::class) {
+            handler(api.createTask) { request ->
                 createTask(request)
             }
-            handler(api.getTask, contextRetriever) { request ->
+            handler(api.getTask) { request ->
                 getTask(request)
             }
-            handler(api.getTasks, contextRetriever) { request ->
+            handler(api.getTasks) { request ->
                 getTasks(request)
             }
-            handler(api.updateTask, contextRetriever) { request ->
+            handler(api.updateTask) { request ->
                 updateTask(request)
             }
-            handler(api.deleteTask, contextRetriever) { request ->
+            handler(api.deleteTask) { request ->
                 deleteTask(request)
             }
         }

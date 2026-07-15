@@ -15,13 +15,16 @@ import com.cramsan.framework.networkapi.Api
 import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.routing
+import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
@@ -76,9 +79,24 @@ class ResponsePolicyEnforcementTest {
 
     private val authenticatedContextRetriever =
         object : ContextRetriever<Unit> {
-            override suspend fun getContext(applicationCall: ApplicationCall) =
+            override suspend fun getContext(token: String) =
                 ClientContext.AuthenticatedClientContext(Unit)
         }
+
+    private fun ApplicationTestBuilder.setupApp(
+        block: OperationHandler.RegistrationBuilder<DummyApi, Unit>.() -> Unit,
+    ) {
+        application {
+            install(ContentNegotiation) { json() }
+            configureBearerAuthentication(authenticatedContextRetriever)
+            routing {
+                DummyApi.register(this, Unit::class) { block() }
+            }
+        }
+    }
+
+    private suspend fun ApplicationTestBuilder.getAuthenticated(path: String): HttpResponse =
+        client.get(path) { header(HttpHeaders.Authorization, "Bearer test") }
 
     @BeforeTest
     fun setUp() {
@@ -89,16 +107,9 @@ class ResponsePolicyEnforcementTest {
     fun `strict policy coerces an undeclared 404 to 500`() =
         runTest {
             testApplication {
-                application {
-                    install(ContentNegotiation) { json() }
-                    routing {
-                        DummyApi.register(this) {
-                            handler(api.strictNoDomainCodes, authenticatedContextRetriever) { null }
-                        }
-                    }
-                }
+                setupApp { handler(api.strictNoDomainCodes) { null } }
 
-                val response = client.get("dummy/strict")
+                val response = getAuthenticated("dummy/strict")
 
                 assertEquals(HttpStatusCode.InternalServerError, response.status)
             }
@@ -108,16 +119,9 @@ class ResponsePolicyEnforcementTest {
     fun `strict policy allows a declared 404`() =
         runTest {
             testApplication {
-                application {
-                    install(ContentNegotiation) { json() }
-                    routing {
-                        DummyApi.register(this) {
-                            handler(api.declaresNotFound, authenticatedContextRetriever) { null }
-                        }
-                    }
-                }
+                setupApp { handler(api.declaresNotFound) { null } }
 
-                val response = client.get("dummy/declares-not-found")
+                val response = getAuthenticated("dummy/declares-not-found")
 
                 assertEquals(HttpStatusCode.NotFound, response.status)
             }
@@ -127,18 +131,13 @@ class ResponsePolicyEnforcementTest {
     fun `strict policy coerces an undeclared thrown status to 500`() =
         runTest {
             testApplication {
-                application {
-                    install(ContentNegotiation) { json() }
-                    routing {
-                        DummyApi.register(this) {
-                            handler(api.strictNoDomainCodes, authenticatedContextRetriever) {
-                                throw ClientRequestExceptions.ForbiddenException("nope")
-                            }
-                        }
+                setupApp {
+                    handler(api.strictNoDomainCodes) {
+                        throw ClientRequestExceptions.ForbiddenException("nope")
                     }
                 }
 
-                val response = client.get("dummy/strict")
+                val response = getAuthenticated("dummy/strict")
 
                 assertEquals(HttpStatusCode.InternalServerError, response.status)
             }
@@ -148,18 +147,13 @@ class ResponsePolicyEnforcementTest {
     fun `strict policy allows a declared thrown status`() =
         runTest {
             testApplication {
-                application {
-                    install(ContentNegotiation) { json() }
-                    routing {
-                        DummyApi.register(this) {
-                            handler(api.declaresForbidden, authenticatedContextRetriever) {
-                                throw ClientRequestExceptions.ForbiddenException("nope")
-                            }
-                        }
+                setupApp {
+                    handler(api.declaresForbidden) {
+                        throw ClientRequestExceptions.ForbiddenException("nope")
                     }
                 }
 
-                val response = client.get("dummy/declares-forbidden")
+                val response = getAuthenticated("dummy/declares-forbidden")
 
                 assertEquals(HttpStatusCode.Forbidden, response.status)
             }
@@ -169,16 +163,9 @@ class ResponsePolicyEnforcementTest {
     fun `AllowAnyResponse policy leaves a 404 untouched`() =
         runTest {
             testApplication {
-                application {
-                    install(ContentNegotiation) { json() }
-                    routing {
-                        DummyApi.register(this) {
-                            handler(api.allowAll, authenticatedContextRetriever) { null }
-                        }
-                    }
-                }
+                setupApp { handler(api.allowAll) { null } }
 
-                val response = client.get("dummy/allow-all")
+                val response = getAuthenticated("dummy/allow-all")
 
                 assertEquals(HttpStatusCode.NotFound, response.status)
             }

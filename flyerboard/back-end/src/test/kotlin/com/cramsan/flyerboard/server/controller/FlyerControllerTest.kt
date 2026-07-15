@@ -99,7 +99,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test listFlyers returns empty list`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             coEvery {
@@ -116,7 +116,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test listFlyers returns flyers from service`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             val flyer = makeFlyer(id = "flyer-1")
@@ -134,7 +134,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test listFlyers forwards pagination params to service`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             coEvery {
@@ -151,7 +151,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test listFlyers forwards search query to service`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             val match = makeFlyer(id = "flyer-match")
@@ -168,7 +168,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test listFlyers forwards status filter to service`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             val approved = makeFlyer(id = "flyer-approved", status = FlyerStatus.APPROVED)
@@ -187,7 +187,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test getFlyer returns flyer when found`() =
-        testBackEndApplication {
+        testBackEndApplication { _ ->
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             val flyer = makeFlyer(id = "flyer-1")
@@ -202,7 +202,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test getFlyer returns 404 when service returns null`() =
-        testBackEndApplication {
+        testBackEndApplication { _ ->
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             coEvery { flyerService.getFlyer(any(), FlyerId("missing")) } returns Result.success(null)
@@ -214,7 +214,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test getFlyer returns 404 when service throws NotFoundException`() =
-        testBackEndApplication {
+        testBackEndApplication { _ ->
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             coEvery {
@@ -230,7 +230,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test listArchived returns archived flyers`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubUnauthenticated()
             val flyerService = get<FlyerService>()
             val archived = makeFlyer(id = "archived-1", status = FlyerStatus.ARCHIVED)
@@ -249,7 +249,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test listMyFlyers fails for unauthenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubUnauthenticated()
 
             val response = client.get("api/v1/flyers/mine")
@@ -259,7 +259,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test listMyFlyers returns caller's flyers when authenticated`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val userId = UserId("user-1")
             stubAuthenticated(userId)
             val flyerService = get<FlyerService>()
@@ -279,7 +279,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test createFlyer succeeds for authenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val flyerService = get<FlyerService>()
             val flyer = makeFlyer()
@@ -306,7 +306,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test createFlyer fails for unauthenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             stubUnauthenticated()
 
@@ -325,7 +325,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test updateFlyer with requestUpload returns a signed upload URL`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val flyerService = get<FlyerService>()
             val flyerId = FlyerId("flyer-1")
@@ -360,7 +360,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test updateFlyer without requestUpload returns no upload URL`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val flyerService = get<FlyerService>()
             val flyerId = FlyerId("flyer-1")
@@ -392,7 +392,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test updateFlyer fails for unauthenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             stubUnauthenticated()
 
@@ -409,7 +409,7 @@ class FlyerControllerTest :
 
     @Test
     fun `test updateFlyer fails with 403 when requester is not the owner`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val flyerService = get<FlyerService>()
             val flyerId = FlyerId("flyer-1")

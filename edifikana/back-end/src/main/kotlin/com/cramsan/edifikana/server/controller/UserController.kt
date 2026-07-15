@@ -26,7 +26,6 @@ import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
@@ -37,11 +36,7 @@ import io.ktor.server.routing.Routing
  * Controller for user related operations. CRUD operations for users.
  */
 @BackendController
-class UserController(
-    private val userService: UserService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-    private val rbacService: RBACService,
-) : Controller {
+class UserController(private val userService: UserService, private val rbacService: RBACService) : Controller {
     private val unauthorizedMsg = "You are not authorized to perform this action."
 
     /**
@@ -337,44 +332,44 @@ class UserController(
      */
 
     override fun registerRoutes(route: Routing) {
-        UserApi.register(route) {
-            handler(api.getUser, contextRetriever) { request ->
+        UserApi.register(route, SupabaseContextPayload::class) {
+            handler(api.getUser) { request ->
                 getUser(request.context, request.pathParam)
             }
-            unauthenticatedHandler(api.createUser, contextRetriever) { request ->
+            unauthenticatedHandler(api.createUser) { request ->
                 createUser(request.requestBody)
             }
-            handler(api.getAllUsers, contextRetriever) { request ->
+            handler(api.getAllUsers) { request ->
                 getUsers(request.context, request.queryParam)
             }
-            handler(api.updateUser, contextRetriever) { request ->
+            handler(api.updateUser) { request ->
                 updateUser(request.context, request.requestBody, request.pathParam)
             }
-            handler(api.deleteUser, contextRetriever) { request ->
+            handler(api.deleteUser) { request ->
                 deleteUser(request.context, request.pathParam)
             }
-            handler(api.associateUser, contextRetriever) { request ->
+            handler(api.associateUser) { request ->
                 associate(request.context)
             }
-            handler(api.inviteUser, contextRetriever) { request ->
+            handler(api.inviteUser) { request ->
                 inviteUser(request.context, request.requestBody)
             }
-            handler(api.getInvites, contextRetriever) { request ->
+            handler(api.getInvites) { request ->
                 getInvites(request.context, request.pathParam)
             }
-            handler(api.acceptInvite, contextRetriever) { request ->
+            handler(api.acceptInvite) { request ->
                 acceptInvite(request.context, request.pathParam)
             }
-            handler(api.declineInvite, contextRetriever) { request ->
+            handler(api.declineInvite) { request ->
                 declineInvite(request.context, request.pathParam)
             }
-            handler(api.cancelInvite, contextRetriever) { request ->
+            handler(api.cancelInvite) { request ->
                 cancelInvite(request.context, request.pathParam)
             }
-            unauthenticatedHandler(api.checkUserExists, contextRetriever) { request ->
+            unauthenticatedHandler(api.checkUserExists) { request ->
                 checkUserIsRegistered(request.queryParam.email)
             }
-            unauthenticatedHandler(api.requestPasswordReset, contextRetriever) { request ->
+            unauthenticatedHandler(api.requestPasswordReset) { request ->
                 requestPasswordReset(request.requestBody)
             }
         }

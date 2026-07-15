@@ -11,7 +11,6 @@ import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.server.routing.Routing
@@ -21,10 +20,7 @@ import io.ktor.server.routing.Routing
  * Handles fetching, marking as read, and deleting notifications for authenticated users.
  */
 @BackendController
-class NotificationController(
-    private val notificationService: NotificationService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-) : Controller {
+class NotificationController(private val notificationService: NotificationService) : Controller {
     /**
      * Get all notifications for the authenticated user.
      * Returns a list of notifications ordered by creation date (newest first).
@@ -127,17 +123,17 @@ class NotificationController(
      */
 
     override fun registerRoutes(route: Routing) {
-        NotificationApi.register(route) {
-            handler(api.getNotifications, contextRetriever) { request ->
+        NotificationApi.register(route, SupabaseContextPayload::class) {
+            handler(api.getNotifications) { request ->
                 getNotifications(request.context)
             }
-            handler(api.getNotification, contextRetriever) { request ->
+            handler(api.getNotification) { request ->
                 getNotification(request.context, request.pathParam)
             }
-            handler(api.markAsRead, contextRetriever) { request ->
+            handler(api.markAsRead) { request ->
                 markAsRead(request.context, request.pathParam)
             }
-            handler(api.deleteNotification, contextRetriever) { request ->
+            handler(api.deleteNotification) { request ->
                 deleteNotification(request.context, request.pathParam)
             }
         }

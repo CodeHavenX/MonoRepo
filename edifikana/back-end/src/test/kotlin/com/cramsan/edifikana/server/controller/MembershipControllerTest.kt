@@ -74,7 +74,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test inviteMember succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/invite_member_request.json")
             val membershipService = get<MembershipService>()
@@ -105,7 +105,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test inviteMember fails when user does not have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/invite_member_request.json")
             val membershipService = get<MembershipService>()
@@ -134,7 +134,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test inviteMember fails when RESIDENT role is requested`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val membershipService = get<MembershipService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -158,7 +158,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test inviteMember fails when inviter tries to assign higher privilege role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = """{"email":"invite@example.com","role":"ADMIN"}"""
             val membershipService = get<MembershipService>()
@@ -192,7 +192,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test listMembers succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/list_members_response.json")
             val membershipService = get<MembershipService>()
@@ -232,7 +232,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test listMembers fails when user does not have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val membershipService = get<MembershipService>()
             val rbacService = get<RBACService>()
@@ -260,7 +260,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test updateMemberRole succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_member_role_request.json")
             val membershipService = get<MembershipService>()
@@ -290,7 +290,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test updateMemberRole fails when user does not have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_member_role_request.json")
             val membershipService = get<MembershipService>()
@@ -323,7 +323,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test removeMember succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/remove_member_request.json")
             val membershipService = get<MembershipService>()
@@ -353,7 +353,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test removeMember fails when user does not have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/remove_member_request.json")
             val membershipService = get<MembershipService>()
@@ -386,7 +386,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test leaveOrganization succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val membershipService = get<MembershipService>()
             val rbacService = get<RBACService>()
@@ -410,7 +410,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test leaveOrganization fails when user does not have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val membershipService = get<MembershipService>()
             val rbacService = get<RBACService>()
@@ -438,7 +438,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test transferOwnership succeeds when user is the owner`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/transfer_ownership_request.json")
             val membershipService = get<MembershipService>()
@@ -469,7 +469,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test transferOwnership fails when user is not the owner`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/transfer_ownership_request.json")
             val membershipService = get<MembershipService>()
@@ -502,7 +502,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test listPendingInvites succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/list_pending_invites_response.json")
             val membershipService = get<MembershipService>()
@@ -540,7 +540,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test listPendingInvites fails when user does not have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val membershipService = get<MembershipService>()
             val rbacService = get<RBACService>()
@@ -568,7 +568,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test cancelInvite succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val membershipService = get<MembershipService>()
             val rbacService = get<RBACService>()
@@ -593,7 +593,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test cancelInvite fails when user does not have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val membershipService = get<MembershipService>()
             val rbacService = get<RBACService>()
@@ -622,7 +622,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test resendInvite succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val membershipService = get<MembershipService>()
             val rbacService = get<RBACService>()
@@ -647,7 +647,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test resendInvite fails when user does not have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val membershipService = get<MembershipService>()
             val rbacService = get<RBACService>()
@@ -676,7 +676,7 @@ class MembershipControllerTest :
 
     @Test
     fun `test joinViaCode succeeds for authenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/join_via_code_request.json")
             val membershipService = get<MembershipService>()

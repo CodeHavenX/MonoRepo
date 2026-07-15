@@ -59,7 +59,7 @@ class TimeCardControllerTest :
 
     @Test
     fun `test createTimeCardEvent`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val requestBody = readFileContent("requests/create_timecard_event_request.json")
             val expectedResponse = readFileContent("requests/create_timecard_event_response.json")
@@ -119,7 +119,7 @@ class TimeCardControllerTest :
 
     @Test
     fun `test getTimeCardEvent`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val expectedResponse = readFileContent("requests/get_timecard_event_response.json")
             val timeCardService = get<TimeCardService>()
@@ -166,7 +166,7 @@ class TimeCardControllerTest :
 
     @Test
     fun `test getTimeCardEvents`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val expectedResponse = readFileContent("requests/get_timecard_events_response.json")
             val timeCardService = get<TimeCardService>()

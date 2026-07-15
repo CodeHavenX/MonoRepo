@@ -63,7 +63,7 @@ class UnitControllerTest :
 
     @Test
     fun `test createUnit succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_unit_request.json")
             val expectedResponse = readFileContent("requests/create_unit_response.json")
@@ -117,7 +117,7 @@ class UnitControllerTest :
 
     @Test
     fun `test createUnit fails when user lacks required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_unit_request.json")
             val unitService = get<UnitService>()
@@ -148,7 +148,7 @@ class UnitControllerTest :
 
     @Test
     fun `test getUnit succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_unit_response.json")
             val unitService = get<UnitService>()
@@ -188,7 +188,7 @@ class UnitControllerTest :
 
     @Test
     fun `test getUnit returns not found when unit does not exist`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val unitService = get<UnitService>()
             val rbacService = get<RBACService>()
@@ -213,7 +213,7 @@ class UnitControllerTest :
 
     @Test
     fun `test getUnit fails when user lacks required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val unitService = get<UnitService>()
             val rbacService = get<RBACService>()
@@ -240,7 +240,7 @@ class UnitControllerTest :
 
     @Test
     fun `test getUnits succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_units_response.json")
             val unitService = get<UnitService>()
@@ -295,7 +295,7 @@ class UnitControllerTest :
 
     @Test
     fun `test getUnits fails when user lacks required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val unitService = get<UnitService>()
             val rbacService = get<RBACService>()
@@ -321,7 +321,7 @@ class UnitControllerTest :
 
     @Test
     fun `test updateUnit succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_unit_request.json")
             val expectedResponse = readFileContent("requests/update_unit_response.json")
@@ -376,7 +376,7 @@ class UnitControllerTest :
 
     @Test
     fun `test updateUnit fails when user lacks required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_unit_request.json")
             val unitService = get<UnitService>()
@@ -408,7 +408,7 @@ class UnitControllerTest :
 
     @Test
     fun `test deleteUnit succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val unitService = get<UnitService>()
             val rbacService = get<RBACService>()
@@ -433,7 +433,7 @@ class UnitControllerTest :
 
     @Test
     fun `test deleteUnit fails when user lacks required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val unitService = get<UnitService>()
             val rbacService = get<RBACService>()

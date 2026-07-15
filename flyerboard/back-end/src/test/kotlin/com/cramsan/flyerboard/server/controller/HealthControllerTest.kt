@@ -46,7 +46,7 @@ class HealthControllerTest :
 
     @Test
     fun `test check returns ok status without requiring authentication`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
             coEvery { contextRetriever.getContext(any()) } returns ClientContext.UnauthenticatedClientContext()
 

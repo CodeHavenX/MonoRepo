@@ -19,7 +19,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
@@ -28,11 +27,8 @@ import io.ktor.server.routing.Routing
  * Controller for employee related operations. CRUD operations for employee.
  */
 @BackendController
-class EmployeeController(
-    private val employeeService: EmployeeService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-    private val rbacService: RBACService,
-) : Controller {
+class EmployeeController(private val employeeService: EmployeeService, private val rbacService: RBACService) :
+    Controller {
     val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -189,20 +185,20 @@ class EmployeeController(
      */
 
     override fun registerRoutes(route: Routing) {
-        EmployeeApi.register(route) {
-            handler(api.createEmployee, contextRetriever) { request ->
+        EmployeeApi.register(route, SupabaseContextPayload::class) {
+            handler(api.createEmployee) { request ->
                 createEmployee(request)
             }
-            handler(api.getEmployee, contextRetriever) { request ->
+            handler(api.getEmployee) { request ->
                 getEmployee(request)
             }
-            handler(api.getEmployees, contextRetriever) { request ->
+            handler(api.getEmployees) { request ->
                 getEmployees(request)
             }
-            handler(api.updateEmployee, contextRetriever) { request ->
+            handler(api.updateEmployee) { request ->
                 updateEmployee(request)
             }
-            handler(api.deleteEmployee, contextRetriever) { request ->
+            handler(api.deleteEmployee) { request ->
                 deleteEmployee(request)
             }
         }

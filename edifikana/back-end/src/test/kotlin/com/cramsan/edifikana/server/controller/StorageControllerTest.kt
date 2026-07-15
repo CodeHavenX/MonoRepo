@@ -59,7 +59,7 @@ class StorageControllerTest :
 
     @Test
     fun `getSignedDownload should return OK and signed URL when PROPERTY asset is authorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val assetId = "private/properties/${PROPERTY_1.id.propertyId}/photo.jpg"
             val expectedResponse = readFileContent("requests/get_signed_download_response.json")
@@ -83,7 +83,7 @@ class StorageControllerTest :
 
     @Test
     fun `getSignedDownload should return 401 when PROPERTY asset is not authorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val assetId = "private/properties/${PROPERTY_1.id.propertyId}/photo.jpg"
             val storageService = get<StorageService>()
@@ -105,7 +105,7 @@ class StorageControllerTest :
 
     @Test
     fun `getSignedDownload should return OK and signed URL when TIME_CARD asset is authorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val assetId = "private/time_cards/${PROPERTY_1.id.propertyId}/photo.jpg"
             val expectedResponse = readFileContent("requests/get_signed_download_response.json")
@@ -129,7 +129,7 @@ class StorageControllerTest :
 
     @Test
     fun `getSignedDownload should return 401 when TIME_CARD asset is not authorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val assetId = "private/time_cards/${PROPERTY_1.id.propertyId}/photo.jpg"
             val storageService = get<StorageService>()
@@ -155,7 +155,7 @@ class StorageControllerTest :
 
     @Test
     fun `createPropertySignedUpload should return OK when user has MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val filename = "photo.jpg"
             val canonicalPath = "private/properties/${PROPERTY_1.id.propertyId}/$filename"
@@ -186,7 +186,7 @@ class StorageControllerTest :
 
     @Test
     fun `createPropertySignedUpload should return 401 when user lacks MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val storageService = get<StorageService>()
             val rbacService = get<RBACService>()
@@ -213,7 +213,7 @@ class StorageControllerTest :
 
     @Test
     fun `createTimeCardSignedUpload should return OK when user has EMPLOYEE role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val filename = "photo.jpg"
             val canonicalPath = "private/time_cards/${PROPERTY_1.id.propertyId}/$filename"
@@ -244,7 +244,7 @@ class StorageControllerTest :
 
     @Test
     fun `createTimeCardSignedUpload should return 401 when user is not in org`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val storageService = get<StorageService>()
             val rbacService = get<RBACService>()

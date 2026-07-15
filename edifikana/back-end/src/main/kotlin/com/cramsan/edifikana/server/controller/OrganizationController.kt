@@ -18,7 +18,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
@@ -30,7 +29,6 @@ import io.ktor.server.routing.Routing
 @BackendController
 class OrganizationController(
     private val organizationService: OrganizationService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
     private val rbacService: RBACService,
 ) : Controller {
     private val unauthorizedMsg = "You are not authorized to perform this action."
@@ -131,17 +129,17 @@ class OrganizationController(
      * Sets up the API endpoints and handlers for organization operations.
      */
     override fun registerRoutes(route: Routing) {
-        OrganizationApi.register(route) {
-            handler(api.getOrganizationList, contextRetriever) { request ->
+        OrganizationApi.register(route, SupabaseContextPayload::class) {
+            handler(api.getOrganizationList) { request ->
                 getOrganizationList(request)
             }
-            handler(api.getOrganization, contextRetriever) { request ->
+            handler(api.getOrganization) { request ->
                 getOrganization(request)
             }
-            handler(api.createOrganization, contextRetriever) { request ->
+            handler(api.createOrganization) { request ->
                 createOrganization(request)
             }
-            handler(api.updateOrganization, contextRetriever) { request ->
+            handler(api.updateOrganization) { request ->
                 updateOrganization(request)
             }
         }

@@ -22,7 +22,6 @@ import com.cramsan.framework.annotations.api.NoResponseBody
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.InvalidRequestException
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
@@ -32,11 +31,8 @@ import io.ktor.server.routing.Routing
  * Controller for organization membership management operations.
  */
 @BackendController
-class MembershipController(
-    private val membershipService: MembershipService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-    private val rbacService: RBACService,
-) : Controller {
+class MembershipController(private val membershipService: MembershipService, private val rbacService: RBACService) :
+    Controller {
     private val unauthorizedMsg = "You are not authorized to perform this action."
 
     /**
@@ -218,35 +214,35 @@ class MembershipController(
     }
 
     override fun registerRoutes(route: Routing) {
-        MembershipApi.register(route) {
-            handler(api.inviteMember, contextRetriever) { request ->
+        MembershipApi.register(route, SupabaseContextPayload::class) {
+            handler(api.inviteMember) { request ->
                 inviteMember(request.context, request.pathParam, request.requestBody)
             }
-            handler(api.listMembers, contextRetriever) { request ->
+            handler(api.listMembers) { request ->
                 listMembers(request.context, request.pathParam)
             }
-            handler(api.updateMemberRole, contextRetriever) { request ->
+            handler(api.updateMemberRole) { request ->
                 updateMemberRole(request.context, request.pathParam, request.requestBody)
             }
-            handler(api.removeMember, contextRetriever) { request ->
+            handler(api.removeMember) { request ->
                 removeMember(request.context, request.pathParam, request.requestBody)
             }
-            handler(api.leaveOrganization, contextRetriever) { request ->
+            handler(api.leaveOrganization) { request ->
                 leaveOrganization(request.context, request.pathParam)
             }
-            handler(api.transferOwnership, contextRetriever) { request ->
+            handler(api.transferOwnership) { request ->
                 transferOwnership(request.context, request.pathParam, request.requestBody)
             }
-            handler(api.listPendingInvites, contextRetriever) { request ->
+            handler(api.listPendingInvites) { request ->
                 listPendingInvites(request.context, request.pathParam)
             }
-            handler(api.cancelInvite, contextRetriever) { request ->
+            handler(api.cancelInvite) { request ->
                 cancelInvite(request.context, request.pathParam)
             }
-            handler(api.resendInvite, contextRetriever) { request ->
+            handler(api.resendInvite) { request ->
                 resendInvite(request.context, request.pathParam)
             }
-            handler(api.joinViaCode, contextRetriever) { request ->
+            handler(api.joinViaCode) { request ->
                 joinViaCode(request.context, request.requestBody)
             }
         }

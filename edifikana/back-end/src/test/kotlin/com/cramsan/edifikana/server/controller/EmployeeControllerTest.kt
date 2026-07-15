@@ -60,7 +60,7 @@ class EmployeeControllerTest :
 
     @Test
     fun `test createEmployee succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_employee_request.json")
             val expectedResponse = readFileContent("requests/create_employee_response.json")
@@ -109,7 +109,7 @@ class EmployeeControllerTest :
 
     @Test
     fun `test createEmployee fails when user doesn't have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_employee_request.json")
             val employeeService = get<EmployeeService>()
@@ -141,7 +141,7 @@ class EmployeeControllerTest :
 
     @Test
     fun `test getEmployee succeeds when user has required role or higher`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_employee_response.json")
             val employeeService = get<EmployeeService>()
@@ -179,7 +179,7 @@ class EmployeeControllerTest :
 
     @Test
     fun `test getEmployee fails when user doesn't have required role or higher`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action in your organization."
             val employeeService = get<EmployeeService>()
@@ -207,7 +207,7 @@ class EmployeeControllerTest :
 
     @Test
     fun `test getEmployees succeeds when user has required role or higher`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_employees_response.json")
             val employeeService = get<EmployeeService>()
@@ -258,7 +258,7 @@ class EmployeeControllerTest :
 
     @Test
     fun `test updateEmployee succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_employee_request.json")
             val expectedResponse = readFileContent("requests/update_employee_response.json")
@@ -307,7 +307,7 @@ class EmployeeControllerTest :
 
     @Test
     fun `test updateEmployee fails when user doesn't have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_employee_request.json")
             val expectedResponse = "You are not authorized to perform this action in your organization."
@@ -340,7 +340,7 @@ class EmployeeControllerTest :
 
     @Test
     fun `test deleteEmployee succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val employeeService = get<EmployeeService>()
             val rbacService = get<RBACService>()
@@ -366,7 +366,7 @@ class EmployeeControllerTest :
 
     @Test
     fun `test deleteEmployee fails when user doesn't have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action in your organization."
             val employeeService = get<EmployeeService>()

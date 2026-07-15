@@ -37,6 +37,7 @@ import io.ktor.util.reflect.TypeInfo
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
+import kotlin.reflect.KClass
 
 /**
  * Utility object to handle the registration and handling of API operations within Ktor routing.
@@ -45,10 +46,14 @@ object OperationHandler {
     /**
      * Builder class to hold the API and the corresponding route for registration.
      *
+     * @param T The API type being registered.
+     * @param P The client-context payload type shared by the API's authenticated operations. It is a
+     * phantom type parameter: it does not appear in the builder's state, but it flows into the
+     * registered handlers so they resolve the payload type without per-handler annotations.
      * @param api The API instance being registered.
      * @param route The Ktor route associated with the API.
      */
-    data class RegistrationBuilder<T : Api>(val api: T, val route: Route)
+    data class RegistrationBuilder<T : Api, P>(val api: T, val route: Route)
 
     /**
      * Registers the routes for the given API within the provided Ktor routing context.
@@ -56,12 +61,18 @@ object OperationHandler {
      * This sets up a sub-route for the API's path and allows further configuration using the [RegistrationBuilder].
      *
      * @param route The Ktor routing context where the API routes will be registered.
+     * @param payloadType The client-context payload type for this API's authenticated operations. It is
+     * a type witness: it fixes the builder's payload type so handlers infer it, and is not otherwise used.
      * @param build A lambda with receiver to configure the registration using [RegistrationBuilder].
      */
-    fun <T : Api> T.register(route: Routing, build: RegistrationBuilder<T>.() -> Unit) {
+    fun <T : Api, P : Any> T.register(
+        route: Routing,
+        @Suppress("UnusedParameter") payloadType: KClass<P>,
+        build: RegistrationBuilder<T, P>.() -> Unit,
+    ) {
         route.route(this.path) {
             val builder =
-                RegistrationBuilder(
+                RegistrationBuilder<T, P>(
                     api = this@register,
                     route = this, // this route is the inner route with the api path
                 )
@@ -251,15 +262,16 @@ private fun <
     authenticated: Boolean,
 ): Route =
     describe {
-        describeMetadata(method, handler, apiPath, authenticated)
+        describeMetadata(method, handler, apiPath)
         describeParameters(handler)
         describeRequestBody(handler)
         describeResponses(handler, authenticated)
     }
 
 /**
- * Emits the operation id, summary, description, deprecation flag, tags, and (for authenticated
- * operations) the security requirement into the OpenAPI operation.
+ * Emits the operation id, summary, description, deprecation flag, and tags into the OpenAPI operation.
+ * The security requirement for authenticated operations is inferred separately by routing-openapi from
+ * the `authenticate(BEARER_SECURITY_SCHEME)` route wrapper.
  */
 private fun <
     RequestType : RequestBody,
@@ -270,7 +282,6 @@ private fun <
     method: HttpMethod,
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
     apiPath: String,
-    authenticated: Boolean,
 ) {
     operationId =
         buildList {
@@ -291,12 +302,8 @@ private fun <
     } else {
         tag(apiPath.split("/").firstOrNull { it.isNotEmpty() } ?: "api")
     }
-
-    if (authenticated) {
-        security {
-            requirement(BEARER_SECURITY_SCHEME)
-        }
-    }
+    // The per-operation security requirement is inferred automatically by routing-openapi from the
+    // `authenticate(BEARER_SECURITY_SCHEME)` wrapper, so it is not emitted here.
 }
 
 /**

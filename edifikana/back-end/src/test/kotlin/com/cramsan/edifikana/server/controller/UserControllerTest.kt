@@ -61,7 +61,7 @@ class UserControllerTest :
 
     @Test
     fun `test createUser`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_user_request.json")
             val expectedResponse = readFileContent("requests/create_user_response.json")
@@ -117,7 +117,7 @@ class UserControllerTest :
      */
     @Test
     fun `test createUser throws exception when unknown error occurs`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_user_request.json")
             val userService = get<UserService>()
@@ -162,7 +162,7 @@ class UserControllerTest :
      */
     @Test
     fun `test createUser throws exception when user already exists`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_user_request.json")
             val userService = get<UserService>()
@@ -203,7 +203,7 @@ class UserControllerTest :
 
     @Test
     fun `test getUser passes when user is requesting info on self`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_user_response.json")
             val userService = get<UserService>()
@@ -253,7 +253,7 @@ class UserControllerTest :
 
     @Test
     fun `test getUser fails when user requests user data for another user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action."
             val userService = get<UserService>()
@@ -291,7 +291,7 @@ class UserControllerTest :
 
     @Test
     fun `test getUsers passes when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_users_response.json")
             val userService = get<UserService>()
@@ -353,7 +353,7 @@ class UserControllerTest :
 
     @Test
     fun `test getUsers fails when the user does NOT have the required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action."
             val userService = get<UserService>()
@@ -389,7 +389,7 @@ class UserControllerTest :
 
     @Test
     fun `test updateUser succeeds when user is updating self`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_user_request.json")
             val expectedResponse = readFileContent("requests/update_user_response.json")
@@ -447,7 +447,7 @@ class UserControllerTest :
 
     @Test
     fun `test updateUser fails when the user is trying to update another user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_user_request.json")
             val expectedResponse = "You are not authorized to perform this action."
@@ -489,7 +489,7 @@ class UserControllerTest :
 
     @Test
     fun `test deleteUser succeeds when user is self`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userService = get<UserService>()
             val rbacService = get<RBACService>()
@@ -526,7 +526,7 @@ class UserControllerTest :
 
     @Test
     fun `test deleteUser fails when user is trying to delete another user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action."
             val userService = get<UserService>()
@@ -566,7 +566,7 @@ class UserControllerTest :
      */
     @Test
     fun `test checkUserIsRegistered returns true when user exists`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val email = "exists@example.com"
             val userService = get<UserService>()
@@ -597,7 +597,7 @@ class UserControllerTest :
      */
     @Test
     fun `test checkUserIsRegistered returns false when user does not exist`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val email = "notfound@example.com"
             val userService = get<UserService>()
@@ -627,7 +627,7 @@ class UserControllerTest :
      */
     @Test
     fun `test acceptInvite succeeds for authenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val inviteId = InviteId("invite123")
@@ -665,7 +665,7 @@ class UserControllerTest :
      */
     @Test
     fun `test acceptInvite fails when service returns failure`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val inviteId = InviteId("invite123")
@@ -703,7 +703,7 @@ class UserControllerTest :
      */
     @Test
     fun `test declineInvite succeeds for authenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val inviteId = InviteId("invite123")
@@ -741,7 +741,7 @@ class UserControllerTest :
      */
     @Test
     fun `test declineInvite fails when service returns failure`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val inviteId = InviteId("invite123")
@@ -779,7 +779,7 @@ class UserControllerTest :
      */
     @Test
     fun `test cancelInvite succeeds when user has manager role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val orgId = OrganizationId("org123")
@@ -830,7 +830,7 @@ class UserControllerTest :
      */
     @Test
     fun `test requestPasswordReset returns 200 when called with email`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userService = get<UserService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -863,7 +863,7 @@ class UserControllerTest :
      */
     @Test
     fun `test requestPasswordReset returns 200 when called with phone number`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userService = get<UserService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -896,7 +896,7 @@ class UserControllerTest :
      */
     @Test
     fun `test requestPasswordReset returns 200 even when service fails`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userService = get<UserService>()
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
@@ -927,7 +927,7 @@ class UserControllerTest :
      */
     @Test
     fun `test cancelInvite fails when user does NOT have manager role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action."
             val userId = UserId("user123")

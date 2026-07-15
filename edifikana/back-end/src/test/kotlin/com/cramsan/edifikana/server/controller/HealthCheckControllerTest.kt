@@ -50,7 +50,7 @@ class HealthCheckControllerTest :
 
     @Test
     fun `test health check for an unauthenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
             coEvery {
@@ -68,7 +68,7 @@ class HealthCheckControllerTest :
 
     @Test
     fun `test health check for an authenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
             coEvery {

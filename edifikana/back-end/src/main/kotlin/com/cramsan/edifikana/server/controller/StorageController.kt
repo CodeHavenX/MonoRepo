@@ -22,7 +22,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
@@ -35,11 +34,8 @@ import io.ktor.server.routing.Routing
  * canonical asset path; for uploads it is determined by the endpoint being called.
  */
 @BackendController
-class StorageController(
-    private val storageService: StorageService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-    private val rbacService: RBACService,
-) : Controller {
+class StorageController(private val storageService: StorageService, private val rbacService: RBACService) :
+    Controller {
     /**
      * Returns a signed download URL. Resource type and resource ID are derived from
      * the asset path — the client cannot supply or override them.
@@ -142,26 +138,26 @@ class StorageController(
     ): SignedUploadUrlNetworkResponse = createSignedUpload(request, StorageResourceType.ORGANIZATION)
 
     override fun registerRoutes(route: Routing) {
-        StorageApi.register(route) {
-            handler(api.getSignedDownload, contextRetriever) { request ->
+        StorageApi.register(route, SupabaseContextPayload::class) {
+            handler(api.getSignedDownload) { request ->
                 getSignedDownload(request)
             }
-            handler(api.createProfileSignedUpload, contextRetriever) { request ->
+            handler(api.createProfileSignedUpload) { request ->
                 createProfileSignedUpload(request)
             }
-            handler(api.createTimeCardSignedUpload, contextRetriever) { request ->
+            handler(api.createTimeCardSignedUpload) { request ->
                 createTimeCardSignedUpload(request)
             }
-            handler(api.createTaskSignedUpload, contextRetriever) { request ->
+            handler(api.createTaskSignedUpload) { request ->
                 createTaskSignedUpload(request)
             }
-            handler(api.createEventLogSignedUpload, contextRetriever) { request ->
+            handler(api.createEventLogSignedUpload) { request ->
                 createEventLogSignedUpload(request)
             }
-            handler(api.createPropertySignedUpload, contextRetriever) { request ->
+            handler(api.createPropertySignedUpload) { request ->
                 createPropertySignedUpload(request)
             }
-            handler(api.createOrganizationSignedUpload, contextRetriever) { request ->
+            handler(api.createOrganizationSignedUpload) { request ->
                 createOrganizationSignedUpload(request)
             }
         }

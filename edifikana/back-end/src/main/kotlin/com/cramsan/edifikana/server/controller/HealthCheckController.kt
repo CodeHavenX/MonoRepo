@@ -6,7 +6,6 @@ import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPay
 import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import io.ktor.server.routing.Routing
 
@@ -14,7 +13,7 @@ import io.ktor.server.routing.Routing
  * Controller for handling health check requests.
  */
 @BackendController
-class HealthCheckController(private val contextRetriever: ContextRetriever<SupabaseContextPayload>) : Controller {
+class HealthCheckController : Controller {
     /**
      * Handles a health check request.
      */
@@ -26,8 +25,8 @@ class HealthCheckController(private val contextRetriever: ContextRetriever<Supab
      * Registers the routes for the health check controller.
      */
     override fun registerRoutes(route: Routing) {
-        HealthApi.register(route) {
-            unauthenticatedHandler(api.healthCheck, contextRetriever) { _ ->
+        HealthApi.register(route, SupabaseContextPayload::class) {
+            unauthenticatedHandler(api.healthCheck) { _ ->
                 healthCheck()
             }
         }

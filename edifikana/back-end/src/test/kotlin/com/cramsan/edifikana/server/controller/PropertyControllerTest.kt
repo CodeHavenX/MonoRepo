@@ -64,7 +64,7 @@ class PropertyControllerTest :
 
     @Test
     fun `test createProperty succeeds when user has required role in organization`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_property_request.json")
             val expectedResponse = readFileContent("requests/create_property_response.json")
@@ -120,7 +120,7 @@ class PropertyControllerTest :
 
     @Test
     fun `test createProperty fails when the user doesn't have the required role in their org`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_property_request.json")
             val propertyService = get<PropertyService>()
@@ -160,7 +160,7 @@ class PropertyControllerTest :
 
     @Test
     fun `test getProperty succeeds when use has required role or higher`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_property_response.json")
             val propertyService = get<PropertyService>()
@@ -206,7 +206,7 @@ class PropertyControllerTest :
 
     @Test
     fun `test getProperty fails when user doesn't have required role or higher`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action in your organization."
             val propertyService = get<PropertyService>()
@@ -243,7 +243,7 @@ class PropertyControllerTest :
     // TODO: Update this test and add a negative check test for ensuring user get only list of properties they're assigned
     @Test
     fun `test getProperties`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_properties_response.json")
             val propertyService = get<PropertyService>()
@@ -289,7 +289,7 @@ class PropertyControllerTest :
 
     @Test
     fun `test updateProperty succeeds when the user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_property_request.json")
             val expectedResponse = readFileContent("requests/update_property_response.json")
@@ -345,7 +345,7 @@ class PropertyControllerTest :
 
     @Test
     fun `test updateProperty fails when the user doesn't have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_property_request.json")
             val expectedResponse = "You are not authorized to perform this action in your organization."
@@ -386,7 +386,7 @@ class PropertyControllerTest :
 
     @Test
     fun `test deleteProperty succeeds when user has require role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val propertyService = get<PropertyService>()
             val rbacService = get<RBACService>()
@@ -424,7 +424,7 @@ class PropertyControllerTest :
 
     @Test
     fun `test deleteProperty fails when user doesn't have required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action in your organization."
             val propertyService = get<PropertyService>()

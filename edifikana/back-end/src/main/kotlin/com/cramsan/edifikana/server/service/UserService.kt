@@ -360,6 +360,14 @@ class UserService(
         return Result.success(Unit)
     }
 
+    /**
+     * Marks the user identified by [id] as having a password set.
+     */
+    suspend fun setPasswordAuthEnabled(id: UserId): Result<User> {
+        logD(TAG, "setPasswordAuthEnabled")
+        return userDatastore.setPasswordAuthEnabled(id)
+    }
+
     companion object {
         private const val TAG = "UserService"
         private const val INVITE_CODE_LENGTH = 12

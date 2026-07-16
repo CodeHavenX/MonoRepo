@@ -43,8 +43,14 @@ class InvitationAcceptViewModel(
      * populates [InvitationAcceptUIState.invitationSummary] from the matching invite
      * notification, if one is found. No match is not an error — the screen falls back to
      * generic copy.
+     *
+     * When [redirectIfSignedIn] is true and the user turns out to already be signed in,
+     * immediately navigates to [AuthDestination.InvitationAcceptConfirmDestination] instead of
+     * leaving the landing screen's Create Account / Sign In buttons showing. Only the landing
+     * screen opts into this — the confirm screen also calls this function to refresh its own
+     * state and must not re-navigate to itself.
      */
-    fun loadInvitation(inviteId: InviteId) {
+    fun loadInvitation(inviteId: InviteId, redirectIfSignedIn: Boolean = false) {
         viewModelCoroutineScope.launch {
             updateUiState { it.copy(isLoading = true, error = null) }
 
@@ -78,6 +84,15 @@ class InvitationAcceptViewModel(
                     isLoading = false,
                     isUserSignedIn = signedIn,
                     invitationSummary = summary,
+                )
+            }
+
+            if (signedIn && redirectIfSignedIn) {
+                emitWindowEvent(
+                    EdifikanaWindowsEvent.NavigateToScreen(
+                        AuthDestination.InvitationAcceptConfirmDestination(inviteId),
+                        clearTop = true,
+                    ),
                 )
             }
         }

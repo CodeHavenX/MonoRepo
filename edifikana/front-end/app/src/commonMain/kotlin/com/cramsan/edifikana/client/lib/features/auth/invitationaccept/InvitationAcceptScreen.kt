@@ -37,7 +37,7 @@ fun InvitationAcceptScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(destination.inviteId) {
-        viewModel.loadInvitation(destination.inviteId)
+        viewModel.loadInvitation(destination.inviteId, redirectIfSignedIn = true)
     }
 
     ObserveViewModelEvents(viewModel) { event ->

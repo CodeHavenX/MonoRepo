@@ -167,6 +167,59 @@ class InvitationAcceptViewModelTest : CoroutineTest() {
     }
 
     /**
+     * Test [InvitationAcceptViewModel.loadInvitation] with redirectIfSignedIn=true redirects to
+     * the confirm screen once the async signed-in check resolves true.
+     */
+    @Test
+    fun `test loadInvitation with redirectIfSignedIn redirects to confirm screen when signed in`() = runCoroutineTest {
+        // Arrange
+        coEvery { authManager.isSignedIn() } returns Result.success(true)
+        coEvery { notificationManager.getNotifications() } returns Result.success(emptyList())
+
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.loadInvitation(INVITE_ID, redirectIfSignedIn = true)
+
+            // Assert
+            assertEquals(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.InvitationAcceptConfirmDestination(INVITE_ID),
+                    clearTop = true,
+                ),
+                turbine.awaitItem(),
+            )
+            advanceUntilIdleAndAwaitComplete(turbine)
+        }
+    }
+
+    /**
+     * Test [InvitationAcceptViewModel.loadInvitation] without redirectIfSignedIn (the confirm
+     * screen's own call, refreshing its state) does not re-navigate even when signed in.
+     */
+    @Test
+    fun `test loadInvitation without redirectIfSignedIn does not navigate when signed in`() = runCoroutineTest {
+        // Arrange
+        coEvery { authManager.isSignedIn() } returns Result.success(true)
+        coEvery { notificationManager.getNotifications() } returns Result.success(emptyList())
+        val testScope = this
+
+        turbineScope {
+            val turbine = windowEventBus.events.testIn(backgroundScope)
+
+            // Act
+            viewModel.loadInvitation(INVITE_ID)
+            testScope.testScheduler.advanceUntilIdle()
+
+            // Assert
+            turbine.expectNoEvents()
+            turbine.cancelAndIgnoreRemainingEvents()
+        }
+        assertTrue(viewModel.uiState.value.isUserSignedIn)
+    }
+
+    /**
      * Test [InvitationAcceptViewModel.acceptInvitation] on success navigates to the home nav
      * graph with the back stack cleared.
      */

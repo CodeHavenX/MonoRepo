@@ -756,4 +756,42 @@ class UserServiceTest {
             assertTrue(result.isSuccess)
             coVerify(exactly = 1) { userDatastore.requestPasswordReset("nonexistent@example.com", null) }
         }
+
+    /**
+     * Tests that setPasswordAuthEnabled delegates to datastore and returns the updated user.
+     */
+    @Test
+    fun `setPasswordAuthEnabled delegates to datastore and returns updated user`() =
+        runTest {
+            // Arrange
+            val userId = UserId("id")
+            val user = mockk<User>()
+            coEvery { userDatastore.setPasswordAuthEnabled(userId) } returns Result.success(user)
+
+            // Act
+            val result = userService.setPasswordAuthEnabled(userId)
+
+            // Assert
+            assertEquals(Result.success(user), result)
+            coVerify { userDatastore.setPasswordAuthEnabled(userId) }
+        }
+
+    /**
+     * Tests that setPasswordAuthEnabled propagates datastore failure.
+     */
+    @Test
+    fun `setPasswordAuthEnabled propagates datastore failure`() =
+        runTest {
+            // Arrange
+            val userId = UserId("id")
+            val error = RuntimeException("User not found")
+            coEvery { userDatastore.setPasswordAuthEnabled(userId) } returns Result.failure(error)
+
+            // Act
+            val result = userService.setPasswordAuthEnabled(userId)
+
+            // Assert
+            assertTrue(result.isFailure)
+            coVerify { userDatastore.setPasswordAuthEnabled(userId) }
+        }
 }

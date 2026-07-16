@@ -344,4 +344,42 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         assertEquals(createdUser.lastName, associatedUser.lastName)
     }
 
+    @Test
+    fun `setPasswordAuthEnabled sets canPasswordAuth to true`() = runBlocking {
+        // Arrange: create a transient (OTP-originated) user, which starts with canPasswordAuth = false
+        val createResult = userDatastore.createUser(
+            email = "${test_prefix}_setpwauth@example.com",
+            phoneNumber = "123-456-7890",
+            password = null,
+            firstName = "Set",
+            lastName = "PwAuth",
+            isTransient = true,
+        ).registerUserForDeletion()
+        assertTrue(createResult.isSuccess)
+        val user = createResult.getOrThrow()
+        assertEquals(User.AuthMetadata(isPasswordSet = false), user.authMetadata)
+
+        // Act
+        val result = userDatastore.setPasswordAuthEnabled(user.id)
+
+        // Assert
+        assertTrue(result.isSuccess)
+        assertEquals(User.AuthMetadata(isPasswordSet = true), result.getOrThrow().authMetadata)
+        val fetched = userDatastore.getUser(user.id).getOrThrow()
+        assertEquals(User.AuthMetadata(isPasswordSet = true), fetched?.authMetadata)
+    }
+
+    @Test
+    fun `setPasswordAuthEnabled fails for non-existent user`() = runBlocking {
+        // Arrange
+        val fakeId = UserId(test_prefix)
+
+        // Act
+        val result = userDatastore.setPasswordAuthEnabled(fakeId)
+
+        // Assert
+        assertTrue(result.isFailure)
+        assertInstanceOf<ClientRequestExceptions.NotFoundException>(result.exceptionOrNull())
+    }
+
 }

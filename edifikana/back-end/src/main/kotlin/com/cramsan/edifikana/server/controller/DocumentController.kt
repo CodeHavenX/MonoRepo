@@ -20,7 +20,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
@@ -29,11 +28,8 @@ import io.ktor.server.routing.Routing
  * Controller for document metadata operations.
  */
 @BackendController
-class DocumentController(
-    private val documentService: DocumentService,
-    private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-) : Controller {
+class DocumentController(private val documentService: DocumentService, private val rbacService: RBACService) :
+    Controller {
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -152,20 +148,20 @@ class DocumentController(
      * Registers all document routes.
      */
     override fun registerRoutes(route: Routing) {
-        DocumentApi.register(route) {
-            handler(api.createDocument, contextRetriever) { request ->
+        DocumentApi.register(route, SupabaseContextPayload::class) {
+            handler(api.createDocument) { request ->
                 createDocument(request)
             }
-            handler(api.getDocument, contextRetriever) { request ->
+            handler(api.getDocument) { request ->
                 getDocument(request)
             }
-            handler(api.getDocuments, contextRetriever) { request ->
+            handler(api.getDocuments) { request ->
                 getDocuments(request)
             }
-            handler(api.updateDocument, contextRetriever) { request ->
+            handler(api.updateDocument) { request ->
                 updateDocument(request)
             }
-            handler(api.deleteDocument, contextRetriever) { request ->
+            handler(api.deleteDocument) { request ->
                 deleteDocument(request)
             }
         }

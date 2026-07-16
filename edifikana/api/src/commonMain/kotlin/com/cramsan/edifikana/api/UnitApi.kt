@@ -18,43 +18,38 @@ import io.ktor.http.HttpMethod
  */
 
 object UnitApi : Api("unit") {
-    val createUnit =
-        operation<
-            CreateUnitNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            UnitNetworkResponse,
-            >(HttpMethod.Post)
+    val createUnit = operation<
+        CreateUnitNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        UnitNetworkResponse,
+    >(HttpMethod.Post)
 
-    val getUnit =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            UnitId,
-            UnitNetworkResponse,
-            >(HttpMethod.Get)
+    val getUnit = operation<
+        NoRequestBody,
+        NoQueryParam,
+        UnitId,
+        UnitNetworkResponse,
+    >(HttpMethod.Get)
 
-    val getUnits =
-        operation<
-            NoRequestBody,
-            GetUnitsQueryParams,
-            NoPathParam,
-            UnitListNetworkResponse,
-            >(HttpMethod.Get)
+    val getUnits = operation<
+        NoRequestBody,
+        GetUnitsQueryParams,
+        NoPathParam,
+        UnitListNetworkResponse,
+    >(HttpMethod.Get)
 
-    val updateUnit =
-        operation<
-            UpdateUnitNetworkRequest,
-            NoQueryParam,
-            UnitId,
-            UnitNetworkResponse,
-            >(HttpMethod.Put)
+    val updateUnit = operation<
+        UpdateUnitNetworkRequest,
+        NoQueryParam,
+        UnitId,
+        UnitNetworkResponse,
+    >(HttpMethod.Put)
 
-    val deleteUnit =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            UnitId,
-            NoResponseBody,
-            >(HttpMethod.Delete)
+    val deleteUnit = operation<
+        NoRequestBody,
+        NoQueryParam,
+        UnitId,
+        NoResponseBody,
+    >(HttpMethod.Delete)
 }

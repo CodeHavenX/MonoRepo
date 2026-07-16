@@ -6,10 +6,14 @@ import com.cramsan.architecture.server.dependencyinjection.FrameworkModule
 import com.cramsan.architecture.server.dependencyinjection.KtorModule
 import com.cramsan.architecture.server.settings.BackEndApplicationSettingKey
 import com.cramsan.architecture.server.settings.SettingsHolder
+import com.cramsan.framework.assertlib.assertFailure
 import com.cramsan.framework.core.ktor.Controller
+import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.core.ktor.configureBearerAuthentication
 import com.cramsan.framework.core.ktor.configureHealthEndpoint
 import com.cramsan.framework.core.ktor.configureOpenApiEndpoint
 import com.cramsan.framework.logging.logI
+import com.cramsan.framework.networkapi.ApiInfo
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
@@ -23,6 +27,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.ktor.ext.getKoin
 import org.koin.ktor.ext.inject
 
 /**
@@ -58,11 +63,21 @@ fun Application.startKtor() =
 
         val controllerList: List<Controller> by inject()
         val loadExtraControllers: EndpointsToLoad by inject()
+        val contextRetriever: ContextRetriever<*> by inject()
+
+        // Install the bearer authentication provider before routes are registered so authenticated
+        // controllers can wrap their routes in `authenticate(BEARER_SECURITY_SCHEME)`.
+        configureBearerAuthentication(contextRetriever)
 
         when (loadExtraControllers) {
             EndpointsToLoad.ALL -> {
                 configureHealthEndpoint()
-                configureOpenApiEndpoint()
+                val apiInfo = getKoin().getOrNull<ApiInfo>()
+                if (apiInfo == null) {
+                    assertFailure(TAG, "AppInfo is not configured. Ensure it is defined in the ApplicationModule,")
+                } else {
+                    configureOpenApiEndpoint(apiInfo)
+                }
             }
 
             EndpointsToLoad.IGNORE_EXTRAS -> {

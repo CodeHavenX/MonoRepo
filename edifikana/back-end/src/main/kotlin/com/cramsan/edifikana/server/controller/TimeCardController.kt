@@ -18,7 +18,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.UnauthorizedException
 import com.cramsan.framework.utils.time.Chronos
@@ -30,11 +29,8 @@ import kotlin.time.ExperimentalTime
  */
 @BackendController
 @OptIn(ExperimentalTime::class)
-class TimeCardController(
-    private val timeCardService: TimeCardService,
-    private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-) : Controller {
+class TimeCardController(private val timeCardService: TimeCardService, private val rbacService: RBACService) :
+    Controller {
     /**
      * Handles the creation of a new time card event. Validates the request and user permissions,
      * then creates the time card event using the [timeCardService].
@@ -136,14 +132,14 @@ class TimeCardController(
      * Sets up the API endpoints and handlers for time card operations.
      */
     override fun registerRoutes(route: Routing) {
-        TimeCardApi.register(route) {
-            handler(api.createTimeCardEvent, contextRetriever) { request ->
+        TimeCardApi.register(route, SupabaseContextPayload::class) {
+            handler(api.createTimeCardEvent) { request ->
                 createTimeCardEvent(request)
             }
-            handler(api.getTimeCardEvent, contextRetriever) { request ->
+            handler(api.getTimeCardEvent) { request ->
                 getTimeCardEvent(request)
             }
-            handler(api.getTimeCardEvents, contextRetriever) { request ->
+            handler(api.getTimeCardEvents) { request ->
                 getTimeCardEvents(request)
             }
         }

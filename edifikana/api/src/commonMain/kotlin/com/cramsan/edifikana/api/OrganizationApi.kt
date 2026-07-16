@@ -16,35 +16,31 @@ import io.ktor.http.HttpMethod
  */
 
 object OrganizationApi : Api("organization") {
-    val getOrganizationList =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            NoPathParam,
-            OrganizationNetworkListNetworkResponse,
-            >(HttpMethod.Get)
+    val getOrganizationList = operation<
+        NoRequestBody,
+        NoQueryParam,
+        NoPathParam,
+        OrganizationNetworkListNetworkResponse,
+    >(HttpMethod.Get)
 
-    val getOrganization =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            OrganizationId,
-            OrganizationNetworkResponse,
-            >(HttpMethod.Get)
+    val getOrganization = operation<
+        NoRequestBody,
+        NoQueryParam,
+        OrganizationId,
+        OrganizationNetworkResponse,
+    >(HttpMethod.Get)
 
-    val createOrganization =
-        operation<
-            CreateOrganizationNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            OrganizationNetworkResponse,
-            >(HttpMethod.Post)
+    val createOrganization = operation<
+        CreateOrganizationNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        OrganizationNetworkResponse,
+    >(HttpMethod.Post)
 
-    val updateOrganization =
-        operation<
-            UpdateOrganizationNetworkRequest,
-            NoQueryParam,
-            OrganizationId,
-            OrganizationNetworkResponse,
-            >(HttpMethod.Put)
+    val updateOrganization = operation<
+        UpdateOrganizationNetworkRequest,
+        NoQueryParam,
+        OrganizationId,
+        OrganizationNetworkResponse,
+    >(HttpMethod.Put)
 }

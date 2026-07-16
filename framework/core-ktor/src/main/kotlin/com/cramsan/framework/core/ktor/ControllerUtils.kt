@@ -6,26 +6,31 @@ import com.cramsan.framework.annotations.api.RequestBody
 import com.cramsan.framework.annotations.api.ResponseBody
 import com.cramsan.framework.core.ktor.OperationHandler.handle
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
-import com.cramsan.framework.logging.logE
-import com.cramsan.framework.logging.logI
-import com.cramsan.framework.logging.logW
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.AuthMode
 import com.cramsan.framework.networkapi.Operation
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.response.respond
-import io.ktor.server.response.respondBytes
-import io.ktor.server.response.respondNullable
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.principal
 
 /**
- * Registers a handler for an operation that requires authentication. Retrieves the authenticated client context
- * and passes it to the handler. The handler receives an [OperationRequest] with the authenticated context.
+ * Registers a handler for an [AuthMode.Required] operation.
+ *
+ * The route is wrapped in `authenticate([BEARER_SECURITY_SCHEME])`, so the bearer provider installed by
+ * `configureBearerAuthentication` validates the token and rejects unauthenticated requests with a 401
+ * before the handler runs. The handler receives an [OperationRequest] carrying the authenticated context
+ * resolved from the request principal.
+ *
+ * This overload is selected automatically because the operation declares [AuthMode.Required] in its type;
+ * there is no separate authenticated-vs-public handler to choose. The sibling overloads serve
+ * [AuthMode.Public] and [AuthMode.Optional] operations.
  *
  * @param operation The operation to register the handler for.
- * @param contextRetriever Used to get the client context from the call.
  * @param handler The suspend function to handle the request, receives the authenticated context.
  */
+@JvmName("handlerRequired")
 inline fun <
     RequestType : RequestBody,
     QueryParamType : QueryParam,
@@ -33,39 +38,31 @@ inline fun <
     ResponseType : ResponseBody,
     T : Api,
     P,
-    > OperationHandler.RegistrationBuilder<T>.handler(
-    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
-    contextRetriever: ContextRetriever<P>,
+    > OperationHandler.RegistrationBuilder<T, P>.handler(
+    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Required>,
     crossinline handler: suspend (
         OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext.AuthenticatedClientContext<P>>,
     ) -> ResponseType?,
 ) {
-    operation.handle(
-        route,
-        { requireAuthenticatedClientContext(contextRetriever.getContext(this)) },
-    ) { request ->
-        val response = handler(request)
-
-        HttpResponse(
-            status =
-            if (response == null) {
-                HttpStatusCode.NotFound
-            } else {
-                HttpStatusCode.OK
-            },
-            body = response,
-        )
+    route.authenticate(BEARER_SECURITY_SCHEME) {
+        operation.handle(
+            this,
+            { authenticatedClientContext<P>() },
+            authenticated = true,
+        ) { request -> httpResponseFor(handler(request)) }
     }
 }
 
 /**
- * Registers a handler for an operation that does not require authentication. Retrieves the client context
- * and passes it to the handler. The handler receives an [OperationRequest] with the context.
+ * Registers a handler for an [AuthMode.Public] operation. The route is not placed behind an
+ * authentication gate; the handler receives an [OperationRequest] with an unauthenticated context.
+ *
+ * This overload is selected automatically because the operation declares [AuthMode.Public] in its type.
  *
  * @param operation The operation to register the handler for.
- * @param contextRetriever Used to get the client context from the call.
- * @param handler The suspend function to handle the request, receives the context.
+ * @param handler The suspend function to handle the request, receives the unauthenticated context.
  */
+@JvmName("handlerPublic")
 inline fun <
     RequestType : RequestBody,
     QueryParamType : QueryParam,
@@ -73,160 +70,86 @@ inline fun <
     ResponseType : ResponseBody,
     T : Api,
     P,
-    > OperationHandler.RegistrationBuilder<T>.unauthenticatedHandler(
-    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType>,
-    contextRetriever: ContextRetriever<P>,
+    > OperationHandler.RegistrationBuilder<T, P>.handler(
+    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Public>,
     crossinline handler: suspend (
         OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
     ) -> ResponseType?,
 ) {
-    operation.handle(
+    operation.handle<RequestType, QueryParamType, PathParamType, ResponseType, P, ClientContext<P>>(
         route,
-        { contextRetriever.getContext(this) },
-    ) { request ->
-        val response = handler(request)
+        { ClientContext.UnauthenticatedClientContext() },
+        authenticated = false,
+    ) { request -> httpResponseFor(handler(request)) }
+}
 
-        HttpResponse(
-            status =
-            if (response == null) {
-                HttpStatusCode.NotFound
-            } else {
-                HttpStatusCode.OK
-            },
-            body = response,
-        )
+/**
+ * Registers a handler for an [AuthMode.Optional] operation. The route is wrapped in
+ * `authenticate([BEARER_SECURITY_SCHEME], optional = true)`, so a request with a valid token is
+ * authenticated (the handler sees an [ClientContext.AuthenticatedClientContext]) while a request with no
+ * token is still served (the handler sees an [ClientContext.UnauthenticatedClientContext]).
+ *
+ * This overload is selected automatically because the operation declares [AuthMode.Optional] in its type.
+ *
+ * @param operation The operation to register the handler for.
+ * @param handler The suspend function to handle the request, receives the (possibly authenticated) context.
+ */
+@JvmName("handlerOptional")
+inline fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    T : Api,
+    P,
+    > OperationHandler.RegistrationBuilder<T, P>.handler(
+    operation: Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Optional>,
+    crossinline handler: suspend (
+        OperationRequest<RequestType, QueryParamType, PathParamType, ClientContext<P>>,
+    ) -> ResponseType?,
+) {
+    route.authenticate(BEARER_SECURITY_SCHEME, optional = true) {
+        operation.handle<RequestType, QueryParamType, PathParamType, ResponseType, P, ClientContext<P>>(
+            this,
+            { optionalClientContext<P>() },
+            authenticated = false,
+        ) { request -> httpResponseFor(handler(request)) }
     }
 }
 
 /**
- * Handles a call to a controller function that does not require authentication. Logs the call,
- * executes the function, and responds to the client with the result.
- *
- * @param tag Logger tag for this call.
- * @param functionName Name of the function being called.
- * @param contextRetriever Used to get the client context from the call.
- * @param function The function to execute, receives the client context.
+ * Wraps a handler's nullable return into an [HttpResponse]: a non-null body responds 200, while `null`
+ * signals "not found" and responds 404. Shared by the [handler] overloads.
  */
-suspend inline fun <P> ApplicationCall.handleUnauthenticatedCall(
-    tag: String,
-    functionName: String,
-    contextRetriever: ContextRetriever<P>,
-    function: ApplicationCall.(ClientContext<P>) -> HttpResponse<*>,
-) {
-    handleCall(
-        tag,
-        functionName,
-        contextRetriever,
-        verifyClientContext = { it },
-        function = { clientContext -> function(clientContext) },
+@PublishedApi
+internal fun <ResponseType : ResponseBody> httpResponseFor(response: ResponseType?): HttpResponse<ResponseType> =
+    HttpResponse(
+        status = if (response == null) HttpStatusCode.NotFound else HttpStatusCode.OK,
+        body = response,
     )
-}
 
 /**
- * Handles a call to a controller function that requires authentication. Logs the call,
- * executes the function, and responds to the client with the result.
- *
- * @param tag Logger tag for this call.
- * @param functionName Name of the function being called.
- * @param contextRetriever Used to get the client context from the call.
- * @param function The function to execute, receives the authenticated client context.
- */
-suspend inline fun <P> ApplicationCall.handleCall(
-    tag: String,
-    functionName: String,
-    contextRetriever: ContextRetriever<P>,
-    function: ApplicationCall.(ClientContext.AuthenticatedClientContext<P>) -> HttpResponse<*>,
-) {
-    handleCall(
-        tag,
-        functionName,
-        contextRetriever,
-        verifyClientContext = { requireAuthenticatedClientContext(it) },
-        function = { clientContext -> function(clientContext) },
-    )
-}
-
-/**
- * Handles a call to a controller function. Logs the call, executes the function, and responds to the client
- * with the result. Handles both authenticated and unauthenticated contexts depending on [verifyClientContext].
- *
- * @param tag Logger tag for this call.
- * @param functionName Name of the function being called.
- * @param contextRetriever Used to get the client context from the call.
- * @param verifyClientContext Function to verify and cast the client context.
- * @param function The function to execute, receives the verified client context.
- */
-suspend inline fun <P, T : ClientContext<P>> ApplicationCall.handleCall(
-    tag: String,
-    functionName: String,
-    contextRetriever: ContextRetriever<P>,
-    verifyClientContext: (ClientContext<P>) -> T,
-    function: ApplicationCall.(T) -> HttpResponse<*>,
-) {
-    logI(tag, "$functionName called")
-
-    val clientContext = contextRetriever.getContext(this)
-    val contextResult = runCatching { verifyClientContext(clientContext) }
-    if (contextResult.isFailure) {
-        logW(tag, "Client context is not authenticated, returning 401 Unauthorized")
-        respond(
-            HttpStatusCode.Unauthorized,
-            "Client is not authenticated",
-        )
-        return
-    }
-
-    val result =
-        runCatching {
-            function(contextResult.getOrThrow())
-        }
-
-    if (result.isSuccess) {
-        val functionResponse = result.getOrNull()
-        if (functionResponse == null) {
-            logE(tag, "Successful response contained empty HttpResponse")
-            respond(
-                HttpStatusCode.InternalServerError,
-                "Invalid server response",
-            )
-        } else {
-            response.status(functionResponse.status)
-            when (val body = functionResponse.body) {
-                is ByteArray -> {
-                    respondBytes(body)
-                }
-
-                else -> {
-                    respondNullable(functionResponse.body)
-                }
-            }
-        }
-    } else {
-        validateClientError(tag, result)
-    }
-}
-
-/**
- * Returns the authenticated client context from a [ClientContext]. Throws an exception if the context is
- * not authenticated.
+ * Returns the authenticated client context from the request principal set by the bearer authentication
+ * provider. The route is expected to be behind an authentication gate, so a missing principal indicates
+ * a misconfiguration and is reported as unauthorized.
  *
  * This function is inline due to a NoSuchMethodError when invoked otherwise.
  *
- * @param clientContext The client context to check.
  * @return The authenticated client context.
- * @throws IllegalStateException if the client context is not authenticated.
+ * @throws ClientRequestExceptions.UnauthorizedException if there is no authenticated principal.
  */
-@Suppress("UseCheckOrError")
-inline fun <P> requireAuthenticatedClientContext(
-    clientContext: ClientContext<P>,
-): ClientContext.AuthenticatedClientContext<P> {
-    when (clientContext) {
-        is ClientContext.AuthenticatedClientContext -> {
-            return clientContext
-        }
+@Suppress("UNCHECKED_CAST")
+inline fun <P> ApplicationCall.authenticatedClientContext(): ClientContext.AuthenticatedClientContext<P> =
+    (principal<ClientContext.AuthenticatedClientContext<*>>() as? ClientContext.AuthenticatedClientContext<P>)
+        ?: throw ClientRequestExceptions.UnauthorizedException("Client is not authenticated")
 
-        is ClientContext.UnauthenticatedClientContext -> {
-            throw IllegalStateException("Client is not authenticated")
-        }
-    }
-}
+/**
+ * Returns the client context from an optionally-authenticated request: the authenticated context when a
+ * valid token was supplied, otherwise an [ClientContext.UnauthenticatedClientContext].
+ *
+ * This function is inline due to a NoSuchMethodError when invoked otherwise.
+ */
+@Suppress("UNCHECKED_CAST")
+inline fun <P> ApplicationCall.optionalClientContext(): ClientContext<P> =
+    (principal<ClientContext.AuthenticatedClientContext<*>>() as? ClientContext.AuthenticatedClientContext<P>)
+        ?: ClientContext.UnauthenticatedClientContext()

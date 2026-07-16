@@ -19,7 +19,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
@@ -28,11 +27,8 @@ import io.ktor.server.routing.Routing
  * Controller for property related operations.
  */
 @BackendController
-class PropertyController(
-    private val propertyService: PropertyService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-    private val rbacService: RBACService,
-) : Controller {
+class PropertyController(private val propertyService: PropertyService, private val rbacService: RBACService) :
+    Controller {
     val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -164,20 +160,20 @@ class PropertyController(
      * Sets up the API endpoints and handlers for property operations.
      */
     override fun registerRoutes(route: Routing) {
-        PropertyApi.register(route) {
-            handler(api.createProperty, contextRetriever) { request ->
+        PropertyApi.register(route, SupabaseContextPayload::class) {
+            handler(api.createProperty) { request ->
                 createProperty(request)
             }
-            handler(api.getProperty, contextRetriever) { request ->
+            handler(api.getProperty) { request ->
                 getProperty(request)
             }
-            handler(api.getAssignedProperties, contextRetriever) { request ->
+            handler(api.getAssignedProperties) { request ->
                 getAssignedProperties(request)
             }
-            handler(api.updateProperty, contextRetriever) { request ->
+            handler(api.updateProperty) { request ->
                 updateProperty(request)
             }
-            handler(api.deleteProperty, contextRetriever) { request ->
+            handler(api.deleteProperty) { request ->
                 deleteProperty(request)
             }
         }

@@ -65,7 +65,7 @@ class RentConfigControllerTest :
 
     @Test
     fun `test getRentConfig returns 200 when found and user has EMPLOYEE role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_rent_config_response.json")
             val rentConfigService = get<RentConfigService>()
@@ -92,7 +92,7 @@ class RentConfigControllerTest :
 
     @Test
     fun `test getRentConfig returns 404 when config not found`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val rentConfigService = get<RentConfigService>()
             val rbacService = get<RBACService>()
@@ -115,7 +115,7 @@ class RentConfigControllerTest :
 
     @Test
     fun `test getRentConfig returns 404 when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val rentConfigService = get<RentConfigService>()
             val rbacService = get<RBACService>()
@@ -142,7 +142,7 @@ class RentConfigControllerTest :
 
     @Test
     fun `test setRentConfig succeeds when user has ADMIN role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/set_rent_config_request.json")
             val expectedResponse = readFileContent("requests/set_rent_config_response.json")
@@ -180,7 +180,7 @@ class RentConfigControllerTest :
 
     @Test
     fun `test setRentConfig fails when user lacks ADMIN role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/set_rent_config_request.json")
             val expectedResponse = "You are not authorized to perform this action in your organization."

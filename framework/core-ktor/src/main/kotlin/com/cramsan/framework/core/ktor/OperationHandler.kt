@@ -11,10 +11,15 @@ import com.cramsan.framework.annotations.api.RequestBody
 import com.cramsan.framework.annotations.api.ResponseBody
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.httpserializers.decodeFromValue
+import com.cramsan.framework.logging.logE
 import com.cramsan.framework.logging.logV
+import com.cramsan.framework.networkapi.AdditionalResponses
+import com.cramsan.framework.networkapi.AllowAnyResponse
 import com.cramsan.framework.networkapi.Api
 import com.cramsan.framework.networkapi.Operation
 import com.cramsan.framework.networkapi.OperationHandler
+import com.cramsan.framework.networkapi.ResponsePolicy
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
@@ -32,6 +37,7 @@ import io.ktor.util.reflect.TypeInfo
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.serializer
+import kotlin.reflect.KClass
 
 /**
  * Utility object to handle the registration and handling of API operations within Ktor routing.
@@ -40,10 +46,14 @@ object OperationHandler {
     /**
      * Builder class to hold the API and the corresponding route for registration.
      *
+     * @param T The API type being registered.
+     * @param P The client-context payload type shared by the API's authenticated operations. It is a
+     * phantom type parameter: it does not appear in the builder's state, but it flows into the
+     * registered handlers so they resolve the payload type without per-handler annotations.
      * @param api The API instance being registered.
      * @param route The Ktor route associated with the API.
      */
-    data class RegistrationBuilder<T : Api>(val api: T, val route: Route)
+    data class RegistrationBuilder<T : Api, P>(val api: T, val route: Route)
 
     /**
      * Registers the routes for the given API within the provided Ktor routing context.
@@ -51,12 +61,18 @@ object OperationHandler {
      * This sets up a sub-route for the API's path and allows further configuration using the [RegistrationBuilder].
      *
      * @param route The Ktor routing context where the API routes will be registered.
+     * @param payloadType The client-context payload type for this API's authenticated operations. It is
+     * a type witness: it fixes the builder's payload type so handlers infer it, and is not otherwise used.
      * @param build A lambda with receiver to configure the registration using [RegistrationBuilder].
      */
-    fun <T : Api> T.register(route: Routing, build: RegistrationBuilder<T>.() -> Unit) {
+    fun <T : Api, P : Any> T.register(
+        route: Routing,
+        @Suppress("UnusedParameter") payloadType: KClass<P>,
+        build: RegistrationBuilder<T, P>.() -> Unit,
+    ) {
         route.route(this.path) {
             val builder =
-                RegistrationBuilder(
+                RegistrationBuilder<T, P>(
                     api = this@register,
                     route = this, // this route is the inner route with the api path
                 )
@@ -73,6 +89,8 @@ object OperationHandler {
      *
      * @param route The Ktor route where the operation will be handled.
      * @param contextRetriever A suspend function to retrieve the context from the [ApplicationCall].
+     * @param authenticated Whether the operation requires authentication. Drives the documented
+     * security requirement and whether 401 is an expected response. Defaults to true.
      * @param handler A suspend function that processes the request and returns an [HttpResponse].
      */
     fun <
@@ -82,14 +100,15 @@ object OperationHandler {
         ResponseType : ResponseBody,
         P,
         C : ClientContext<P>,
-        > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handle(
+        > Operation<RequestType, QueryParamType, PathParamType, ResponseType, *>.handle(
         route: Route,
         contextRetriever: suspend ApplicationCall.() -> C,
+        authenticated: Boolean = true,
         handler: suspend ApplicationCall.(
             OperationRequest<RequestType, QueryParamType, PathParamType, C>,
         ) -> HttpResponse<ResponseType>,
     ) {
-        this.handleImpl(route, contextRetriever) { request ->
+        this.handleImpl(route, contextRetriever, authenticated) { request ->
             handler(request)
         }
     }
@@ -103,6 +122,7 @@ object OperationHandler {
      *
      * @param route The Ktor route where the operation will be handled.
      * @param contextRetriever A suspend function to retrieve the context from the [ApplicationCall].
+     * @param authenticated Whether the operation requires authentication (drives security docs and 401).
      * @param block A suspend function that processes the request and returns an [HttpResponse].
      */
     @OptIn(InternalSerializationApi::class, ExperimentalKtorApi::class)
@@ -114,9 +134,10 @@ object OperationHandler {
         ResponseType : ResponseBody,
         P,
         Context : ClientContext<P>,
-        > Operation<RequestType, QueryParamType, PathParamType, ResponseType>.handleImpl(
+        > Operation<RequestType, QueryParamType, PathParamType, ResponseType, *>.handleImpl(
         route: Route,
         contextRetriever: suspend (ApplicationCall) -> Context,
+        authenticated: Boolean,
         block: suspend ApplicationCall.(
             OperationRequest<RequestType, QueryParamType, PathParamType, Context>,
         ) -> HttpResponse<ResponseType>,
@@ -135,12 +156,13 @@ object OperationHandler {
                             contextRetriever(call)
                         }
                     if (contextResult.isFailure) {
+                        // A ClientRequestException (e.g. the 401 thrown for an unauthenticated client)
+                        // maps to its own status. Any other failure means the context could not be
+                        // retrieved at all (e.g. the auth provider is unreachable) and must surface as a
+                        // 5xx rather than masquerading as a 401.
                         call.validateClientError(
                             tag = TAG,
-                            exception =
-                            ClientRequestExceptions.UnauthorizedException(
-                                "Unauthorized: ${contextResult.exceptionOrNull()?.message ?: "Unknown error"}",
-                            ),
+                            result = contextResult,
                         )
                         return@handle
                     }
@@ -194,14 +216,23 @@ object OperationHandler {
                         }
 
                     if (responseResult.isFailure) {
-                        call.validateClientError(
-                            tag = TAG,
-                            result = responseResult,
-                        )
+                        val status = responseResult.statusCodeForFailure()
+                        if (handler.responses.permits(status, authenticated)) {
+                            call.validateClientError(
+                                tag = TAG,
+                                result = responseResult,
+                            )
+                        } else {
+                            call.respondUndeclaredStatus(status, responseResult.exceptionOrNull())
+                        }
                         return@handle
                     }
 
                     val response = responseResult.getOrThrow()
+                    if (!handler.responses.permits(response.status, authenticated)) {
+                        call.respondUndeclaredStatus(response.status, null)
+                        return@handle
+                    }
                     call.response.status(response.status)
                     val body = response.body
                     if (body == null) {
@@ -215,12 +246,10 @@ object OperationHandler {
                         call.respond(Unit)
                     }
                 }
-            }.rounteDescription(method, handler, apiPath)
+            }.rounteDescription(method, handler, apiPath, authenticated)
     }
 }
 
-@OptIn(InternalSerializationApi::class)
-@Suppress("LongMethod")
 private fun <
     RequestType : RequestBody,
     QueryParamType : QueryParam,
@@ -230,48 +259,122 @@ private fun <
     method: HttpMethod,
     handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
     apiPath: String,
-): Route {
-    return describe {
-        operationId =
-            buildList {
-                add(method.value.lowercase())
-                addAll(apiPath.split("/").filter { it.isNotEmpty() })
-                val cleanSubPath = handler.path.replace("{", "").replace("}", "")
-                addAll(cleanSubPath.split("/").filter { it.isNotEmpty() })
-            }.joinToString("-")
+    authenticated: Boolean,
+): Route =
+    describe {
+        describeMetadata(method, handler, apiPath)
+        describeParameters(handler)
+        describeRequestBody(handler)
+        describeResponses(handler, authenticated)
+    }
+
+/**
+ * Emits the operation id, summary, description, deprecation flag, and tags into the OpenAPI operation.
+ * The security requirement for authenticated operations is inferred separately by routing-openapi from
+ * the `authenticate(BEARER_SECURITY_SCHEME)` route wrapper.
+ */
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeMetadata(
+    method: HttpMethod,
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+    apiPath: String,
+) {
+    operationId =
+        buildList {
+            add(method.value.lowercase())
+            addAll(apiPath.split("/").filter { it.isNotEmpty() })
+            val cleanSubPath = handler.path.replace("{", "").replace("}", "")
+            addAll(cleanSubPath.split("/").filter { it.isNotEmpty() })
+        }.joinToString("-")
+
+    handler.summary?.let { summary = it }
+    handler.description?.let { description = it }
+    if (handler.deprecated) {
+        deprecated = true
+    }
+
+    if (handler.tags.isNotEmpty()) {
+        handler.tags.forEach { tag(it) }
+    } else {
         tag(apiPath.split("/").firstOrNull { it.isNotEmpty() } ?: "api")
+    }
+    // The per-operation security requirement is inferred automatically by routing-openapi from the
+    // `authenticate(BEARER_SECURITY_SCHEME)` wrapper, so it is not emitted here.
+}
 
-        val hasPathParam = handler.pathParamType != NoPathParam::class
-        val hasQueryParams = handler.queryParamType != NoQueryParam::class
+/**
+ * Emits the path and query parameter schemas into the OpenAPI operation.
+ */
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeParameters(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+) {
+    val hasPathParam = handler.pathParamType != NoPathParam::class
+    val hasQueryParams = handler.queryParamType != NoQueryParam::class
 
-        if (hasPathParam || hasQueryParams) {
-            parameters {
-                if (hasPathParam) {
-                    path(handler.param ?: "param") {
-                        required = true
-                        schema =
-                            handler.pathParamType
-                                .serializer()
-                                .descriptor
-                                .buildJsonSchema(visiting = mutableSetOf())
-                    }
-                }
-                if (hasQueryParams) {
-                    val queryDescriptor = handler.queryParamType.serializer().descriptor
-                    for (i in 0 until queryDescriptor.elementsCount) {
-                        val elementName = queryDescriptor.getElementName(i)
-                        val elementDescriptor = queryDescriptor.getElementDescriptor(i)
-                        val isRequired = !queryDescriptor.isElementOptional(i) && !elementDescriptor.isNullable
-                        query(elementName) {
-                            required = isRequired
-                            schema = elementDescriptor.buildJsonSchema(visiting = mutableSetOf())
-                        }
-                    }
+    if (!hasPathParam && !hasQueryParams) {
+        return
+    }
+
+    parameters {
+        if (hasPathParam) {
+            path(handler.param ?: "param") {
+                required = true
+                schema =
+                    handler.pathParamType
+                        .serializer()
+                        .descriptor
+                        .buildJsonSchema(visiting = mutableSetOf())
+            }
+        }
+        if (hasQueryParams) {
+            val queryDescriptor = handler.queryParamType.serializer().descriptor
+            for (i in 0 until queryDescriptor.elementsCount) {
+                val elementName = queryDescriptor.getElementName(i)
+                val elementDescriptor = queryDescriptor.getElementDescriptor(i)
+                val isRequired = !queryDescriptor.isElementOptional(i) && !elementDescriptor.isNullable
+                query(elementName) {
+                    required = isRequired
+                    schema = elementDescriptor.buildJsonSchema(visiting = mutableSetOf())
                 }
             }
         }
+    }
+}
 
-        if (handler.requestBodyType != NoRequestBody::class && handler.requestBodyType != BytesRequestBody::class) {
+/**
+ * Emits the request body schema into the OpenAPI operation.
+ */
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeRequestBody(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+) {
+    when (handler.requestBodyType) {
+        NoRequestBody::class -> {
+            Unit
+        }
+
+        BytesRequestBody::class -> {
+            requestBody {
+                required = true
+            }
+        }
+
+        else -> {
             requestBody {
                 required = true
                 schema =
@@ -280,28 +383,168 @@ private fun <
                         .descriptor
                         .buildJsonSchema(visiting = mutableSetOf())
             }
-        } else if (handler.requestBodyType == BytesRequestBody::class) {
-            requestBody {
-                required = true
+        }
+    }
+}
+
+/**
+ * Emits the response schemas into the OpenAPI operation. For a strict policy
+ * ([UniversalResponsesOnly] or [AdditionalResponses]) the documented responses (and their
+ * descriptions) reflect the universal responses plus any declared ones. For [AllowAnyResponse] a
+ * generic set of responses is emitted.
+ */
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeResponses(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+    authenticated: Boolean,
+) {
+    when (val policy = handler.responses) {
+        AllowAnyResponse -> {
+            responses {
+                if (handler.responseBodyType != NoResponseBody::class) {
+                    HttpStatusCode.OK {
+                        schema =
+                            handler.responseBodyType
+                                .serializer()
+                                .descriptor
+                                .buildJsonSchema(visiting = mutableSetOf())
+                    }
+                } else {
+                    HttpStatusCode.NoContent {}
+                }
+                if (authenticated) {
+                    HttpStatusCode.Unauthorized {}
+                }
+                HttpStatusCode.BadRequest {}
             }
         }
 
-        responses {
-            if (handler.responseBodyType != NoResponseBody::class) {
-                HttpStatusCode.OK {
-                    schema =
-                        handler.responseBodyType
-                            .serializer()
-                            .descriptor
-                            .buildJsonSchema(visiting = mutableSetOf())
-                }
-            } else {
-                HttpStatusCode.NoContent {}
-            }
-            HttpStatusCode.Unauthorized {}
-            HttpStatusCode.BadRequest {}
+        UniversalResponsesOnly -> {
+            describeStrictResponses(handler, emptyMap(), authenticated)
+        }
+
+        is AdditionalResponses -> {
+            describeStrictResponses(handler, policy.responses, authenticated)
         }
     }
+}
+
+/**
+ * Emits the success response, the universal responses (400/500, plus 401 when [authenticated]), and
+ * each explicitly [declared] domain-specific response for an operation with a strict response
+ * policy. Declared descriptions override the universal defaults for the same status code.
+ */
+@OptIn(InternalSerializationApi::class)
+private fun <
+    RequestType : RequestBody,
+    QueryParamType : QueryParam,
+    PathParamType : PathParam,
+    ResponseType : ResponseBody,
+    > io.ktor.openapi.Operation.Builder.describeStrictResponses(
+    handler: OperationHandler<RequestType, QueryParamType, PathParamType, ResponseType>,
+    declared: Map<HttpStatusCode, String>,
+    authenticated: Boolean,
+) {
+    responses {
+        if (handler.responseBodyType != NoResponseBody::class) {
+            HttpStatusCode.OK {
+                description = declared[HttpStatusCode.OK] ?: "Successful response."
+                schema =
+                    handler.responseBodyType
+                        .serializer()
+                        .descriptor
+                        .buildJsonSchema(visiting = mutableSetOf())
+            }
+        } else {
+            HttpStatusCode.OK { description = declared[HttpStatusCode.OK] ?: "The operation completed successfully." }
+        }
+        HttpStatusCode.BadRequest {
+            description = declared[HttpStatusCode.BadRequest] ?: "The request was malformed or failed validation."
+        }
+        if (authenticated) {
+            HttpStatusCode.Unauthorized {
+                description = declared[HttpStatusCode.Unauthorized] ?: "Authentication is required or has failed."
+            }
+        }
+        HttpStatusCode.InternalServerError {
+            description = declared[HttpStatusCode.InternalServerError] ?: "An unexpected server error occurred."
+        }
+        val universal = universalStatusValues(authenticated)
+        declared.forEach { (status, statusDescription) ->
+            if (status.value !in universal) {
+                status { description = statusDescription }
+            }
+        }
+    }
+}
+
+/**
+ * HTTP status codes that are always permitted and documented for an operation under a strict policy:
+ * the success code, request-validation failures, unexpected server errors, and — for authenticated
+ * operations only — authentication failures (401). Public operations do not produce a 401.
+ */
+private fun universalStatusValues(authenticated: Boolean): Set<Int> =
+    buildSet {
+        add(HttpStatusCode.OK.value)
+        add(HttpStatusCode.BadRequest.value)
+        add(HttpStatusCode.InternalServerError.value)
+        if (authenticated) {
+            add(HttpStatusCode.Unauthorized.value)
+        }
+    }
+
+/**
+ * Returns whether the given [status] is permitted by this policy for an operation with the given
+ * [authenticated] flag. [AllowAnyResponse] permits everything; [UniversalResponsesOnly] permits only
+ * the universal statuses; [AdditionalResponses] permits the universal statuses plus any declared one.
+ */
+private fun ResponsePolicy.permits(
+    status: HttpStatusCode,
+    authenticated: Boolean,
+): Boolean =
+    when (this) {
+        AllowAnyResponse -> {
+            true
+        }
+
+        UniversalResponsesOnly -> {
+            status.value in universalStatusValues(authenticated)
+        }
+
+        is AdditionalResponses -> {
+            status.value in universalStatusValues(authenticated) ||
+                responses.keys.any { it.value == status.value }
+        }
+    }
+
+/**
+ * Maps a failed handler [Result] to the HTTP status it would produce: the status of a
+ * [ClientRequestExceptions], or 500 for any other failure.
+ */
+private fun Result<*>.statusCodeForFailure(): HttpStatusCode =
+    (exceptionOrNull() as? ClientRequestExceptions)
+        ?.let { HttpStatusCode.fromValue(it.statusCode) }
+        ?: HttpStatusCode.InternalServerError
+
+/**
+ * Logs and responds with a 500 when an operation produced a [status] not permitted by its
+ * [ResponsePolicy], enforcing that only declared responses are returned.
+ */
+private suspend fun ApplicationCall.respondUndeclaredStatus(
+    status: HttpStatusCode,
+    cause: Throwable?,
+) {
+    logE(
+        TAG,
+        "Operation produced undeclared response status ${status.value}; coercing to 500",
+        cause,
+    )
+    respond(HttpStatusCode.InternalServerError, "Internal server error")
 }
 
 @OptIn(InternalSerializationApi::class)

@@ -13,7 +13,7 @@ dependencies {
     implementation(project(":framework:http-serializers"))
 
     implementation("io.ktor:ktor-server-core-jvm:_")
-    implementation("io.ktor:ktor-server-openapi:_")
+    implementation("io.ktor:ktor-server-auth:_")
     implementation("io.ktor:ktor-server-swagger:_")
     implementation("io.ktor:ktor-server-routing-openapi:_")
 

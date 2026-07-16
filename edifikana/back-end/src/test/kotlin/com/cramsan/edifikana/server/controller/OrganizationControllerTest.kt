@@ -56,7 +56,7 @@ class OrganizationControllerTest :
 
     @Test
     fun `test getOrganization succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Setup
             val expectedResponse = readFileContent("requests/get_organization_response.json")
             val organizationService = get<OrganizationService>()
@@ -100,7 +100,7 @@ class OrganizationControllerTest :
 
     @Test
     fun `test getOrganization fails when the user doesn't have the required perms`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Setup
             val expectedResponse = "You are not authorized to perform this action."
             val organizationService = get<OrganizationService>()
@@ -136,7 +136,7 @@ class OrganizationControllerTest :
 
     @Test
     fun `test getOrganizationList`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Setup
             val expectedResponse = readFileContent("requests/get_organization_list_response.json")
             val organizationService = get<OrganizationService>()
@@ -170,7 +170,7 @@ class OrganizationControllerTest :
 
     @Test
     fun `test createOrganization succeeds`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Setup
             val requestBody = readFileContent("requests/create_organization_request.json")
             val expectedResponse = readFileContent("requests/create_organization_response.json")
@@ -218,7 +218,7 @@ class OrganizationControllerTest :
 
     @Test
     fun `test updateOrganization succeeds when user has required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Setup
             val requestBody = readFileContent("requests/update_organization_request.json")
             val expectedResponse = readFileContent("requests/update_organization_response.json")
@@ -274,7 +274,7 @@ class OrganizationControllerTest :
 
     @Test
     fun `test updateOrganization fails when user doesn't have required perms`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Setup
             val requestBody = readFileContent("requests/update_organization_request.json")
             val expectedResponse = "You are not authorized to perform this action."

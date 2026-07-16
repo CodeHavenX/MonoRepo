@@ -20,7 +20,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
@@ -30,11 +29,7 @@ import io.ktor.server.routing.Routing
  * Controller for unit CRUD operations.
  */
 @BackendController
-class UnitController(
-    private val unitService: UnitService,
-    private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-) : Controller {
+class UnitController(private val unitService: UnitService, private val rbacService: RBACService) : Controller {
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -153,20 +148,20 @@ class UnitController(
      * Registers all unit routes.
      */
     override fun registerRoutes(route: Routing) {
-        UnitApi.register(route) {
-            handler(api.createUnit, contextRetriever) { request ->
+        UnitApi.register(route, SupabaseContextPayload::class) {
+            handler(api.createUnit) { request ->
                 createUnit(request)
             }
-            handler(api.getUnit, contextRetriever) { request ->
+            handler(api.getUnit) { request ->
                 getUnit(request)
             }
-            handler(api.getUnits, contextRetriever) { request ->
+            handler(api.getUnits) { request ->
                 getUnits(request)
             }
-            handler(api.updateUnit, contextRetriever) { request ->
+            handler(api.updateUnit) { request ->
                 updateUnit(request)
             }
-            handler(api.deleteUnit, contextRetriever) { request ->
+            handler(api.deleteUnit) { request ->
                 deleteUnit(request)
             }
         }

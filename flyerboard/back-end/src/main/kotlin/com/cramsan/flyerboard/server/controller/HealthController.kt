@@ -6,18 +6,17 @@ import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContext
 import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
-import com.cramsan.framework.core.ktor.unauthenticatedHandler
+import com.cramsan.framework.core.ktor.handler
 import io.ktor.server.routing.Routing
 
 /**
  * Controller for the health check endpoint.
  */
 @BackendController
-class HealthController(private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>) : Controller {
+class HealthController : Controller {
     override fun registerRoutes(route: Routing) {
-        HealthApi.register(route) {
-            unauthenticatedHandler(api.check, contextRetriever) { _ ->
+        HealthApi.register(route, FlyerBoardContextPayload::class) {
+            handler(api.check) { _ ->
                 HealthCheckNetworkResponse(message = "ok")
             }
         }

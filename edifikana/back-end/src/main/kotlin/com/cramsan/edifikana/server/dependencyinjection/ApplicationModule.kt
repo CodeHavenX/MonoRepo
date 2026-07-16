@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.dependencyinjection
 
 import com.cramsan.architecture.server.dependencyinjection.NamedDependency
+import com.cramsan.edifikana.api.EdifikanaApiInfo
 import com.cramsan.edifikana.lib.serialization.createJson
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextRetriever
@@ -22,6 +23,8 @@ internal val ApplicationModule =
     module {
 
         single<String>(named(NamedDependency.DOMAIN_KEY)) { "EDIFIKANA" }
+
+        single { EdifikanaApiInfo }
 
         single<Json> {
             createJson()

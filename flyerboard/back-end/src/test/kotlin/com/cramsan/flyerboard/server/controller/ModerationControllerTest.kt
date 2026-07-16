@@ -97,7 +97,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test listPending fails for unauthenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubUnauthenticated()
 
             val response = client.get("api/v1/moderation")
@@ -107,7 +107,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test listPending fails with 403 for non-admin role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubAuthenticated(UserId("user-1"), UserRole.USER)
 
             val response = client.get("api/v1/moderation")
@@ -117,7 +117,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test listPending returns pending flyers for admin role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubAuthenticated(UserId("admin-1"), UserRole.ADMIN)
             val moderationService = get<ModerationService>()
             val pending = makeFlyer(id = "pending-1", status = FlyerStatus.PENDING)
@@ -134,7 +134,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test listPending returns empty list when nothing pending`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubAuthenticated(UserId("admin-1"), UserRole.ADMIN)
             val moderationService = get<ModerationService>()
             coEvery {
@@ -151,7 +151,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test listPending forwards pagination params to service`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubAuthenticated(UserId("admin-1"), UserRole.ADMIN)
             val moderationService = get<ModerationService>()
             coEvery {
@@ -168,7 +168,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test moderate fails for unauthenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubUnauthenticated()
 
             val response =
@@ -182,7 +182,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test moderate fails with 403 for non-admin role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubAuthenticated(UserId("user-1"), UserRole.USER)
 
             val response =
@@ -196,7 +196,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test moderate approve with admin role returns approved flyer`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val adminId = UserId("admin-1")
             stubAuthenticated(adminId, UserRole.ADMIN)
             val moderationService = get<ModerationService>()
@@ -219,7 +219,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test moderate reject with admin role returns rejected flyer`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val adminId = UserId("admin-1")
             stubAuthenticated(adminId, UserRole.ADMIN)
             val moderationService = get<ModerationService>()
@@ -242,7 +242,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test moderate with invalid action returns 400`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             stubAuthenticated(UserId("admin-1"), UserRole.ADMIN)
 
             val response =
@@ -256,7 +256,7 @@ class ModerationControllerTest :
 
     @Test
     fun `test moderate when flyer not found returns 404`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             val adminId = UserId("admin-1")
             stubAuthenticated(adminId, UserRole.ADMIN)
             val moderationService = get<ModerationService>()

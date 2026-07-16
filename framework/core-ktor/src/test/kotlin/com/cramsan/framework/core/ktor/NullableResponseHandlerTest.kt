@@ -12,10 +12,11 @@ import com.cramsan.framework.logging.implementation.PassthroughEventLogger
 import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import com.cramsan.framework.networkapi.Api
 import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.routing
@@ -43,17 +44,19 @@ class NullableResponseHandlerTest {
                 NoPathParam,
                 DummyResponse,
                 >(HttpMethod.Get)
-    }
 
-    private val unauthenticatedContextRetriever =
-        object : ContextRetriever<Unit> {
-            override suspend fun getContext(applicationCall: ApplicationCall) =
-                ClientContext.UnauthenticatedClientContext<Unit>()
-        }
+        val getPublic =
+            publicOperation<
+                NoRequestBody,
+                NoQueryParam,
+                NoPathParam,
+                DummyResponse,
+                >(HttpMethod.Get, path = "public")
+    }
 
     private val authenticatedContextRetriever =
         object : ContextRetriever<Unit> {
-            override suspend fun getContext(applicationCall: ApplicationCall) =
+            override suspend fun getContext(token: String) =
                 ClientContext.AuthenticatedClientContext(Unit)
         }
 
@@ -63,19 +66,19 @@ class NullableResponseHandlerTest {
     }
 
     @Test
-    fun `unauthenticatedHandler returning null responds with 404, not 500`() =
+    fun `public handler returning null responds with 404, not 500`() =
         runTest {
             testApplication {
                 application {
                     install(ContentNegotiation) { json() }
                     routing {
-                        DummyApi.register(this) {
-                            unauthenticatedHandler(api.get, unauthenticatedContextRetriever) { null }
+                        DummyApi.register(this, Unit::class) {
+                            handler(api.getPublic) { null }
                         }
                     }
                 }
 
-                val response = client.get("dummy")
+                val response = client.get("dummy/public")
 
                 assertEquals(HttpStatusCode.NotFound, response.status)
             }
@@ -87,14 +90,15 @@ class NullableResponseHandlerTest {
             testApplication {
                 application {
                     install(ContentNegotiation) { json() }
+                    configureBearerAuthentication(authenticatedContextRetriever)
                     routing {
-                        DummyApi.register(this) {
-                            handler(api.get, authenticatedContextRetriever) { null }
+                        DummyApi.register(this, Unit::class) {
+                            handler(api.get) { null }
                         }
                     }
                 }
 
-                val response = client.get("dummy")
+                val response = client.get("dummy") { header(HttpHeaders.Authorization, "Bearer test") }
 
                 assertEquals(HttpStatusCode.NotFound, response.status)
             }

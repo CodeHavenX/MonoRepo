@@ -79,7 +79,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test getNotifications returns list of notifications for authenticated user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val notificationService = get<NotificationService>()
@@ -113,7 +113,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test getNotifications returns empty list when no notifications`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val notificationService = get<NotificationService>()
@@ -141,7 +141,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test getNotification returns notification when owned by user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val notificationId = NotificationId("notif123")
@@ -172,7 +172,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test getNotification returns 404 when notification not found`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val notificationId = NotificationId("notif123")
@@ -198,7 +198,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test getNotification returns 403 when notification belongs to another user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val otherUserId = UserId("otherUser")
@@ -226,7 +226,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test markAsRead marks notification as read when owned by user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val notificationId = NotificationId("notif123")
@@ -256,7 +256,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test markAsRead returns 404 when notification not found`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val notificationId = NotificationId("notif123")
@@ -282,7 +282,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test markAsRead returns 403 when notification belongs to another user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val otherUserId = UserId("otherUser")
@@ -310,7 +310,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test deleteNotification deletes notification when owned by user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val notificationId = NotificationId("notif123")
@@ -339,7 +339,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test deleteNotification returns 404 when notification not found`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val notificationId = NotificationId("notif123")
@@ -365,7 +365,7 @@ class NotificationControllerTest :
 
     @Test
     fun `test deleteNotification returns 403 when notification belongs to another user`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userId = UserId("user123")
             val otherUserId = UserId("otherUser")

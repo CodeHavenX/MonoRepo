@@ -20,7 +20,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
 import io.ktor.server.routing.Routing
@@ -30,11 +29,8 @@ import kotlin.time.ExperimentalTime
  * Controller for event log related operations.
  */
 @BackendController
-class EventLogController(
-    private val eventLogService: EventLogService,
-    private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-) : Controller {
+class EventLogController(private val eventLogService: EventLogService, private val rbacService: RBACService) :
+    Controller {
     /**
      * Handles the creation of a new event log entry. Validates the request and user permissions,
      * then creates the event log entry using the [eventLogService].
@@ -190,20 +186,20 @@ class EventLogController(
      */
 
     override fun registerRoutes(route: Routing) {
-        EventLogApi.register(route) {
-            handler(api.createEventLogEntry, contextRetriever) { request ->
+        EventLogApi.register(route, SupabaseContextPayload::class) {
+            handler(api.createEventLogEntry) { request ->
                 createEventLogEntry(request)
             }
-            handler(api.getEventLogEntry, contextRetriever) { request ->
+            handler(api.getEventLogEntry) { request ->
                 getEventLogEntry(request)
             }
-            handler(api.getEventLogEntries, contextRetriever) { request ->
+            handler(api.getEventLogEntries) { request ->
                 getEventLogEntries(request)
             }
-            handler(api.updateEventLogEntry, contextRetriever) { request ->
+            handler(api.updateEventLogEntry) { request ->
                 updateEventLogEntry(request)
             }
-            handler(api.deleteEventLogEntry, contextRetriever) { request ->
+            handler(api.deleteEventLogEntry) { request ->
                 deleteEventLogEntry(request)
             }
         }

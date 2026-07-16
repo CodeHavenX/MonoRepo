@@ -17,7 +17,9 @@ class OperationTest {
 
     @Test
     fun buildRequestWithValidParameters() {
-        val operation = Operation(
+        val operation = Operation<
+            SampleRequestBody, SampleQueryParam, SamplePathParam, SampleResponseBody, AuthMode.Required,
+            >(
             method = HttpMethod.Post,
             apiPath = "/api",
             path = "/resource",
@@ -39,7 +41,9 @@ class OperationTest {
 
     @Test
     fun buildRequestWithNoRequestBody() {
-        val operation = Operation(
+        val operation = Operation<
+            NoRequestBody, SampleQueryParam, SamplePathParam, SampleResponseBody, AuthMode.Required,
+            >(
             method = HttpMethod.Get,
             apiPath = "/api",
             path = "/resource",
@@ -61,7 +65,9 @@ class OperationTest {
     @Test
     fun buildRequestFailsForGetWithRequestBody() {
         val exception = assertFailsWith<IllegalStateException> {
-            Operation(
+            Operation<
+                SampleRequestBody, SampleQueryParam, SamplePathParam, SampleResponseBody, AuthMode.Required,
+                >(
                 method = HttpMethod.Get,
                 apiPath = "/api",
                 path = "/resource",
@@ -77,7 +83,9 @@ class OperationTest {
 
     @Test
     fun toOperationHandlerGeneratesCorrectFullPath() {
-        val operation = Operation(
+        val operation = Operation<
+            SampleRequestBody, SampleQueryParam, SamplePathParam, SampleResponseBody, AuthMode.Required,
+            >(
             method = HttpMethod.Put,
             apiPath = "/api",
             path = "/resource",

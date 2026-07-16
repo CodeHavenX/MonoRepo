@@ -10,9 +10,7 @@ import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler
 import com.cramsan.framework.core.ktor.OperationHandler.register
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
-import com.cramsan.framework.core.ktor.unauthenticatedHandler
 import io.ktor.server.routing.Routing
 import kotlin.time.Instant
 
@@ -20,12 +18,9 @@ import kotlin.time.Instant
  * Controller for flyer-related operations.
  */
 @BackendController
-class FlyerController(
-    private val flyerService: FlyerService,
-    private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>,
-) : Controller {
+class FlyerController(private val flyerService: FlyerService) : Controller {
     override fun registerRoutes(route: Routing) {
-        FlyerApi.register(route) {
+        FlyerApi.register(route, FlyerBoardContextPayload::class) {
             registerListFlyers()
             registerGetFlyer()
             registerListArchived()
@@ -35,8 +30,8 @@ class FlyerController(
         }
     }
 
-    private fun OperationHandler.RegistrationBuilder<FlyerApi>.registerListFlyers() {
-        unauthenticatedHandler(api.listFlyers, contextRetriever) { request ->
+    private fun OperationHandler.RegistrationBuilder<FlyerApi, FlyerBoardContextPayload>.registerListFlyers() {
+        handler(api.listFlyers) { request ->
             flyerService
                 .listFlyers(
                     status = request.queryParam.status,
@@ -48,8 +43,8 @@ class FlyerController(
         }
     }
 
-    private fun OperationHandler.RegistrationBuilder<FlyerApi>.registerGetFlyer() {
-        unauthenticatedHandler(api.getFlyer, contextRetriever) { request ->
+    private fun OperationHandler.RegistrationBuilder<FlyerApi, FlyerBoardContextPayload>.registerGetFlyer() {
+        handler(api.getFlyer) { request ->
             flyerService
                 .getFlyer(
                     request.context,
@@ -59,8 +54,8 @@ class FlyerController(
         }
     }
 
-    private fun OperationHandler.RegistrationBuilder<FlyerApi>.registerListArchived() {
-        unauthenticatedHandler(api.listArchived, contextRetriever) { request ->
+    private fun OperationHandler.RegistrationBuilder<FlyerApi, FlyerBoardContextPayload>.registerListArchived() {
+        handler(api.listArchived) { request ->
             flyerService
                 .listFlyers(
                     status = FlyerStatus.ARCHIVED,
@@ -72,8 +67,8 @@ class FlyerController(
         }
     }
 
-    private fun OperationHandler.RegistrationBuilder<FlyerApi>.registerListMyFlyers() {
-        handler(api.listMyFlyers, contextRetriever) { request ->
+    private fun OperationHandler.RegistrationBuilder<FlyerApi, FlyerBoardContextPayload>.registerListMyFlyers() {
+        handler(api.listMyFlyers) { request ->
             val userId = request.context.payload.userId
             flyerService
                 .listFlyersByUploader(
@@ -85,8 +80,8 @@ class FlyerController(
         }
     }
 
-    private fun OperationHandler.RegistrationBuilder<FlyerApi>.registerCreateFlyer() {
-        handler(api.createFlyer, contextRetriever) { request ->
+    private fun OperationHandler.RegistrationBuilder<FlyerApi, FlyerBoardContextPayload>.registerCreateFlyer() {
+        handler(api.createFlyer) { request ->
             val (flyer, upload) =
                 flyerService
                     .createFlyer(
@@ -102,8 +97,8 @@ class FlyerController(
         }
     }
 
-    private fun OperationHandler.RegistrationBuilder<FlyerApi>.registerUpdateFlyer() {
-        handler(api.updateFlyer, contextRetriever) { request ->
+    private fun OperationHandler.RegistrationBuilder<FlyerApi, FlyerBoardContextPayload>.registerUpdateFlyer() {
+        handler(api.updateFlyer) { request ->
             val (flyer, upload) =
                 flyerService
                     .updateFlyer(

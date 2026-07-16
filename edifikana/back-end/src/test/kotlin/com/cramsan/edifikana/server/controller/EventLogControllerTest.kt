@@ -70,7 +70,7 @@ class EventLogControllerTest :
     // Something about public/private and the file name under the function was located.
     @Test
     fun `test createEventLog`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val requestBody = readFileContent("requests/create_event_log_entry_request.json")
             val expectedResponse = readFileContent("requests/create_event_log_entry_response.json")
@@ -135,7 +135,7 @@ class EventLogControllerTest :
 
     @Test
     fun `test getEventLogEntry`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val expectedResponse = readFileContent("requests/get_event_log_entry_response.json")
             val userService = get<EventLogService>()
@@ -188,7 +188,7 @@ class EventLogControllerTest :
     @Ignore
     @Test
     fun `test getEventLogEntries`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val expectedResponse = readFileContent("requests/get_event_log_entries_response.json")
             val userService = get<EventLogService>()
@@ -247,7 +247,7 @@ class EventLogControllerTest :
 
     @Test
     fun `test updateEventLogEntry`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val requestBody = readFileContent("requests/update_event_log_entry_request.json")
             val expectedResponse = readFileContent("requests/update_event_log_entry_response.json")
@@ -309,7 +309,7 @@ class EventLogControllerTest :
 
     @Test
     fun `test deleteEventLogEntry`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Configure
             val userService = get<EventLogService>()
             val rbacService = get<RBACService>()

@@ -3,8 +3,7 @@ package com.cramsan.templatereplaceme.server.controller
 import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
-import com.cramsan.framework.core.ktor.unauthenticatedHandler
+import com.cramsan.framework.core.ktor.handler
 import com.cramsan.templatereplaceme.api.ComponentReplaceMeApi
 import com.cramsan.templatereplaceme.lib.model.network.ComponentReplaceMeNetworkResponse
 import com.cramsan.templatereplaceme.lib.model.network.CreateComponentReplaceMeNetworkRequest
@@ -38,7 +37,6 @@ import io.ktor.server.routing.Routing
 @BackendController
 class ComponentReplaceMeController(
     private val componentreplacemeService: ComponentReplaceMeService,
-    private val contextRetriever: ContextRetriever<Unit>,
 ) : Controller {
     /**
      * Creates a new [ComponentReplaceMe] entity.
@@ -52,8 +50,8 @@ class ComponentReplaceMeController(
     }
 
     override fun registerRoutes(route: Routing) {
-        ComponentReplaceMeApi.register(route) {
-            unauthenticatedHandler(api.create, contextRetriever) { request ->
+        ComponentReplaceMeApi.register(route, Unit::class) {
+            handler(api.create) { request ->
                 create(request.requestBody)
             }
         }

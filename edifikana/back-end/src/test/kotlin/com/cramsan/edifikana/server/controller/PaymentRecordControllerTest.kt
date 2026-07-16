@@ -69,7 +69,7 @@ class PaymentRecordControllerTest :
 
     @Test
     fun `test createPaymentRecord succeeds when user has ADMIN role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_payment_record_request.json")
             val expectedResponse = readFileContent("requests/create_payment_record_response.json")
@@ -109,7 +109,7 @@ class PaymentRecordControllerTest :
 
     @Test
     fun `test createPaymentRecord fails when user lacks ADMIN role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_payment_record_request.json")
             val expectedResponse = "You are not authorized to perform this action in your organization."
@@ -143,7 +143,7 @@ class PaymentRecordControllerTest :
 
     @Test
     fun `test getPaymentRecord returns 200 when found and user has EMPLOYEE role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_payment_record_response.json")
             val paymentRecordService = get<PaymentRecordService>()
@@ -170,7 +170,7 @@ class PaymentRecordControllerTest :
 
     @Test
     fun `test getPaymentRecord returns 404 when record not found`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val paymentRecordService = get<PaymentRecordService>()
             val rbacService = get<RBACService>()
@@ -193,7 +193,7 @@ class PaymentRecordControllerTest :
 
     @Test
     fun `test getPaymentRecord returns 404 when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val paymentRecordService = get<PaymentRecordService>()
             val rbacService = get<RBACService>()
@@ -220,7 +220,7 @@ class PaymentRecordControllerTest :
 
     @Test
     fun `test listPaymentRecords returns 200 when user has EMPLOYEE role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/list_payment_records_response.json")
             val paymentRecordService = get<PaymentRecordService>()
@@ -247,7 +247,7 @@ class PaymentRecordControllerTest :
 
     @Test
     fun `test listPaymentRecords fails when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action in your organization."
             val paymentRecordService = get<PaymentRecordService>()
@@ -276,7 +276,7 @@ class PaymentRecordControllerTest :
 
     @Test
     fun `test updatePaymentRecord succeeds when user has ADMIN role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_payment_record_request.json")
             val expectedResponse = readFileContent("requests/update_payment_record_response.json")
@@ -322,7 +322,7 @@ class PaymentRecordControllerTest :
 
     @Test
     fun `test updatePaymentRecord fails when user lacks ADMIN role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_payment_record_request.json")
             val expectedResponse = "You are not authorized to perform this action in your organization."

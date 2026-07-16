@@ -19,7 +19,6 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.OperationRequest
 import com.cramsan.framework.core.ktor.auth.ClientContext
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.NotFoundException
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions.UnauthorizedException
@@ -35,11 +34,8 @@ import io.ktor.server.routing.Routing
  * RBAC for get, update, and remove resolves via the occupantId (occupant → unit → org lookup).
  */
 @BackendController
-class OccupantController(
-    private val occupantService: OccupantService,
-    private val rbacService: RBACService,
-    private val contextRetriever: ContextRetriever<SupabaseContextPayload>,
-) : Controller {
+class OccupantController(private val occupantService: OccupantService, private val rbacService: RBACService) :
+    Controller {
     private val unauthorizedMsg = "You are not authorized to perform this action in your organization."
 
     /**
@@ -176,20 +172,20 @@ class OccupantController(
      * Registers all occupant routes.
      */
     override fun registerRoutes(route: Routing) {
-        OccupantApi.register(route) {
-            handler(api.createOccupant, contextRetriever) { request ->
+        OccupantApi.register(route, SupabaseContextPayload::class) {
+            handler(api.createOccupant) { request ->
                 createOccupant(request)
             }
-            handler(api.getOccupant, contextRetriever) { request ->
+            handler(api.getOccupant) { request ->
                 getOccupant(request)
             }
-            handler(api.listOccupantsForUnit, contextRetriever) { request ->
+            handler(api.listOccupantsForUnit) { request ->
                 listOccupantsForUnit(request)
             }
-            handler(api.updateOccupant, contextRetriever) { request ->
+            handler(api.updateOccupant) { request ->
                 updateOccupant(request)
             }
-            handler(api.removeOccupant, contextRetriever) { request ->
+            handler(api.removeOccupant) { request ->
                 removeOccupant(request)
             }
         }

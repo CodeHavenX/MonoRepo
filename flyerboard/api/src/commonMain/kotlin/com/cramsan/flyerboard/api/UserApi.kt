@@ -14,20 +14,18 @@ import io.ktor.http.HttpMethod
 
 object UserApi : Api("user") {
     /** Operation to create a new user. */
-    val createUser =
-        operation<
-            CreateUserNetworkRequest,
-            NoQueryParam,
-            NoPathParam,
-            UserNetworkResponse,
-            >(HttpMethod.Post)
+    val createUser = operation<
+        CreateUserNetworkRequest,
+        NoQueryParam,
+        NoPathParam,
+        UserNetworkResponse,
+    >(HttpMethod.Post)
 
     /** Operation to retrieve the currently authenticated user, including their role. */
-    val getCurrentUser =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            NoPathParam,
-            UserNetworkResponse,
-            >(HttpMethod.Get, path = "me")
+    val getCurrentUser = operation<
+        NoRequestBody,
+        NoQueryParam,
+        NoPathParam,
+        UserNetworkResponse,
+    >(HttpMethod.Get, path = "me")
 }

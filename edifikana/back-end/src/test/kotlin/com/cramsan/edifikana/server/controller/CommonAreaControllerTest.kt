@@ -66,7 +66,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test createCommonArea succeeds when user has MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_common_area_request.json")
             val expectedResponse = readFileContent("requests/create_common_area_response.json")
@@ -107,7 +107,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test createCommonArea fails when user lacks required role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_common_area_request.json")
             val commonAreaService = get<CommonAreaService>()
@@ -143,7 +143,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test getCommonArea returns 200 when found and user has MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_common_area_response.json")
             val commonAreaService = get<CommonAreaService>()
@@ -173,7 +173,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test getCommonArea returns 404 when area is not found`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val commonAreaService = get<CommonAreaService>()
             val rbacService = get<RBACService>()
@@ -199,7 +199,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test getCommonArea returns 404 when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val commonAreaService = get<CommonAreaService>()
             val rbacService = get<RBACService>()
@@ -229,7 +229,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test getCommonAreasForProperty succeeds when user has MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_common_areas_for_property_response.json")
             val commonAreaService = get<CommonAreaService>()
@@ -259,7 +259,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test getCommonAreasForProperty fails when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val commonAreaService = get<CommonAreaService>()
             val rbacService = get<RBACService>()
@@ -291,7 +291,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test updateCommonArea succeeds when user has MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_common_area_request.json")
             val expectedResponse = readFileContent("requests/update_common_area_response.json")
@@ -333,7 +333,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test updateCommonArea fails when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_common_area_request.json")
             val expectedResponse = "You are not authorized to perform this action in your organization."
@@ -370,7 +370,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test deleteCommonArea succeeds when user has MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val commonAreaService = get<CommonAreaService>()
             val rbacService = get<RBACService>()
@@ -396,7 +396,7 @@ class CommonAreaControllerTest :
 
     @Test
     fun `test deleteCommonArea fails when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action in your organization."
             val commonAreaService = get<CommonAreaService>()

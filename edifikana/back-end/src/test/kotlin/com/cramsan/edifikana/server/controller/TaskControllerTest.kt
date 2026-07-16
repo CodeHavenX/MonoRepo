@@ -68,7 +68,7 @@ class TaskControllerTest :
 
     @Test
     fun `test createTask succeeds when user has MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_task_request.json")
             val expectedResponse = readFileContent("requests/create_task_response.json")
@@ -112,7 +112,7 @@ class TaskControllerTest :
 
     @Test
     fun `test createTask fails when user lacks MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_task_request.json")
             val taskService = get<TaskService>()
@@ -143,7 +143,7 @@ class TaskControllerTest :
 
     @Test
     fun `test getTask returns 200 when found and user has EMPLOYEE role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val taskService = get<TaskService>()
             val rbacService = get<RBACService>()
@@ -171,7 +171,7 @@ class TaskControllerTest :
 
     @Test
     fun `test getTask returns 404 when task is not found`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val taskService = get<TaskService>()
             val rbacService = get<RBACService>()
@@ -194,7 +194,7 @@ class TaskControllerTest :
 
     @Test
     fun `test getTask returns 404 when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val taskService = get<TaskService>()
             val rbacService = get<RBACService>()
@@ -221,7 +221,7 @@ class TaskControllerTest :
 
     @Test
     fun `test getTasks returns 200 when user has EMPLOYEE role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val taskService = get<TaskService>()
             val rbacService = get<RBACService>()
@@ -253,7 +253,7 @@ class TaskControllerTest :
 
     @Test
     fun `test getTasks fails when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val taskService = get<TaskService>()
             val rbacService = get<RBACService>()
@@ -280,7 +280,7 @@ class TaskControllerTest :
 
     @Test
     fun `test updateTask succeeds when user has MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_task_request.json")
             val taskService = get<TaskService>()
@@ -330,7 +330,7 @@ class TaskControllerTest :
 
     @Test
     fun `test updateTask fails when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/update_task_request.json")
             val taskService = get<TaskService>()
@@ -362,7 +362,7 @@ class TaskControllerTest :
 
     @Test
     fun `test deleteTask succeeds when user has MANAGER role`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val taskService = get<TaskService>()
             val rbacService = get<RBACService>()
@@ -385,7 +385,7 @@ class TaskControllerTest :
 
     @Test
     fun `test deleteTask fails when user is unauthorized`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val taskService = get<TaskService>()
             val rbacService = get<RBACService>()

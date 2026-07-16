@@ -7,7 +7,6 @@ import com.cramsan.flyerboard.server.service.ModerationService
 import com.cramsan.framework.annotations.BackendController
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler.register
-import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.handler
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.server.routing.Routing
@@ -18,14 +17,11 @@ import io.ktor.server.routing.Routing
  * All endpoints require an authenticated caller with [UserRole.ADMIN].
  */
 @BackendController
-class ModerationController(
-    private val moderationService: ModerationService,
-    private val contextRetriever: ContextRetriever<FlyerBoardContextPayload>,
-) : Controller {
+class ModerationController(private val moderationService: ModerationService) : Controller {
     override fun registerRoutes(route: Routing) {
-        ModerationApi.register(route) {
+        ModerationApi.register(route, FlyerBoardContextPayload::class) {
             // GET /api/v1/moderation — list pending flyers (admin-only)
-            handler(api.listPending, contextRetriever) { request ->
+            handler(api.listPending) { request ->
                 if (request.context.payload.role != UserRole.ADMIN) {
                     throw ClientRequestExceptions.ForbiddenException("Admin role required")
                 }
@@ -38,7 +34,7 @@ class ModerationController(
             }
 
             // POST /api/v1/moderation/{param} — approve or reject a flyer (admin-only)
-            handler(api.moderate, contextRetriever) { request ->
+            handler(api.moderate) { request ->
                 if (request.context.payload.role != UserRole.ADMIN) {
                     throw ClientRequestExceptions.ForbiddenException("Admin role required")
                 }

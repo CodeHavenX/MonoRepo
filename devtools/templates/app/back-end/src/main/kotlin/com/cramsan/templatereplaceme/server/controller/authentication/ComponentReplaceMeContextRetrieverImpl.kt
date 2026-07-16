@@ -2,7 +2,6 @@ package com.cramsan.templatereplaceme.server.controller.authentication
 
 import com.cramsan.framework.core.ktor.auth.ClientContext
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
-import io.ktor.server.application.ApplicationCall
 
 /**
  * Retrieves the client authentication context from a [ComponentReplaceMe] request.
@@ -12,9 +11,9 @@ import io.ktor.server.application.ApplicationCall
  */
 class ComponentReplaceMeContextRetrieverImpl : ContextRetriever<Unit> {
     /**
-     * Retrieves the client context from the given [applicationCall].
+     * Retrieves the client context from the given bearer [token].
      */
-    override suspend fun getContext(applicationCall: ApplicationCall): ClientContext<Unit> {
+    override suspend fun getContext(token: String): ClientContext<Unit> {
         // TODO: Implement the real logic to retrieve the user-context.
         return ClientContext.UnauthenticatedClientContext()
     }

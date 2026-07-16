@@ -51,7 +51,7 @@ class UserControllerTest :
 
     @Test
     fun `test createUser`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_user_request.json")
             val expectedResponse = readFileContent("requests/create_user_response.json")
@@ -92,7 +92,7 @@ class UserControllerTest :
 
     @Test
     fun `test getCurrentUser`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_current_user_response.json")
             val userService = get<UserService>()
@@ -124,7 +124,7 @@ class UserControllerTest :
 
     @Test
     fun `test getCurrentUser fails with 401 when unauthenticated`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
             coEvery {
@@ -142,7 +142,7 @@ class UserControllerTest :
 
     @Test
     fun `test createUser fails with 401 when unauthenticated`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_user_request.json")
             val contextRetriever = get<ContextRetriever<FlyerBoardContextPayload>>()
@@ -165,7 +165,7 @@ class UserControllerTest :
 
     @Test
     fun `test createUser fails when service returns failure`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val requestBody = readFileContent("requests/create_user_request.json")
             val userService = get<UserService>()

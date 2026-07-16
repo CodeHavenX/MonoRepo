@@ -15,11 +15,10 @@ object HealthApi : Api("api/v1/health") {
     /**
      * Health check endpoint. Returns service status.
      */
-    val check =
-        operation<
-            NoRequestBody,
-            NoQueryParam,
-            NoPathParam,
-            HealthCheckNetworkResponse,
-            >(HttpMethod.Get)
+    val check = publicOperation<
+        NoRequestBody,
+        NoQueryParam,
+        NoPathParam,
+        HealthCheckNetworkResponse,
+    >(HttpMethod.Get)
 }

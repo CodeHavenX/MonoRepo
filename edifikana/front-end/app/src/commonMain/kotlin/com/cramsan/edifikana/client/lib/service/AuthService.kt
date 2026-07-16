@@ -113,6 +113,11 @@ interface AuthService {
     suspend fun setNewPassword(newPassword: SecureString): Result<Unit>
 
     /**
+     * Notifies the backend that a password has been set for the current user.
+     */
+    suspend fun notifyPasswordSet(): Result<Unit>
+
+    /**
      * Invite an employee member to the organization with the provided [organizationId] using the given [email]
      * and assign them the specified [role].
      */

@@ -261,7 +261,7 @@ class SetNewPasswordViewModelTest : CoroutineTest() {
             // Assert
             coVerify { authManager.setNewPassword(any()) }
             assertEquals(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignInDestination),
+                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignInDestination()),
                 turbine.awaitItem(),
             )
             advanceUntilIdleAndAwaitComplete(turbine)

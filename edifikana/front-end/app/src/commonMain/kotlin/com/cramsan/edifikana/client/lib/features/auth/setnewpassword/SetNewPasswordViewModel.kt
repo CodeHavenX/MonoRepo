@@ -118,7 +118,7 @@ class SetNewPasswordViewModel(
                 .onSuccess {
                     updateUiState { it.copy(isLoading = false) }
                     emitWindowEvent(
-                        EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignInDestination),
+                        EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignInDestination()),
                     )
                 }.onFailure {
                     updateUiState {

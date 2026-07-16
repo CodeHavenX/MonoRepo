@@ -25,6 +25,7 @@ import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.components.otpfield.OtpSection
+import com.cramsan.ui.theme.Padding
 import edifikana_lib.Res
 import edifikana_lib.alpacaIcon
 import edifikana_lib.otp_validation_screen_image_description
@@ -51,7 +52,11 @@ fun OtpValidationScreen(
 
     // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.initializeOTPValidationScreen(destination.userEmail, destination.accountCreationFlow)
+        viewModel.initializeOTPValidationScreen(
+            destination.userEmail,
+            destination.accountCreationFlow,
+            destination.inviteId,
+        )
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         // Call this feature's viewModel
@@ -163,7 +168,7 @@ internal fun OtpValidationContent(
                     enabled = uiState.enabledContinueButton,
                     modifier =
                     sectionModifier
-                        .padding(top = 16.dp)
+                        .padding(top = Padding.MEDIUM)
                         .wrapContentWidth(),
                 ) {
                     Text(stringResource(Res.string.otp_validation_screen_login_button))

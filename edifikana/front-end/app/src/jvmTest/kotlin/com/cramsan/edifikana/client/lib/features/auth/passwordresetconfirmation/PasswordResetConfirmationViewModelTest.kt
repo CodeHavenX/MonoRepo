@@ -161,7 +161,7 @@ class PasswordResetConfirmationViewModelTest : CoroutineTest() {
             // Assert
             assertEquals(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    destination = AuthDestination.SignInDestination,
+                    destination = AuthDestination.SignInDestination(),
                     clearTop = true,
                 ),
                 turbine.awaitItem(),

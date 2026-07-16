@@ -206,3 +206,40 @@ class InviteIdNavType : NavType<InviteId>(isNullableAllowed = false) {
         return InviteId(value)
     }
 }
+
+/**
+ * Custom NavType for an optional InviteId, allowing it to be passed as an optional navigation
+ * argument (e.g. `inviteId: InviteId? = null`).
+ */
+class NullableInviteIdNavType : NavType<InviteId?>(isNullableAllowed = true) {
+    override fun put(
+        bundle: SavedState,
+        key: String,
+        value: InviteId?,
+    ) {
+        bundle.write {
+            if (value != null) {
+                this.putString(key, value.id)
+            } else {
+                this.putNull(key)
+            }
+        }
+    }
+
+    override fun get(
+        bundle: SavedState,
+        key: String,
+    ): InviteId? {
+        return bundle.read {
+            if (!contains(key) || isNull(key)) null else getStringOrNull(key)?.let { parseValue(it) }
+        }
+    }
+
+    override fun parseValue(value: String): InviteId? {
+        return if (value == "null") null else InviteId(value)
+    }
+
+    override fun serializeAsValue(value: InviteId?): String {
+        return value?.id ?: "null"
+    }
+}

@@ -36,6 +36,7 @@ class SignUpViewModel(
                 it.copy(
                     email = destination.userEmail,
                     errorMessages = emptyList(),
+                    inviteId = destination.inviteId,
                 )
             }
         }
@@ -160,7 +161,11 @@ class SignUpViewModel(
             logD(TAG, "User signed up: $user")
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthDestination.ValidationDestination(email, accountCreationFlow = true),
+                    AuthDestination.ValidationDestination(
+                        email,
+                        accountCreationFlow = true,
+                        inviteId = uiState.value.inviteId,
+                    ),
                     clearTop = true,
                 ),
             )

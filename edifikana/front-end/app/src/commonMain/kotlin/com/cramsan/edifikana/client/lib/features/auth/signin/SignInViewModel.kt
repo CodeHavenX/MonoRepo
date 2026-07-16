@@ -2,12 +2,14 @@ package com.cramsan.edifikana.client.lib.features.auth.signin
 
 import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
+import com.cramsan.edifikana.client.lib.features.auth.postAuthenticationDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.models.Theme
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -36,8 +38,11 @@ class SignInViewModel(
     /**
      * Initialize the page.
      */
-    fun initializePage() {
+    fun initializePage(inviteId: InviteId?) {
         logI(TAG, "SignInViewModel initialized")
+        viewModelCoroutineScope.launch {
+            updateUiState { it.copy(inviteId = inviteId) }
+        }
     }
 
     /**
@@ -104,23 +109,9 @@ class SignInViewModel(
                     return@launch
                 }
 
-            val organizations = organizationManager.getOrganizations().getOrNull()
-
-            if (organizations.isNullOrEmpty()) {
-                emitWindowEvent(
-                    EdifikanaWindowsEvent.NavigateToScreen(
-                        AuthDestination.SelectOrgDestination,
-                        clearTop = true,
-                    ),
-                )
-            } else {
-                emitWindowEvent(
-                    EdifikanaWindowsEvent.NavigateToNavGraph(
-                        EdifikanaNavGraphDestination.HomeNavGraphDestination,
-                        clearTop = true,
-                    ),
-                )
-            }
+            val inviteId = uiState.value.inviteId
+            val navEvent = postAuthenticationDestination(organizationManager, inviteId = inviteId)
+            emitWindowEvent(navEvent)
         }
     }
 
@@ -131,6 +122,7 @@ class SignInViewModel(
         logI(TAG, "signIn with OTP called")
         viewModelCoroutineScope.launch {
             val email = uiState.value.email.trim()
+            val inviteId = uiState.value.inviteId
             if (!checkEmailValid(email)) {
                 return@launch
             }
@@ -147,12 +139,21 @@ class SignInViewModel(
             if (registeredUser) {
                 emitWindowEvent(
                     EdifikanaWindowsEvent.NavigateToScreen(
-                        AuthDestination.ValidationDestination(email, accountCreationFlow = false),
+                        AuthDestination.ValidationDestination(
+                            email,
+                            accountCreationFlow = false,
+                            inviteId = inviteId,
+                        ),
                     ),
                 )
             } else {
                 emitWindowEvent(
-                    EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email)),
+                    EdifikanaWindowsEvent.NavigateToScreen(
+                        AuthDestination.SignUpDestination(
+                            userEmail = email,
+                            inviteId = inviteId,
+                        ),
+                    ),
                 )
             }
         }
@@ -178,8 +179,14 @@ class SignInViewModel(
     fun navigateToSignUpPage() {
         viewModelCoroutineScope.launch {
             val email = uiState.value.email.trim()
+            val inviteId = uiState.value.inviteId
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignUpDestination(email)),
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.SignUpDestination(
+                        userEmail = email,
+                        inviteId = inviteId,
+                    ),
+                ),
             )
         }
     }

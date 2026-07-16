@@ -64,7 +64,7 @@ class PasswordResetConfirmationViewModel(
         viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthDestination.SignInDestination,
+                    AuthDestination.SignInDestination(),
                     clearTop = true,
                 ),
             )

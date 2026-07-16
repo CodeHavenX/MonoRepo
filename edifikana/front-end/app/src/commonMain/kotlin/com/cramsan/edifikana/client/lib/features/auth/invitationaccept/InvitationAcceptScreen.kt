@@ -48,8 +48,8 @@ fun InvitationAcceptScreen(
 
     InvitationAcceptContent(
         uiState = uiState,
-        onCreateAccountClicked = { viewModel.navigateToSignUp() },
-        onSignInClicked = { viewModel.navigateToSignIn() },
+        onCreateAccountClicked = { viewModel.navigateToSignUp(destination.inviteId) },
+        onSignInClicked = { viewModel.navigateToSignIn(destination.inviteId) },
     )
 }
 

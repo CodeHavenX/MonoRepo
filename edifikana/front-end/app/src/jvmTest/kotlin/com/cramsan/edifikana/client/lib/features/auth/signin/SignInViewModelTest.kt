@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestina
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
 import com.cramsan.framework.core.compose.EventBus
@@ -81,7 +82,7 @@ class SignInViewModelTest : CoroutineTest() {
     @Test
     fun `test initializePage has expected UI state`() = runCoroutineTest {
         // ACT
-        viewModel.initializePage()
+        viewModel.initializePage(inviteId = null)
 
         // Assert
         assertEquals(SignInUIState.Initial, viewModel.uiState.value)
@@ -149,6 +150,37 @@ class SignInViewModelTest : CoroutineTest() {
             ),
             turbine.awaitItem()
         )
+    } }
+
+    /**
+     * Test the [SignInViewModel.signInWithPassword] method redirects to the invitation
+     * accept/decline screen when the screen was reached with a pending invite id.
+     */
+    @Test
+    fun `test SignIn success with pending invite redirects to InvitationAcceptConfirmDestination`() = runCoroutineTest { turbineScope {
+        // Arrange
+        val username = "real@email.com"
+        val password = "Password123"
+        val inviteId = InviteId("invite-123")
+        val turbine = windowEventBus.events.testIn(backgroundScope)
+
+        coEvery { authManager.signInWithPassword(username, password) } returns Result.success(mockk())
+
+        // Act
+        viewModel.initializePage(inviteId)
+        viewModel.changeUsernameValue(username)
+        viewModel.changePasswordValue(password)
+        viewModel.signInWithPassword()
+
+        // Assert
+        assertEquals(
+            EdifikanaWindowsEvent.NavigateToScreen(
+                AuthDestination.InvitationAcceptConfirmDestination(inviteId),
+                clearTop = true,
+            ),
+            turbine.awaitItem()
+        )
+        coVerify(exactly = 0) { organizationManager.getOrganizations() }
     } }
 
     /**

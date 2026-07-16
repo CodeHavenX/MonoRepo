@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.client.lib.features.auth.validation
 
-import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
-import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
+import com.cramsan.edifikana.client.lib.features.auth.postAuthenticationDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
@@ -34,12 +34,13 @@ class OtpValidationViewModel(
     /**
      * Initialize the page.
      */
-    fun initializeOTPValidationScreen(userEmail: String, accountCreationFlow: Boolean) {
+    fun initializeOTPValidationScreen(userEmail: String, accountCreationFlow: Boolean, inviteId: InviteId?) {
         viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(
                     email = userEmail,
                     accountCreationFlow = accountCreationFlow,
+                    inviteId = inviteId,
                 )
             }
             if (!accountCreationFlow) {
@@ -72,23 +73,9 @@ class OtpValidationViewModel(
 
                     emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar(getErrorMessage(it)))
                 }.onSuccess {
-                    val organizations = organizationManager.getOrganizations().getOrNull()
-
-                    if (organizations.isNullOrEmpty()) {
-                        emitWindowEvent(
-                            EdifikanaWindowsEvent.NavigateToScreen(
-                                AuthDestination.SelectOrgDestination,
-                                clearTop = true,
-                            ),
-                        )
-                    } else {
-                        emitWindowEvent(
-                            EdifikanaWindowsEvent.NavigateToNavGraph(
-                                EdifikanaNavGraphDestination.HomeNavGraphDestination,
-                                clearTop = true,
-                            ),
-                        )
-                    }
+                    val inviteId = uiState.value.inviteId
+                    val navEvent = postAuthenticationDestination(organizationManager, inviteId = inviteId)
+                    emitWindowEvent(navEvent)
                 }
         }
     }

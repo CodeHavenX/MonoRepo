@@ -35,6 +35,7 @@ import com.cramsan.edifikana.client.lib.navigation.EdifikanaPathNavigation
 import com.cramsan.edifikana.client.lib.navigation.EmployeeIdNavType
 import com.cramsan.edifikana.client.lib.navigation.EventLogEntryIdNavType
 import com.cramsan.edifikana.client.lib.navigation.InviteIdNavType
+import com.cramsan.edifikana.client.lib.navigation.NullableInviteIdNavType
 import com.cramsan.edifikana.client.lib.navigation.OrganizationIdNavType
 import com.cramsan.edifikana.client.lib.navigation.PropertyIdNavType
 import com.cramsan.edifikana.client.lib.navigation.TimeCardEventIdNavType
@@ -296,6 +297,7 @@ private fun WindowNavigationHost(
                 typeOf<EmployeeId>() to EmployeeIdNavType(),
                 typeOf<OrganizationId>() to OrganizationIdNavType(),
                 typeOf<InviteId>() to InviteIdNavType(),
+                typeOf<InviteId?>() to NullableInviteIdNavType(),
             )
         }
     NavHost(

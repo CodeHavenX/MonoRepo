@@ -136,7 +136,7 @@ class InvitationAcceptViewModel(
             updateUiState { it.copy(isLoading = false) }
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthDestination.SignInDestination,
+                    AuthDestination.SignInDestination(),
                     clearStack = true,
                 ),
             )
@@ -147,11 +147,14 @@ class InvitationAcceptViewModel(
      * Navigates to the sign-up screen, deferring invite acceptance until after account creation
      * and OTP verification complete.
      */
-    fun navigateToSignUp() {
+    fun navigateToSignUp(inviteId: InviteId) {
         viewModelCoroutineScope.launch {
             emitWindowEvent(
                 EdifikanaWindowsEvent.NavigateToScreen(
-                    AuthDestination.SignUpDestination(userEmail = ""),
+                    AuthDestination.SignUpDestination(
+                        userEmail = "",
+                        inviteId = inviteId,
+                    ),
                 ),
             )
         }
@@ -161,10 +164,12 @@ class InvitationAcceptViewModel(
      * Navigates to the sign-in screen, deferring invite acceptance until after sign-in
      * completes.
      */
-    fun navigateToSignIn() {
+    fun navigateToSignIn(inviteId: InviteId) {
         viewModelCoroutineScope.launch {
             emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateToScreen(AuthDestination.SignInDestination),
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.SignInDestination(inviteId = inviteId),
+                ),
             )
         }
     }

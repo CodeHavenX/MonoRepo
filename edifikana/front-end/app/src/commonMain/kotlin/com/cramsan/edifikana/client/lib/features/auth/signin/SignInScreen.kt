@@ -18,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationUIState
 import com.cramsan.edifikana.client.lib.features.application.EdifikanaApplicationViewModel
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaErrorMessages
 import com.cramsan.edifikana.client.ui.components.EdifikanaPasswordTextField
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
@@ -46,6 +47,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun SignInScreen(
+    destination: AuthDestination.SignInDestination,
     viewModel: SignInViewModel = koinViewModel(),
     applicationViewModel: EdifikanaApplicationViewModel = koinInject(),
 ) {
@@ -54,7 +56,7 @@ fun SignInScreen(
     val applicationUIState by applicationViewModel.uiState.collectAsState()
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.initializePage()
+        viewModel.initializePage(destination.inviteId)
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) {

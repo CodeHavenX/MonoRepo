@@ -6,6 +6,7 @@ import com.cramsan.architecture.server.dependencyinjection.FrameworkModule
 import com.cramsan.architecture.server.dependencyinjection.KtorModule
 import com.cramsan.architecture.server.settings.BackEndApplicationSettingKey
 import com.cramsan.architecture.server.settings.SettingsHolder
+import com.cramsan.framework.assertlib.assertFailure
 import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
 import com.cramsan.framework.core.ktor.configureBearerAuthentication
@@ -71,8 +72,12 @@ fun Application.startKtor() =
         when (loadExtraControllers) {
             EndpointsToLoad.ALL -> {
                 configureHealthEndpoint()
-                val apiInfo = getKoin().get<ApiInfo>()
-                configureOpenApiEndpoint(apiInfo)
+                val apiInfo = getKoin().getOrNull<ApiInfo>()
+                if (apiInfo == null) {
+                    assertFailure(TAG, "AppInfo is not configured. Ensure it is defined in the ApplicationModule,")
+                } else {
+                    configureOpenApiEndpoint(apiInfo)
+                }
             }
 
             EndpointsToLoad.IGNORE_EXTRAS -> {

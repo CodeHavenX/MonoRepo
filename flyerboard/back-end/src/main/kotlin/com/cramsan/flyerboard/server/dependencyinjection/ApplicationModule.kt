@@ -5,6 +5,7 @@ import com.cramsan.flyerboard.lib.serialization.createJson
 import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextRetriever
 import com.cramsan.framework.core.ktor.auth.ContextRetriever
+import com.cramsan.framework.networkapi.ApiInfo
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -22,6 +23,8 @@ internal val ApplicationModule =
         single<Json> {
             createJson()
         }
+
+        single<ApiInfo> { FlyerboardApiInfo }
 
         singleOf(::FlyerBoardContextRetriever) {
             bind<ContextRetriever<FlyerBoardContextPayload>>()

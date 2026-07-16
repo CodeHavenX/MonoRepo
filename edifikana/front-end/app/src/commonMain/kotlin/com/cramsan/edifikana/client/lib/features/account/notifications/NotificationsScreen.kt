@@ -15,11 +15,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.sharp.Close
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,9 +39,7 @@ import com.cramsan.ui.components.ScreenLayout
 import com.cramsan.ui.theme.Padding
 import com.cramsan.ui.theme.Size
 import edifikana_lib.Res
-import edifikana_lib.edifikana_string_accept
 import edifikana_lib.edifikana_string_cancel
-import edifikana_lib.edifikana_string_decline
 import edifikana_lib.notifications_screen_invitation_description
 import edifikana_lib.notifications_screen_no_notifications
 import edifikana_lib.notifications_screen_organization_invite_title
@@ -82,8 +78,7 @@ fun NotificationsScreen(
     NotificationsContent(
         content = uiState,
         onBackSelected = { viewModel.onBackSelected() },
-        onAcceptInvite = { inviteId -> viewModel.acceptInvite(inviteId) },
-        onDeclineInvite = { inviteId -> viewModel.declineInvite(inviteId) },
+        onInviteClicked = { inviteId -> viewModel.navigateToInviteConfirm(inviteId) },
         onMarkAsRead = { notificationId -> viewModel.markAsRead(notificationId) },
         onDeleteNotification = { notificationId -> viewModel.deleteNotification(notificationId) },
         modifier = modifier,
@@ -97,8 +92,7 @@ fun NotificationsScreen(
 internal fun NotificationsContent(
     content: NotificationsUIState,
     onBackSelected: () -> Unit,
-    onAcceptInvite: (InviteId) -> Unit,
-    onDeclineInvite: (InviteId) -> Unit,
+    onInviteClicked: (InviteId) -> Unit,
     onMarkAsRead: (NotificationId) -> Unit,
     onDeleteNotification: (NotificationId) -> Unit,
     modifier: Modifier = Modifier,
@@ -124,8 +118,7 @@ internal fun NotificationsContent(
                             is InviteNotificationUIModel -> {
                                 InviteNotificationItem(
                                     notification = notification,
-                                    onAccept = { onAcceptInvite(notification.inviteId) },
-                                    onDecline = { onDeclineInvite(notification.inviteId) },
+                                    onClick = { onInviteClicked(notification.inviteId) },
                                     modifier = sectionModifier,
                                 )
                             }
@@ -181,11 +174,10 @@ private fun EmptyNotificationsMessage(
 @Composable
 private fun InviteNotificationItem(
     notification: InviteNotificationUIModel,
-    onAccept: () -> Unit,
-    onDecline: () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Row(
         modifier =
         modifier
             .clip(MaterialTheme.shapes.medium)
@@ -193,52 +185,34 @@ private fun InviteNotificationItem(
                 width = 1.dp,
                 color = if (notification.isRead) Color.LightGray else MaterialTheme.colorScheme.primary,
                 shape = MaterialTheme.shapes.medium,
-            ).padding(Padding.MEDIUM),
-        verticalArrangement = Arrangement.spacedBy(Padding.SMALL),
+            ).padding(Padding.MEDIUM)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
+        Icon(
+            imageVector = Icons.Default.Email,
+            contentDescription = stringResource(Res.string.notifications_screen_invitation_description),
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(Size.large),
+        )
+        Spacer(Modifier.size(Padding.MEDIUM))
+        Column(
+            modifier = Modifier.weight(1f),
         ) {
-            Icon(
-                imageVector = Icons.Default.Email,
-                contentDescription = stringResource(Res.string.notifications_screen_invitation_description),
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(Size.large),
+            Text(
+                text = stringResource(Res.string.notifications_screen_organization_invite_title),
+                style = MaterialTheme.typography.titleMedium,
             )
-            Spacer(Modifier.size(Padding.MEDIUM))
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = stringResource(Res.string.notifications_screen_organization_invite_title),
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Text(
-                    text = notification.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Text(
-                    text = notification.createdAt,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline,
-                )
-            }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Padding.SMALL, Alignment.End),
-        ) {
-            OutlinedButton(
-                onClick = onDecline,
-            ) {
-                Text(stringResource(Res.string.edifikana_string_decline))
-            }
-            Button(
-                onClick = onAccept,
-            ) {
-                Text(stringResource(Res.string.edifikana_string_accept))
-            }
+            Text(
+                text = notification.description,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                text = notification.createdAt,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.outline,
+            )
         }
     }
 }

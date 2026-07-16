@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.account.notifications
 
+import com.cramsan.edifikana.client.lib.features.auth.AuthDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
-import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.NotificationManager
 import com.cramsan.edifikana.client.lib.models.Notification
 import com.cramsan.edifikana.lib.model.invite.InviteId
@@ -20,7 +20,6 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class NotificationsViewModel(
     dependencies: ViewModelDependencies,
-    private val authManager: AuthManager,
     private val notificationManager: NotificationManager,
 ) : BaseViewModel<NotificationsEvent, NotificationsUIState>(
     dependencies,
@@ -102,52 +101,15 @@ class NotificationsViewModel(
     }
 
     /**
-     * Accept an invitation.
+     * Navigates to the invitation accept/decline screen for [inviteId].
      */
-    fun acceptInvite(inviteId: InviteId) {
+    fun navigateToInviteConfirm(inviteId: InviteId) {
         viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isLoading = true) }
-
-            authManager
-                .acceptInvite(inviteId)
-                .onSuccess {
-                    emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar("Invitation accepted successfully"),
-                    )
-                    loadNotifications()
-                }.onFailure { throwable ->
-                    emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to accept invitation: ${throwable.message ?: "Unknown error"}",
-                        ),
-                    )
-                    updateUiState { it.copy(isLoading = false) }
-                }
-        }
-    }
-
-    /**
-     * Decline an invitation.
-     */
-    fun declineInvite(inviteId: InviteId) {
-        viewModelCoroutineScope.launch {
-            updateUiState { it.copy(isLoading = true) }
-
-            authManager
-                .declineInvite(inviteId)
-                .onSuccess {
-                    emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar("Invitation declined"),
-                    )
-                    loadNotifications()
-                }.onFailure { throwable ->
-                    emitWindowEvent(
-                        EdifikanaWindowsEvent.ShowSnackbar(
-                            "Failed to decline invitation: ${throwable.message ?: "Unknown error"}",
-                        ),
-                    )
-                    updateUiState { it.copy(isLoading = false) }
-                }
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToScreen(
+                    AuthDestination.InvitationAcceptConfirmDestination(inviteId),
+                ),
+            )
         }
     }
 

@@ -1,10 +1,12 @@
 package com.cramsan.architecture.client.di
 
+import com.cramsan.architecture.client.service.configureStandardRetry
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingsHolder
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.api.ClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -72,6 +74,9 @@ internal val KtorModule =
                     json(get())
                 }
                 install(Logging)
+                install(HttpRequestRetry) {
+                    configureStandardRetry()
+                }
 
                 val pluginList: List<ClientPlugin<*>> = getAll()
                 pluginList.forEach { plugin ->

@@ -1,6 +1,9 @@
 package com.cramsan.edifikana.client.lib.features.auth
 
 import androidx.navigation.NavBackStackEntry
+import com.cramsan.edifikana.lib.model.invite.InviteId
+import com.cramsan.edifikana.lib.model.network.invite.INVITE_ACCEPT_CONFIRM_WEB_PATH
+import com.cramsan.edifikana.lib.model.network.invite.INVITE_ACCEPT_WEB_PATH
 import com.cramsan.edifikana.lib.model.network.password.SET_NEW_PASSWORD_WEB_PATH
 import com.cramsan.framework.annotations.WebPath
 import com.cramsan.framework.core.compose.navigation.WebDestination
@@ -66,6 +69,24 @@ sealed class AuthDestination : WebDestination {
         @SerialName("type")
         val type: String,
     ) : AuthDestination()
+
+    /**
+     * Invitation landing screen destination, reached via an invitation email link or deep link
+     * when no session exists yet. Routes to [SignUpDestination] / [SignInDestination]; never
+     * collects credentials itself.
+     */
+    @Serializable
+    @WebPath(INVITE_ACCEPT_WEB_PATH)
+    data class InvitationAcceptDestination(val inviteId: InviteId) : AuthDestination()
+
+    /**
+     * Invitation accept/decline screen destination, reached once a session exists — either
+     * already active when the deep link opened, or established immediately afterward via
+     * Sign Up + OTP verification or Sign In.
+     */
+    @Serializable
+    @WebPath(INVITE_ACCEPT_CONFIRM_WEB_PATH)
+    data class InvitationAcceptConfirmDestination(val inviteId: InviteId) : AuthDestination()
 
     override fun toWebPath(): String = AuthDestinationWebRoutes.toWebPath(this)
 

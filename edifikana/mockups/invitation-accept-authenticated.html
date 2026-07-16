@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edifikana - Accept Invitation (Signed In)</title>
+  <title>Edifikana - Review Invitation</title>
   <link rel="stylesheet" href="styles/common.css">
 </head>
 <body>
@@ -14,9 +14,33 @@
           <div class="auth-logo">Edifikana</div>
           <h1 class="text-h1 mb-6">You&rsquo;ve been invited!</h1>
 
+          <!--
+            Reached after authentication completes — either the sign-up + OTP verification
+            path or the sign-in path from invitation-accept.html. Both new and existing
+            users land here once a session exists, and accept/decline against this invite.
+
+            Unlike invitation-accept.html (unauthenticated landing), this screen CAN show
+            an invitation summary — backed by the existing Notification system rather than
+            a new endpoint. Every invite creates a GET /notification entry (notificationType
+            = INVITE, inviteId set, description = "You have been invited to join {org}.").
+            That notification is tied to the user's account by the time they reach this
+            screen — immediately for existing users, and via linkNotificationsToUser() at
+            sign-up time for new users. Filter the authenticated user's notifications for
+            the one matching this invite's token and show its description directly.
+
+            This only gets us the org name (embedded in the notification's prose). Role and
+            invited-by are NOT available from this or any other existing endpoint, so they're
+            intentionally omitted here rather than mocked with fake structure.
+          -->
           <div class="auth-form">
+
+            <!-- Invitation summary card — sourced from the matching notification's description -->
+            <div class="card mb-4">
+              <p class="text-body">You&rsquo;ve been invited to join <strong>Sunrise Property Management</strong>.</p>
+            </div>
+
             <p class="text-body text-secondary mb-6">
-              You&rsquo;re already signed in. Accept or decline this invitation below.
+              Review the invitation above, then accept or decline below.
             </p>
             <div class="form-group">
               <a href="dashboard.html" class="btn btn-primary btn--full-width">Accept Invitation</a>

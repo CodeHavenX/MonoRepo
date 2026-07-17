@@ -11,6 +11,7 @@ import com.cramsan.framework.core.ktor.Controller
 import com.cramsan.framework.core.ktor.OperationHandler
 import com.cramsan.framework.core.ktor.OperationHandler.register
 import com.cramsan.framework.core.ktor.handler
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.server.routing.Routing
 import kotlin.time.Instant
 
@@ -88,7 +89,7 @@ class FlyerController(private val flyerService: FlyerService) : Controller {
                         uploaderId = request.context.payload.userId,
                         title = request.requestBody.title,
                         description = request.requestBody.description,
-                        expiresAt = request.requestBody.expiresAt?.let { Instant.parse(it) },
+                        expiresAt = request.requestBody.expiresAt.toInstantOrThrow(),
                     ).getOrThrow()
             CreateFlyerNetworkResponse(
                 flyer = flyer.toFlyerNetworkResponse(),
@@ -106,7 +107,7 @@ class FlyerController(private val flyerService: FlyerService) : Controller {
                         requesterId = request.context.payload.userId,
                         title = request.requestBody.title,
                         description = request.requestBody.description,
-                        expiresAt = request.requestBody.expiresAt?.let { Instant.parse(it) },
+                        expiresAt = request.requestBody.expiresAt.toInstantOrThrow(),
                         requestUpload = request.requestBody.requestUpload,
                     ).getOrThrow()
             UpdateFlyerNetworkResponse(
@@ -116,3 +117,21 @@ class FlyerController(private val flyerService: FlyerService) : Controller {
         }
     }
 }
+
+/**
+ * Parses an ISO-8601 `expires_at` string from a request body into an [Instant], or returns null
+ * if [this] is null. Throws [ClientRequestExceptions.InvalidRequestException] (400) instead of
+ * letting a malformed value surface as an unhandled `InstantFormatException` (500) -- that type
+ * is private to its declaring file, so it's caught via its public supertype instead.
+ */
+private fun String?.toInstantOrThrow(): Instant? =
+    this?.let {
+        try {
+            Instant.parse(it)
+        } catch (e: IllegalArgumentException) {
+            throw ClientRequestExceptions.InvalidRequestException(
+                "Malformed expires_at: not a valid ISO-8601 timestamp",
+                e,
+            )
+        }
+    }

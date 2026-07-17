@@ -386,7 +386,7 @@ class UserController(private val userService: UserService, private val rbacServi
             handler(api.requestPasswordReset) { request ->
                 requestPasswordReset(request.requestBody)
             }
-            handler(api.setPasswordAuth, contextRetriever) { request ->
+            handler(api.setPasswordAuth) { request ->
                 setPasswordAuth(request.context, request.pathParam)
             }
         }

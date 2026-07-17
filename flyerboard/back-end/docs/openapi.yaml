@@ -1,1 +1,921 @@
-{"openapi":"3.1.1","info":{"title":"Flyerboard Back-End API","version":"1.0.0","description":"Backend API for the Flyerboard platform.","contact":null},"paths":{"/health":{"get":{"tags":["health"],"summary":""},"head":{"tags":["health"],"summary":""}},"/api/v1/moderation":{"get":{"operationId":"get-api-v1-moderation","tags":["moderation"],"summary":"List pending flyers","description":"Returns all flyers awaiting moderation, with pagination. Requires the ADMIN role.","parameters":[{"name":"offset","in":"query","schema":{"type":"integer"}},{"name":"limit","in":"query","schema":{"type":"integer"}}],"responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/FlyerListNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"401":{"description":"Authentication is required or has failed."},"500":{"description":"An unexpected server error occurred."},"403":{"description":"Caller does not hold the ADMIN role."}},"security":[{"bearerAuth":[]}]}},"/api/v1/moderation/{param}":{"post":{"operationId":"post-api-v1-moderation-param","tags":["moderation"],"summary":"Moderate a flyer","description":"Applies a moderation action (approve or reject) to a pending flyer. Requires the ADMIN role. Approve and reject share this endpoint; the action is selected via the 'action' request field.","parameters":[{"name":"param","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ModerationActionNetworkRequest"}}},"required":true},"responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/FlyerNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"401":{"description":"Authentication is required or has failed."},"500":{"description":"An unexpected server error occurred."},"403":{"description":"Caller does not hold the ADMIN role."},"404":{"description":"No flyer exists for the given id."}},"security":[{"bearerAuth":[]}]}},"/api/v1/flyers":{"post":{"operationId":"post-api-v1-flyers","tags":["flyers"],"summary":"Create a flyer","description":"Creates a new flyer with PENDING status. The response includes a signed upload URL the client should use to upload the flyer's asset.","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateFlyerNetworkRequest"}}},"required":true},"responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateFlyerNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"401":{"description":"Authentication is required or has failed."},"500":{"description":"An unexpected server error occurred."}},"security":[{"bearerAuth":[]}]},"get":{"operationId":"get-api-v1-flyers","tags":["flyers"],"summary":"List flyers","description":"Lists publicly visible flyers with optional status filter and pagination.","parameters":[{"name":"offset","in":"query","schema":{"type":"integer"}},{"name":"limit","in":"query","schema":{"type":"integer"}},{"name":"status","in":"query","schema":{"type":["string","null"],"description":"Moderation status of a flyer.","enum":["pending","approved","rejected","archived"]}},{"name":"q","in":"query","schema":{"type":["string","null"]}}],"responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/FlyerListNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"500":{"description":"An unexpected server error occurred."}}}},"/api/v1/flyers/{param}":{"put":{"operationId":"put-api-v1-flyers-param","tags":["flyers"],"summary":"Update a flyer","description":"Updates an existing flyer. Any edit, including requesting an upload, resets status to PENDING for re-moderation. Requires the caller to be the flyer's original uploader.","parameters":[{"name":"param","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateFlyerNetworkRequest"}}},"required":true},"responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateFlyerNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"401":{"description":"Authentication is required or has failed."},"500":{"description":"An unexpected server error occurred."},"404":{"description":"No flyer exists for the given id."},"403":{"description":"Caller is not the flyer's original uploader."}},"security":[{"bearerAuth":[]}]},"get":{"operationId":"get-api-v1-flyers-param","tags":["flyers"],"summary":"Get a flyer","description":"Retrieves a single flyer by its identifier.","parameters":[{"name":"param","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/FlyerNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"500":{"description":"An unexpected server error occurred."},"404":{"description":"No flyer exists for the given id, or it exists but requires admin privileges to view (pending or rejected status)."}},"security":[{"bearerAuth":[]},{}]}},"/api/v1/flyers/archive":{"get":{"operationId":"get-api-v1-flyers-archive","tags":["flyers"],"summary":"List archived flyers","description":"Lists archived flyers with optional search and pagination.","parameters":[{"name":"offset","in":"query","schema":{"type":"integer"}},{"name":"limit","in":"query","schema":{"type":"integer"}},{"name":"status","in":"query","schema":{"type":["string","null"],"description":"Moderation status of a flyer.","enum":["pending","approved","rejected","archived"]}},{"name":"q","in":"query","schema":{"type":["string","null"]}}],"responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/FlyerListNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"500":{"description":"An unexpected server error occurred."}}}},"/api/v1/flyers/mine":{"get":{"operationId":"get-api-v1-flyers-mine","tags":["flyers"],"summary":"List my flyers","description":"Lists the authenticated user's own flyers with pagination, regardless of status.","parameters":[{"name":"offset","in":"query","schema":{"type":"integer"}},{"name":"limit","in":"query","schema":{"type":"integer"}}],"responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/FlyerListNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"401":{"description":"Authentication is required or has failed."},"500":{"description":"An unexpected server error occurred."}},"security":[{"bearerAuth":[]}]}},"/api/v1/user":{"post":{"operationId":"post-api-v1-user","tags":["user"],"summary":"Create a user","description":"Creates the profile for the authenticated caller, with the USER role. Called once after sign-up.","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateUserNetworkRequest"}}},"required":true},"responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"401":{"description":"Authentication is required or has failed."},"500":{"description":"An unexpected server error occurred."},"403":{"description":"Caller is not allowed to create this user profile."}},"security":[{"bearerAuth":[]}]}},"/api/v1/user/me":{"get":{"operationId":"get-api-v1-user-me","tags":["user"],"summary":"Get the current user","description":"Retrieves the authenticated caller's profile, including their role.","responses":{"200":{"description":"Successful response.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserNetworkResponse"}}}},"400":{"description":"The request was malformed or failed validation."},"401":{"description":"Authentication is required or has failed."},"500":{"description":"An unexpected server error occurred."},"404":{"description":"No user profile exists for the authenticated caller."}},"security":[{"bearerAuth":[]}]}}},"webhooks":{},"components":{"schemas":{"FlyerNetworkResponse":{"type":"object","title":"FlyerNetworkResponse","description":"The updated flyer.","required":["id","title","description","status","uploader_id","created_at","updated_at"],"properties":{"id":{"type":"string","description":"Unique identifier of the flyer."},"title":{"type":"string","description":"Title of the flyer.","example":"Live Music Night"},"description":{"type":"string","description":"Description of the flyer."},"file_url":{"type":["string","null"],"description":"Signed URL of the flyer's uploaded asset, or null if none has been uploaded yet.","format":"uri"},"status":{"type":"string","description":"Current moderation status of the flyer.","enum":["pending","approved","rejected","archived"]},"expires_at":{"type":["string","null"],"description":"ISO-8601 timestamp after which the flyer expires, or null if it never expires.","format":"date-time"},"uploader_id":{"type":"string","description":"Identifier of the user who uploaded the flyer."},"created_at":{"type":"string","description":"ISO-8601 timestamp when the flyer was created.","format":"date-time"},"updated_at":{"type":"string","description":"ISO-8601 timestamp when the flyer was last updated.","format":"date-time"},"rejection_reason":{"type":["string","null"],"description":"Reason the flyer was rejected, or null if it was not rejected."}}},"FlyerListNetworkResponse":{"type":"object","title":"FlyerListNetworkResponse","description":"A paginated collection of flyers.","required":["flyers","total","offset","limit"],"properties":{"flyers":{"type":"array","description":"The flyers in this page of results.","items":{"$ref":"#/components/schemas/FlyerNetworkResponse"}},"total":{"type":"integer","description":"Total number of flyers matching the query, across all pages."},"offset":{"type":"integer","description":"Offset of this page within the total result set."},"limit":{"type":"integer","description":"Maximum number of flyers requested for this page."}}},"ModerationActionNetworkRequest":{"type":"object","title":"ModerationActionNetworkRequest","description":"Request payload to apply a moderation action (approve or reject) to a flyer.","required":["action"],"properties":{"action":{"type":"string","description":"The moderation action to apply.","enum":["approve","reject"]},"reason":{"type":["string","null"],"description":"Reason for the action. Typically provided when rejecting; optional."}}},"CreateFlyerNetworkRequest":{"type":"object","title":"CreateFlyerNetworkRequest","description":"Request payload to create a new flyer. The flyer starts in PENDING status.","required":["title","description"],"properties":{"title":{"type":"string","description":"Title of the flyer.","example":"Live Music Night"},"description":{"type":"string","description":"Description of the flyer.","example":"Join us for a night of live music at the community center."},"expires_at":{"type":["string","null"],"description":"ISO-8601 timestamp after which the flyer expires, or null if it never expires.","format":"date-time"}}},"SignedUploadNetworkResponse":{"type":"object","title":"SignedUploadNetworkResponse","description":"Signed upload URL for the flyer's asset, present only if the request set request_upload to true.","required":["signed_url"],"properties":{"signed_url":{"type":"string","description":"URL the client should upload the asset bytes to directly.","format":"uri"},"token":{"type":["string","null"],"description":"Upload token embedded in the signed URL's query string, if applicable."}}},"CreateFlyerNetworkResponse":{"type":"object","title":"CreateFlyerNetworkResponse","description":"Response payload after creating a flyer, including a signed upload URL for its asset.","required":["flyer","upload"],"properties":{"flyer":{"$ref":"#/components/schemas/FlyerNetworkResponse"},"upload":{"$ref":"#/components/schemas/SignedUploadNetworkResponse"}}},"UpdateFlyerNetworkRequest":{"type":"object","title":"UpdateFlyerNetworkRequest","description":"Request payload to update an existing flyer. Only the fields that are provided (non-null) are modified. Any edit, including requesting an upload, re-queues the flyer for moderation.","required":["request_upload"],"properties":{"title":{"type":["string","null"],"description":"New title for the flyer, or null to leave unchanged."},"description":{"type":["string","null"],"description":"New description for the flyer, or null to leave unchanged."},"expires_at":{"type":["string","null"],"description":"New expiration timestamp, or null to leave unchanged.","format":"date-time"},"request_upload":{"type":"boolean","description":"Set to true to receive a fresh signed upload URL for the flyer's asset."}}},"UpdateFlyerNetworkResponse":{"type":"object","title":"UpdateFlyerNetworkResponse","description":"Response payload after updating a flyer.","required":["flyer"],"properties":{"flyer":{"$ref":"#/components/schemas/FlyerNetworkResponse"},"upload":{"oneOf":[{"$ref":"#/components/schemas/SignedUploadNetworkResponse"},{"type":"null"}]}}},"CreateUserNetworkRequest":{"type":"object","title":"CreateUserNetworkRequest","description":"Request payload to create the profile for the authenticated caller.","required":["first_name","last_name"],"properties":{"first_name":{"type":"string","description":"First name of the user.","example":"Jane"},"last_name":{"type":"string","description":"Last name of the user.","example":"Doe"}}},"UserNetworkResponse":{"type":"object","title":"UserNetworkResponse","description":"A user of the system.","required":["id","first_name","last_name","role"],"properties":{"id":{"type":"string","description":"Unique identifier of the user (Supabase Auth UUID)."},"first_name":{"type":"string","description":"First name of the user."},"last_name":{"type":"string","description":"Last name of the user."},"role":{"type":"string","description":"Role of the user in the system.","enum":["user","admin"]}}}},"securitySchemes":{"bearerAuth":{"scheme":"bearer","description":"HTTP Bearer Authentication","type":"http"}}}}
+{
+    "openapi": "3.1.1",
+    "info": {
+        "title": "Flyerboard Back-End API",
+        "version": "1.0.0",
+        "description": "Backend API for the Flyerboard platform.",
+        "contact": null
+    },
+    "paths": {
+        "/health": {
+            "get": {
+                "tags": [
+                    "health"
+                ],
+                "summary": ""
+            },
+            "head": {
+                "tags": [
+                    "health"
+                ],
+                "summary": ""
+            }
+        },
+        "/api/v1/moderation": {
+            "get": {
+                "operationId": "get-api-v1-moderation",
+                "tags": [
+                    "moderation"
+                ],
+                "summary": "List pending flyers",
+                "description": "Returns all flyers awaiting moderation, with pagination. Requires the ADMIN role.",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlyerListNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "401": {
+                        "description": "Authentication is required or has failed."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    },
+                    "403": {
+                        "description": "Caller does not hold the ADMIN role."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v1/moderation/{param}": {
+            "post": {
+                "operationId": "post-api-v1-moderation-param",
+                "tags": [
+                    "moderation"
+                ],
+                "summary": "Moderate a flyer",
+                "description": "Applies a moderation action (approve or reject) to a pending flyer. Requires the ADMIN role. Approve and reject share this endpoint; the action is selected via the 'action' request field.",
+                "parameters": [
+                    {
+                        "name": "param",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ModerationActionNetworkRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlyerNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "401": {
+                        "description": "Authentication is required or has failed."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    },
+                    "403": {
+                        "description": "Caller does not hold the ADMIN role."
+                    },
+                    "404": {
+                        "description": "No flyer exists for the given id."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v1/flyers": {
+            "post": {
+                "operationId": "post-api-v1-flyers",
+                "tags": [
+                    "flyers"
+                ],
+                "summary": "Create a flyer",
+                "description": "Creates a new flyer with PENDING status. The response includes a signed upload URL the client should use to upload the flyer's asset.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateFlyerNetworkRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateFlyerNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "401": {
+                        "description": "Authentication is required or has failed."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            },
+            "get": {
+                "operationId": "get-api-v1-flyers",
+                "tags": [
+                    "flyers"
+                ],
+                "summary": "List flyers",
+                "description": "Lists publicly visible flyers with optional status filter and pagination.",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "description": "Moderation status of a flyer.",
+                            "enum": [
+                                "pending",
+                                "approved",
+                                "rejected",
+                                "archived"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlyerListNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/flyers/{param}": {
+            "put": {
+                "operationId": "put-api-v1-flyers-param",
+                "tags": [
+                    "flyers"
+                ],
+                "summary": "Update a flyer",
+                "description": "Updates an existing flyer. Any edit, including requesting an upload, resets status to PENDING for re-moderation. Requires the caller to be the flyer's original uploader.",
+                "parameters": [
+                    {
+                        "name": "param",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateFlyerNetworkRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateFlyerNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "401": {
+                        "description": "Authentication is required or has failed."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    },
+                    "404": {
+                        "description": "No flyer exists for the given id."
+                    },
+                    "403": {
+                        "description": "Caller is not the flyer's original uploader."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            },
+            "get": {
+                "operationId": "get-api-v1-flyers-param",
+                "tags": [
+                    "flyers"
+                ],
+                "summary": "Get a flyer",
+                "description": "Retrieves a single flyer by its identifier.",
+                "parameters": [
+                    {
+                        "name": "param",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlyerNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    },
+                    "404": {
+                        "description": "No flyer exists for the given id, or it exists but requires admin privileges to view (pending or rejected status)."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    },
+                    {
+                        
+                    }
+                ]
+            }
+        },
+        "/api/v1/flyers/archive": {
+            "get": {
+                "operationId": "get-api-v1-flyers-archive",
+                "tags": [
+                    "flyers"
+                ],
+                "summary": "List archived flyers",
+                "description": "Lists archived flyers with optional search and pagination.",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "description": "Moderation status of a flyer.",
+                            "enum": [
+                                "pending",
+                                "approved",
+                                "rejected",
+                                "archived"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlyerListNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    }
+                }
+            }
+        },
+        "/api/v1/flyers/mine": {
+            "get": {
+                "operationId": "get-api-v1-flyers-mine",
+                "tags": [
+                    "flyers"
+                ],
+                "summary": "List my flyers",
+                "description": "Lists the authenticated user's own flyers with pagination, regardless of status.",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlyerListNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "401": {
+                        "description": "Authentication is required or has failed."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v1/user": {
+            "post": {
+                "operationId": "post-api-v1-user",
+                "tags": [
+                    "user"
+                ],
+                "summary": "Create a user",
+                "description": "Creates the profile for the authenticated caller, with the USER role. Called once after sign-up.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUserNetworkRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "401": {
+                        "description": "Authentication is required or has failed."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    },
+                    "403": {
+                        "description": "Caller is not allowed to create this user profile."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/me": {
+            "get": {
+                "operationId": "get-api-v1-user-me",
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get the current user",
+                "description": "Retrieves the authenticated caller's profile, including their role.",
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "401": {
+                        "description": "Authentication is required or has failed."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    },
+                    "404": {
+                        "description": "No user profile exists for the authenticated caller."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "webhooks": {
+        
+    },
+    "components": {
+        "schemas": {
+            "FlyerNetworkResponse": {
+                "type": "object",
+                "title": "FlyerNetworkResponse",
+                "description": "The updated flyer.",
+                "required": [
+                    "id",
+                    "title",
+                    "description",
+                    "status",
+                    "uploader_id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier of the flyer."
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title of the flyer.",
+                        "example": "Live Music Night"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Description of the flyer."
+                    },
+                    "file_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Signed URL of the flyer's uploaded asset, or null if none has been uploaded yet.",
+                        "format": "uri"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Current moderation status of the flyer.",
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "rejected",
+                            "archived"
+                        ]
+                    },
+                    "expires_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "ISO-8601 timestamp after which the flyer expires, or null if it never expires.",
+                        "format": "date-time"
+                    },
+                    "uploader_id": {
+                        "type": "string",
+                        "description": "Identifier of the user who uploaded the flyer."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "description": "ISO-8601 timestamp when the flyer was created.",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "description": "ISO-8601 timestamp when the flyer was last updated.",
+                        "format": "date-time"
+                    },
+                    "rejection_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Reason the flyer was rejected, or null if it was not rejected."
+                    }
+                }
+            },
+            "FlyerListNetworkResponse": {
+                "type": "object",
+                "title": "FlyerListNetworkResponse",
+                "description": "A paginated collection of flyers.",
+                "required": [
+                    "flyers",
+                    "total",
+                    "offset",
+                    "limit"
+                ],
+                "properties": {
+                    "flyers": {
+                        "type": "array",
+                        "description": "The flyers in this page of results.",
+                        "items": {
+                            "$ref": "#/components/schemas/FlyerNetworkResponse"
+                        }
+                    },
+                    "total": {
+                        "type": "integer",
+                        "description": "Total number of flyers matching the query, across all pages."
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "Offset of this page within the total result set."
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "Maximum number of flyers requested for this page."
+                    }
+                }
+            },
+            "ModerationActionNetworkRequest": {
+                "type": "object",
+                "title": "ModerationActionNetworkRequest",
+                "description": "Request payload to apply a moderation action (approve or reject) to a flyer.",
+                "required": [
+                    "action"
+                ],
+                "properties": {
+                    "action": {
+                        "type": "string",
+                        "description": "The moderation action to apply.",
+                        "enum": [
+                            "approve",
+                            "reject"
+                        ]
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Reason for the action. Typically provided when rejecting; optional."
+                    }
+                }
+            },
+            "CreateFlyerNetworkRequest": {
+                "type": "object",
+                "title": "CreateFlyerNetworkRequest",
+                "description": "Request payload to create a new flyer. The flyer starts in PENDING status.",
+                "required": [
+                    "title",
+                    "description"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Title of the flyer.",
+                        "example": "Live Music Night"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Description of the flyer.",
+                        "example": "Join us for a night of live music at the community center."
+                    },
+                    "expires_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "ISO-8601 timestamp after which the flyer expires, or null if it never expires.",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "SignedUploadNetworkResponse": {
+                "type": "object",
+                "title": "SignedUploadNetworkResponse",
+                "description": "Signed upload URL for the flyer's asset, present only if the request set request_upload to true.",
+                "required": [
+                    "signed_url"
+                ],
+                "properties": {
+                    "signed_url": {
+                        "type": "string",
+                        "description": "URL the client should upload the asset bytes to directly.",
+                        "format": "uri"
+                    },
+                    "token": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Upload token embedded in the signed URL's query string, if applicable."
+                    }
+                }
+            },
+            "CreateFlyerNetworkResponse": {
+                "type": "object",
+                "title": "CreateFlyerNetworkResponse",
+                "description": "Response payload after creating a flyer, including a signed upload URL for its asset.",
+                "required": [
+                    "flyer",
+                    "upload"
+                ],
+                "properties": {
+                    "flyer": {
+                        "$ref": "#/components/schemas/FlyerNetworkResponse"
+                    },
+                    "upload": {
+                        "$ref": "#/components/schemas/SignedUploadNetworkResponse"
+                    }
+                }
+            },
+            "UpdateFlyerNetworkRequest": {
+                "type": "object",
+                "title": "UpdateFlyerNetworkRequest",
+                "description": "Request payload to update an existing flyer. Only the fields that are provided (non-null) are modified. Any edit, including requesting an upload, re-queues the flyer for moderation.",
+                "required": [
+                    "request_upload"
+                ],
+                "properties": {
+                    "title": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "New title for the flyer, or null to leave unchanged."
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "New description for the flyer, or null to leave unchanged."
+                    },
+                    "expires_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "New expiration timestamp, or null to leave unchanged.",
+                        "format": "date-time"
+                    },
+                    "request_upload": {
+                        "type": "boolean",
+                        "description": "Set to true to receive a fresh signed upload URL for the flyer's asset."
+                    }
+                }
+            },
+            "UpdateFlyerNetworkResponse": {
+                "type": "object",
+                "title": "UpdateFlyerNetworkResponse",
+                "description": "Response payload after updating a flyer.",
+                "required": [
+                    "flyer"
+                ],
+                "properties": {
+                    "flyer": {
+                        "$ref": "#/components/schemas/FlyerNetworkResponse"
+                    },
+                    "upload": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/SignedUploadNetworkResponse"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                }
+            },
+            "CreateUserNetworkRequest": {
+                "type": "object",
+                "title": "CreateUserNetworkRequest",
+                "description": "Request payload to create the profile for the authenticated caller.",
+                "required": [
+                    "first_name",
+                    "last_name"
+                ],
+                "properties": {
+                    "first_name": {
+                        "type": "string",
+                        "description": "First name of the user.",
+                        "example": "Jane"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "description": "Last name of the user.",
+                        "example": "Doe"
+                    }
+                }
+            },
+            "UserNetworkResponse": {
+                "type": "object",
+                "title": "UserNetworkResponse",
+                "description": "A user of the system.",
+                "required": [
+                    "id",
+                    "first_name",
+                    "last_name",
+                    "role"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier of the user (Supabase Auth UUID)."
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "description": "First name of the user."
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "description": "Last name of the user."
+                    },
+                    "role": {
+                        "type": "string",
+                        "description": "Role of the user in the system.",
+                        "enum": [
+                            "user",
+                            "admin"
+                        ]
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "scheme": "bearer",
+                "description": "HTTP Bearer Authentication",
+                "type": "http"
+            }
+        }
+    }
+}

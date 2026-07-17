@@ -1,5 +1,6 @@
 package com.cramsan
 
+import groovy.json.JsonOutput
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
@@ -83,7 +84,10 @@ afterEvaluate {
                     "See $logFile for the server's output."
                 }
                 outputFile.parentFile.mkdirs()
-                outputFile.writeText(content)
+                // The endpoint serves JSON (despite the .../documentation.yaml path); pretty-print
+                // it so the committed file is reviewable, since JsonOutput reformats the raw text
+                // lexically rather than round-tripping through a Map, key order is preserved.
+                outputFile.writeText(JsonOutput.prettyPrint(content))
                 logger.lifecycle("Wrote OpenAPI spec to $outputFile")
             } finally {
                 process.destroy()

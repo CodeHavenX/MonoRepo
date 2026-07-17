@@ -12,8 +12,8 @@ import com.cramsan.flyerboard.server.datastore.impl.SupabaseUserProfileDatastore
 import com.cramsan.flyerboard.server.settings.FlyerBoardSettingKey
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
-import io.github.jan.supabase.auth.SettingsSessionManager
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.minimalConfig
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
@@ -50,7 +50,7 @@ val DatastoreModule =
                 install(Postgrest)
                 install(Storage)
                 install(Auth) {
-                    sessionManager = SettingsSessionManager(key = "$supabaseUrl-flyerboard-server")
+                    minimalConfig()
                 }
             }
         }

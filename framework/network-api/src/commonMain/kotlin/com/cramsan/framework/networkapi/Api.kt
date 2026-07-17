@@ -11,8 +11,11 @@ import kotlin.reflect.KClass
  * Class representing an API with a base path and a collection of operations.
  *
  * @property path The base path for the API.
+ * @property group Logical group this API's operations belong to, surfaced in generated API docs
+ * (e.g. as the OpenAPI tag). Individual operations may override this via their own `group` param;
+ * when neither is set, a group is derived from the API path.
  */
-open class Api(val path: String) {
+open class Api(val path: String, val group: String? = null) {
     // List of registered operations
     private val operations = mutableListOf<Operation<RequestBody, QueryParam, PathParam, ResponseBody, *>>()
 
@@ -47,7 +50,8 @@ open class Api(val path: String) {
      * @param path Optional sub-path for the operation, relative to the API base path.
      * @param summary A short, human-readable summary of what the operation does, surfaced in OpenAPI.
      * @param description A verbose explanation of the operation behavior, surfaced in OpenAPI.
-     * @param tags OpenAPI tags used to group this operation. When empty, a tag is derived from the API path.
+     * @param group Logical group this operation belongs to, surfaced in generated API docs (e.g. as the
+     * OpenAPI tag). Defaults to the owning [Api]'s [Api.group] when unset.
      * @param deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
      * @param responses Declares the responses the operation is allowed to produce (docs + runtime
      * enforcement). Defaults to [AllowAnyResponse].
@@ -67,7 +71,7 @@ open class Api(val path: String) {
         path: String? = null,
         summary: String? = null,
         description: String? = null,
-        tags: List<String> = emptyList(),
+        group: String? = null,
         deprecated: Boolean = false,
         responses: ResponsePolicy = AllowAnyResponse,
         requestBodyType: KClass<RequestType> = RequestType::class,
@@ -76,7 +80,7 @@ open class Api(val path: String) {
         responseBodyType: KClass<ResponseType> = ResponseType::class,
     ): Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Required> =
         buildOperation(
-            method, path, summary, description, tags, deprecated, responses,
+            method, path, summary, description, group, deprecated, responses,
             requestBodyType, queryParamType, pathParamType, responseBodyType,
         )
 
@@ -96,7 +100,7 @@ open class Api(val path: String) {
         path: String? = null,
         summary: String? = null,
         description: String? = null,
-        tags: List<String> = emptyList(),
+        group: String? = null,
         deprecated: Boolean = false,
         responses: ResponsePolicy = AllowAnyResponse,
         requestBodyType: KClass<RequestType> = RequestType::class,
@@ -105,7 +109,7 @@ open class Api(val path: String) {
         responseBodyType: KClass<ResponseType> = ResponseType::class,
     ): Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Public> =
         buildOperation(
-            method, path, summary, description, tags, deprecated, responses,
+            method, path, summary, description, group, deprecated, responses,
             requestBodyType, queryParamType, pathParamType, responseBodyType,
         )
 
@@ -126,7 +130,7 @@ open class Api(val path: String) {
         path: String? = null,
         summary: String? = null,
         description: String? = null,
-        tags: List<String> = emptyList(),
+        group: String? = null,
         deprecated: Boolean = false,
         responses: ResponsePolicy = AllowAnyResponse,
         requestBodyType: KClass<RequestType> = RequestType::class,
@@ -135,7 +139,7 @@ open class Api(val path: String) {
         responseBodyType: KClass<ResponseType> = ResponseType::class,
     ): Operation<RequestType, QueryParamType, PathParamType, ResponseType, AuthMode.Optional> =
         buildOperation(
-            method, path, summary, description, tags, deprecated, responses,
+            method, path, summary, description, group, deprecated, responses,
             requestBodyType, queryParamType, pathParamType, responseBodyType,
         )
 
@@ -155,7 +159,7 @@ open class Api(val path: String) {
         path: String?,
         summary: String?,
         description: String?,
-        tags: List<String>,
+        group: String?,
         deprecated: Boolean,
         responses: ResponsePolicy,
         requestBodyType: KClass<RequestType>,
@@ -173,7 +177,7 @@ open class Api(val path: String) {
             responseBodyType,
             summary,
             description,
-            tags,
+            group ?: this.group,
             deprecated,
             responses,
         ).also {

@@ -1,7 +1,11 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
+import com.cramsan.architecture.server.test.supabase.SupabaseTestSession
+import com.cramsan.architecture.server.test.supabase.createAndSignInSupabaseTestUser
+import com.cramsan.architecture.server.test.supabase.signInAsExistingSupabaseUser
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.employee.EmployeeRole
@@ -24,6 +28,7 @@ import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.lib.utils.requireSuccess
 import com.cramsan.edifikana.server.dependencyinjection.DatastoreModule
 import com.cramsan.edifikana.server.dependencyinjection.IntegTestApplicationModule
+import com.cramsan.edifikana.server.settings.EdifikanaSettingKey
 import com.cramsan.edifikana.server.service.models.CommonArea
 import com.cramsan.edifikana.server.service.models.Employee
 import com.cramsan.edifikana.server.service.models.EventLogEntry
@@ -71,6 +76,7 @@ abstract class SupabaseIntegrationTest : KoinTest {
     protected val paymentRecordDatastore: SupabasePaymentRecordDatastore by inject()
     protected val rentConfigDatastore: SupabaseRentConfigDatastore by inject()
     protected val occupantDatastore: SupabaseOccupantDatastore by inject()
+    protected val settingsHolder: SettingsHolder by inject()
 
     private val eventLogResources = mutableSetOf<EventLogEntryId>()
     private val commonAreaResources = mutableSetOf<CommonAreaId>()
@@ -170,6 +176,46 @@ abstract class SupabaseIntegrationTest : KoinTest {
         }
         registerUserForDeletion(userId)
         return userId
+    }
+
+    /**
+     * Creates a brand-new, auto-confirmed Supabase Auth user for [email] and signs in as them,
+     * returning a real access token. Registers the user for deletion at teardown.
+     */
+    protected fun createTestAuthSession(
+        email: String,
+        password: String = generateRandomPassword(),
+    ): SupabaseTestSession {
+        val session = runBlocking {
+            createAndSignInSupabaseTestUser(
+                supabaseUrl = settingsHolder.getString(EdifikanaSettingKey.SupabaseUrl).orEmpty(),
+                supabaseServiceRoleKey = settingsHolder.getString(EdifikanaSettingKey.SupabaseKey).orEmpty(),
+                email = email,
+                password = password,
+            )
+        }
+        registerSupabaseUserForDeletion(session.userId)
+        return session
+    }
+
+    /**
+     * Sets/overwrites a password on an existing Supabase Auth user identified by [userId] and
+     * [email] (e.g. a seeded, OTP-only fixture), then signs in as them, returning a real access
+     * token. Does not register the user for deletion — the caller is responsible for its
+     * lifecycle since it was not created by this test.
+     */
+    protected fun signInAsSeededUser(
+        userId: String,
+        email: String,
+        password: String = generateRandomPassword(),
+    ): SupabaseTestSession = runBlocking {
+        signInAsExistingSupabaseUser(
+            supabaseUrl = settingsHolder.getString(EdifikanaSettingKey.SupabaseUrl).orEmpty(),
+            supabaseServiceRoleKey = settingsHolder.getString(EdifikanaSettingKey.SupabaseKey).orEmpty(),
+            userId = userId,
+            email = email,
+            password = password,
+        )
     }
 
     protected fun createTestOrganization(

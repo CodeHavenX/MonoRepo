@@ -1,6 +1,7 @@
 package com.cramsan.flyerboard.server.dependencyinjection
 
 import com.cramsan.architecture.server.dependencyinjection.NamedDependency
+import com.cramsan.flyerboard.api.FlyerboardApiInfo
 import com.cramsan.flyerboard.lib.serialization.createJson
 import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextPayload
 import com.cramsan.flyerboard.server.controller.authentication.FlyerBoardContextRetriever
@@ -19,6 +20,8 @@ internal val ApplicationModule =
     module {
 
         single<String>(named(NamedDependency.DOMAIN_KEY)) { "FLYERBOARD" }
+
+        single { FlyerboardApiInfo }
 
         single<Json> {
             createJson()

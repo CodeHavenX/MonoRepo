@@ -28,7 +28,8 @@ import kotlin.reflect.KClass
  * @property responseBodyType The KClass of the response body type.
  * @property summary A short, human-readable summary of what the operation does, surfaced in OpenAPI.
  * @property description A verbose explanation of the operation behavior, surfaced in OpenAPI.
- * @property tags OpenAPI tags used to group this operation. When empty, a tag is derived from the API path.
+ * @property group Logical group this operation belongs to, surfaced in generated API docs (e.g. as the
+ * OpenAPI tag). When null, a group is derived from the API path.
  * @property deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
  * @property responses Declares the responses the operation is allowed to produce. Drives OpenAPI docs
  * and runtime enforcement. Defaults to [AllowAnyResponse] (no enforcement).
@@ -53,7 +54,7 @@ data class Operation<
     val responseBodyType: KClass<ResponseType>,
     val summary: String? = null,
     val description: String? = null,
-    val tags: List<String> = emptyList(),
+    val group: String? = null,
     val deprecated: Boolean = false,
     val responses: ResponsePolicy = AllowAnyResponse,
 ) {
@@ -113,7 +114,7 @@ data class Operation<
             responseBodyType = responseBodyType,
             summary = summary,
             description = description,
-            tags = tags,
+            group = group,
             deprecated = deprecated,
             responses = responses,
         )
@@ -456,7 +457,8 @@ data class OperationRequest<
  * @property responseBodyType The KClass of the response body type.
  * @property summary A short, human-readable summary of what the operation does, surfaced in OpenAPI.
  * @property description A verbose explanation of the operation behavior, surfaced in OpenAPI.
- * @property tags OpenAPI tags used to group this operation. When empty, a tag is derived from the API path.
+ * @property group Logical group this operation belongs to, surfaced in generated API docs (e.g. as the
+ * OpenAPI tag). When null, a group is derived from the API path.
  * @property deprecated Marks the operation as deprecated in the generated OpenAPI documentation.
  * @property responses Declares the responses the operation is allowed to produce. Drives OpenAPI docs
  * and runtime enforcement. Defaults to [AllowAnyResponse] (no enforcement).
@@ -476,7 +478,7 @@ data class OperationHandler<
     val responseBodyType: KClass<ResponseType>,
     val summary: String? = null,
     val description: String? = null,
-    val tags: List<String> = emptyList(),
+    val group: String? = null,
     val deprecated: Boolean = false,
     val responses: ResponsePolicy = AllowAnyResponse,
 )

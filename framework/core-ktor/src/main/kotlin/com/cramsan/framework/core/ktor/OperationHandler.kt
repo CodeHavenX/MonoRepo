@@ -297,11 +297,7 @@ private fun <
         deprecated = true
     }
 
-    if (handler.tags.isNotEmpty()) {
-        handler.tags.forEach { tag(it) }
-    } else {
-        tag(apiPath.split("/").firstOrNull { it.isNotEmpty() } ?: "api")
-    }
+    tag(handler.group ?: apiPath.split("/").filter { it.isNotEmpty() }.joinToString("-"))
     // The per-operation security requirement is inferred automatically by routing-openapi from the
     // `authenticate(BEARER_SECURITY_SCHEME)` wrapper, so it is not emitted here.
 }

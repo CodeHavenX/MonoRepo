@@ -42,6 +42,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:_")
 
+    implementation("io.github.jan-tennert.supabase:auth-kt:_")
+
     implementation("io.ktor:ktor-server-test-host:_")
     implementation("io.insert-koin:koin-test:_")
     implementation("io.mockk:mockk:_")

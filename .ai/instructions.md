@@ -596,6 +596,13 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
 - **Test all CRUD operations**: create, get/list, update, delete, and the delete-nonexistent failure case.
 - **Configuration** — Integration tests read credentials from `config.properties.integ` or environment variables (prefixed with the domain key `APPLICATION_NAME_`). The real datastore backend(supabase, mongo, mysql, etc) needs to be running, that is outside the scope of this work.
 
+#### Getting a real Supabase access token
+
+Testing an authenticated endpoint (in code or by hand) requires a real, Supabase-issued token — every backend forwards bearer tokens to Supabase's `/auth/v1/user` to validate them rather than checking the JWT locally, so a hand-crafted token never works.
+
+- **In Kotlin integration tests**: use `createTestAuthSession(email)` / `signInAsSeededUser(userId, email)` on `SupabaseIntegrationTest` (backed by the project-independent helpers in `architecture/back-end-architecture-test/.../test/supabase/SupabaseTestSession.kt`). These build their own throwaway `Auth` client rather than signing in on the shared, service-role-keyed one the rest of the test relies on — do not sign in on the injected `Auth` singleton directly, it will hijack the identity used by every other datastore/admin call in that test.
+- **From the command line / for manual API testing**: `scripts/supabase_get_access_token.sh` — project-independent (works against any project's local `supabase start`, since they all share the CLI's default demo keys/ports). Prints a bare token to stdout. Modes: `--signin`, `--create`, `--reset-password` (get a token "as" a specific seeded fixture), `--list-users` (capped at 100), and `--otp` (drives the real OTP/magic-link flow through the local Mailpit mail catcher instead of bypassing it with a password). Run `--help` for details.
+
 #### Unit tests for parsing-only logic
 
 If a datastore class contains pure parsing or string-extraction helpers (no I/O), those specific functions can be covered in the regular `test` source set without a live connection:

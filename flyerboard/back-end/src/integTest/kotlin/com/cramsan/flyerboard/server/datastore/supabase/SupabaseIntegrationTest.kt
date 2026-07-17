@@ -1,7 +1,11 @@
 package com.cramsan.flyerboard.server.datastore.supabase
 
+import com.cramsan.architecture.server.settings.SettingsHolder
 import com.cramsan.architecture.server.test.dependencyinjection.TestArchitectureModule
 import com.cramsan.architecture.server.test.dependencyinjection.integTestFrameworkModule
+import com.cramsan.architecture.server.test.supabase.SupabaseTestSession
+import com.cramsan.architecture.server.test.supabase.createAndSignInSupabaseTestUser
+import com.cramsan.architecture.server.test.supabase.signInAsExistingSupabaseUser
 import com.cramsan.flyerboard.lib.model.UserId
 import com.cramsan.flyerboard.lib.model.UserRole
 import com.cramsan.flyerboard.server.dependencyinjection.DatastoreModule
@@ -11,6 +15,7 @@ import com.cramsan.flyerboard.server.datastore.impl.SupabaseUserDatastore
 import com.cramsan.flyerboard.server.datastore.impl.SupabaseUserProfileDatastore
 import com.cramsan.flyerboard.server.service.models.User
 import com.cramsan.flyerboard.server.service.models.UserProfile
+import com.cramsan.flyerboard.server.settings.FlyerBoardSettingKey
 import com.cramsan.framework.utils.password.generateRandomPassword
 import io.github.jan.supabase.auth.Auth
 import kotlinx.coroutines.runBlocking
@@ -42,6 +47,7 @@ abstract class SupabaseIntegrationTest : KoinTest {
     protected val userDatastore: SupabaseUserDatastore by inject()
     protected val userProfileDatastore: SupabaseUserProfileDatastore by inject()
     protected val fileDatastore: SupabaseFileDatastore by inject()
+    protected val settingsHolder: SettingsHolder by inject()
 
     private val authUserIds = mutableSetOf<String>()
 
@@ -73,6 +79,46 @@ abstract class SupabaseIntegrationTest : KoinTest {
             }
         authUserIds.add(userInfo.id)
         return UserId(userInfo.id)
+    }
+
+    /**
+     * Creates a brand-new, auto-confirmed Supabase Auth user for [email] and signs in as them,
+     * returning a real access token. Registers the user for deletion at teardown.
+     */
+    protected fun createTestAuthSession(
+        email: String,
+        password: String = generateRandomPassword(),
+    ): SupabaseTestSession {
+        val session = runBlocking {
+            createAndSignInSupabaseTestUser(
+                supabaseUrl = settingsHolder.getString(FlyerBoardSettingKey.SupabaseUrl).orEmpty(),
+                supabaseServiceRoleKey = settingsHolder.getString(FlyerBoardSettingKey.SupabaseKey).orEmpty(),
+                email = email,
+                password = password,
+            )
+        }
+        authUserIds.add(session.userId)
+        return session
+    }
+
+    /**
+     * Sets/overwrites a password on an existing Supabase Auth user identified by [userId] and
+     * [email] (e.g. a seeded, OTP-only fixture), then signs in as them, returning a real access
+     * token. Does not register the user for deletion — the caller is responsible for its
+     * lifecycle since it was not created by this test.
+     */
+    protected fun signInAsSeededUser(
+        userId: UserId,
+        email: String,
+        password: String = generateRandomPassword(),
+    ): SupabaseTestSession = runBlocking {
+        signInAsExistingSupabaseUser(
+            supabaseUrl = settingsHolder.getString(FlyerBoardSettingKey.SupabaseUrl).orEmpty(),
+            supabaseServiceRoleKey = settingsHolder.getString(FlyerBoardSettingKey.SupabaseKey).orEmpty(),
+            userId = userId.userId,
+            email = email,
+            password = password,
+        )
     }
 
     /**

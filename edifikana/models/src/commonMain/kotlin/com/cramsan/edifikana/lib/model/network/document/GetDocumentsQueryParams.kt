@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.QueryParam
+import io.ktor.openapi.JsonSchema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,8 +14,15 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
+@JsonSchema.Description("Query parameters for listing documents, requiring an organization id.")
 data class GetDocumentsQueryParams(
-    @SerialName("org_id") val orgId: OrganizationId,
-    @SerialName("property_id") val propertyId: PropertyId? = null,
-    @SerialName("unit_id") val unitId: UnitId? = null,
+    @SerialName("org_id")
+    @JsonSchema.Description("Identifier of the organization to list documents for.")
+    val orgId: OrganizationId,
+    @SerialName("property_id")
+    @JsonSchema.Description("Optional property identifier to filter documents by.")
+    val propertyId: PropertyId? = null,
+    @SerialName("unit_id")
+    @JsonSchema.Description("Optional unit identifier to filter documents by.")
+    val unitId: UnitId? = null,
 ) : QueryParam

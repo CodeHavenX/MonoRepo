@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network.user
 
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
+import io.ktor.openapi.JsonSchema
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,4 +10,8 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class UserListNetworkResponse(val content: List<UserNetworkResponse>) : ResponseBody
+@JsonSchema.Description("A list of users.")
+data class UserListNetworkResponse(
+    @JsonSchema.Description("The users matching the request.")
+    val content: List<UserNetworkResponse>,
+) : ResponseBody

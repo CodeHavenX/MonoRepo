@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network.user
 
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
+import io.ktor.openapi.JsonSchema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,7 +11,9 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
+@JsonSchema.Description("Request payload to update an existing user.")
 data class UpdateUserNetworkRequest(
     @SerialName("email")
+    @JsonSchema.Description("New email address for the user.")
     val email: String,
 ) : RequestBody

@@ -5,6 +5,7 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import io.ktor.http.HttpMethod
 
 /**
@@ -12,11 +13,15 @@ import io.ktor.http.HttpMethod
  */
 
 object HealthApi : Api("health") {
-    val healthCheck =
-        publicOperation<
-            NoRequestBody,
-            NoQueryParam,
-            NoPathParam,
-            HealthCheckNetworkResponse,
-            >(method = HttpMethod.Get)
+    val healthCheck = publicOperation<
+        NoRequestBody,
+        NoQueryParam,
+        NoPathParam,
+        HealthCheckNetworkResponse,
+    >(
+        method = HttpMethod.Get,
+        summary = "Health check",
+        description = "Returns a simple message confirming the server is running.",
+        responses = UniversalResponsesOnly,
+    )
 }

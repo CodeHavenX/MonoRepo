@@ -19,42 +19,45 @@ import io.ktor.http.HttpStatusCode
  */
 
 object TimeCardApi : Api("time_card") {
-    val createTimeCardEvent = operation<
-        CreateTimeCardEventNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        TimeCardEventNetworkResponse,
-    >(
-        method = HttpMethod.Post,
-        summary = "Create a time card event",
-        description = "Records a new clock-in, clock-out, or other time card event for an employee.",
-        responses = UniversalResponsesOnly,
-    )
+    val createTimeCardEvent =
+        operation<
+            CreateTimeCardEventNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            TimeCardEventNetworkResponse,
+            >(
+            method = HttpMethod.Post,
+            summary = "Create a time card event",
+            description = "Records a new clock-in, clock-out, or other time card event for an employee.",
+            responses = UniversalResponsesOnly,
+        )
 
-    val getTimeCardEvent = operation<
-        NoRequestBody,
-        NoQueryParam,
-        TimeCardEventId,
-        TimeCardEventNetworkResponse,
-    >(
-        method = HttpMethod.Get,
-        summary = "Get a time card event",
-        description = "Retrieves a single time card event by its identifier.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No time card event exists for the given id."
-        },
-    )
+    val getTimeCardEvent =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            TimeCardEventId,
+            TimeCardEventNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            summary = "Get a time card event",
+            description = "Retrieves a single time card event by its identifier.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No time card event exists for the given id."
+            },
+        )
 
-    val getTimeCardEvents = operation<
-        NoRequestBody,
-        GetTimeCardEventsQueryParams,
-        NoPathParam,
-        TimeCardEventListNetworkResponse,
-    >(
-        method = HttpMethod.Get,
-        summary = "List time card events",
-        description = "Lists time card events for a property, optionally filtered by employee.",
-        responses = UniversalResponsesOnly,
-    )
+    val getTimeCardEvents =
+        operation<
+            NoRequestBody,
+            GetTimeCardEventsQueryParams,
+            NoPathParam,
+            TimeCardEventListNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            summary = "List time card events",
+            description = "Lists time card events for a property, optionally filtered by employee.",
+            responses = UniversalResponsesOnly,
+        )
 }

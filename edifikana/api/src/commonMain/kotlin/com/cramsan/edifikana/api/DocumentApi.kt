@@ -24,73 +24,79 @@ import io.ktor.http.HttpStatusCode
  */
 
 object DocumentApi : Api("document") {
-    val createDocument = operation<
-        CreateDocumentNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        DocumentNetworkResponse,
-    >(
-        method = HttpMethod.Post,
-        summary = "Create a document",
-        description = "Creates a new document metadata record referencing a previously uploaded asset.",
-        responses = UniversalResponsesOnly,
-    )
+    val createDocument =
+        operation<
+            CreateDocumentNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            DocumentNetworkResponse,
+            >(
+            method = HttpMethod.Post,
+            summary = "Create a document",
+            description = "Creates a new document metadata record referencing a previously uploaded asset.",
+            responses = UniversalResponsesOnly,
+        )
 
-    val getDocument = operation<
-        NoRequestBody,
-        NoQueryParam,
-        DocumentId,
-        DocumentNetworkResponse,
-    >(
-        method = HttpMethod.Get,
-        summary = "Get a document",
-        description = "Retrieves a single document's metadata by its identifier.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No document exists for the given id."
-        },
-    )
+    val getDocument =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            DocumentId,
+            DocumentNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            summary = "Get a document",
+            description = "Retrieves a single document's metadata by its identifier.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No document exists for the given id."
+            },
+        )
 
-    val getDocuments = operation<
-        NoRequestBody,
-        GetDocumentsQueryParams,
-        NoPathParam,
-        DocumentListNetworkResponse,
-    >(
-        method = HttpMethod.Get,
-        summary = "List documents",
-        description = "Lists document metadata records for an organization, optionally filtered by " +
-            "property or unit.",
-        responses = UniversalResponsesOnly,
-    )
+    val getDocuments =
+        operation<
+            NoRequestBody,
+            GetDocumentsQueryParams,
+            NoPathParam,
+            DocumentListNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            summary = "List documents",
+            description =
+            "Lists document metadata records for an organization, optionally filtered by " +
+                "property or unit.",
+            responses = UniversalResponsesOnly,
+        )
 
-    val updateDocument = operation<
-        UpdateDocumentNetworkRequest,
-        NoQueryParam,
-        DocumentId,
-        DocumentNetworkResponse,
-    >(
-        method = HttpMethod.Put,
-        summary = "Update a document",
-        description = "Updates the mutable metadata fields of an existing document.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No document exists for the given id."
-        },
-    )
+    val updateDocument =
+        operation<
+            UpdateDocumentNetworkRequest,
+            NoQueryParam,
+            DocumentId,
+            DocumentNetworkResponse,
+            >(
+            method = HttpMethod.Put,
+            summary = "Update a document",
+            description = "Updates the mutable metadata fields of an existing document.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No document exists for the given id."
+            },
+        )
 
-    val deleteDocument = operation<
-        NoRequestBody,
-        NoQueryParam,
-        DocumentId,
-        NoResponseBody,
-    >(
-        method = HttpMethod.Delete,
-        summary = "Delete a document",
-        description = "Permanently deletes a document's metadata record by its identifier.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No document exists for the given id."
-        },
-    )
+    val deleteDocument =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            DocumentId,
+            NoResponseBody,
+            >(
+            method = HttpMethod.Delete,
+            summary = "Delete a document",
+            description = "Permanently deletes a document's metadata record by its identifier.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No document exists for the given id."
+            },
+        )
 }

@@ -28,75 +28,82 @@ import io.ktor.http.HttpStatusCode
  */
 
 object TaskApi : Api("task") {
-    val createTask = operation<
-        CreateTaskNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        TaskNetworkResponse,
-    >(
-        method = HttpMethod.Post,
-        summary = "Create a task",
-        description = "Creates a new task within a property. Requires the MANAGER role or higher.",
-        responses = UniversalResponsesOnly,
-    )
+    val createTask =
+        operation<
+            CreateTaskNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            TaskNetworkResponse,
+            >(
+            method = HttpMethod.Post,
+            summary = "Create a task",
+            description = "Creates a new task within a property. Requires the MANAGER role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 
-    val getTask = operation<
-        NoRequestBody,
-        NoQueryParam,
-        TaskId,
-        TaskNetworkResponse,
-    >(
-        method = HttpMethod.Get,
-        summary = "Get a task",
-        description = "Retrieves a single task by its identifier. Requires the EMPLOYEE role or higher.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No task exists for the given id."
-        },
-    )
+    val getTask =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            TaskId,
+            TaskNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            summary = "Get a task",
+            description = "Retrieves a single task by its identifier. Requires the EMPLOYEE role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No task exists for the given id."
+            },
+        )
 
-    val getTasks = operation<
-        NoRequestBody,
-        GetTasksQueryParams,
-        NoPathParam,
-        TaskListNetworkResponse,
-    >(
-        method = HttpMethod.Get,
-        path = "list",
-        summary = "List tasks",
-        description = "Lists tasks for a property with optional filtering by unit, status, assignee, and " +
-            "priority. Requires the EMPLOYEE role or higher.",
-        responses = UniversalResponsesOnly,
-    )
+    val getTasks =
+        operation<
+            NoRequestBody,
+            GetTasksQueryParams,
+            NoPathParam,
+            TaskListNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            path = "list",
+            summary = "List tasks",
+            description =
+            "Lists tasks for a property with optional filtering by unit, status, assignee, and " +
+                "priority. Requires the EMPLOYEE role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 
-    val updateTask = operation<
-        UpdateTaskNetworkRequest,
-        NoQueryParam,
-        TaskId,
-        TaskNetworkResponse,
-    >(
-        method = HttpMethod.Put,
-        summary = "Update a task",
-        description = "Updates the mutable fields of an existing task. Only provided fields are changed. " +
-            "Requires the MANAGER role or higher.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No task exists for the given id."
-        },
-    )
+    val updateTask =
+        operation<
+            UpdateTaskNetworkRequest,
+            NoQueryParam,
+            TaskId,
+            TaskNetworkResponse,
+            >(
+            method = HttpMethod.Put,
+            summary = "Update a task",
+            description =
+            "Updates the mutable fields of an existing task. Only provided fields are changed. " +
+                "Requires the MANAGER role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No task exists for the given id."
+            },
+        )
 
-    val deleteTask = operation<
-        NoRequestBody,
-        NoQueryParam,
-        TaskId,
-        NoResponseBody,
-    >(
-        method = HttpMethod.Delete,
-        summary = "Delete a task",
-        description = "Permanently deletes a task by its identifier. Requires the MANAGER role or higher.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No task exists for the given id."
-        },
-    )
+    val deleteTask =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            TaskId,
+            NoResponseBody,
+            >(
+            method = HttpMethod.Delete,
+            summary = "Delete a task",
+            description = "Permanently deletes a task by its identifier. Requires the MANAGER role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No task exists for the given id."
+            },
+        )
 }

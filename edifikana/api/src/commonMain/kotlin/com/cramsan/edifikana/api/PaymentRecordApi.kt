@@ -23,58 +23,65 @@ import io.ktor.http.HttpStatusCode
  */
 
 object PaymentRecordApi : Api("payment-records") {
-    val createPaymentRecord = operation<
-        CreatePaymentRecordNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        PaymentRecordNetworkResponse,
-    >(
-        method = HttpMethod.Post,
-        summary = "Create a payment record",
-        description = "Creates a new payment record for a unit. Requires the ADMIN role or higher.",
-        responses = UniversalResponsesOnly,
-    )
+    val createPaymentRecord =
+        operation<
+            CreatePaymentRecordNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            PaymentRecordNetworkResponse,
+            >(
+            method = HttpMethod.Post,
+            summary = "Create a payment record",
+            description = "Creates a new payment record for a unit. Requires the ADMIN role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 
-    val getPaymentRecord = operation<
-        NoRequestBody,
-        NoQueryParam,
-        PaymentRecordId,
-        PaymentRecordNetworkResponse,
-    >(
-        method = HttpMethod.Get,
-        summary = "Get a payment record",
-        description = "Retrieves a single payment record by its identifier. Requires the EMPLOYEE role or higher.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No payment record exists for the given id."
-        },
-    )
+    val getPaymentRecord =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            PaymentRecordId,
+            PaymentRecordNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            summary = "Get a payment record",
+            description = "Retrieves a single payment record by its identifier. Requires the EMPLOYEE role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No payment record exists for the given id."
+            },
+        )
 
-    val listPaymentRecords = operation<
-        NoRequestBody,
-        GetPaymentRecordsQueryParams,
-        NoPathParam,
-        PaymentRecordListNetworkResponse,
-    >(
-        method = HttpMethod.Get,
-        summary = "List payment records",
-        description = "Lists payment records for a unit, optionally filtered by period. " +
-            "Requires the EMPLOYEE role or higher.",
-        responses = UniversalResponsesOnly,
-    )
+    val listPaymentRecords =
+        operation<
+            NoRequestBody,
+            GetPaymentRecordsQueryParams,
+            NoPathParam,
+            PaymentRecordListNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            summary = "List payment records",
+            description =
+            "Lists payment records for a unit, optionally filtered by period. " +
+                "Requires the EMPLOYEE role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 
-    val updatePaymentRecord = operation<
-        UpdatePaymentRecordNetworkRequest,
-        NoQueryParam,
-        PaymentRecordId,
-        PaymentRecordNetworkResponse,
-    >(
-        method = HttpMethod.Put,
-        summary = "Update a payment record",
-        description = "Updates the mutable fields of an existing payment record. Requires the ADMIN role or higher.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No payment record exists for the given id."
-        },
-    )
+    val updatePaymentRecord =
+        operation<
+            UpdatePaymentRecordNetworkRequest,
+            NoQueryParam,
+            PaymentRecordId,
+            PaymentRecordNetworkResponse,
+            >(
+            method = HttpMethod.Put,
+            summary = "Update a payment record",
+            description =
+            "Updates the mutable fields of an existing payment record. " +
+                "Requires the ADMIN role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No payment record exists for the given id."
+            },
+        )
 }

@@ -120,6 +120,30 @@ class SupabaseFlyerDatastoreIntegrationTest : SupabaseIntegrationTest() {
         }
 
     @Test
+    fun `updateFlyer should persist rejectionReason`() =
+        runBlocking {
+            val flyer = createTestFlyer()
+
+            val result =
+                flyerDatastore.updateFlyer(
+                    id = flyer.id,
+                    title = null,
+                    description = null,
+                    status = FlyerStatus.REJECTED,
+                    expiresAt = null,
+                    rejectionReason = "Inappropriate content",
+                )
+
+            assertTrue(result.isSuccess)
+            val updated = result.getOrThrow()
+            assertEquals(FlyerStatus.REJECTED, updated.status)
+            assertEquals("Inappropriate content", updated.rejectionReason)
+
+            val refetched = flyerDatastore.getFlyer(flyer.id).getOrThrow()
+            assertEquals("Inappropriate content", refetched?.rejectionReason)
+        }
+
+    @Test
     fun `listExpiredFlyers should return approved flyers past their expiry`() =
         runBlocking {
             val past = Instant.fromEpochSeconds(0)

@@ -11,6 +11,7 @@ import com.cramsan.framework.core.runSuspendCatching
 import com.cramsan.framework.logging.logD
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 
 /**
  * Supabase implementation of [UserProfileDatastore].
@@ -38,12 +39,22 @@ class SupabaseUserProfileDatastore(private val postgrest: Postgrest) : UserProfi
                     id = userId.userId,
                     role = role.name.lowercase(),
                 )
-            postgrest
-                .from(UserProfileEntity.COLLECTION)
-                .insert(entity) {
-                    select()
-                }.decodeSingle<UserProfileEntity>()
-                .toUserProfile()
+            try {
+                postgrest
+                    .from(UserProfileEntity.COLLECTION)
+                    .insert(entity) {
+                        select()
+                    }.decodeSingle<UserProfileEntity>()
+                    .toUserProfile()
+            } catch (e: PostgrestRestException) {
+                if (e.code == POSTGRES_UNIQUE_VIOLATION) {
+                    throw ClientRequestExceptions.ForbiddenException(
+                        "User profile already exists: ${userId.userId}",
+                        e,
+                    )
+                }
+                throw e
+            }
         }
 
     override suspend fun updateUserRole(userId: UserId, role: UserRole): Result<UserProfile> =
@@ -67,5 +78,6 @@ class SupabaseUserProfileDatastore(private val postgrest: Postgrest) : UserProfi
 
     companion object {
         private const val TAG = "SupabaseUserProfileDatastore"
+        private const val POSTGRES_UNIQUE_VIOLATION = "23505"
     }
 }

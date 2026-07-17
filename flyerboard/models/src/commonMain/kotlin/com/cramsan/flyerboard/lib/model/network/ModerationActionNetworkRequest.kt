@@ -19,5 +19,5 @@ data class ModerationActionNetworkRequest(
     val action: String,
     @SerialName("reason")
     @JsonSchema.Description("Reason for the action. Typically provided when rejecting; optional.")
-    val reason: String?,
+    val reason: String? = null,
 ) : RequestBody

@@ -298,7 +298,7 @@ class FlyerServiceTest {
 
             coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(existingFlyer)
             coEvery {
-                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
             } returns Result.success(updatedFlyer)
 
             val result =
@@ -322,6 +322,7 @@ class FlyerServiceTest {
                     description = null,
                     status = FlyerStatus.PENDING,
                     expiresAt = null,
+                    rejectionReason = null,
                 )
             }
         }
@@ -336,7 +337,7 @@ class FlyerServiceTest {
 
             coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(existingFlyer)
             coEvery {
-                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
             } returns Result.success(updatedFlyer)
             coEvery { fileDatastore.createSignedUploadUrl(updatedFlyer.filePath) } returns Result.success(signedUpload)
 
@@ -406,7 +407,7 @@ class FlyerServiceTest {
 
             coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(existingFlyer)
             coEvery {
-                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
             } returns Result.success(updatedFlyer)
 
             val result =
@@ -427,6 +428,7 @@ class FlyerServiceTest {
                     description = null,
                     status = FlyerStatus.PENDING,
                     expiresAt = null,
+                    rejectionReason = null,
                 )
             }
         }
@@ -442,7 +444,7 @@ class FlyerServiceTest {
 
             coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(existingFlyer)
             coEvery {
-                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
             } returns Result.success(updatedFlyer)
 
             val result =
@@ -463,6 +465,7 @@ class FlyerServiceTest {
                     description = null,
                     status = FlyerStatus.PENDING,
                     expiresAt = newExpiresAt,
+                    rejectionReason = null,
                 )
             }
         }
@@ -477,7 +480,7 @@ class FlyerServiceTest {
 
             coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(existingFlyer)
             coEvery {
-                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
             } returns Result.success(updatedFlyer)
             coEvery { fileDatastore.createSignedUploadUrl(updatedFlyer.filePath) } returns
                 Result.failure(RuntimeException("boom"))
@@ -570,6 +573,62 @@ class FlyerServiceTest {
                     .single()
                     .fileUrl,
             )
+        }
+
+    @Test
+    fun `listFlyers with null status defaults to APPROVED to keep pending and rejected flyers private`() =
+        runTest {
+            val page = PagedResult<Flyer>(items = emptyList(), total = 0L)
+            coEvery { flyerDatastore.listFlyers(any(), any(), any(), any()) } returns Result.success(page)
+
+            val result = flyerService.listFlyers(status = null, query = null, offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            coVerify {
+                flyerDatastore.listFlyers(status = FlyerStatus.APPROVED, query = null, offset = 0, limit = 10)
+            }
+        }
+
+    @Test
+    fun `listFlyers with status PENDING is coerced to APPROVED since this endpoint is public`() =
+        runTest {
+            val page = PagedResult<Flyer>(items = emptyList(), total = 0L)
+            coEvery { flyerDatastore.listFlyers(any(), any(), any(), any()) } returns Result.success(page)
+
+            val result = flyerService.listFlyers(status = FlyerStatus.PENDING, query = null, offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            coVerify {
+                flyerDatastore.listFlyers(status = FlyerStatus.APPROVED, query = null, offset = 0, limit = 10)
+            }
+        }
+
+    @Test
+    fun `listFlyers with status REJECTED is coerced to APPROVED since this endpoint is public`() =
+        runTest {
+            val page = PagedResult<Flyer>(items = emptyList(), total = 0L)
+            coEvery { flyerDatastore.listFlyers(any(), any(), any(), any()) } returns Result.success(page)
+
+            val result = flyerService.listFlyers(status = FlyerStatus.REJECTED, query = null, offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            coVerify {
+                flyerDatastore.listFlyers(status = FlyerStatus.APPROVED, query = null, offset = 0, limit = 10)
+            }
+        }
+
+    @Test
+    fun `listFlyers with status ARCHIVED passes through unchanged`() =
+        runTest {
+            val page = PagedResult<Flyer>(items = emptyList(), total = 0L)
+            coEvery { flyerDatastore.listFlyers(any(), any(), any(), any()) } returns Result.success(page)
+
+            val result = flyerService.listFlyers(status = FlyerStatus.ARCHIVED, query = null, offset = 0, limit = 10)
+
+            assertTrue(result.isSuccess)
+            coVerify {
+                flyerDatastore.listFlyers(status = FlyerStatus.ARCHIVED, query = null, offset = 0, limit = 10)
+            }
         }
 
     // ── listFlyersByUploader ──────────────────────────────────────────────────

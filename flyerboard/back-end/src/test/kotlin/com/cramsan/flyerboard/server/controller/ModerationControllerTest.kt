@@ -225,7 +225,7 @@ class ModerationControllerTest :
             val moderationService = get<ModerationService>()
             val rejected = makeFlyer(id = "flyer-1", status = FlyerStatus.REJECTED)
             coEvery {
-                moderationService.rejectFlyer(FlyerId("flyer-1"), adminId)
+                moderationService.rejectFlyer(FlyerId("flyer-1"), adminId, "Inappropriate content")
             } returns Result.success(rejected)
 
             val response =
@@ -237,7 +237,7 @@ class ModerationControllerTest :
             assertEquals(HttpStatusCode.OK, response.status)
             val body = createJson().decodeFromString<FlyerNetworkResponse>(response.bodyAsText())
             assertEquals(FlyerStatus.REJECTED, body.status)
-            coVerify { moderationService.rejectFlyer(FlyerId("flyer-1"), adminId) }
+            coVerify { moderationService.rejectFlyer(FlyerId("flyer-1"), adminId, "Inappropriate content") }
         }
 
     @Test

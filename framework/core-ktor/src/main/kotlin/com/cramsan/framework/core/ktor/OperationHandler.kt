@@ -188,16 +188,32 @@ object OperationHandler {
 
                     val context = contextResult.getOrThrow()
 
+                    // Body deserialization (malformed JSON, missing required fields, wrong types) is a
+                    // client error, not a handler failure -- it must map to 400, same as the path/query
+                    // param validation above. Without this separate catch, it falls into the generic
+                    // responseResult below and gets coerced to 500 since the thrown exception (e.g.
+                    // JsonConvertException) is not a ClientRequestExceptions.
+                    val requestBodyResult =
+                        runCatching {
+                            if (handler.requestBodyType == NoRequestBody::class) {
+                                NoRequestBody as RequestType
+                            } else if (handler.requestBodyType == BytesRequestBody::class) {
+                                BytesRequestBody(call.receive<ByteArray>()) as RequestType
+                            } else {
+                                call.receive(handler.requestBodyType)
+                            }
+                        }
+                    if (requestBodyResult.isFailure) {
+                        call.validateClientError(
+                            tag = TAG,
+                            exception = ClientRequestExceptions.InvalidRequestException("Malformed request body"),
+                        )
+                        return@handle
+                    }
+                    val requestBodyValue = requestBodyResult.getOrThrow()
+
                     val responseResult =
                         runCatching {
-                            val body =
-                                if (handler.requestBodyType == NoRequestBody::class) {
-                                    NoRequestBody as RequestType
-                                } else if (handler.requestBodyType == BytesRequestBody::class) {
-                                    BytesRequestBody(call.receive<ByteArray>()) as RequestType
-                                } else {
-                                    call.receive(handler.requestBodyType)
-                                }
                             call.run {
                                 val operationRequest: OperationRequest<
                                     RequestType,
@@ -206,7 +222,7 @@ object OperationHandler {
                                     Context,
                                     > =
                                     OperationRequest(
-                                        requestBody = body,
+                                        requestBody = requestBodyValue,
                                         queryParam = queryParams,
                                         pathParam = param,
                                         context = context,

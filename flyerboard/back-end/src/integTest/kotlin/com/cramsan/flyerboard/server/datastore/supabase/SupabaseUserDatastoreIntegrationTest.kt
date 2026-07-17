@@ -43,6 +43,19 @@ class SupabaseUserDatastoreIntegrationTest : SupabaseIntegrationTest() {
         }
 
     @Test
+    fun `createUser should fail with ForbiddenException when a user row already exists`() =
+        runBlocking {
+            val userId = createTestAuthUser("${testPrefix}_dup@example.com")
+            userDatastore.createUser(userId, "First", "Last").getOrThrow()
+
+            val result = userDatastore.createUser(userId, "First", "Last")
+
+            assertTrue(result.isFailure)
+            assertInstanceOf<ClientRequestExceptions.ForbiddenException>(result.exceptionOrNull())
+            Unit
+        }
+
+    @Test
     fun `getUser should return the created user`() =
         runBlocking {
             val userId = createTestAuthUser("${testPrefix}_get@example.com")

@@ -60,9 +60,10 @@ class ModerationService(
      * Transitions a flyer from [PENDING][FlyerStatus.PENDING] to [REJECTED][FlyerStatus.REJECTED]
      * and deletes its associated file from storage.
      *
-     * Requires [adminUserId] to hold the [ADMIN][UserRole.ADMIN] role.
+     * Requires [adminUserId] to hold the [ADMIN][UserRole.ADMIN] role. [reason], when provided, is
+     * persisted as the flyer's rejection reason.
      */
-    suspend fun rejectFlyer(flyerId: FlyerId, adminUserId: UserId): Result<Flyer> {
+    suspend fun rejectFlyer(flyerId: FlyerId, adminUserId: UserId, reason: String? = null): Result<Flyer> {
         logD(TAG, "rejectFlyer: %s by admin=%s", flyerId, adminUserId)
         verifyAdmin(adminUserId).getOrElse { return Result.failure(it) }
         val existing =
@@ -72,7 +73,7 @@ class ModerationService(
                 ?: return Result.failure(
                     ClientRequestExceptions.NotFoundException("Flyer not found: ${flyerId.flyerId}"),
                 )
-        return moderateFlyer(flyerId, FlyerStatus.REJECTED).also { result ->
+        return moderateFlyer(flyerId, FlyerStatus.REJECTED, reason).also { result ->
             if (result.isSuccess) {
                 fileDatastore
                     .deleteFile(existing.filePath)
@@ -120,7 +121,11 @@ class ModerationService(
     /**
      * Verifies the flyer exists, updates its status, and attaches a signed URL.
      */
-    private suspend fun moderateFlyer(flyerId: FlyerId, newStatus: FlyerStatus): Result<Flyer> {
+    private suspend fun moderateFlyer(
+        flyerId: FlyerId,
+        newStatus: FlyerStatus,
+        rejectionReason: String? = null,
+    ): Result<Flyer> {
         flyerDatastore
             .getFlyer(flyerId)
             .getOrElse { return Result.failure(it) }
@@ -135,6 +140,7 @@ class ModerationService(
                 description = null,
                 status = newStatus,
                 expiresAt = null,
+                rejectionReason = rejectionReason,
             ).map { flyer ->
                 val fileUrl =
                     fileDatastore

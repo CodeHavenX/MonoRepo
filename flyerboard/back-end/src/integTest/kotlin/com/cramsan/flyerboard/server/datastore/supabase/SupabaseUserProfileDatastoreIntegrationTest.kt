@@ -1,8 +1,10 @@
 package com.cramsan.flyerboard.server.datastore.supabase
 
 import com.cramsan.flyerboard.lib.model.UserRole
+import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import com.cramsan.framework.utils.uuid.UUID
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.assertInstanceOf
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,6 +45,19 @@ class SupabaseUserProfileDatastoreIntegrationTest : SupabaseIntegrationTest() {
             val profile = result.getOrThrow()
             assertEquals(userId, profile.id)
             assertEquals(UserRole.ADMIN, profile.role)
+        }
+
+    @Test
+    fun `createUserProfile should fail with ForbiddenException when a profile already exists`() =
+        runBlocking {
+            val userId = createTestAuthUser("${testPrefix}_dupprofile@example.com")
+            userProfileDatastore.createUserProfile(userId, UserRole.USER).getOrThrow()
+
+            val result = userProfileDatastore.createUserProfile(userId, UserRole.USER)
+
+            assertTrue(result.isFailure)
+            assertInstanceOf<ClientRequestExceptions.ForbiddenException>(result.exceptionOrNull())
+            Unit
         }
 
     @Test

@@ -105,6 +105,7 @@ class ModerationServiceTest {
                     any(),
                     any(),
                     any(),
+                    any(),
                 )
             } returns Result.success(approvedFlyer)
             coEvery { fileDatastore.getSignedUrl(any()) } returns Result.success("https://signed.example.com/file.png")
@@ -120,6 +121,7 @@ class ModerationServiceTest {
                     description = null,
                     status = FlyerStatus.APPROVED,
                     expiresAt = null,
+                    rejectionReason = null,
                 )
             }
         }
@@ -187,12 +189,13 @@ class ModerationServiceTest {
                     any(),
                     any(),
                     any(),
+                    any(),
                 )
             } returns Result.success(rejectedFlyer)
             coEvery { fileDatastore.getSignedUrl(any()) } returns Result.success("https://signed.example.com/file.png")
             coEvery { fileDatastore.deleteFile(any()) } returns Result.success(Unit)
 
-            val result = moderationService.rejectFlyer(flyerId, adminId)
+            val result = moderationService.rejectFlyer(flyerId, adminId, "Inappropriate content")
 
             assertTrue(result.isSuccess)
             assertEquals(FlyerStatus.REJECTED, result.getOrThrow().status)
@@ -203,9 +206,48 @@ class ModerationServiceTest {
                     description = null,
                     status = FlyerStatus.REJECTED,
                     expiresAt = null,
+                    rejectionReason = "Inappropriate content",
                 )
             }
             coVerify { fileDatastore.deleteFile(pendingFlyer.filePath) }
+        }
+
+    @Test
+    fun `rejectFlyer with no reason persists a null rejectionReason`() =
+        runTest {
+            val flyerId = FlyerId("flyer-1")
+            val adminId = UserId("admin-1")
+            val pendingFlyer = makeFlyer(id = "flyer-1", status = FlyerStatus.PENDING)
+            val rejectedFlyer = pendingFlyer.copy(status = FlyerStatus.REJECTED)
+
+            coEvery { userProfileDatastore.getUserProfile(adminId) } returns Result.success(makeAdminProfile("admin-1"))
+            coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(pendingFlyer)
+            coEvery {
+                flyerDatastore.updateFlyer(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                )
+            } returns Result.success(rejectedFlyer)
+            coEvery { fileDatastore.getSignedUrl(any()) } returns Result.success("https://signed.example.com/file.png")
+            coEvery { fileDatastore.deleteFile(any()) } returns Result.success(Unit)
+
+            val result = moderationService.rejectFlyer(flyerId, adminId)
+
+            assertTrue(result.isSuccess)
+            coVerify {
+                flyerDatastore.updateFlyer(
+                    id = flyerId,
+                    title = null,
+                    description = null,
+                    status = FlyerStatus.REJECTED,
+                    expiresAt = null,
+                    rejectionReason = null,
+                )
+            }
         }
 
     @Test
@@ -251,7 +293,7 @@ class ModerationServiceTest {
 
             assertTrue(result.isFailure)
             coVerify(exactly = 0) {
-                flyerDatastore.updateFlyer(any(), any(), any(), any(), any())
+                flyerDatastore.updateFlyer(any(), any(), any(), any(), any(), any())
             }
             coVerify(exactly = 0) { fileDatastore.deleteFile(any()) }
         }
@@ -268,6 +310,7 @@ class ModerationServiceTest {
             coEvery { flyerDatastore.getFlyer(flyerId) } returns Result.success(pendingFlyer)
             coEvery {
                 flyerDatastore.updateFlyer(
+                    any(),
                     any(),
                     any(),
                     any(),

@@ -113,6 +113,10 @@ class FlyerService(private val flyerDatastore: FlyerDatastore, private val fileD
      * Lists flyers with an optional [status] filter and full-text [query] and pagination,
      * attaching signed URLs. The [query] string is matched case-insensitively against title
      * and description. Pass null to skip text search.
+     *
+     * This method backs only unauthenticated, public listing endpoints, so [PENDING][FlyerStatus.PENDING]
+     * and [REJECTED][FlyerStatus.REJECTED] flyers are never visible here, regardless of what is
+     * requested: a missing or non-public [status] falls back to [APPROVED][FlyerStatus.APPROVED].
      */
     suspend fun listFlyers(
         status: FlyerStatus?,
@@ -120,8 +124,13 @@ class FlyerService(private val flyerDatastore: FlyerDatastore, private val fileD
         offset: Int,
         limit: Int,
     ): Result<PaginatedList<Flyer>> {
-        logD(TAG, "listFlyers status=%s query=%s offset=%d limit=%d", status, query, offset, limit)
-        return flyerDatastore.listFlyers(status, query, offset, limit).map { page ->
+        val effectiveStatus =
+            when (status) {
+                null, FlyerStatus.PENDING, FlyerStatus.REJECTED -> FlyerStatus.APPROVED
+                FlyerStatus.APPROVED, FlyerStatus.ARCHIVED -> status
+            }
+        logD(TAG, "listFlyers status=%s query=%s offset=%d limit=%d", effectiveStatus, query, offset, limit)
+        return flyerDatastore.listFlyers(effectiveStatus, query, offset, limit).map { page ->
             val withUrls =
                 page.items.map { flyer ->
                     val fileUrl =

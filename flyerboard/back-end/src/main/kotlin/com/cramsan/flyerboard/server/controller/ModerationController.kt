@@ -43,7 +43,7 @@ class ModerationController(private val moderationService: ModerationService) : C
                 when (request.requestBody.action) {
                     "approve" -> moderationService.approveFlyer(flyerId, adminUserId)
 
-                    "reject" -> moderationService.rejectFlyer(flyerId, adminUserId)
+                    "reject" -> moderationService.rejectFlyer(flyerId, adminUserId, request.requestBody.reason)
 
                     else -> throw ClientRequestExceptions.InvalidRequestException(
                         "Invalid action '${request.requestBody.action}'. Must be 'approve' or 'reject'.",

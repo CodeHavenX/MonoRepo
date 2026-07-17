@@ -21,14 +21,14 @@ import kotlinx.serialization.Serializable
 data class UpdateFlyerNetworkRequest(
     @SerialName("title")
     @JsonSchema.Description("New title for the flyer, or null to leave unchanged.")
-    val title: String?,
+    val title: String? = null,
     @SerialName("description")
     @JsonSchema.Description("New description for the flyer, or null to leave unchanged.")
-    val description: String?,
+    val description: String? = null,
     @SerialName("expires_at")
     @JsonSchema.Description("New expiration timestamp, or null to leave unchanged.")
     @JsonSchema.Format("date-time")
-    val expiresAt: String?,
+    val expiresAt: String? = null,
     @SerialName("request_upload")
     @JsonSchema.Description("Set to true to receive a fresh signed upload URL for the flyer's asset.")
     val requestUpload: Boolean,

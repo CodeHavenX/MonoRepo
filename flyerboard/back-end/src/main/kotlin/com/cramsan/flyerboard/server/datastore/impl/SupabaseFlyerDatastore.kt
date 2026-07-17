@@ -94,6 +94,7 @@ class SupabaseFlyerDatastore(private val postgrest: Postgrest) : FlyerDatastore 
         description: String?,
         status: FlyerStatus?,
         expiresAt: Instant?,
+        rejectionReason: String?,
     ): Result<Flyer> =
         runSuspendCatching(TAG) {
             logD(TAG, "Updating flyer: %s", id)
@@ -104,6 +105,7 @@ class SupabaseFlyerDatastore(private val postgrest: Postgrest) : FlyerDatastore 
                     description?.let { FlyerEntity::description setTo it }
                     status?.let { FlyerEntity::status setTo it.name.lowercase() }
                     expiresAt?.let { FlyerEntity::expiresAt setTo it }
+                    rejectionReason?.let { FlyerEntity::rejectionReason setTo it }
                 }) {
                     select()
                     filter {

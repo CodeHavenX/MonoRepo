@@ -46,7 +46,7 @@ interface FlyerDatastore {
      * Updates mutable fields of an existing flyer. Returns the updated [Flyer].
      *
      * Note: a null value for any parameter means "leave unchanged". There is currently no way
-     * to explicitly clear [expiresAt] back to null via this method.
+     * to explicitly clear [expiresAt] or [rejectionReason] back to null via this method.
      */
     suspend fun updateFlyer(
         id: FlyerId,
@@ -54,6 +54,7 @@ interface FlyerDatastore {
         description: String?,
         status: FlyerStatus?,
         expiresAt: Instant?,
+        rejectionReason: String? = null,
     ): Result<Flyer>
 
     /**

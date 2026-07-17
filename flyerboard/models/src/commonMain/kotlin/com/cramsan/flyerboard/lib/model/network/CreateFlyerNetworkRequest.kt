@@ -24,5 +24,5 @@ data class CreateFlyerNetworkRequest(
     @SerialName("expires_at")
     @JsonSchema.Description("ISO-8601 timestamp after which the flyer expires, or null if it never expires.")
     @JsonSchema.Format("date-time")
-    val expiresAt: String?,
+    val expiresAt: String? = null,
 ) : RequestBody

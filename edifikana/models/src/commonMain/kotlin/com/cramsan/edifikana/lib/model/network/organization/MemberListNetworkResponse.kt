@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network.organization
 
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
+import io.ktor.openapi.JsonSchema
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,4 +10,8 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class MemberListNetworkResponse(val content: List<MemberNetworkResponse>) : ResponseBody
+@JsonSchema.Description("A list of organization members.")
+data class MemberListNetworkResponse(
+    @JsonSchema.Description("The members matching the request.")
+    val content: List<MemberNetworkResponse>,
+) : ResponseBody

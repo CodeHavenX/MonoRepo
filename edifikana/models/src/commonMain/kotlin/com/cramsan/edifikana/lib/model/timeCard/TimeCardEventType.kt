@@ -1,8 +1,13 @@
 package com.cramsan.edifikana.lib.model.timeCard
 
+import io.ktor.openapi.JsonSchema
+import kotlinx.serialization.Serializable
+
 /**
  * Enum representing the type of time card event.
  */
+@Serializable
+@JsonSchema.Description("Type of a time card event.")
 enum class TimeCardEventType {
     CLOCK_IN,
     CLOCK_OUT,

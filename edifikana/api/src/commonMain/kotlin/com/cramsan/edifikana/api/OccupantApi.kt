@@ -9,8 +9,11 @@ import com.cramsan.edifikana.lib.model.occupant.OccupantId
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 
 /**
  * API definition for occupant operations.
@@ -25,33 +28,70 @@ object OccupantApi : Api("occupants") {
         NoQueryParam,
         NoPathParam,
         OccupantNetworkResponse,
-    >(HttpMethod.Post)
+    >(
+        method = HttpMethod.Post,
+        summary = "Create an occupant",
+        description = "Creates a new occupant record for a unit. Requires the ADMIN role or higher.",
+        responses = UniversalResponsesOnly,
+    )
 
     val getOccupant = operation<
         NoRequestBody,
         NoQueryParam,
         OccupantId,
         OccupantNetworkResponse,
-    >(HttpMethod.Get)
+    >(
+        method = HttpMethod.Get,
+        summary = "Get an occupant",
+        description = "Retrieves a single occupant record by its identifier. Requires the EMPLOYEE role or higher.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No occupant exists for the given id."
+        },
+    )
 
     val listOccupantsForUnit = operation<
         NoRequestBody,
         GetOccupantsForUnitQueryParams,
         NoPathParam,
         OccupantListNetworkResponse,
-    >(HttpMethod.Get)
+    >(
+        method = HttpMethod.Get,
+        summary = "List occupants for a unit",
+        description = "Lists occupant records for a unit, optionally including inactive records. " +
+            "Requires the EMPLOYEE role or higher.",
+        responses = UniversalResponsesOnly,
+    )
 
     val updateOccupant = operation<
         UpdateOccupantNetworkRequest,
         NoQueryParam,
         OccupantId,
         OccupantNetworkResponse,
-    >(HttpMethod.Put)
+    >(
+        method = HttpMethod.Put,
+        summary = "Update an occupant",
+        description = "Updates the mutable fields of an existing occupant record. Requires the ADMIN role or higher.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No occupant exists for the given id."
+        },
+    )
 
     val removeOccupant = operation<
         NoRequestBody,
         NoQueryParam,
         OccupantId,
         OccupantNetworkResponse,
-    >(HttpMethod.Delete)
+    >(
+        method = HttpMethod.Delete,
+        summary = "Remove an occupant",
+        description = "Removes an occupant record by its identifier. Requires the ADMIN role or higher.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No occupant exists for the given id."
+            HttpStatusCode.Conflict describedAs
+                "The occupant is primary and other active occupants still exist for the unit."
+        },
+    )
 }

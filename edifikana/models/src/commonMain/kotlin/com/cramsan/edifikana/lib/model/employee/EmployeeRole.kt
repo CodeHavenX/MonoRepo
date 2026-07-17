@@ -1,8 +1,13 @@
 package com.cramsan.edifikana.lib.model.employee
 
+import io.ktor.openapi.JsonSchema
+import kotlinx.serialization.Serializable
+
 /**
  * Enum representing the role of an employee member.
  */
+@Serializable
+@JsonSchema.Description("Role of an employee.")
 enum class EmployeeRole {
     MANAGER,
     SECURITY,

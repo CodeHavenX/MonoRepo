@@ -10,8 +10,11 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 
 /**
  * API definition for document metadata operations.
@@ -26,33 +29,68 @@ object DocumentApi : Api("document") {
         NoQueryParam,
         NoPathParam,
         DocumentNetworkResponse,
-    >(HttpMethod.Post)
+    >(
+        method = HttpMethod.Post,
+        summary = "Create a document",
+        description = "Creates a new document metadata record referencing a previously uploaded asset.",
+        responses = UniversalResponsesOnly,
+    )
 
     val getDocument = operation<
         NoRequestBody,
         NoQueryParam,
         DocumentId,
         DocumentNetworkResponse,
-    >(HttpMethod.Get)
+    >(
+        method = HttpMethod.Get,
+        summary = "Get a document",
+        description = "Retrieves a single document's metadata by its identifier.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No document exists for the given id."
+        },
+    )
 
     val getDocuments = operation<
         NoRequestBody,
         GetDocumentsQueryParams,
         NoPathParam,
         DocumentListNetworkResponse,
-    >(HttpMethod.Get)
+    >(
+        method = HttpMethod.Get,
+        summary = "List documents",
+        description = "Lists document metadata records for an organization, optionally filtered by " +
+            "property or unit.",
+        responses = UniversalResponsesOnly,
+    )
 
     val updateDocument = operation<
         UpdateDocumentNetworkRequest,
         NoQueryParam,
         DocumentId,
         DocumentNetworkResponse,
-    >(HttpMethod.Put)
+    >(
+        method = HttpMethod.Put,
+        summary = "Update a document",
+        description = "Updates the mutable metadata fields of an existing document.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No document exists for the given id."
+        },
+    )
 
     val deleteDocument = operation<
         NoRequestBody,
         NoQueryParam,
         DocumentId,
         NoResponseBody,
-    >(HttpMethod.Delete)
+    >(
+        method = HttpMethod.Delete,
+        summary = "Delete a document",
+        description = "Permanently deletes a document's metadata record by its identifier.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No document exists for the given id."
+        },
+    )
 }

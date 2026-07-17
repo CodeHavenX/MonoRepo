@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network.health
 
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
+import io.ktor.openapi.JsonSchema
 import kotlinx.serialization.Serializable
 
 /**
@@ -11,4 +12,9 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class HealthCheckNetworkResponse(val message: String) : ResponseBody
+@JsonSchema.Description("Result of a server health check.")
+data class HealthCheckNetworkResponse(
+    @JsonSchema.Description("Message indicating the health status.")
+    @JsonSchema.Example("\"OK\"")
+    val message: String,
+) : ResponseBody

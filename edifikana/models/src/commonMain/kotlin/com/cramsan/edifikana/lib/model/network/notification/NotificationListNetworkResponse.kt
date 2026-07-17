@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network.notification
 
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
+import io.ktor.openapi.JsonSchema
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,4 +10,8 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class NotificationListNetworkResponse(val content: List<NotificationNetworkResponse>) : ResponseBody
+@JsonSchema.Description("A list of notifications.")
+data class NotificationListNetworkResponse(
+    @JsonSchema.Description("The notifications matching the request.")
+    val content: List<NotificationNetworkResponse>,
+) : ResponseBody

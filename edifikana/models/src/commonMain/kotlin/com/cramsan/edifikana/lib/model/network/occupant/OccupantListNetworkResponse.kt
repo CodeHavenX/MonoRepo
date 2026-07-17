@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network.occupant
 
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
+import io.ktor.openapi.JsonSchema
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,4 +10,8 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class OccupantListNetworkResponse(val occupants: List<OccupantNetworkResponse>) : ResponseBody
+@JsonSchema.Description("A list of occupant records.")
+data class OccupantListNetworkResponse(
+    @JsonSchema.Description("The occupant records matching the request.")
+    val occupants: List<OccupantNetworkResponse>,
+) : ResponseBody

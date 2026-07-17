@@ -10,8 +10,11 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 
 /**
  * API definition for event log related operations.
@@ -23,33 +26,67 @@ object EventLogApi : Api("event_log") {
         NoQueryParam,
         NoPathParam,
         EventLogEntryNetworkResponse,
-    >(HttpMethod.Post)
+    >(
+        method = HttpMethod.Post,
+        summary = "Create an event log entry",
+        description = "Creates a new event log entry for a property.",
+        responses = UniversalResponsesOnly,
+    )
 
     val getEventLogEntry = operation<
         NoRequestBody,
         NoQueryParam,
         EventLogEntryId,
         EventLogEntryNetworkResponse,
-    >(HttpMethod.Get)
+    >(
+        method = HttpMethod.Get,
+        summary = "Get an event log entry",
+        description = "Retrieves a single event log entry by its identifier.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No event log entry exists for the given id."
+        },
+    )
 
     val getEventLogEntries = operation<
         NoRequestBody,
         GetEventLogEntriesQueryParams,
         NoPathParam,
         EventLogEntryListNetworkResponse,
-    >(HttpMethod.Get)
+    >(
+        method = HttpMethod.Get,
+        summary = "List event log entries",
+        description = "Lists event log entries for a property.",
+        responses = UniversalResponsesOnly,
+    )
 
     val updateEventLogEntry = operation<
         UpdateEventLogEntryNetworkRequest,
         NoQueryParam,
         EventLogEntryId,
         EventLogEntryNetworkResponse,
-    >(HttpMethod.Put)
+    >(
+        method = HttpMethod.Put,
+        summary = "Update an event log entry",
+        description = "Updates the mutable fields of an existing event log entry.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No event log entry exists for the given id."
+        },
+    )
 
     val deleteEventLogEntry = operation<
         NoRequestBody,
         NoQueryParam,
         EventLogEntryId,
         NoResponseBody,
-    >(HttpMethod.Delete)
+    >(
+        method = HttpMethod.Delete,
+        summary = "Delete an event log entry",
+        description = "Permanently deletes an event log entry by its identifier.",
+        responses =
+        AdditionalResponses {
+            HttpStatusCode.NotFound describedAs "No event log entry exists for the given id."
+        },
+    )
 }

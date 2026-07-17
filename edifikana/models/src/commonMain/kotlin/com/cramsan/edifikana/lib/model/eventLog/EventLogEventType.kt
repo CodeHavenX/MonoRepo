@@ -1,8 +1,13 @@
 package com.cramsan.edifikana.lib.model.eventLog
 
+import io.ktor.openapi.JsonSchema
+import kotlinx.serialization.Serializable
+
 /**
  * Enum representing the type of event log.
  */
+@Serializable
+@JsonSchema.Description("Type of an event log entry.")
 enum class EventLogEventType {
     GUEST,
     INCIDENT,

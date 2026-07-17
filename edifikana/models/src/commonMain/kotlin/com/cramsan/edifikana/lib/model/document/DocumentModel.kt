@@ -4,6 +4,8 @@ import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
+import io.ktor.openapi.JsonSchema
+import kotlinx.serialization.Serializable
 
 /**
  * Domain model representing a document metadata record.
@@ -30,6 +32,8 @@ data class DocumentModel(
 /**
  * The category of a document.
  */
+@Serializable
+@JsonSchema.Description("Category of a document.")
 enum class DocumentType {
     LEASE,
     INVOICE,

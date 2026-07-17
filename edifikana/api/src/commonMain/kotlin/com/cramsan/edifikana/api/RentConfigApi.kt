@@ -19,31 +19,34 @@ import io.ktor.http.HttpStatusCode
  */
 
 object RentConfigApi : Api("rent-config") {
-    val getRentConfig = operation<
-        NoRequestBody,
-        NoQueryParam,
-        UnitId,
-        RentConfigNetworkResponse,
-    >(
-        method = HttpMethod.Get,
-        summary = "Get rent configuration",
-        description = "Retrieves the rent configuration for a unit. Requires the EMPLOYEE role or higher.",
-        responses =
-        AdditionalResponses {
-            HttpStatusCode.NotFound describedAs "No rent configuration exists for the given unit."
-        },
-    )
+    val getRentConfig =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            UnitId,
+            RentConfigNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            summary = "Get rent configuration",
+            description = "Retrieves the rent configuration for a unit. Requires the EMPLOYEE role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No rent configuration exists for the given unit."
+            },
+        )
 
-    val setRentConfig = operation<
-        RentConfigNetworkRequest,
-        NoQueryParam,
-        UnitId,
-        RentConfigNetworkResponse,
-    >(
-        method = HttpMethod.Put,
-        summary = "Set rent configuration",
-        description = "Creates or updates (upserts) the rent configuration for a unit. " +
-            "Requires the ADMIN role or higher.",
-        responses = UniversalResponsesOnly,
-    )
+    val setRentConfig =
+        operation<
+            RentConfigNetworkRequest,
+            NoQueryParam,
+            UnitId,
+            RentConfigNetworkResponse,
+            >(
+            method = HttpMethod.Put,
+            summary = "Set rent configuration",
+            description =
+            "Creates or updates (upserts) the rent configuration for a unit. " +
+                "Requires the ADMIN role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 }

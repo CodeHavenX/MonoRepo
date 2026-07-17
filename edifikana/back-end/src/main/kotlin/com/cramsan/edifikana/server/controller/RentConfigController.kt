@@ -71,9 +71,9 @@ class RentConfigController(private val rentConfigService: RentConfigService, pri
         return rentConfigService
             .setRentConfig(
                 unitId = request.pathParam,
-                monthlyAmount = request.requestBody.monthlyAmount,
+                monthlyAmount = request.requestBody.monthlyAmount.amount,
                 dueDay = request.requestBody.dueDay,
-                currency = request.requestBody.currency,
+                currency = request.requestBody.currency.code,
                 updatedBy = request.context.payload.userId,
             ).toRentConfigNetworkResponse()
     }

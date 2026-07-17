@@ -78,13 +78,12 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
     /**
      * Lists all non-deleted payment records for the given [unitId], optionally filtered by [periodMonth].
      *
-     * [periodMonth] is a string in "YYYY-MM" format (e.g. "2026-03"). If provided, only records
-     * whose period_month starts with that prefix are returned.
+     * If [periodMonth] is provided, only records whose period_month matches it are returned.
      */
 
     override suspend fun listPaymentRecords(
         unitId: UnitId,
-        periodMonth: String?,
+        periodMonth: LocalDate?,
     ): Result<List<PaymentRecord>> =
         runSuspendCatching(TAG) {
             logD(TAG, "Listing payment records for unit: %s, period: %s", unitId, periodMonth)
@@ -94,7 +93,7 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
                     filter {
                         PaymentRecordEntity::unitId eq unitId.unitId
                         PaymentRecordEntity::deletedAt isExact null
-                        periodMonth?.let { PaymentRecordEntity::periodMonth eq LocalDate.parse("$it-01") }
+                        periodMonth?.let { PaymentRecordEntity::periodMonth eq it }
                     }
                 }.decodeList<PaymentRecordEntity>()
                 .map { it.toPaymentRecord() }

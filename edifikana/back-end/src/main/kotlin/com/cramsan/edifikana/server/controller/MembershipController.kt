@@ -59,7 +59,7 @@ class MembershipController(private val membershipService: MembershipService, pri
         if (request.role.toUserRole().level < inviterRole.level) {
             throw UnauthorizedException("Cannot invite users with higher privileges than your own")
         }
-        membershipService.inviteMember(orgId, request.email, request.role).requireSuccess()
+        membershipService.inviteMember(orgId, request.email.email, request.role).requireSuccess()
         return NoResponseBody
     }
 
@@ -209,7 +209,7 @@ class MembershipController(private val membershipService: MembershipService, pri
         request: JoinViaCodeNetworkRequest,
     ): NoResponseBody {
         val callerId = context.payload.userId
-        membershipService.joinViaCode(callerId, request.inviteCode).requireSuccess()
+        membershipService.joinViaCode(callerId, request.inviteCode.code).requireSuccess()
         return NoResponseBody
     }
 

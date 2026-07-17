@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.property
 
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
 import io.ktor.openapi.JsonSchema
@@ -27,5 +28,5 @@ data class UpdatePropertyNetworkRequest(
     @SerialName("image_url")
     @JsonSchema.Description("New cover image URL, or null to leave unchanged.")
     @JsonSchema.Format("uri")
-    val imageUrl: String? = null,
+    val imageUrl: Url? = null,
 ) : RequestBody

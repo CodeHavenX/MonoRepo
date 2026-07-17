@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.QueryParam
 import io.ktor.openapi.JsonSchema
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,6 +19,7 @@ data class GetPaymentRecordsQueryParams(
     @JsonSchema.Description("Identifier of the unit to list payment records for.")
     val unitId: UnitId,
     @SerialName("period_month")
-    @JsonSchema.Description("Optional month (e.g. \"2026-07\") to filter payment records by.")
-    val periodMonth: String? = null,
+    @JsonSchema.Description("Optional month (first day of month, e.g. \"2026-07-01\") to filter payment records by.")
+    @JsonSchema.Format("date")
+    val periodMonth: LocalDate? = null,
 ) : QueryParam

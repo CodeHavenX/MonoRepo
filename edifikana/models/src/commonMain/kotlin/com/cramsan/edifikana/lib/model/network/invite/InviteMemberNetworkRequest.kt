@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.invite
 
+import com.cramsan.edifikana.lib.model.common.Email
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
@@ -17,7 +18,7 @@ import kotlinx.serialization.Serializable
 data class InviteMemberNetworkRequest(
     @SerialName("email")
     @JsonSchema.Description("Email address to send the invite to.")
-    val email: String,
+    val email: Email,
     @SerialName("role")
     @JsonSchema.Description("Role the invitee will be granted upon accepting.")
     val role: InviteRole,

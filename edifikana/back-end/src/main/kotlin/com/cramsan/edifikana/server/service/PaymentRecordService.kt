@@ -51,12 +51,10 @@ class PaymentRecordService(private val paymentRecordDatastore: PaymentRecordData
 
     /**
      * Lists payment records for the given [unitId], optionally filtered by [periodMonth].
-     *
-     * [periodMonth] is a string in "YYYY-MM" format (e.g. "2026-03").
      */
     suspend fun listPaymentRecords(
         unitId: UnitId,
-        periodMonth: String?,
+        periodMonth: LocalDate?,
     ): List<PaymentRecord> {
         logD(TAG, "listPaymentRecords")
         return paymentRecordDatastore

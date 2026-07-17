@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.property
 
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.NetworkModel
@@ -32,5 +33,5 @@ data class PropertyNetworkResponse(
     @SerialName("image_url")
     @JsonSchema.Description("URL of the property's cover image, if set.")
     @JsonSchema.Format("uri")
-    val imageUrl: String? = null,
+    val imageUrl: Url? = null,
 ) : ResponseBody

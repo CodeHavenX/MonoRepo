@@ -4,6 +4,9 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.models.EmployeeModel
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.UserModel
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
 import com.cramsan.edifikana.lib.model.identification.IdType
@@ -43,7 +46,7 @@ class NetworkMappersTest {
             propertyId = PropertyId("property-789"),
             type = TimeCardEventType.CLOCK_IN,
             timestamp = Instant.parse("2025-01-01T00:00:00Z"),
-            imageUrl = "http://image.url",
+            imageUrl = Url("http://image.url"),
             fallbackEmployeeName = "Jenny"
         )
 
@@ -69,9 +72,9 @@ class NetworkMappersTest {
     fun `toUserModel maps all fields correctly`() {
         // Arrange
         val networkResponse = UserNetworkResponse(
-            id = "user-123",
-            email = "test@example.com",
-            phoneNumber = "555-1234",
+            id = UserId("user-123"),
+            email = Email("test@example.com"),
+            phoneNumber = PhoneNumber("555-1234"),
             firstName = "John",
             lastName = "Doe",
             authMetadata = AuthMetadataNetworkResponse(
@@ -277,6 +280,6 @@ class NetworkMappersTest {
         assertEquals("", request.fallbackEmployeeName)
         assertEquals(TimeCardEventType.CLOCK_OUT, request.type)
         assertEquals("property-6", request.propertyId.propertyId)
-        assertEquals("http://image.url/6", request.imageUrl)
+        assertEquals(Url("http://image.url/6"), request.imageUrl)
     }
 }

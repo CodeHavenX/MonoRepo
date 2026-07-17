@@ -8,6 +8,8 @@ plugins {
     id("com.cramsan.kotlin-jvm-ktor")
     // Adds Gradle tasks that wrap the Supabase CLI
     id("com.cramsan.supabase-task")
+    // Adds a task that downloads the runtime-generated OpenAPI spec into the repo
+    id("com.cramsan.openapi-task")
 }
 
 val mainClassTarget by extra("io.ktor.server.netty.EngineMain")

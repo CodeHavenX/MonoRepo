@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.lib.model.network.asset
 
 import com.cramsan.edifikana.lib.model.asset.AssetId
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import io.ktor.openapi.JsonSchema
@@ -24,5 +25,5 @@ data class AssetNetworkResponse(
     @SerialName("signed_url")
     @JsonSchema.Description("Signed URL to download the asset, or null if not available.")
     @JsonSchema.Format("uri")
-    val signedUrl: String?,
+    val signedUrl: Url?,
 ) : ResponseBody

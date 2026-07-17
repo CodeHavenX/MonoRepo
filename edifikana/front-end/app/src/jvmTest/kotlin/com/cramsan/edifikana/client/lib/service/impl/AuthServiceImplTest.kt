@@ -21,6 +21,8 @@ import com.cramsan.framework.logging.implementation.StdOutEventLoggerDelegate
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.exception.AuthRestException
+import com.cramsan.edifikana.lib.model.common.Email as ContactEmail
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.auth.user.UserInfo
@@ -143,9 +145,9 @@ class AuthServiceImplTest {
         // Arrange
         val userInfo = mockk<UserInfo> { coEvery { id } returns "user-3" }
         val userNetworkResponse = UserNetworkResponse(
-            id = "user-3",
-            email = "email",
-            phoneNumber = "phone",
+            id = UserId("user-3"),
+            email = ContactEmail("email"),
+            phoneNumber = PhoneNumber("phone"),
             firstName = "first",
             lastName = "last",
             authMetadata = null,
@@ -266,17 +268,17 @@ class AuthServiceImplTest {
     fun `getUsersByOrganization returns list of users`() = runTest {
         // Arrange
         val userNetworkResponse1 = UserNetworkResponse(
-            id = "user-1",
-            email = "email1",
-            phoneNumber = "phone1",
+            id = UserId("user-1"),
+            email = ContactEmail("email1"),
+            phoneNumber = PhoneNumber("phone1"),
             firstName = "first1",
             lastName = "last1",
             authMetadata = null,
         )
         val userNetworkResponse2 = UserNetworkResponse(
-            id = "user-2",
-            email = "email2",
-            phoneNumber = "phone2",
+            id = UserId("user-2"),
+            email = ContactEmail("email2"),
+            phoneNumber = PhoneNumber("phone2"),
             firstName = "first2",
             lastName = "last2",
             authMetadata = null,
@@ -312,9 +314,9 @@ class AuthServiceImplTest {
         val password = "password123"
         val userInfo = mockk<UserInfo> { coEvery { id } returns "user-6" }
         val userNetworkResponse = UserNetworkResponse(
-            id = "user-6",
-            email = email,
-            phoneNumber = "1234567890",
+            id = UserId("user-6"),
+            email = ContactEmail(email),
+            phoneNumber = PhoneNumber("1234567890"),
             firstName = "John",
             lastName = "Doe",
             authMetadata = null,
@@ -365,9 +367,9 @@ class AuthServiceImplTest {
         val firstName = "Jane"
         val lastName = "Smith"
         val userNetworkResponse = UserNetworkResponse(
-            id = "user-7",
-            email = email,
-            phoneNumber = phoneNumber,
+            id = UserId("user-7"),
+            email = ContactEmail(email),
+            phoneNumber = PhoneNumber(phoneNumber),
             firstName = firstName,
             lastName = lastName,
             authMetadata = null,
@@ -399,9 +401,9 @@ class AuthServiceImplTest {
         val hashToken = "validToken"
         val userInfo = mockk<UserInfo> { coEvery { id } returns "user-8" }
         val userNetworkResponse = UserNetworkResponse(
-            id = "user-8",
-            email = email,
-            phoneNumber = "1234567890",
+            id = UserId("user-8"),
+            email = ContactEmail(email),
+            phoneNumber = PhoneNumber("1234567890"),
             firstName = "John",
             lastName = "Doe",
             authMetadata = null,
@@ -433,9 +435,9 @@ class AuthServiceImplTest {
         val hashToken = "validToken"
         val userInfo = mockk<UserInfo> { coEvery { id } returns "user-9" }
         val userNetworkResponse = UserNetworkResponse(
-            id = "user-9",
-            email = email,
-            phoneNumber = "9876543210",
+            id = UserId("user-9"),
+            email = ContactEmail(email),
+            phoneNumber = PhoneNumber("9876543210"),
             firstName = "Jane",
             lastName = "Smith",
             authMetadata = null,
@@ -629,14 +631,14 @@ class AuthServiceImplTest {
         val organizationId = OrganizationId("org-456")
         val inviteResponse1 = InviteNetworkResponse(
             inviteId = InviteId("invite-1"),
-            email = "user1@example.com",
+            email = ContactEmail("user1@example.com"),
             organizationId = organizationId,
             role = InviteRole.EMPLOYEE,
             expiresAt = Instant.fromEpochMilliseconds(1234567890L),
         )
         val inviteResponse2 = InviteNetworkResponse(
             inviteId = InviteId("invite-2"),
-            email = "user2@example.com",
+            email = ContactEmail("user2@example.com"),
             organizationId = organizationId,
             role = InviteRole.MANAGER,
             expiresAt =  Instant.fromEpochMilliseconds(1234567891L),

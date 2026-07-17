@@ -58,7 +58,7 @@ class OccupantController(private val occupantService: OccupantService, private v
                 userId = request.requestBody.userId,
                 addedBy = request.context.payload.userId,
                 name = request.requestBody.name,
-                email = request.requestBody.email,
+                email = request.requestBody.email?.email,
                 occupantType = request.requestBody.occupantType,
                 isPrimary = request.requestBody.isPrimary,
                 startDate = request.requestBody.startDate,
@@ -135,7 +135,7 @@ class OccupantController(private val occupantService: OccupantService, private v
                 .updateOccupant(
                     occupantId = request.pathParam,
                     name = request.requestBody.name,
-                    email = request.requestBody.email,
+                    email = request.requestBody.email?.email,
                     occupantType = request.requestBody.occupantType,
                     isPrimary = request.requestBody.isPrimary,
                     endDate = request.requestBody.endDate,

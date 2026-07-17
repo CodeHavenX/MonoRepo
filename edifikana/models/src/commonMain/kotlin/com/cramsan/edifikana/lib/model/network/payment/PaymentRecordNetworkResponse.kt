@@ -2,6 +2,7 @@
 
 package com.cramsan.edifikana.lib.model.network.payment
 
+import com.cramsan.edifikana.lib.model.common.MonetaryAmount
 import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.edifikana.lib.model.payment.PaymentStatus
 import com.cramsan.edifikana.lib.model.payment.PaymentType
@@ -38,12 +39,10 @@ data class PaymentRecordNetworkResponse(
     val periodMonth: LocalDate,
     @SerialName("amount_due")
     @JsonSchema.Description("Amount due for this period, or null if not set.")
-    @JsonSchema.Minimum(0.0)
-    val amountDue: Double?,
+    val amountDue: MonetaryAmount?,
     @SerialName("amount_paid")
     @JsonSchema.Description("Amount paid so far for this period, or null if nothing has been paid.")
-    @JsonSchema.Minimum(0.0)
-    val amountPaid: Double?,
+    val amountPaid: MonetaryAmount?,
     @JsonSchema.Description("Current payment status of the record.")
     val status: PaymentStatus,
     @SerialName("due_date")

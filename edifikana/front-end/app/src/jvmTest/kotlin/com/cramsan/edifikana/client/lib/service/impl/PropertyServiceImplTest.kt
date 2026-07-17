@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkResponse
@@ -57,14 +58,14 @@ class PropertyServiceImplTest {
                 name = "Prop 1",
                 address = "Address 1",
                 organizationId = OrganizationId("org-1"),
-                imageUrl = "drawable:CASA",
+                imageUrl = Url("drawable:CASA"),
             ),
             PropertyNetworkResponse(
                 id = PropertyId("property-2"),
                 name = "Prop 2",
                 address = "Address 2",
                 organizationId = OrganizationId("org-1"),
-                imageUrl = "drawable:S_DEPA",
+                imageUrl = Url("drawable:S_DEPA"),
             ),
         ))
 
@@ -95,14 +96,14 @@ class PropertyServiceImplTest {
                 name = "FirstProp",
                 address = "A1",
                 organizationId = OrganizationId("org-1"),
-                imageUrl = "drawable:QUINTA",
+                imageUrl = Url("drawable:QUINTA"),
             ),
             PropertyNetworkResponse(
                 id = PropertyId("property-20"),
                 name = "SecondProp",
                 address = "A2",
                 organizationId = OrganizationId("org-1"),
-                imageUrl = "drawable:M_DEPA",
+                imageUrl = Url("drawable:M_DEPA"),
             ),
         ))
 
@@ -130,7 +131,7 @@ class PropertyServiceImplTest {
             name = "GetProp",
             address = "Addr",
             organizationId = OrganizationId("org-1"),
-            imageUrl = "drawable:L_DEPA",
+            imageUrl = Url("drawable:L_DEPA"),
         )
 
         ktorTestEngine.configure {
@@ -157,7 +158,7 @@ class PropertyServiceImplTest {
             name = "NewProp",
             address = "NewAddr",
             organizationId = OrganizationId("org-1"),
-            imageUrl = "drawable:CASA",
+            imageUrl = Url("drawable:CASA"),
         )
 
         ktorTestEngine.configure {
@@ -184,7 +185,7 @@ class PropertyServiceImplTest {
             name = "Updated",
             address = "UpdAddr",
             organizationId = OrganizationId("org-1"),
-            imageUrl = "drawable:QUINTA",
+            imageUrl = Url("drawable:QUINTA"),
         )
 
         ktorTestEngine.configure {

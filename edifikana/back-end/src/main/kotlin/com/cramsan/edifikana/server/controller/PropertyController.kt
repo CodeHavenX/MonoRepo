@@ -53,7 +53,7 @@ class PropertyController(private val propertyService: PropertyService, private v
                     request.requestBody.name,
                     request.requestBody.address,
                     request.requestBody.organizationId,
-                    request.requestBody.imageUrl,
+                    request.requestBody.imageUrl?.url,
                     request.context,
                 ).toPropertyNetworkResponse()
         return newProperty
@@ -118,7 +118,7 @@ class PropertyController(private val propertyService: PropertyService, private v
                     id = request.pathParam,
                     name = request.requestBody.name,
                     address = request.requestBody.address,
-                    imageUrl = request.requestBody.imageUrl,
+                    imageUrl = request.requestBody.imageUrl?.url,
                 ).toPropertyNetworkResponse()
         return updatedProperty
     }

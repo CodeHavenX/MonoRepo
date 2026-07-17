@@ -4,6 +4,7 @@ import com.cramsan.edifikana.api.UserApi
 import com.cramsan.edifikana.client.lib.models.Invite
 import com.cramsan.edifikana.client.lib.models.UserModel
 import com.cramsan.edifikana.client.lib.service.AuthService
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.network.invite.InviteNetworkResponse
@@ -38,6 +39,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.time.ExperimentalTime
+import com.cramsan.edifikana.lib.model.common.Email as ContactEmail
 
 /**
  * Default implementation for the [AuthService].
@@ -136,8 +138,8 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
                 UserApi.createUser
                     .buildRequest(
                         CreateUserNetworkRequest(
-                            email = email,
-                            phoneNumber = phoneNumber,
+                            email = ContactEmail(email),
+                            phoneNumber = PhoneNumber(phoneNumber),
                             firstName = firstName,
                             lastName = lastName,
                             password = null, // Password is not required for sign-up, but can be set later.
@@ -190,7 +192,10 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             )
             UserApi.requestPasswordReset
                 .buildRequest(
-                    PasswordResetNetworkRequest(email = email, phoneNumber = phoneNumber),
+                    PasswordResetNetworkRequest(
+                        email = email?.let { ContactEmail(it) },
+                        phoneNumber = phoneNumber?.let { PhoneNumber(it) },
+                    ),
                 ).execute(http)
         }
 
@@ -213,7 +218,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
         runSuspendCatching(TAG) {
             UserApi.checkUserExists
                 .buildRequest(
-                    UserEmailQueryParam(email),
+                    UserEmailQueryParam(ContactEmail(email)),
                 ).execute(http)
                 .isUserRegistered
         }
@@ -276,7 +281,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             UserApi.inviteUser
                 .buildRequest(
                     InviteUserNetworkRequest(
-                        email = email,
+                        email = ContactEmail(email),
                         organizationId = organizationId,
                         role = role,
                     ),
@@ -338,7 +343,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
 private fun InviteNetworkResponse.toInvite(): Invite {
     return Invite(
         id = this.inviteId,
-        email = this.email,
+        email = this.email.email,
         organizationId = this.organizationId,
         role = this.role,
         expiresAt = this.expiresAt,

@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.lib.model.network.invite
 
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.invite.InviteCode
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
@@ -22,7 +24,7 @@ data class InviteNetworkResponse(
     val inviteId: InviteId,
     @SerialName("email")
     @JsonSchema.Description("Email address the invite was sent to.")
-    val email: String,
+    val email: Email,
     @SerialName("organization_id")
     @JsonSchema.Description("Identifier of the organization the invite is for.")
     val organizationId: OrganizationId,
@@ -35,7 +37,7 @@ data class InviteNetworkResponse(
     val expiresAt: Instant,
     @SerialName("invite_code")
     @JsonSchema.Description("Code the invitee can use to join, or null if not included in this response.")
-    val inviteCode: String? = null,
+    val inviteCode: InviteCode? = null,
     @SerialName("created_at")
     @JsonSchema.Description("ISO-8601 timestamp when the invite was created, or null if unknown.")
     @JsonSchema.Format("date-time")

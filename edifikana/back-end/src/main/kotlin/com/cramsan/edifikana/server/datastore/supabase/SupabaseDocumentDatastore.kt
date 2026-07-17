@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.asset.AssetId
+import com.cramsan.edifikana.lib.model.common.MimeType
 import com.cramsan.edifikana.lib.model.document.DocumentId
 import com.cramsan.edifikana.lib.model.document.DocumentType
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
@@ -29,9 +31,9 @@ class SupabaseDocumentDatastore(private val postgrest: Postgrest, private val cl
         propertyId: PropertyId?,
         unitId: UnitId?,
         filename: String,
-        mimeType: String,
+        mimeType: MimeType,
         documentType: DocumentType,
-        assetId: String,
+        assetId: AssetId,
         createdBy: UserId?,
     ): Result<Document> =
         runSuspendCatching(TAG) {

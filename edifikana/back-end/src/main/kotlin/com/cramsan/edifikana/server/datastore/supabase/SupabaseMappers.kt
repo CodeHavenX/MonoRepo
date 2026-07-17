@@ -2,6 +2,8 @@
 
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.asset.AssetId
+import com.cramsan.edifikana.lib.model.common.MimeType
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
 import com.cramsan.edifikana.lib.model.document.DocumentId
@@ -407,9 +409,9 @@ fun CreateDocumentEntity(
     propertyId: PropertyId?,
     unitId: UnitId?,
     filename: String,
-    mimeType: String,
+    mimeType: MimeType,
     documentType: DocumentType,
-    assetId: String,
+    assetId: AssetId,
     createdBy: UserId?,
 ): DocumentEntity.CreateDocumentEntity {
     return DocumentEntity.CreateDocumentEntity(
@@ -417,9 +419,9 @@ fun CreateDocumentEntity(
         propertyId = propertyId,
         unitId = unitId,
         filename = filename,
-        mimeType = mimeType,
+        mimeType = mimeType.value,
         documentType = documentType.name,
-        assetId = assetId,
+        assetId = assetId.assetId,
         createdBy = createdBy,
     )
 }
@@ -435,9 +437,9 @@ fun DocumentEntity.toDocument(): Document {
         propertyId = this.propertyId,
         unitId = this.unitId,
         filename = this.filename,
-        mimeType = this.mimeType,
+        mimeType = MimeType(this.mimeType),
         documentType = enumValueOf<DocumentType>(this.documentType),
-        assetId = this.assetId,
+        assetId = AssetId(this.assetId),
         createdBy = this.createdBy,
         createdAt = this.createdAt,
     )

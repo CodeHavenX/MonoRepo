@@ -174,7 +174,7 @@ class PaymentRecordServiceTest {
         runTest {
             // Arrange
             val unitId = UnitId("unit123")
-            val periodMonth = "2026-03"
+            val periodMonth = LocalDate(2026, 3, 1)
             val records = listOf(paymentRecord(PaymentRecordId("pr123"), unitId))
             coEvery {
                 paymentRecordDatastore.listPaymentRecords(unitId, periodMonth)

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.service.impl
 
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
@@ -57,7 +58,7 @@ class TimeCardServiceImplTest {
                 employeeId = EmployeeId("employee-1"),
                 propertyId = PropertyId("property-1"),
                 type = TimeCardEventType.CLOCK_IN,
-                imageUrl = "http://example.com/image1.jpg",
+                imageUrl = Url("http://example.com/image1.jpg"),
                 fallbackEmployeeName = "John Doe",
                 timestamp = Instant.parse("2024-01-01T00:00:00Z"),
             ),
@@ -66,7 +67,7 @@ class TimeCardServiceImplTest {
                 employeeId = EmployeeId("employee-2"),
                 propertyId = PropertyId("property-1"),
                 type = TimeCardEventType.CLOCK_OUT,
-                imageUrl = "http://example.com/image2.jpg",
+                imageUrl = Url("http://example.com/image2.jpg"),
                 fallbackEmployeeName = "Jane Smith",
                 timestamp = Instant.parse("2024-01-01T00:00:00Z"),
             )
@@ -98,7 +99,7 @@ class TimeCardServiceImplTest {
                 employeeId = EmployeeId("employee-3"),
                 propertyId = PropertyId("property-2"),
                 type = TimeCardEventType.CLOCK_IN,
-                imageUrl = "http://example.com/image3.jpg",
+                imageUrl = Url("http://example.com/image3.jpg"),
                 fallbackEmployeeName = "Alice Johnson",
                 timestamp = Instant.parse("2024-01-01T00:00:00Z"),
             )
@@ -129,7 +130,7 @@ class TimeCardServiceImplTest {
             employeeId = EmployeeId("employee-1"),
             propertyId = PropertyId("property-1"),
             type = TimeCardEventType.CLOCK_IN,
-            imageUrl = "http://example.com/image1.jpg",
+            imageUrl = Url("http://example.com/image1.jpg"),
             fallbackEmployeeName = "John Doe",
             timestamp = Instant.parse("2024-01-01T00:00:00Z"),
         )

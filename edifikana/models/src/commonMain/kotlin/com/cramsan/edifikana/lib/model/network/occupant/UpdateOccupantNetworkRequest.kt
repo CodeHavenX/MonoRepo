@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.occupant
 
+import com.cramsan.edifikana.lib.model.common.Email
 import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
 import com.cramsan.edifikana.lib.model.occupant.OccupantType
 import com.cramsan.framework.annotations.NetworkModel
@@ -21,7 +22,7 @@ data class UpdateOccupantNetworkRequest(
     @JsonSchema.Description("New name for the occupant, or null to leave unchanged.")
     val name: String?,
     @JsonSchema.Description("New email address for the occupant, or null to leave unchanged.")
-    val email: String?,
+    val email: Email?,
     @SerialName("occupant_type")
     @JsonSchema.Description("New occupancy type for the occupant, or null to leave unchanged.")
     val occupantType: OccupantType?,

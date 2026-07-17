@@ -62,7 +62,7 @@ class PaymentRecordController(
                 unitId = request.requestBody.unitId,
                 paymentType = request.requestBody.paymentType,
                 periodMonth = request.requestBody.periodMonth,
-                amountDue = request.requestBody.amountDue,
+                amountDue = request.requestBody.amountDue?.amount,
                 dueDate = request.requestBody.dueDate,
                 recordedBy = request.context.payload.userId,
                 notes = request.requestBody.notes,
@@ -129,7 +129,7 @@ class PaymentRecordController(
         return paymentRecordService
             .updatePaymentRecord(
                 paymentRecordId = request.pathParam,
-                amountPaid = request.requestBody.amountPaid,
+                amountPaid = request.requestBody.amountPaid?.amount,
                 paidDate = request.requestBody.paidDate,
                 status = request.requestBody.status,
                 notes = request.requestBody.notes,

@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.organization
 
+import com.cramsan.edifikana.lib.model.common.Email
 import com.cramsan.edifikana.lib.model.organization.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
@@ -36,7 +37,7 @@ data class MemberNetworkResponse(
     val joinedAt: Instant?,
     @SerialName("email")
     @JsonSchema.Description("Email address of the member.")
-    val email: String,
+    val email: Email,
     @SerialName("display_name")
     @JsonSchema.Description("Display name of the member.")
     val displayName: String,

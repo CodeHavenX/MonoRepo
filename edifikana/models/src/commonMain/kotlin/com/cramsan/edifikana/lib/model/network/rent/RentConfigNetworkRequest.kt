@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.lib.model.network.rent
 
+import com.cramsan.edifikana.lib.model.common.CurrencyCode
+import com.cramsan.edifikana.lib.model.common.MonetaryAmount
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
 import io.ktor.openapi.JsonSchema
@@ -15,13 +17,11 @@ import kotlinx.serialization.Serializable
 data class RentConfigNetworkRequest(
     @SerialName("monthly_amount")
     @JsonSchema.Description("Monthly rent amount.")
-    @JsonSchema.Minimum(0.0)
-    val monthlyAmount: Double,
+    val monthlyAmount: MonetaryAmount,
     @SerialName("due_day")
     @JsonSchema.Description("Day of the month rent is due.")
     @JsonSchema.Minimum(1.0)
     val dueDay: Int,
     @JsonSchema.Description("ISO 4217 currency code the rent amount is denominated in.")
-    @JsonSchema.Example("\"USD\"")
-    val currency: String,
+    val currency: CurrencyCode,
 ) : RequestBody

@@ -1,7 +1,7 @@
 package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.StorageApi
-import com.cramsan.edifikana.lib.model.asset.AssetId
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.network.asset.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.asset.CreateSignedUploadQueryParams
 import com.cramsan.edifikana.lib.model.network.asset.GetSignedDownloadQueryParams
@@ -48,13 +48,13 @@ class StorageController(private val storageService: StorageService, private val 
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): AssetNetworkResponse {
-        val rawAssetId = requireNotBlank(request.queryParam.assetId)
+        val rawAssetId = request.queryParam.assetId.assetId
         val (resourceType, resourceId) =
             StorageResourceType.fromPath(rawAssetId)
                 ?: throw NotFoundException("Unrecognized asset path format: $rawAssetId")
         checkDownloadAuthorization(request.context, resourceType, resourceId)
         val asset =
-            storageService.getSignedDownloadUrl(AssetId(rawAssetId))
+            storageService.getSignedDownloadUrl(request.queryParam.assetId)
                 ?: throw NotFoundException("Asset not found: $rawAssetId")
         return asset.toAssetNetworkResponse()
     }
@@ -179,9 +179,9 @@ class StorageController(private val storageService: StorageService, private val 
         val canonicalPath = resourceType.buildPath(resourceId, filename)
         val asset = storageService.getSignedUploadUrl(canonicalPath, bucketId)
         return SignedUploadUrlNetworkResponse(
-            signedUrl = requireNotNull(asset.signedUrl),
+            signedUrl = Url(requireNotNull(asset.signedUrl)),
             path = asset.fileName,
-            assetId = asset.id.assetId,
+            assetId = asset.id,
         )
     }
 

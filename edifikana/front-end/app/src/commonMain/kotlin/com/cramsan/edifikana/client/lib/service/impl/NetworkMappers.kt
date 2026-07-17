@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.models.EventLogRecordModel
 import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.TimeCardRecordModel
 import com.cramsan.edifikana.client.lib.models.UserModel
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.network.employee.CreateEmployeeNetworkRequest
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.UpdateEmployeeNetworkRequest
@@ -15,7 +16,6 @@ import com.cramsan.edifikana.lib.model.network.organization.OrganizationNetworkR
 import com.cramsan.edifikana.lib.model.network.timeCard.CreateTimeCardEventNetworkRequest
 import com.cramsan.edifikana.lib.model.network.timeCard.TimeCardEventNetworkResponse
 import com.cramsan.edifikana.lib.model.network.user.UserNetworkResponse
-import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.NetworkModel
 
 /**
@@ -124,7 +124,7 @@ fun TimeCardRecordModel.toCreateTimeCardEventNetworkRequest(): CreateTimeCardEve
         fallbackEmployeeName = "",
         type = eventType,
         propertyId = propertyId,
-        imageUrl = imageUrl,
+        imageUrl = imageUrl?.let { Url(it) },
     )
 }
 
@@ -140,7 +140,7 @@ fun TimeCardEventNetworkResponse.toTimeCardRecordModel(): TimeCardRecordModel {
         propertyId = propertyId,
         eventType = type,
         eventTime = timestamp,
-        imageUrl = imageUrl,
+        imageUrl = imageUrl?.url,
         imageRef = null,
     )
 }
@@ -151,9 +151,9 @@ fun TimeCardEventNetworkResponse.toTimeCardRecordModel(): TimeCardRecordModel {
 @NetworkModel
 fun UserNetworkResponse.toUserModel(): UserModel {
     return UserModel(
-        id = UserId(id),
-        email = email,
-        phoneNumber = phoneNumber,
+        id = id,
+        email = email.email,
+        phoneNumber = phoneNumber.phoneNumber,
         firstName = firstName,
         lastName = lastName,
         authMetadata =

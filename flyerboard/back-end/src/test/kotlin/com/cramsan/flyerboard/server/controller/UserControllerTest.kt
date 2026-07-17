@@ -80,7 +80,7 @@ class UserControllerTest :
 
             // Act
             val response =
-                client.post("user") {
+                client.post("api/v1/user") {
                     setBody(requestBody)
                     contentType(ContentType.Application.Json)
                 }
@@ -115,7 +115,7 @@ class UserControllerTest :
             }
 
             // Act
-            val response = client.get("user/me")
+            val response = client.get("api/v1/user/me")
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
@@ -134,7 +134,7 @@ class UserControllerTest :
             }
 
             // Act
-            val response = client.get("user/me")
+            val response = client.get("api/v1/user/me")
 
             // Assert
             assertEquals(HttpStatusCode.Unauthorized, response.status)
@@ -154,7 +154,7 @@ class UserControllerTest :
 
             // Act
             val response =
-                client.post("user") {
+                client.post("api/v1/user") {
                     setBody(requestBody)
                     contentType(ContentType.Application.Json)
                 }
@@ -187,7 +187,7 @@ class UserControllerTest :
 
             // Act
             val response =
-                client.post("user") {
+                client.post("api/v1/user") {
                     setBody(requestBody)
                     contentType(ContentType.Application.Json)
                 }

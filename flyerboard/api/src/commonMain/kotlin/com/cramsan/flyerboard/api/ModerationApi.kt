@@ -17,7 +17,7 @@ import io.ktor.http.HttpStatusCode
  * API definition for moderation operations. All operations require admin role.
  */
 
-object ModerationApi : Api("api/v1/moderation") {
+object ModerationApi : Api("api/v1/moderation", group = "moderation") {
     /**
      * List all flyers with pending status. Admin-only.
      */

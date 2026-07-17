@@ -14,7 +14,7 @@ import io.ktor.http.HttpStatusCode
  * API definition for user-related endpoints.
  */
 
-object UserApi : Api("user") {
+object UserApi : Api("api/v1/user", group = "user") {
     /** Operation to create a new user. */
     val createUser =
         operation<

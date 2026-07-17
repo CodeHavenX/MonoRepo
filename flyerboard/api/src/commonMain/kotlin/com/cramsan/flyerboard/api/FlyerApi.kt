@@ -22,7 +22,7 @@ import io.ktor.http.HttpStatusCode
  * API definition for flyer operations.
  */
 
-object FlyerApi : Api("api/v1/flyers") {
+object FlyerApi : Api("api/v1/flyers", group = "flyers") {
     /**
      * List publicly visible flyers with optional status filter and pagination.
      */

@@ -34,6 +34,23 @@ WHERE id = '<user-uuid>';
 
 Replace `<user-uuid>` with the user's UUID from `auth.users`.
 
+## Getting an access token for manual API testing
+
+`scripts/supabase_get_access_token.sh` (repo root, project-independent — works the
+same against any project's local Supabase instance) mints a real bearer token
+without going through OTP/Inbucket:
+
+```bash
+TOKEN=$(./scripts/supabase_get_access_token.sh --reset-password -e user1@dev.local)
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:9292/api/v1/flyers/mine
+```
+
+Run `./scripts/supabase_get_access_token.sh --help` for all modes (`--create` for a
+throwaway user, `--signin` for a user that already has a password).
+
+For Kotlin integration tests, `SupabaseIntegrationTest.createTestAuthSession(email)` /
+`.signInAsSeededUser(userId, email)` do the same thing in-process.
+
 ## Environment Variables
 
 The backend requires the following environment variables (see `deploy/env.example`).

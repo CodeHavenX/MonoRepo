@@ -63,6 +63,24 @@ Example accounts:
 The seed dataset contains: 4 organisations, 16 properties, 36 users, 107 units,
 96 employees, plus tasks and event log entries across all properties.
 
+## Getting an access token for manual API testing
+
+OTP/InBucket is fine for exercising the app, but slow for `curl`/Postman testing.
+`scripts/supabase_get_access_token.sh` (project-independent — works the same for
+any project's local Supabase instance) sets a password on a seeded user and signs
+in as them, printing a real bearer token:
+
+```bash
+TOKEN=$(./scripts/supabase_get_access_token.sh --reset-password -e owner1.org1@dev.local)
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:9292/<endpoint>
+```
+
+Run `./scripts/supabase_get_access_token.sh --help` for all modes (`--create` for a
+throwaway user, `--signin` for a user that already has a password).
+
+For Kotlin integration tests, `SupabaseIntegrationTest.createTestAuthSession(email)` /
+`.signInAsSeededUser(userId, email)` do the same thing in-process.
+
 ## Run integration tests
 
 **Use IntelliJ, not the CLI.** On Windows, Gradle cannot clean up

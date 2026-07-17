@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.common.CurrencyCode
+import com.cramsan.edifikana.lib.model.common.MonetaryAmount
 import com.cramsan.edifikana.lib.model.rent.RentConfigId
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
@@ -12,7 +14,6 @@ import kotlin.time.Instant
 /**
  * Entity representing a rent configuration row in the `rent_config` Supabase table.
  *
- * [monthlyAmount] is stored in the smallest currency unit (e.g. cents for USD).
  * [dueDay] is the day of the month (1–28) on which rent is due.
  */
 @OptIn(ExperimentalTime::class)
@@ -24,10 +25,10 @@ data class RentConfigEntity(
     @SerialName("unit_id")
     val unitId: UnitId,
     @SerialName("monthly_amount")
-    val monthlyAmount: Double,
+    val monthlyAmount: MonetaryAmount,
     @SerialName("due_day")
     val dueDay: Int,
-    val currency: String,
+    val currency: CurrencyCode,
     @SerialName("updated_at")
     val updatedAt: Instant,
     @SerialName("updated_by")

@@ -34,7 +34,7 @@ class SupabaseCommonAreaDatastore(private val postgrest: Postgrest, private val 
                 CreateCommonAreaEntity(
                     propertyId = propertyId,
                     name = name,
-                    type = type.name,
+                    type = type,
                     description = description,
                 )
             postgrest
@@ -97,7 +97,7 @@ class SupabaseCommonAreaDatastore(private val postgrest: Postgrest, private val 
                 .from(CommonAreaEntity.COLLECTION)
                 .update({
                     name?.let { value -> CommonAreaEntity::name setTo value }
-                    type?.let { value -> CommonAreaEntity::type setTo value.name }
+                    type?.let { value -> CommonAreaEntity::type setTo value }
                     description?.let { value -> CommonAreaEntity::description setTo value }
                 }) {
                     select()

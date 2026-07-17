@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
+import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
@@ -15,7 +16,7 @@ import kotlin.time.Instant
 @Serializable
 @DatabaseModel
 data class EventLogEntryEntity(
-    val id: String,
+    val id: EventLogEntryId,
     @SerialName("employee_id")
     val employeeId: EmployeeId?,
     @SerialName("fallback_employee_name")

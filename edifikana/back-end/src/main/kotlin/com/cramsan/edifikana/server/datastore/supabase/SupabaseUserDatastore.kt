@@ -1,6 +1,8 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.architecture.server.settings.SettingsHolder
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
 import com.cramsan.edifikana.lib.model.network.password.SET_NEW_PASSWORD_WEB_PATH
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.user.UserId
@@ -153,7 +155,7 @@ class SupabaseUserDatastore(
                         .from(UserEntity.COLLECTION)
                         .update(
                             {
-                                UserEntity::id setTo userId.userId
+                                UserEntity::id setTo userId
                                 UserEntity::authMetadata setTo
                                     temporaryUser.authMetadata.copy(
                                         pendingAssociation = false,
@@ -284,10 +286,10 @@ class SupabaseUserDatastore(
             .from(UserEntity.COLLECTION)
             .update(
                 {
-                    email?.let { UserEntity::email setTo it }
+                    email?.let { UserEntity::email setTo Email(it) }
                     firstName?.let { UserEntity::firstName setTo it }
                     lastName?.let { UserEntity::lastName setTo it }
-                    phoneNumber?.let { UserEntity::phoneNumber setTo it }
+                    phoneNumber?.let { UserEntity::phoneNumber setTo PhoneNumber(it) }
                     authMetadata?.let { UserEntity::authMetadata setTo it }
                 },
             ) {

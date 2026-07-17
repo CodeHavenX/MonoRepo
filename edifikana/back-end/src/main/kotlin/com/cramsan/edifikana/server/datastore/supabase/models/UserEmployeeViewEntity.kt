@@ -17,7 +17,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @DatabaseModel
 data class UserEmployeeViewEntity(
-    val id: String,
+    val id: EmployeeId,
     @SerialName("id_type")
     val idType: IdType,
     @SerialName("first_name")
@@ -35,7 +35,7 @@ data class UserEmployeeViewEntity(
      */
     fun toEmployee(): Employee {
         return Employee(
-            id = EmployeeId(id),
+            id = id,
             idType = idType,
             firstName = firstName,
             lastName = lastName,

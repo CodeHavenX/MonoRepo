@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.common.MonetaryAmount
 import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.edifikana.lib.model.payment.PaymentStatus
 import com.cramsan.edifikana.lib.model.payment.PaymentType
@@ -42,9 +43,9 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
             val entity =
                 CreatePaymentRecordEntity(
                     unitId = unitId,
-                    paymentType = paymentType.name,
+                    paymentType = paymentType,
                     periodMonth = periodMonth,
-                    amountDue = amountDue,
+                    amountDue = amountDue?.let { MonetaryAmount(it) },
                     dueDate = dueDate,
                     recordedBy = recordedBy,
                     notes = notes,
@@ -115,9 +116,9 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
             postgrest
                 .from(PaymentRecordEntity.COLLECTION)
                 .update({
-                    amountPaid?.let { value -> PaymentRecordEntity::amountPaid setTo value }
+                    amountPaid?.let { value -> PaymentRecordEntity::amountPaid setTo MonetaryAmount(value) }
                     paidDate?.let { value -> PaymentRecordEntity::paidDate setTo value }
-                    status?.let { value -> PaymentRecordEntity::status setTo value.name }
+                    status?.let { value -> PaymentRecordEntity::status setTo value }
                     notes?.let { value -> PaymentRecordEntity::notes setTo value }
                 }) {
                     select()

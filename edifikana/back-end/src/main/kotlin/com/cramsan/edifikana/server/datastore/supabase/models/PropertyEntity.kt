@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.DatabaseModel
@@ -19,7 +20,7 @@ data class PropertyEntity(
     @SerialName("organization_id")
     val organizationId: OrganizationId,
     @SerialName("image_url")
-    val imageUrl: String? = null,
+    val imageUrl: Url? = null,
     @SerialName("deleted_at")
     val deletedAt: Instant? = null,
 ) {
@@ -38,6 +39,6 @@ data class PropertyEntity(
         @SerialName("organization_id")
         val organizationId: OrganizationId,
         @SerialName("image_url")
-        val imageUrl: String? = null,
+        val imageUrl: Url? = null,
     )
 }

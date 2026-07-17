@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
 import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
@@ -14,7 +16,7 @@ import kotlin.time.Instant
 @Serializable
 @DatabaseModel
 data class TimeCardEventEntity(
-    val id: String,
+    val id: TimeCardEventId,
     @SerialName("employee_id")
     val employeeId: EmployeeId?,
     @SerialName("fallback_employee_name")
@@ -23,7 +25,7 @@ data class TimeCardEventEntity(
     val propertyId: PropertyId,
     val type: TimeCardEventType,
     @SerialName("image_url")
-    val imageUrl: String?,
+    val imageUrl: Url?,
     val timestamp: Instant,
     @SerialName("deleted_at")
     val deletedAt: Instant? = null,
@@ -46,7 +48,7 @@ data class TimeCardEventEntity(
         val propertyId: PropertyId,
         val type: TimeCardEventType,
         @SerialName("image_url")
-        val imageUrl: String?,
+        val imageUrl: Url?,
         val timestamp: Instant,
     )
 }

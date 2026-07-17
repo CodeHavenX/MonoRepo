@@ -3,29 +3,19 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
 import com.cramsan.edifikana.lib.model.asset.AssetId
+import com.cramsan.edifikana.lib.model.common.Email
 import com.cramsan.edifikana.lib.model.common.MimeType
-import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
-import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
-import com.cramsan.edifikana.lib.model.document.DocumentId
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.document.DocumentType
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.employee.EmployeeRole
-import com.cramsan.edifikana.lib.model.eventLog.EventLogEntryId
 import com.cramsan.edifikana.lib.model.eventLog.EventLogEventType
 import com.cramsan.edifikana.lib.model.identification.IdType
-import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
-import com.cramsan.edifikana.lib.model.notification.NotificationId
-import com.cramsan.edifikana.lib.model.notification.NotificationType
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
-import com.cramsan.edifikana.lib.model.payment.PaymentStatus
-import com.cramsan.edifikana.lib.model.payment.PaymentType
 import com.cramsan.edifikana.lib.model.property.PropertyId
-import com.cramsan.edifikana.lib.model.task.TaskId
-import com.cramsan.edifikana.lib.model.task.TaskPriority
-import com.cramsan.edifikana.lib.model.task.TaskStatus
-import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventType
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
@@ -133,9 +123,9 @@ fun InviteRole.toUserRole(): UserRole =
 
 fun UserEntity.toUser(): User {
     return User(
-        id = UserId(this.id),
-        email = this.email,
-        phoneNumber = this.phoneNumber,
+        id = this.id,
+        email = this.email.email,
+        phoneNumber = this.phoneNumber.phoneNumber,
         firstName = this.firstName,
         lastName = this.lastName,
         authMetadata =
@@ -162,9 +152,9 @@ fun CreateUserEntity(
     hashedPassword: SecureString?,
 ): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
-        id = userId.userId,
-        email = email,
-        phoneNumber = phoneNumber,
+        id = userId,
+        email = Email(email),
+        phoneNumber = PhoneNumber(phoneNumber),
         firstName = firstName,
         lastName = lastName,
         authMetadata =
@@ -188,8 +178,8 @@ fun CreateUserEntity(
     userEntity: UserEntity,
 ): UserEntity.CreateUserEntity {
     return UserEntity.CreateUserEntity(
-        id = userId.userId,
-        email = email,
+        id = userId,
+        email = Email(email),
         phoneNumber = userEntity.phoneNumber,
         firstName = userEntity.firstName,
         lastName = userEntity.lastName,
@@ -226,7 +216,7 @@ fun CreateEmployeeEntity(
 
 fun EmployeeEntity.toEmployee(): Employee {
     return Employee(
-        id = EmployeeId(this.id),
+        id = this.id,
         idType = this.idType,
         firstName = this.firstName,
         lastName = this.lastName,
@@ -249,7 +239,7 @@ fun CreatePropertyEntity(
         name = name,
         address = address,
         organizationId = organizationId,
-        imageUrl = imageUrl,
+        imageUrl = imageUrl?.let { Url(it) },
     )
 }
 
@@ -263,7 +253,7 @@ fun PropertyEntity.toProperty(): Property {
         name = this.name,
         address = this.address,
         organizationId = this.organizationId,
-        imageUrl = this.imageUrl,
+        imageUrl = this.imageUrl?.url,
     )
 }
 
@@ -284,7 +274,7 @@ fun CreateTimeCardEventEntity(
         fallbackEmployeeName = fallbackEmpName,
         propertyId = propertyId,
         type = type,
-        imageUrl = imageUrl,
+        imageUrl = imageUrl?.let { Url(it) },
         timestamp = timestamp,
     )
 }
@@ -296,12 +286,12 @@ fun CreateTimeCardEventEntity(
 fun TimeCardEventEntity.toTimeCardEvent(): TimeCardEvent? {
     val employeeId = this.employeeId ?: return null
     return TimeCardEvent(
-        id = TimeCardEventId(this.id),
+        id = this.id,
         employeeId = employeeId,
         fallbackEmployeeName = this.fallbackEmployeeName,
         propertyId = this.propertyId,
         type = this.type,
-        imageUrl = this.imageUrl,
+        imageUrl = this.imageUrl?.url,
         timestamp = this.timestamp,
     )
 }
@@ -340,7 +330,7 @@ fun CreateEventLogEntryEntity(
 
 fun EventLogEntryEntity.toEventLogEntry(): EventLogEntry {
     return EventLogEntry(
-        id = EventLogEntryId(this.id),
+        id = this.id,
         employeeId = this.employeeId,
         fallbackEmployeeName = this.fallbackEmployeeName,
         propertyId = this.propertyId,
@@ -370,15 +360,15 @@ fun OrganizationEntity.toOrganization() =
 @DatabaseModel
 fun NotificationEntity.toNotification(): Notification {
     return Notification(
-        id = NotificationId(this.id),
+        id = this.id,
         recipientUserId = this.recipientUserId,
-        recipientEmail = this.recipientEmail,
-        notificationType = enumValueOf<NotificationType>(this.notificationType),
+        recipientEmail = this.recipientEmail?.email,
+        notificationType = this.notificationType,
         description = this.description,
         isRead = this.isRead,
         createdAt = this.createdAt,
         readAt = this.readAt,
-        inviteId = this.inviteId?.let { InviteId(it) },
+        inviteId = this.inviteId,
     )
 }
 
@@ -388,12 +378,12 @@ fun NotificationEntity.toNotification(): Notification {
 
 fun InviteEntity.toInvite(): Invite {
     return Invite(
-        id = InviteId(this.id),
-        email = this.email,
+        id = this.id,
+        email = this.email.email,
         organizationId = this.organizationId,
         role = this.role,
         expiration = this.expiration,
-        inviteCode = this.inviteCode,
+        inviteCode = this.inviteCode.code,
         invitedBy = this.invitedBy,
         acceptedAt = this.acceptedAt,
         unitId = this.unitId,
@@ -419,9 +409,9 @@ fun CreateDocumentEntity(
         propertyId = propertyId,
         unitId = unitId,
         filename = filename,
-        mimeType = mimeType.value,
-        documentType = documentType.name,
-        assetId = assetId.assetId,
+        mimeType = mimeType,
+        documentType = documentType,
+        assetId = assetId,
         createdBy = createdBy,
     )
 }
@@ -432,14 +422,14 @@ fun CreateDocumentEntity(
 
 fun DocumentEntity.toDocument(): Document {
     return Document(
-        id = DocumentId(this.documentId),
+        id = this.documentId,
         orgId = this.orgId,
         propertyId = this.propertyId,
         unitId = this.unitId,
         filename = this.filename,
-        mimeType = MimeType(this.mimeType),
-        documentType = enumValueOf<DocumentType>(this.documentType),
-        assetId = AssetId(this.assetId),
+        mimeType = this.mimeType,
+        documentType = this.documentType,
+        assetId = this.assetId,
         createdBy = this.createdBy,
         createdAt = this.createdAt,
     )
@@ -468,10 +458,10 @@ fun OrgMemberViewEntity.toOrgMemberView(): OrgMemberView {
 
 fun CommonAreaEntity.toCommonArea(): CommonArea {
     return CommonArea(
-        id = CommonAreaId(commonAreaId),
+        id = commonAreaId,
         propertyId = propertyId,
         name = name,
-        type = enumValueOf<CommonAreaType>(type),
+        type = type,
         description = description,
         createdAt = createdAt,
     )
@@ -483,7 +473,7 @@ fun CommonAreaEntity.toCommonArea(): CommonArea {
 
 fun TaskEntity.toTask(): Task {
     return Task(
-        id = TaskId(id),
+        id = id,
         propertyId = propertyId,
         unitId = unitId,
         commonAreaId = commonAreaId,
@@ -492,8 +482,8 @@ fun TaskEntity.toTask(): Task {
         statusChangedBy = statusChangedBy,
         title = title,
         description = description,
-        priority = enumValueOf<TaskPriority>(priority),
-        status = enumValueOf<TaskStatus>(status),
+        priority = priority,
+        status = status,
         dueDate = dueDate,
         createdAt = createdAt,
         completedAt = completedAt,
@@ -552,11 +542,11 @@ fun PaymentRecordEntity.toPaymentRecord(): PaymentRecord {
     return PaymentRecord(
         id = this.paymentRecordId,
         unitId = this.unitId,
-        paymentType = enumValueOf<PaymentType>(this.paymentType),
+        paymentType = this.paymentType,
         periodMonth = this.periodMonth,
-        amountDue = this.amountDue,
-        amountPaid = this.amountPaid,
-        status = enumValueOf<PaymentStatus>(this.status),
+        amountDue = this.amountDue?.amount,
+        amountPaid = this.amountPaid?.amount,
+        status = this.status,
         dueDate = this.dueDate,
         paidDate = this.paidDate,
         recordedBy = this.recordedBy,
@@ -573,9 +563,9 @@ fun RentConfigEntity.toRentConfig(): RentConfig {
     return RentConfig(
         id = this.rentConfigId,
         unitId = this.unitId,
-        monthlyAmount = this.monthlyAmount,
+        monthlyAmount = this.monthlyAmount.amount,
         dueDay = this.dueDay,
-        currency = this.currency,
+        currency = this.currency.code,
         updatedAt = this.updatedAt,
         updatedBy = this.updatedBy,
         createdAt = this.createdAt,
@@ -593,12 +583,12 @@ fun OccupantEntity.toOccupant(): com.cramsan.edifikana.server.service.models.Occ
         userId = this.userId,
         addedBy = this.addedBy,
         name = this.name,
-        email = this.email,
-        occupantType = enumValueOf(this.occupantType),
+        email = this.email?.email,
+        occupantType = this.occupantType,
         isPrimary = this.isPrimary,
         startDate = this.startDate,
         endDate = this.endDate,
-        status = enumValueOf(this.status),
+        status = this.status,
         addedAt = this.addedAt,
     )
 }

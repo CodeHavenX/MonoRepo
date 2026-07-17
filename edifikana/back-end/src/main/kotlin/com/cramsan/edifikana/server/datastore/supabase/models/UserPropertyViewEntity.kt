@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
@@ -15,13 +16,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 @DatabaseModel
 data class UserPropertyViewEntity(
-    val id: String,
+    val id: PropertyId,
     val name: String,
     val address: String,
     @SerialName("organization_id")
     val organizationId: OrganizationId,
     @SerialName("image_url")
-    val imageUrl: String? = null,
+    val imageUrl: Url? = null,
     @SerialName("user_id")
     val userId: UserId,
 ) {
@@ -30,11 +31,11 @@ data class UserPropertyViewEntity(
      */
     fun toProperty(): Property {
         return Property(
-            id = PropertyId(id),
+            id = id,
             name = name,
             address = address,
             organizationId = organizationId,
-            imageUrl = imageUrl,
+            imageUrl = imageUrl?.url,
         )
     }
 }

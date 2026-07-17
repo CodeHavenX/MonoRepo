@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
@@ -129,7 +130,7 @@ class SupabasePropertyDatastore(private val postgrest: Postgrest, private val cl
                     {
                         name?.let { value -> PropertyEntity::name setTo value }
                         address?.let { value -> PropertyEntity::address setTo value }
-                        imageUrl?.let { value -> PropertyEntity::imageUrl setTo value }
+                        imageUrl?.let { value -> PropertyEntity::imageUrl setTo Url(value) }
                     },
                 ) {
                     select()

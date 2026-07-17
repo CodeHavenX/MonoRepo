@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.datastore
 
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.supabase.models.AuthMetadataEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserEntity
@@ -13,9 +15,9 @@ class SupabaseMappersTest {
     fun `UserEntity toUser maps all fields correctly`() {
         val entity =
             UserEntity(
-                id = "user-123",
-                email = "test@example.com",
-                phoneNumber = "1234567890",
+                id = UserId("user-123"),
+                email = Email("test@example.com"),
+                phoneNumber = PhoneNumber("1234567890"),
                 firstName = "John",
                 lastName = "Doe",
                 authMetadata =

@@ -116,7 +116,7 @@ class SupabaseDocumentDatastore(private val postgrest: Postgrest, private val cl
                 .from(DocumentEntity.COLLECTION)
                 .update({
                     filename?.let { value -> DocumentEntity::filename setTo value }
-                    documentType?.let { value -> DocumentEntity::documentType setTo value.name }
+                    documentType?.let { value -> DocumentEntity::documentType setTo value }
                 }) {
                     select()
                     filter {

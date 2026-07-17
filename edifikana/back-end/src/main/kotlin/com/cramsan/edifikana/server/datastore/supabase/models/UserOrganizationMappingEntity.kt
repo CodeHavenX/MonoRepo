@@ -23,7 +23,7 @@ data class UserOrganizationMappingEntity(
     val role: OrgRole,
     val status: OrgMemberStatus,
     @SerialName("invited_by")
-    val invitedBy: String?,
+    val invitedBy: UserId?,
     @SerialName("joined_at")
     val joinedAt: Instant?,
 ) {
@@ -56,9 +56,9 @@ data class UserOrganizationMappingEntity(
     @DatabaseModel
     data class AcceptInviteEntity(
         @SerialName("user_id")
-        val userId: String,
+        val userId: UserId,
         @SerialName("organization_id")
-        val organizationId: String,
+        val organizationId: OrganizationId,
         val role: OrgRole,
         val status: OrgMemberStatus,
         @SerialName("joined_at")

@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.common.Email
 import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
 import com.cramsan.edifikana.lib.model.occupant.OccupantId
 import com.cramsan.edifikana.lib.model.occupant.OccupantType
@@ -46,8 +47,8 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
                     userId = userId,
                     addedBy = addedBy,
                     name = name,
-                    email = email,
-                    occupantType = occupantType.name,
+                    email = email?.let { Email(it) },
+                    occupantType = occupantType,
                     isPrimary = isPrimary,
                     startDate = startDate,
                     endDate = endDate,
@@ -93,7 +94,7 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
                         OccupantEntity::unitId eq unitId.unitId
                         OccupantEntity::deletedAt isExact null
                         if (!includeInactive) {
-                            OccupantEntity::status eq OccupancyStatus.ACTIVE.name
+                            OccupantEntity::status eq OccupancyStatus.ACTIVE
                         }
                     }
                 }.decodeList<OccupantEntity>()
@@ -130,7 +131,7 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
                         isIn("unit_id", unitIds)
                         OccupantEntity::deletedAt isExact null
                         if (!includeInactive) {
-                            OccupantEntity::status eq OccupancyStatus.ACTIVE.name
+                            OccupantEntity::status eq OccupancyStatus.ACTIVE
                         }
                     }
                 }.decodeList<OccupantEntity>()
@@ -148,7 +149,7 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
             }) {
                 filter {
                     OccupantEntity::unitId eq unitId.unitId
-                    OccupantEntity::status eq OccupancyStatus.ACTIVE.name
+                    OccupantEntity::status eq OccupancyStatus.ACTIVE
                     OccupantEntity::deletedAt isExact null
                 }
             }
@@ -173,11 +174,11 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
                 .from(OccupantEntity.COLLECTION)
                 .update({
                     name?.let { value -> OccupantEntity::name setTo value }
-                    email?.let { value -> OccupantEntity::email setTo value }
-                    occupantType?.let { value -> OccupantEntity::occupantType setTo value.name }
+                    email?.let { value -> OccupantEntity::email setTo Email(value) }
+                    occupantType?.let { value -> OccupantEntity::occupantType setTo value }
                     isPrimary?.let { value -> OccupantEntity::isPrimary setTo value }
                     endDate?.let { value -> OccupantEntity::endDate setTo value }
-                    status?.let { value -> OccupantEntity::status setTo value.name }
+                    status?.let { value -> OccupantEntity::status setTo value }
                 }) {
                     select()
                     filter {
@@ -201,7 +202,7 @@ class SupabaseOccupantDatastore(private val postgrest: Postgrest) : OccupantData
             postgrest
                 .from(OccupantEntity.COLLECTION)
                 .update({
-                    OccupantEntity::status setTo OccupancyStatus.INACTIVE.name
+                    OccupantEntity::status setTo OccupancyStatus.INACTIVE
                     OccupantEntity::endDate setTo today
                 }) {
                     select()

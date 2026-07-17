@@ -975,7 +975,7 @@ class UserControllerTest :
      */
     @Test
     fun `test setPasswordAuth succeeds when user calls for own account`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val userService = get<UserService>()
             val rbacService = get<RBACService>()
@@ -1027,7 +1027,7 @@ class UserControllerTest :
      */
     @Test
     fun `test setPasswordAuth returns 403 when user calls for different account`() =
-        testBackEndApplication {
+        testBackEndApplication { client ->
             // Arrange
             val expectedResponse = "You are not authorized to perform this action."
             val userService = get<UserService>()

@@ -16,24 +16,27 @@ import io.ktor.http.HttpMethod
  */
 
 object TimeCardApi : Api("time_card") {
-    val createTimeCardEvent = operation<
-        CreateTimeCardEventNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        TimeCardEventNetworkResponse,
-    >(HttpMethod.Post)
+    val createTimeCardEvent =
+        operation<
+            CreateTimeCardEventNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            TimeCardEventNetworkResponse,
+            >(HttpMethod.Post)
 
-    val getTimeCardEvent = operation<
-        NoRequestBody,
-        NoQueryParam,
-        TimeCardEventId,
-        TimeCardEventNetworkResponse,
-    >(HttpMethod.Get)
+    val getTimeCardEvent =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            TimeCardEventId,
+            TimeCardEventNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getTimeCardEvents = operation<
-        NoRequestBody,
-        GetTimeCardEventsQueryParams,
-        NoPathParam,
-        TimeCardEventListNetworkResponse,
-    >(HttpMethod.Get)
+    val getTimeCardEvents =
+        operation<
+            NoRequestBody,
+            GetTimeCardEventsQueryParams,
+            NoPathParam,
+            TimeCardEventListNetworkResponse,
+            >(HttpMethod.Get)
 }

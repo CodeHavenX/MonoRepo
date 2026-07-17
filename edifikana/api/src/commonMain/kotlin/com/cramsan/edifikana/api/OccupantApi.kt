@@ -20,38 +20,43 @@ import io.ktor.http.HttpMethod
  */
 
 object OccupantApi : Api("occupants") {
-    val createOccupant = operation<
-        CreateOccupantNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        OccupantNetworkResponse,
-    >(HttpMethod.Post)
+    val createOccupant =
+        operation<
+            CreateOccupantNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            OccupantNetworkResponse,
+            >(HttpMethod.Post)
 
-    val getOccupant = operation<
-        NoRequestBody,
-        NoQueryParam,
-        OccupantId,
-        OccupantNetworkResponse,
-    >(HttpMethod.Get)
+    val getOccupant =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            OccupantId,
+            OccupantNetworkResponse,
+            >(HttpMethod.Get)
 
-    val listOccupantsForUnit = operation<
-        NoRequestBody,
-        GetOccupantsForUnitQueryParams,
-        NoPathParam,
-        OccupantListNetworkResponse,
-    >(HttpMethod.Get)
+    val listOccupantsForUnit =
+        operation<
+            NoRequestBody,
+            GetOccupantsForUnitQueryParams,
+            NoPathParam,
+            OccupantListNetworkResponse,
+            >(HttpMethod.Get)
 
-    val updateOccupant = operation<
-        UpdateOccupantNetworkRequest,
-        NoQueryParam,
-        OccupantId,
-        OccupantNetworkResponse,
-    >(HttpMethod.Put)
+    val updateOccupant =
+        operation<
+            UpdateOccupantNetworkRequest,
+            NoQueryParam,
+            OccupantId,
+            OccupantNetworkResponse,
+            >(HttpMethod.Put)
 
-    val removeOccupant = operation<
-        NoRequestBody,
-        NoQueryParam,
-        OccupantId,
-        OccupantNetworkResponse,
-    >(HttpMethod.Delete)
+    val removeOccupant =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            OccupantId,
+            OccupantNetworkResponse,
+            >(HttpMethod.Delete)
 }

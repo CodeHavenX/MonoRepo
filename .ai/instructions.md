@@ -288,7 +288,7 @@ class SignInViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `signIn emits navigation event on success`() = runCoroutineTest {
+    fun `signIn emits navigation event on success`(): Unit = runCoroutineTest {
         coEvery { authManager.signIn(any(), any()) } returns Result.success(Unit)
 
         turbineScope {
@@ -333,7 +333,7 @@ class PropertyManagerTest : CoroutineTest() {
     }
 
     @Test
-    fun `getPropertyList returns property list`() = runCoroutineTest {
+    fun `getPropertyList returns property list`(): Unit = runCoroutineTest {
         val propertyList = listOf(mockk<PropertyModel>())
         coEvery { propertyService.getPropertyList() } returns Result.success(propertyList)
 
@@ -378,7 +378,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    fun `isSignedIn returns true when session is active`() = runTest {
+    fun `isSignedIn returns true when session is active`(): Unit = runTest {
         coEvery { auth.currentUserOrNull() } returns mockk()
         coEvery { auth.refreshCurrentSession() } just Runs
 
@@ -447,7 +447,7 @@ class EmployeeControllerTest : CoroutineTest(), KoinTest {
     fun cleanUp() { stopKoin() }
 
     @Test
-    fun `createEmployee succeeds when user has required role`() = testBackEndApplication {
+    fun `createEmployee succeeds when user has required role`(): Unit = testBackEndApplication {
         val requestBody = readFileContent("requests/create_employee_request.json")
         val expectedResponse = readFileContent("requests/create_employee_response.json")
         val employeeService = get<EmployeeService>()
@@ -501,7 +501,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `createUser returns success when datastore succeeds`() = runTest {
+    fun `createUser returns success when datastore succeeds`(): Unit = runTest {
         val user = User(id = UserId("user-1"), ...)
         coEvery { userDatastore.createUser(any()) } returns user
 
@@ -553,7 +553,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createEmployee should return employee on success`() = runCoroutineTest {
+    fun `createEmployee should return employee on success`(): Unit = runCoroutineTest {
         val result = employeeDatastore.createEmployee(
             idType = IdType.PASSPORT,
             firstName = "${test_prefix}_First",
@@ -567,7 +567,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `deleteEmployee should remove employee`() = runCoroutineTest {
+    fun `deleteEmployee should remove employee`(): Unit = runCoroutineTest {
         val createResult = employeeDatastore.createEmployee(
             firstName = "${test_prefix}_ToDelete",
             lastName = "${test_prefix}_LastToDelete",

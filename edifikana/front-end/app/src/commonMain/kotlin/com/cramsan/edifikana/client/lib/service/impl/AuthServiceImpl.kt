@@ -255,7 +255,6 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             auth.updateUser {
                 password = newPassword.reveal()
             }
-            // TODO(#526): replace with retry logic once application-wide Ktor retry is implemented
             notifyPasswordSet().getOrThrow()
         }
 
@@ -265,19 +264,13 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             auth.updateUser {
                 password = newPassword.reveal()
             }
-            // TODO(#526): replace with retry logic once application-wide Ktor retry is implemented
             notifyPasswordSet().getOrThrow()
         }
 
     override suspend fun notifyPasswordSet(): Result<Unit> =
         runSuspendCatching(TAG) {
-            val userId =
-                auth.currentUserOrNull()?.id?.let {
-                    UserId(it)
-                } ?: error("User not signed in")
             UserApi.setPasswordAuth
                 .buildRequest(
-                    argument = userId,
                 ).execute(http)
         }
 

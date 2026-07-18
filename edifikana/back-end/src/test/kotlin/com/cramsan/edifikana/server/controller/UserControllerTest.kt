@@ -1015,50 +1015,10 @@ class UserControllerTest :
             }
 
             // Act
-            val response = client.patch("user/password-auth/user123")
+            val response = client.patch("user/password-auth")
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
             coVerify { userService.setPasswordAuthEnabled(userId) }
-        }
-
-    /**
-     * Test that setPasswordAuth returns 403 when user calls for a different account.
-     */
-    @Test
-    fun `test setPasswordAuth returns 403 when user calls for different account`() =
-        testBackEndApplication { client ->
-            // Arrange
-            val expectedResponse = "You are not authorized to perform this action."
-            val userService = get<UserService>()
-            val rbacService = get<RBACService>()
-            val userId = UserId("user654")
-            val targetUserId = UserId("user123")
-            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-            val context =
-                ClientContext.AuthenticatedClientContext(
-                    SupabaseContextPayload(
-                        userInfo = mockk(),
-                        userId = userId,
-                    ),
-                )
-            coEvery {
-                contextRetriever.getContext(any())
-            }.answers {
-                context
-            }
-            coEvery {
-                rbacService.hasRole(context, targetUserId)
-            }.answers {
-                false
-            }
-
-            // Act
-            val response = client.patch("user/password-auth/user123")
-
-            // Assert
-            coVerify { userService wasNot Called }
-            assertEquals(HttpStatusCode.Unauthorized, response.status)
-            assertEquals(expectedResponse, response.bodyAsText())
         }
 }

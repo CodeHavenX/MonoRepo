@@ -575,11 +575,9 @@ class AuthServiceImplTest {
         val currentPassword = SecureString("oldPassword1!")
         val newPassword = SecureString("newPassword1!")
         val email = "user@example.com"
-        val userInfo = mockk<UserInfo> { coEvery { id } returns "user-13" }
         coEvery { auth.signInWith(any<Email>(), any(), any()) } just Runs
         coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
         coEvery { auth.updateUser(any(), anyNullable(), any()) } returns mockk()
-        coEvery { auth.currentUserOrNull() } returns userInfo
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success("")
         }
@@ -589,7 +587,6 @@ class AuthServiceImplTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { auth.currentUserOrNull() }
     }
 
     /**
@@ -643,10 +640,8 @@ class AuthServiceImplTest {
     fun `setNewPassword calls notifyPasswordSet after Supabase Auth update`() = runTest {
         // Arrange
         val newPassword = SecureString("newSecurePass1!")
-        val userInfo = mockk<UserInfo> { coEvery { id } returns "user-11" }
         coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
         coEvery { auth.updateUser(any(), anyNullable(), any()) } returns mockk()
-        coEvery { auth.currentUserOrNull() } returns userInfo
         ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success("")
         }
@@ -656,7 +651,6 @@ class AuthServiceImplTest {
 
         // Assert
         assertTrue(result.isSuccess)
-        coVerify { auth.currentUserOrNull() }
     }
 
     /**

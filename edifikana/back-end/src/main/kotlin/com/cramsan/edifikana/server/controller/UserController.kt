@@ -332,12 +332,11 @@ class UserController(private val userService: UserService, private val rbacServi
      */
     suspend fun setPasswordAuth(
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
-        userId: UserId,
     ): NoResponseBody {
-        if (!rbacService.hasRole(context, userId)) {
+        if (!rbacService.hasRole(context, context.payload.userId)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        userService.setPasswordAuthEnabled(userId).requireSuccess()
+        userService.setPasswordAuthEnabled(context.payload.userId).requireSuccess()
         return NoResponseBody
     }
 
@@ -387,7 +386,7 @@ class UserController(private val userService: UserService, private val rbacServi
                 requestPasswordReset(request.requestBody)
             }
             handler(api.setPasswordAuth) { request ->
-                setPasswordAuth(request.context, request.pathParam)
+                setPasswordAuth(request.context)
             }
         }
     }

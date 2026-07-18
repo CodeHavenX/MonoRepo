@@ -165,13 +165,13 @@ object UserApi : Api("user") {
 
     /**
      * Mark that the authenticated user has set a password.
-     * Route: PATCH /user/password-auth/{userId}
+     * Route: PATCH /user/password-auth/
      */
     val setPasswordAuth =
         operation<
             NoRequestBody,
             NoQueryParam,
-            UserId,
+            NoPathParam,
             NoResponseBody,
             >(HttpMethod.Patch, "password-auth")
 }

@@ -248,4 +248,16 @@ object UserApi : Api("user") {
                 "regardless of whether the email or phone number exists, to avoid leaking account existence.",
             responses = UniversalResponsesOnly,
         )
+
+    /**
+     * Mark that the authenticated user has set a password.
+     * Route: PATCH /user/password-auth/
+     */
+    val setPasswordAuth =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            NoResponseBody,
+            >(HttpMethod.Patch, "password-auth")
 }

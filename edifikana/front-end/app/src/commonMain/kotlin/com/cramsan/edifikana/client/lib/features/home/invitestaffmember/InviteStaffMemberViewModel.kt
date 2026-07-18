@@ -70,20 +70,22 @@ class InviteStaffMemberViewModel(dependencies: ViewModelDependencies, private va
             }
 
             updateUiState { it.copy(isLoading = true) }
-            authManager.inviteEmployee(email, organizationId, role.role).onFailure {
-                updateUiState { it.copy(isLoading = false) }
-                emitWindowEvent(
-                    EdifikanaWindowsEvent.ShowSnackbar("Failed to send invitation"),
-                )
-                return@launch
-            }
-
-            emitWindowEvent(
-                EdifikanaWindowsEvent.ShowSnackbar("Invitation sent to $email"),
-            )
-            emitWindowEvent(
-                EdifikanaWindowsEvent.NavigateBack,
-            )
+            authManager
+                .inviteEmployee(email, organizationId, role.role)
+                .onFailure {
+                    updateUiState { it.copy(isLoading = false) }
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.ShowSnackbar("Failed to send invitation"),
+                    )
+                }.onSuccess {
+                    updateUiState { it.copy(isLoading = false) }
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.ShowSnackbar("Invitation sent to $email"),
+                    )
+                    emitWindowEvent(
+                        EdifikanaWindowsEvent.NavigateBack,
+                    )
+                }
         }
     }
 

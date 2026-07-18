@@ -194,6 +194,7 @@ class InviteStaffMemberViewModelTest : CoroutineTest() {
 
         coVerify { authManager.inviteEmployee(email, organizationId, InviteRole.ADMIN) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
+        assertEquals(false, viewModel.uiState.value.isLoading)
     }
 
     @Test

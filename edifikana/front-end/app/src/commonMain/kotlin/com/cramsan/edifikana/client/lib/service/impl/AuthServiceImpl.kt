@@ -255,6 +255,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             auth.updateUser {
                 password = newPassword.reveal()
             }
+            notifyPasswordSet().getOrThrow()
         }
 
     @OptIn(SecureStringAccess::class)
@@ -263,6 +264,13 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
             auth.updateUser {
                 password = newPassword.reveal()
             }
+            notifyPasswordSet().getOrThrow()
+        }
+
+    override suspend fun notifyPasswordSet(): Result<Unit> =
+        runSuspendCatching(TAG) {
+            UserApi.setPasswordAuth
+                .buildRequest().execute(http)
         }
 
     override suspend fun inviteEmployee(

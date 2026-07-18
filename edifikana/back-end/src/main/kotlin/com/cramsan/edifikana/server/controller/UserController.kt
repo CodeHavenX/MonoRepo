@@ -327,6 +327,20 @@ class UserController(private val userService: UserService, private val rbacServi
     }
 
     /**
+     * Handles marking the authenticated user's account as having a password set.
+     * Only the user themselves may call this endpoint.
+     */
+    suspend fun setPasswordAuth(
+        context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+    ): NoResponseBody {
+        if (!rbacService.hasRole(context, context.payload.userId)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
+        userService.setPasswordAuthEnabled(context.payload.userId).requireSuccess()
+        return NoResponseBody
+    }
+
+    /**
      * Registers the routes for the user controller. The [route] parameter is the root path for the controller.
      */
 
@@ -370,6 +384,9 @@ class UserController(private val userService: UserService, private val rbacServi
             }
             handler(api.requestPasswordReset) { request ->
                 requestPasswordReset(request.requestBody)
+            }
+            handler(api.setPasswordAuth) { request ->
+                setPasswordAuth(request.context)
             }
         }
     }

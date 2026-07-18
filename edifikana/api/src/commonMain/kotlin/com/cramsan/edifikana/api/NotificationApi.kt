@@ -18,41 +18,45 @@ object NotificationApi : Api("notification") {
     /**
      * Get all notifications for the authenticated user.
      */
-    val getNotifications = operation<
-        NoRequestBody,
-        NoQueryParam,
-        NoPathParam,
-        NotificationListNetworkResponse,
-    >(HttpMethod.Get)
+    val getNotifications =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            NoPathParam,
+            NotificationListNetworkResponse,
+            >(HttpMethod.Get)
 
     /**
      * Get a specific notification by ID.
      */
-    val getNotification = operation<
-        NoRequestBody,
-        NoQueryParam,
-        NotificationId,
-        NotificationNetworkResponse,
-    >(HttpMethod.Get)
+    val getNotification =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            NotificationId,
+            NotificationNetworkResponse,
+            >(HttpMethod.Get)
 
     /**
      * Mark a notification as read.
      * Uses POST method with path param to avoid routing conflicts.
      */
-    val markAsRead = operation<
-        NoRequestBody,
-        NoQueryParam,
-        NotificationId,
-        NotificationNetworkResponse,
-    >(HttpMethod.Post)
+    val markAsRead =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            NotificationId,
+            NotificationNetworkResponse,
+            >(HttpMethod.Post)
 
     /**
      * Delete a notification.
      */
-    val deleteNotification = operation<
-        NoRequestBody,
-        NoQueryParam,
-        NotificationId,
-        NoResponseBody,
-    >(HttpMethod.Delete)
+    val deleteNotification =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            NotificationId,
+            NoResponseBody,
+            >(HttpMethod.Delete)
 }

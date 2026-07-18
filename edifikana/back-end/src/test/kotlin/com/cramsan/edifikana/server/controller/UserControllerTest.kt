@@ -21,6 +21,7 @@ import com.cramsan.framework.test.CoroutineTest
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
@@ -967,5 +968,57 @@ class UserControllerTest :
             coVerify(exactly = 0) { userService.cancelInvite(any()) }
             assertEquals(HttpStatusCode.Unauthorized, response.status)
             assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    /**
+     * Test that setPasswordAuth succeeds when user calls for own account.
+     */
+    @Test
+    fun `test setPasswordAuth succeeds when user calls for own account`() =
+        testBackEndApplication { client ->
+            // Arrange
+            val userService = get<UserService>()
+            val rbacService = get<RBACService>()
+            val userId = UserId("user123")
+            coEvery {
+                userService.setPasswordAuthEnabled(userId)
+            }.answers {
+                Result.success(
+                    User(
+                        id = UserId("user123"),
+                        email = "john.doe@example.com",
+                        phoneNumber = "5051352468",
+                        firstName = "John",
+                        lastName = "Doe",
+                        authMetadata = User.AuthMetadata(isPasswordSet = true),
+                        role = UserRole.USER,
+                    ),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = userId,
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRole(context, userId)
+            }.answers {
+                true
+            }
+
+            // Act
+            val response = client.patch("user/password-auth")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            coVerify { userService.setPasswordAuthEnabled(userId) }
         }
 }

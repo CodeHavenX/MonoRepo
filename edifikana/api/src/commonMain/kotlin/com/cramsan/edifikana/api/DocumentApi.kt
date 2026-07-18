@@ -21,38 +21,43 @@ import io.ktor.http.HttpMethod
  */
 
 object DocumentApi : Api("document") {
-    val createDocument = operation<
-        CreateDocumentNetworkRequest,
-        NoQueryParam,
-        NoPathParam,
-        DocumentNetworkResponse,
-    >(HttpMethod.Post)
+    val createDocument =
+        operation<
+            CreateDocumentNetworkRequest,
+            NoQueryParam,
+            NoPathParam,
+            DocumentNetworkResponse,
+            >(HttpMethod.Post)
 
-    val getDocument = operation<
-        NoRequestBody,
-        NoQueryParam,
-        DocumentId,
-        DocumentNetworkResponse,
-    >(HttpMethod.Get)
+    val getDocument =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            DocumentId,
+            DocumentNetworkResponse,
+            >(HttpMethod.Get)
 
-    val getDocuments = operation<
-        NoRequestBody,
-        GetDocumentsQueryParams,
-        NoPathParam,
-        DocumentListNetworkResponse,
-    >(HttpMethod.Get)
+    val getDocuments =
+        operation<
+            NoRequestBody,
+            GetDocumentsQueryParams,
+            NoPathParam,
+            DocumentListNetworkResponse,
+            >(HttpMethod.Get)
 
-    val updateDocument = operation<
-        UpdateDocumentNetworkRequest,
-        NoQueryParam,
-        DocumentId,
-        DocumentNetworkResponse,
-    >(HttpMethod.Put)
+    val updateDocument =
+        operation<
+            UpdateDocumentNetworkRequest,
+            NoQueryParam,
+            DocumentId,
+            DocumentNetworkResponse,
+            >(HttpMethod.Put)
 
-    val deleteDocument = operation<
-        NoRequestBody,
-        NoQueryParam,
-        DocumentId,
-        NoResponseBody,
-    >(HttpMethod.Delete)
+    val deleteDocument =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            DocumentId,
+            NoResponseBody,
+            >(HttpMethod.Delete)
 }

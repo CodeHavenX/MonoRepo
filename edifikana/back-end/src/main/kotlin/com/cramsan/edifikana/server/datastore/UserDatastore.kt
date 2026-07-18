@@ -83,4 +83,9 @@ interface UserDatastore {
      * Returns success regardless of whether the identifier exists in the system.
      */
     suspend fun requestPasswordReset(email: String?, phoneNumber: String?): Result<Unit>
+
+    /**
+     * Sets canPasswordAuth to true for the given [id]. Returns the updated [User].
+     */
+    suspend fun setPasswordAuthEnabled(id: UserId): Result<User>
 }

@@ -14,52 +14,59 @@ import io.ktor.http.HttpMethod
  */
 
 object StorageApi : Api("storage") {
-    val getSignedDownload = operation<
-        NoRequestBody,
-        GetSignedDownloadQueryParams,
-        NoPathParam,
-        AssetNetworkResponse,
-    >(HttpMethod.Get, "signed-download")
+    val getSignedDownload =
+        operation<
+            NoRequestBody,
+            GetSignedDownloadQueryParams,
+            NoPathParam,
+            AssetNetworkResponse,
+            >(HttpMethod.Get, "signed-download")
 
-    val createProfileSignedUpload = operation<
-        NoRequestBody,
-        CreateSignedUploadQueryParams,
-        NoPathParam,
-        SignedUploadUrlNetworkResponse,
-    >(HttpMethod.Post, "profile/signed-upload")
+    val createProfileSignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "profile/signed-upload")
 
-    val createTimeCardSignedUpload = operation<
-        NoRequestBody,
-        CreateSignedUploadQueryParams,
-        NoPathParam,
-        SignedUploadUrlNetworkResponse,
-    >(HttpMethod.Post, "time-card/signed-upload")
+    val createTimeCardSignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "time-card/signed-upload")
 
-    val createTaskSignedUpload = operation<
-        NoRequestBody,
-        CreateSignedUploadQueryParams,
-        NoPathParam,
-        SignedUploadUrlNetworkResponse,
-    >(HttpMethod.Post, "task/signed-upload")
+    val createTaskSignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "task/signed-upload")
 
-    val createEventLogSignedUpload = operation<
-        NoRequestBody,
-        CreateSignedUploadQueryParams,
-        NoPathParam,
-        SignedUploadUrlNetworkResponse,
-    >(HttpMethod.Post, "event-log/signed-upload")
+    val createEventLogSignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "event-log/signed-upload")
 
-    val createPropertySignedUpload = operation<
-        NoRequestBody,
-        CreateSignedUploadQueryParams,
-        NoPathParam,
-        SignedUploadUrlNetworkResponse,
-    >(HttpMethod.Post, "property/signed-upload")
+    val createPropertySignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "property/signed-upload")
 
-    val createOrganizationSignedUpload = operation<
-        NoRequestBody,
-        CreateSignedUploadQueryParams,
-        NoPathParam,
-        SignedUploadUrlNetworkResponse,
-    >(HttpMethod.Post, "organization/signed-upload")
+    val createOrganizationSignedUpload =
+        operation<
+            NoRequestBody,
+            CreateSignedUploadQueryParams,
+            NoPathParam,
+            SignedUploadUrlNetworkResponse,
+            >(HttpMethod.Post, "organization/signed-upload")
 }

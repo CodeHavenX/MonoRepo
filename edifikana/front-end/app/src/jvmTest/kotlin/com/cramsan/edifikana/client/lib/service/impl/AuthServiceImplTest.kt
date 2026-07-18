@@ -545,8 +545,10 @@ class AuthServiceImplTest {
         val currentPassword = SecureString("oldPassword")
         val newPassword = SecureString("newPassword")
         val email = "user@example.com"
+        val userInfo = mockk<UserInfo> { coEvery { id } returns "user-12" }
         coEvery { auth.signInWith(any<Email>(), any(), any()) } just Runs
         coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
+        coEvery { auth.currentUserOrNull() } returns userInfo
        ktorTestEngine.configure {
             coEvery { produceResponse(any()) } returns MockResponseData.Success("")
         }
@@ -563,6 +565,31 @@ class AuthServiceImplTest {
     }
 
     /**
+     * Tests that changePassword calls notifyPasswordSet (the backend password-auth sync endpoint)
+     * after the Supabase Auth update succeeds.
+     */
+    @OptIn(SecureStringAccess::class)
+    @Test
+    fun `changePassword calls notifyPasswordSet after Supabase Auth update`() = runTest {
+        // Arrange
+        val currentPassword = SecureString("oldPassword1!")
+        val newPassword = SecureString("newPassword1!")
+        val email = "user@example.com"
+        coEvery { auth.signInWith(any<Email>(), any(), any()) } just Runs
+        coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
+        coEvery { auth.updateUser(any(), anyNullable(), any()) } returns mockk()
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success("")
+        }
+
+        // Act
+        val result = service.changePassword(email, currentPassword, newPassword)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+
+    /**
      * Tests that setNewPassword calls auth.updateUser and returns success.
      */
     @OptIn(SecureStringAccess::class)
@@ -570,8 +597,13 @@ class AuthServiceImplTest {
     fun `setNewPassword calls auth updateUser with the provided password`() = runTest {
         // Arrange
         val newPassword = SecureString("newSecurePass1!")
+        val userInfo = mockk<UserInfo> { coEvery { id } returns "user-10" }
         coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
         coEvery { auth.updateUser(any(), anyNullable(), any()) } returns mockk()
+        coEvery { auth.currentUserOrNull() } returns userInfo
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success("")
+        }
 
         // Act
         val result = service.setNewPassword(newPassword)
@@ -591,6 +623,48 @@ class AuthServiceImplTest {
         val newPassword = SecureString("newSecurePass1!")
         coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
         coEvery { auth.updateUser(any(), anyNullable(), any()) } throws RuntimeException("auth error")
+
+        // Act
+        val result = service.setNewPassword(newPassword)
+
+        // Assert
+        assertTrue(result.isFailure)
+    }
+
+    /**
+     * Tests that setNewPassword calls notifyPasswordSet (the backend password-auth sync endpoint)
+     * after the Supabase Auth update succeeds.
+     */
+    @OptIn(SecureStringAccess::class)
+    @Test
+    fun `setNewPassword calls notifyPasswordSet after Supabase Auth update`() = runTest {
+        // Arrange
+        val newPassword = SecureString("newSecurePass1!")
+        coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
+        coEvery { auth.updateUser(any(), anyNullable(), any()) } returns mockk()
+        ktorTestEngine.configure {
+            coEvery { produceResponse(any()) } returns MockResponseData.Success("")
+        }
+
+        // Act
+        val result = service.setNewPassword(newPassword)
+
+        // Assert
+        assertTrue(result.isSuccess)
+    }
+
+    /**
+     * Tests that setNewPassword propagates a failure from notifyPasswordSet even when the Supabase
+     * Auth update itself succeeded.
+     */
+    @OptIn(SecureStringAccess::class)
+    @Test
+    fun `setNewPassword propagates notifyPasswordSet failure`() = runTest {
+        // Arrange
+        val newPassword = SecureString("newSecurePass1!")
+        coEvery { auth.config } returns mockk { every { defaultRedirectUrl } returns "" }
+        coEvery { auth.updateUser(any(), anyNullable(), any()) } returns mockk()
+        coEvery { auth.currentUserOrNull() } returns null
 
         // Act
         val result = service.setNewPassword(newPassword)

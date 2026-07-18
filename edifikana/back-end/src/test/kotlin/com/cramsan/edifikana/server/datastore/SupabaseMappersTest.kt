@@ -34,4 +34,25 @@ class SupabaseMappersTest {
         assertEquals("Doe", user.lastName)
         assertEquals(true, user.authMetadata?.isPasswordSet)
     }
+
+    @Test
+    fun `UserEntity with canPasswordAuth false toUser maps isPasswordSet to false`() {
+        val entity =
+            UserEntity(
+                id = "user-456",
+                email = "test2@example.com",
+                phoneNumber = "0987654321",
+                firstName = "Jane",
+                lastName = "Doe",
+                authMetadata =
+                AuthMetadataEntity(
+                    pendingAssociation = true,
+                    canPasswordAuth = false,
+                ),
+            )
+
+        val user = entity.toUser()
+
+        assertEquals(false, user.authMetadata?.isPasswordSet)
+    }
 }

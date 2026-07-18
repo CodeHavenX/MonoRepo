@@ -16,17 +16,19 @@ import io.ktor.http.HttpMethod
  */
 
 object RentConfigApi : Api("rent-config") {
-    val getRentConfig = operation<
-        NoRequestBody,
-        NoQueryParam,
-        UnitId,
-        RentConfigNetworkResponse,
-    >(HttpMethod.Get)
+    val getRentConfig =
+        operation<
+            NoRequestBody,
+            NoQueryParam,
+            UnitId,
+            RentConfigNetworkResponse,
+            >(HttpMethod.Get)
 
-    val setRentConfig = operation<
-        RentConfigNetworkRequest,
-        NoQueryParam,
-        UnitId,
-        RentConfigNetworkResponse,
-    >(HttpMethod.Put)
+    val setRentConfig =
+        operation<
+            RentConfigNetworkRequest,
+            NoQueryParam,
+            UnitId,
+            RentConfigNetworkResponse,
+            >(HttpMethod.Put)
 }

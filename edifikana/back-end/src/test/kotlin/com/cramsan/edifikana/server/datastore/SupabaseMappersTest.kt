@@ -41,9 +41,9 @@ class SupabaseMappersTest {
     fun `UserEntity with canPasswordAuth false toUser maps isPasswordSet to false`() {
         val entity =
             UserEntity(
-                id = "user-456",
-                email = "test2@example.com",
-                phoneNumber = "0987654321",
+                id = UserId("user-456"),
+                email = Email("test2@example.com"),
+                phoneNumber = PhoneNumber("0987654321"),
                 firstName = "Jane",
                 lastName = "Doe",
                 authMetadata =

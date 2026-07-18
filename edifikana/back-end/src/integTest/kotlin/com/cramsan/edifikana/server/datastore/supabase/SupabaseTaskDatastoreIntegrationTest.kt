@@ -37,7 +37,7 @@ class SupabaseTaskDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createTask should return created task with correct fields`() = runBlocking {
+    fun `createTask should return created task with correct fields`(): Unit = runBlocking {
         // Arrange
         val title = "${testPrefix}_Fix leaky faucet"
 

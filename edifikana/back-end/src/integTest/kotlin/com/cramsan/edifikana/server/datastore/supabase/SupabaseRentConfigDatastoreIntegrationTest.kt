@@ -33,7 +33,7 @@ class SupabaseRentConfigDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getRentConfig should return null when no config exists`() = runBlocking {
+    fun `getRentConfig should return null when no config exists`(): Unit = runBlocking {
         // Arrange — unitId has no rent config yet
 
         // Act

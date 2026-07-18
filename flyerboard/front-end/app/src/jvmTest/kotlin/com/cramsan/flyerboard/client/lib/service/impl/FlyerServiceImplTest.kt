@@ -55,7 +55,7 @@ class FlyerServiceImplTest {
     }
 
     @Test
-    fun `listArchived with query includes q param in URL`() =
+    fun `listArchived with query includes q param in URL`(): Unit =
         runTest {
             val service = buildService()
 
@@ -68,7 +68,7 @@ class FlyerServiceImplTest {
         }
 
     @Test
-    fun `listArchived without query omits q param from URL`() =
+    fun `listArchived without query omits q param from URL`(): Unit =
         runTest {
             val service = buildService()
 

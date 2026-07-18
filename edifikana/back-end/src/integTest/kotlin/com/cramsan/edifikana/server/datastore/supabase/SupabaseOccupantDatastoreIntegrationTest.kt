@@ -37,7 +37,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createOccupant should return the created record`() = runBlocking {
+    fun `createOccupant should return the created record`(): Unit = runBlocking {
         val startDate = LocalDate(2026, 1, 1)
 
         val result = occupantDatastore.createOccupant(
@@ -67,7 +67,7 @@ class SupabaseOccupantDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getOccupant should return the created record`() = runBlocking {
+    fun `getOccupant should return the created record`(): Unit = runBlocking {
         val createResult = occupantDatastore.createOccupant(
             unitId = unitId!!,
             userId = testUserId,

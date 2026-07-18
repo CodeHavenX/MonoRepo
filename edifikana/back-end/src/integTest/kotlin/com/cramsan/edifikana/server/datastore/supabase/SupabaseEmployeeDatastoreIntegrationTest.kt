@@ -32,7 +32,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createEmployee should return employee on success`() = runBlocking {
+    fun `createEmployee should return employee on success`(): Unit = runBlocking {
         // Arrange
 
         // Act
@@ -50,7 +50,7 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getEmployee should return created employee`() = runBlocking {
+    fun `getEmployee should return created employee`(): Unit = runBlocking {
         // Arrange
 
         // Act

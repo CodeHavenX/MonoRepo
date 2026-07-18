@@ -64,14 +64,14 @@ class FlyerListViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial UIState is Loading`() =
+    fun `initial UIState is Loading`(): Unit =
         runCoroutineTest {
             assertEquals(FlyerListUIState.Initial, viewModel.uiState.value)
             assertIs<FlyerListUIState.Loading>(viewModel.uiState.value)
         }
 
     @Test
-    fun `loadFlyers success updates UIState to Content`() =
+    fun `loadFlyers success updates UIState to Content`(): Unit =
         runCoroutineTest {
             val flyers = listOf(makeFlyerModel("1"), makeFlyerModel("2"))
             val paginated = PaginatedFlyerModel(flyers = flyers, total = 2, offset = 0, limit = 20)
@@ -86,7 +86,7 @@ class FlyerListViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `loadFlyers success with empty list updates UIState to Empty`() =
+    fun `loadFlyers success with empty list updates UIState to Empty`(): Unit =
         runCoroutineTest {
             val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
             coEvery { flyerManager.listFlyers() } returns Result.success(paginated)
@@ -97,7 +97,7 @@ class FlyerListViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `loadFlyers failure updates UIState to Error and emits snackbar`() =
+    fun `loadFlyers failure updates UIState to Error and emits snackbar`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -118,7 +118,7 @@ class FlyerListViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `refresh calls loadFlyers`() =
+    fun `refresh calls loadFlyers`(): Unit =
         runCoroutineTest {
             val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
             coEvery { flyerManager.listFlyers() } returns Result.success(paginated)
@@ -129,7 +129,7 @@ class FlyerListViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `primaryAction emits NavigateToScreen for AuthNavGraphDestination when unauthenticated`() =
+    fun `primaryAction emits NavigateToScreen for AuthNavGraphDestination when unauthenticated`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -148,7 +148,7 @@ class FlyerListViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `primaryAction emits NavigateToScreen for FlyerSubmitDestination when authenticated`() =
+    fun `primaryAction emits NavigateToScreen for FlyerSubmitDestination when authenticated`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -167,7 +167,7 @@ class FlyerListViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onFlyerSelected emits NavigateToScreen event`() =
+    fun `onFlyerSelected emits NavigateToScreen event`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)

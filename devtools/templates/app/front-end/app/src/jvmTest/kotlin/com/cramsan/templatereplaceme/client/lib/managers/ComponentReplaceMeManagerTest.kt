@@ -38,7 +38,7 @@ class ComponentReplaceMeManagerTest : CoroutineTest() {
     }
 
     @Test
-    fun `create returns success when service succeeds`() = runCoroutineTest {
+    fun `create returns success when service succeeds`(): Unit = runCoroutineTest {
         val model = ComponentReplaceMeModel(id = ComponentReplaceMeId("id-1"))
         coEvery { componentreplacemeService.create("id-1") } returns Result.success(model)
 

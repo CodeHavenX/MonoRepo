@@ -41,7 +41,7 @@ class SupabaseMembershipDatastoreIntegrationTest : SupabaseIntegrationTest() {
     // -------------------------------------------------------------------------
 
     @Test
-    fun `getMembers returns all active members for org`() = runBlocking {
+    fun `getMembers returns all active members for org`(): Unit = runBlocking {
         // Arrange
         val memberId = createTestUser("member-${testPrefix}@example.com")
         organizationDatastore.addUserToOrganization(memberId, orgId!!, OrgRole.EMPLOYEE)

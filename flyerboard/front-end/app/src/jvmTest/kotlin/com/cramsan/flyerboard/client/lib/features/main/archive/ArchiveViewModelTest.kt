@@ -57,7 +57,7 @@ class ArchiveViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial UIState is Loading with empty query`() =
+    fun `initial UIState is Loading with empty query`(): Unit =
         runCoroutineTest {
             assertEquals(ArchiveUIState.Initial, viewModel.uiState.value)
             assertTrue(viewModel.uiState.value is ArchiveUIState.Loading)
@@ -65,7 +65,7 @@ class ArchiveViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `loadFlyers success updates UIState to Content`() =
+    fun `loadFlyers success updates UIState to Content`(): Unit =
         runCoroutineTest {
             val flyers = listOf(makeFlyerModel("a1"), makeFlyerModel("a2"), makeFlyerModel("a3"))
             val paginated = PaginatedFlyerModel(flyers = flyers, total = 3, offset = 0, limit = 20)
@@ -80,7 +80,7 @@ class ArchiveViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `loadFlyers with empty results transitions to Empty`() =
+    fun `loadFlyers with empty results transitions to Empty`(): Unit =
         runCoroutineTest {
             val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
             coEvery { flyerManager.listArchived() } returns Result.success(paginated)
@@ -91,7 +91,7 @@ class ArchiveViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `loadFlyers failure transitions to Error and emits snackbar`() =
+    fun `loadFlyers failure transitions to Error and emits snackbar`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -109,7 +109,7 @@ class ArchiveViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `refresh calls loadFlyers preserving current query`() =
+    fun `refresh calls loadFlyers preserving current query`(): Unit =
         runCoroutineTest {
             val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
             coEvery { flyerManager.listArchived() } returns Result.success(paginated)
@@ -120,7 +120,7 @@ class ArchiveViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onQueryChanged with non-empty query updates state and calls listArchived with query`() =
+    fun `onQueryChanged with non-empty query updates state and calls listArchived with query`(): Unit =
         runCoroutineTest {
             val flyers = listOf(makeFlyerModel("a1"))
             val paginated = PaginatedFlyerModel(flyers = flyers, total = 1, offset = 0, limit = 20)
@@ -135,7 +135,7 @@ class ArchiveViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onQueryChanged with empty query updates state and calls listArchived with no filter`() =
+    fun `onQueryChanged with empty query updates state and calls listArchived with no filter`(): Unit =
         runCoroutineTest {
             val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
             coEvery { flyerManager.listArchived() } returns Result.success(paginated)
@@ -147,7 +147,7 @@ class ArchiveViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onFlyerSelected emits NavigateToScreen for detail`() =
+    fun `onFlyerSelected emits NavigateToScreen for detail`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -166,7 +166,7 @@ class ArchiveViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `navigateBack emits NavigateBack event`() =
+    fun `navigateBack emits NavigateBack event`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)

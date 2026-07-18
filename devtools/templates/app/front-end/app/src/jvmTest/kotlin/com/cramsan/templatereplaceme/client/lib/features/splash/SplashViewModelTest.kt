@@ -46,7 +46,7 @@ class SplashViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial ui state has isLoading true`() = runCoroutineTest {
+    fun `initial ui state has isLoading true`(): Unit = runCoroutineTest {
         assertTrue(viewModel.uiState.value.isLoading)
     }
 }

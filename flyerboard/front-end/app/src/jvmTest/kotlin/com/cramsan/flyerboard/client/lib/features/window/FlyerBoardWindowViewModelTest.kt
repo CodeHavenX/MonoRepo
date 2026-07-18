@@ -65,7 +65,7 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
         UserModel(id = userId, firstName = "John", lastName = "Doe", role = role)
 
     @Test
-    fun `initial authState is Unauthenticated`() =
+    fun `initial authState is Unauthenticated`(): Unit =
         runCoroutineTest {
             viewModel = buildViewModel()
 
@@ -73,7 +73,7 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `auth emits userId and Authenticated is isAdmin false for a regular user`() =
+    fun `auth emits userId and Authenticated is isAdmin false for a regular user`(): Unit =
         runCoroutineTest {
             coEvery { authManager.isAuthenticated() } returns Result.success(true)
             viewModel = buildViewModel()
@@ -86,7 +86,7 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `auth emits userId and Authenticated is isAdmin true for an admin`() =
+    fun `auth emits userId and Authenticated is isAdmin true for an admin`(): Unit =
         runCoroutineTest {
             coEvery { authManager.isAuthenticated() } returns Result.success(true)
             viewModel = buildViewModel()
@@ -99,7 +99,7 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `auth resolves to Unauthenticated after init when no user is signed in`() =
+    fun `auth resolves to Unauthenticated after init when no user is signed in`(): Unit =
         runCoroutineTest {
             coEvery { authManager.isAuthenticated() } returns Result.success(false)
             viewModel = buildViewModel()
@@ -108,7 +108,7 @@ class FlyerBoardWindowViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `auth emits null reverts to Unauthenticated`() =
+    fun `auth emits null reverts to Unauthenticated`(): Unit =
         runCoroutineTest {
             coEvery { authManager.isAuthenticated() } returns Result.success(true)
             viewModel = buildViewModel()

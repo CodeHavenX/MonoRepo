@@ -50,7 +50,7 @@ class TemplateReplaceMeApplicationViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial state has showDebugWindow false`() = runCoroutineTest {
+    fun `initial state has showDebugWindow false`(): Unit = runCoroutineTest {
         assertFalse(viewModel.uiState.value.showDebugWindow)
     }
 }

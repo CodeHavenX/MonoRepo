@@ -55,14 +55,14 @@ class FlyerDetailViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial UIState is Loading`() =
+    fun `initial UIState is Loading`(): Unit =
         runCoroutineTest {
             assertEquals(FlyerDetailUIState.Initial, viewModel.uiState.value)
             assertTrue(viewModel.uiState.value is FlyerDetailUIState.Loading)
         }
 
     @Test
-    fun `loadFlyer success updates UIState to Content`() =
+    fun `loadFlyer success updates UIState to Content`(): Unit =
         runCoroutineTest {
             val flyer = makeFlyerModel("flyer-abc")
             coEvery { flyerManager.getFlyer(FlyerId("flyer-abc")) } returns Result.success(flyer)
@@ -76,7 +76,7 @@ class FlyerDetailViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `loadFlyer returns null transitions to NotFound and emits snackbar`() =
+    fun `loadFlyer returns null transitions to NotFound and emits snackbar`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -93,7 +93,7 @@ class FlyerDetailViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `loadFlyer failure transitions to NotFound and emits snackbar`() =
+    fun `loadFlyer failure transitions to NotFound and emits snackbar`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -110,7 +110,7 @@ class FlyerDetailViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `navigateBack emits NavigateBack event`() =
+    fun `navigateBack emits NavigateBack event`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)

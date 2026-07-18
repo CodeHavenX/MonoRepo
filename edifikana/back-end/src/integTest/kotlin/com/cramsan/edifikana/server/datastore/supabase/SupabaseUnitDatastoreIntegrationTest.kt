@@ -28,7 +28,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createUnit should return unit on success`() = runBlocking {
+    fun `createUnit should return unit on success`(): Unit = runBlocking {
         // Act
         val result = unitDatastore.createUnit(
             propertyId = testProperty!!,
@@ -55,7 +55,7 @@ class SupabaseUnitDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getUnit should return created unit`() = runBlocking {
+    fun `getUnit should return created unit`(): Unit = runBlocking {
         // Arrange
         val createResult = unitDatastore.createUnit(
             propertyId = testProperty!!,

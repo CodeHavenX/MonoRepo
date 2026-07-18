@@ -34,7 +34,7 @@ class FlyerManagerTest : CoroutineTest() {
     }
 
     @Test
-    fun `listArchived with query forwards query to flyerService`() =
+    fun `listArchived with query forwards query to flyerService`(): Unit =
         runCoroutineTest {
             val paginated = emptyPaginated()
             coEvery { flyerService.listArchived(any(), any(), query = "foo") } returns Result.success(paginated)
@@ -45,7 +45,7 @@ class FlyerManagerTest : CoroutineTest() {
         }
 
     @Test
-    fun `listArchived with null query forwards null to flyerService`() =
+    fun `listArchived with null query forwards null to flyerService`(): Unit =
         runCoroutineTest {
             val paginated = emptyPaginated()
             coEvery { flyerService.listArchived(any(), any(), query = null) } returns Result.success(paginated)

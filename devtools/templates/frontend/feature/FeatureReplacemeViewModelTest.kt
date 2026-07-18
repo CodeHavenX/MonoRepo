@@ -30,7 +30,7 @@ import kotlin.test.assertFalse
  * }
  *
  * @Test
- * fun `loadItems shows loading then populates list`() = runCoroutineTest {
+ * fun `loadItems shows loading then populates list`(): Unit = runCoroutineTest {
  *     viewModel.loadItems()
  *     assertFalse(viewModel.uiState.value.isLoading)
  *     assertTrue(viewModel.uiState.value.items.isEmpty())
@@ -67,7 +67,7 @@ class FeatureReplacemeViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial ui state is not loading`() = runCoroutineTest {
+    fun `initial ui state is not loading`(): Unit = runCoroutineTest {
         assertFalse(viewModel.uiState.value.isLoading)
     }
 }

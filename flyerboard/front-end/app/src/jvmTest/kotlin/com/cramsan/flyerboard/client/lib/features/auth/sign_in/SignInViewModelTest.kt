@@ -54,7 +54,7 @@ class SignInViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial UIState is correct`() =
+    fun `initial UIState is correct`(): Unit =
         runCoroutineTest {
             assertEquals(SignInUIState.Initial, viewModel.uiState.value)
             assertFalse(viewModel.uiState.value.isLoading)
@@ -63,7 +63,7 @@ class SignInViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onEmailChanged updates email in UIState`() =
+    fun `onEmailChanged updates email in UIState`(): Unit =
         runCoroutineTest {
             viewModel.onEmailChanged("test@example.com")
 
@@ -71,7 +71,7 @@ class SignInViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onPasswordChanged updates password in UIState`() =
+    fun `onPasswordChanged updates password in UIState`(): Unit =
         runCoroutineTest {
             viewModel.onPasswordChanged("secret123")
 
@@ -79,7 +79,7 @@ class SignInViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `signIn success navigates to main nav graph`() =
+    fun `signIn success navigates to main nav graph`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -105,7 +105,7 @@ class SignInViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `signIn failure emits snackbar event`() =
+    fun `signIn failure emits snackbar event`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -125,7 +125,7 @@ class SignInViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `navigateToSignUp emits NavigateToScreen for SignUpDestination`() =
+    fun `navigateToSignUp emits NavigateToScreen for SignUpDestination`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)

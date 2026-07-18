@@ -58,7 +58,7 @@ class SignUpViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial UIState is correct`() =
+    fun `initial UIState is correct`(): Unit =
         runCoroutineTest {
             assertEquals(SignUpUIState.Initial, viewModel.uiState.value)
             assertFalse(viewModel.uiState.value.isLoading)
@@ -70,7 +70,7 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onEmailChanged updates email in UIState`() =
+    fun `onEmailChanged updates email in UIState`(): Unit =
         runCoroutineTest {
             viewModel.onEmailChanged("new@example.com")
 
@@ -78,7 +78,7 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onPasswordChanged updates password in UIState`() =
+    fun `onPasswordChanged updates password in UIState`(): Unit =
         runCoroutineTest {
             viewModel.onPasswordChanged("mypassword")
 
@@ -86,7 +86,7 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onConfirmPasswordChanged updates confirmPassword in UIState`() =
+    fun `onConfirmPasswordChanged updates confirmPassword in UIState`(): Unit =
         runCoroutineTest {
             viewModel.onConfirmPasswordChanged("mypassword")
 
@@ -94,7 +94,7 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `signUp success calls createUser then navigates to main nav graph`() =
+    fun `signUp success calls createUser then navigates to main nav graph`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -123,7 +123,7 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `createUser failure after successful signUp should block navigation`() =
+    fun `createUser failure after successful signUp should block navigation`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -147,7 +147,7 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `signUp failure emits snackbar event`() =
+    fun `signUp failure emits snackbar event`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -170,7 +170,7 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `signUp with blank email emits snackbar and does not call authManager`() =
+    fun `signUp with blank email emits snackbar and does not call authManager`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -189,7 +189,7 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `signUp with mismatched passwords emits snackbar and does not call authManager`() =
+    fun `signUp with mismatched passwords emits snackbar and does not call authManager`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -211,7 +211,7 @@ class SignUpViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `navigateToSignIn emits NavigateBack event`() =
+    fun `navigateToSignIn emits NavigateBack event`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)

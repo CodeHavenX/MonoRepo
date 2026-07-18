@@ -56,7 +56,7 @@ class FlyerEditViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `onFileSelected updates selectedFileName in UIState`() =
+    fun `onFileSelected updates selectedFileName in UIState`(): Unit =
         runCoroutineTest {
             val flyerId = "flyer-123"
             val bytes = byteArrayOf(10, 20, 30)
@@ -70,7 +70,7 @@ class FlyerEditViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `saveFlyer after onFileSelected includes file data in updateFlyer call`() =
+    fun `saveFlyer after onFileSelected includes file data in updateFlyer call`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)

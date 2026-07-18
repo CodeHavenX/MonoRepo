@@ -57,14 +57,14 @@ class ModerationQueueViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `initial UIState is Loading`() =
+    fun `initial UIState is Loading`(): Unit =
         runCoroutineTest {
             assertEquals(ModerationQueueUIState.Initial, viewModel.uiState.value)
             assertTrue(viewModel.uiState.value is ModerationQueueUIState.Loading)
         }
 
     @Test
-    fun `loadPendingFlyers success updates UIState to Content`() =
+    fun `loadPendingFlyers success updates UIState to Content`(): Unit =
         runCoroutineTest {
             val flyers = listOf(makeFlyerModel("p1"), makeFlyerModel("p2"))
             val paginated = PaginatedFlyerModel(flyers = flyers, total = 2, offset = 0, limit = 20)
@@ -79,7 +79,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `loadPendingFlyers with empty results transitions to Empty`() =
+    fun `loadPendingFlyers with empty results transitions to Empty`(): Unit =
         runCoroutineTest {
             val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
             coEvery { flyerManager.listPendingFlyers() } returns Result.success(paginated)
@@ -90,7 +90,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `loadPendingFlyers failure transitions to Error and emits snackbar`() =
+    fun `loadPendingFlyers failure transitions to Error and emits snackbar`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -108,7 +108,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onRejectTapped sets pendingRejectionFlyerId in Content state`() =
+    fun `onRejectTapped sets pendingRejectionFlyerId in Content state`(): Unit =
         runCoroutineTest {
             val flyers = listOf(makeFlyerModel("p1"))
             val paginated = PaginatedFlyerModel(flyers = flyers, total = 1, offset = 0, limit = 20)
@@ -123,7 +123,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onRejectDialogDismissed clears pendingRejectionFlyerId`() =
+    fun `onRejectDialogDismissed clears pendingRejectionFlyerId`(): Unit =
         runCoroutineTest {
             val flyers = listOf(makeFlyerModel("p1"))
             val paginated = PaginatedFlyerModel(flyers = flyers, total = 1, offset = 0, limit = 20)
@@ -139,7 +139,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `rejectFlyer with reason passes reason to flyerManager moderate`() =
+    fun `rejectFlyer with reason passes reason to flyerManager moderate`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -160,7 +160,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `rejectFlyer with no reason passes null to flyerManager moderate`() =
+    fun `rejectFlyer with no reason passes null to flyerManager moderate`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -181,7 +181,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `approveFlyer success emits snackbar and reloads list`() =
+    fun `approveFlyer success emits snackbar and reloads list`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -203,7 +203,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `approveFlyer failure emits snackbar`() =
+    fun `approveFlyer failure emits snackbar`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -221,7 +221,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `refresh calls loadPendingFlyers`() =
+    fun `refresh calls loadPendingFlyers`(): Unit =
         runCoroutineTest {
             val paginated = PaginatedFlyerModel(flyers = emptyList(), total = 0, offset = 0, limit = 20)
             coEvery { flyerManager.listPendingFlyers() } returns Result.success(paginated)
@@ -232,7 +232,7 @@ class ModerationQueueViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `navigateBack emits NavigateBack event`() =
+    fun `navigateBack emits NavigateBack event`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)

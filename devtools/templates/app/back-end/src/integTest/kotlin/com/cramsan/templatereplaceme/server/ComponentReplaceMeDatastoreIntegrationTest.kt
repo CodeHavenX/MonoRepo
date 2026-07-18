@@ -46,7 +46,7 @@ class ComponentReplaceMeDatastoreIntegrationTest : KoinTest {
     }
 
     @Test
-    fun `create returns success with the provided id`() = runBlocking {
+    fun `create returns success with the provided id`(): Unit = runBlocking {
         // Act
         val result = datastore.create(id = "test-id")
 

@@ -26,7 +26,7 @@ class ComponentReplaceMeDatastoreImplTest : CoroutineTest() {
     }
 
     @Test
-    fun `create returns success with given id`() =
+    fun `create returns success with given id`(): Unit =
         runCoroutineTest {
             // Act
             val result = datastore.create(id = "test-id")

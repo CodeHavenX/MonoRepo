@@ -26,7 +26,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createProperty should return property on success`() = runBlocking {
+    fun `createProperty should return property on success`(): Unit = runBlocking {
         // Arrange
 
         // Act
@@ -55,7 +55,7 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getProperty should return created property`() = runBlocking {
+    fun `getProperty should return created property`(): Unit = runBlocking {
         // Arrange
 
         // Act

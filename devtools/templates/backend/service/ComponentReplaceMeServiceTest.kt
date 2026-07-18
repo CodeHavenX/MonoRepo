@@ -31,7 +31,7 @@ class ComponentReplaceMeServiceTest : CoroutineTest() {
     }
 
     @Test
-    fun `create returns success with the given id`() =
+    fun `create returns success with the given id`(): Unit =
         runCoroutineTest {
             coEvery { datastore.create(any()) } returns
                 Result.success(ComponentReplaceMe(id = ComponentReplaceMeId("test-id")))

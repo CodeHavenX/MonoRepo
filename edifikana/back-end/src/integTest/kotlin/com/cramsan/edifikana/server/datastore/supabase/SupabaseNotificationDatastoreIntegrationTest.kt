@@ -36,7 +36,7 @@ class SupabaseNotificationDatastoreIntegrationTest : SupabaseIntegrationTest() {
      * Tests that createNotification creates a notification without a user ID.
      */
     @Test
-    fun `createNotification should create notification without user ID`() = runBlocking {
+    fun `createNotification should create notification without user ID`(): Unit = runBlocking {
         // Arrange
         val organizationId = createTestOrganization("org_$testPrefix", "")
         val expiration = clock.now() + 5.minutes

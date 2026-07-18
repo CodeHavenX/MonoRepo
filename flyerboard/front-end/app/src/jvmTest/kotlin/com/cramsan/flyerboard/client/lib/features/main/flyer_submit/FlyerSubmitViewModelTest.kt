@@ -58,7 +58,7 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `submit with valid data calls createFlyer and emits NavigateBack on success`() =
+    fun `submit with valid data calls createFlyer and emits NavigateBack on success`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -97,7 +97,7 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `submit failure emits ShowSnackbar and clears isSubmitting`() =
+    fun `submit failure emits ShowSnackbar and clears isSubmitting`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -115,7 +115,7 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `onFileSelected updates selectedFileName in UIState`() =
+    fun `onFileSelected updates selectedFileName in UIState`(): Unit =
         runCoroutineTest {
             val bytes = byteArrayOf(10, 20, 30)
 
@@ -125,7 +125,7 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `navigateBack emits NavigateBack event`() =
+    fun `navigateBack emits NavigateBack event`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)
@@ -138,7 +138,7 @@ class FlyerSubmitViewModelTest : CoroutineTest() {
         }
 
     @Test
-    fun `submit while isSubmitting is a no-op`() =
+    fun `submit while isSubmitting is a no-op`(): Unit =
         runCoroutineTest {
             turbineScope {
                 val turbine = windowEventBus.events.testIn(backgroundScope)

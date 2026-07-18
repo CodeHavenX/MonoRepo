@@ -34,7 +34,7 @@ class SupabaseEventLogDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createEventLogEntry should return entry on success`() = runBlocking {
+    fun `createEventLogEntry should return entry on success`(): Unit = runBlocking {
         // Arrange
         val title = "${test_prefix}_EventTitle"
         val description = "${test_prefix}_EventDescription"

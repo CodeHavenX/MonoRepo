@@ -52,7 +52,7 @@ class TemplateReplaceMeWindowViewModelTest : CoroutineTest() {
     }
 
     @Test
-    fun `handleSnackbarResult ActionPerformed pushes delegated event`() = runCoroutineTest {
+    fun `handleSnackbarResult ActionPerformed pushes delegated event`(): Unit = runCoroutineTest {
         turbineScope {
             val turbine = delegatedEventsBus.events.testIn(backgroundScope)
 

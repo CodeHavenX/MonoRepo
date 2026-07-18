@@ -26,7 +26,7 @@ class SupabaseOrganizationDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createOrganization should return organization on success`() = runBlocking {
+    fun `createOrganization should return organization on success`(): Unit = runBlocking {
         // Act
         val result = organizationDatastore
             .createOrganization("test_org_$test_prefix", "")

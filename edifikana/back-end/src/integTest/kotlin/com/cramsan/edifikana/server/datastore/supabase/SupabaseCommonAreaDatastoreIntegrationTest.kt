@@ -32,7 +32,7 @@ class SupabaseCommonAreaDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `createCommonArea should return created common area`() = runBlocking {
+    fun `createCommonArea should return created common area`(): Unit = runBlocking {
         // Arrange
 
         // Act

@@ -270,8 +270,7 @@ class AuthServiceImpl(private val auth: Auth, private val http: HttpClient) : Au
     override suspend fun notifyPasswordSet(): Result<Unit> =
         runSuspendCatching(TAG) {
             UserApi.setPasswordAuth
-                .buildRequest(
-                ).execute(http)
+                .buildRequest().execute(http)
         }
 
     override suspend fun inviteEmployee(

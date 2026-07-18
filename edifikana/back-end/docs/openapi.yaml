@@ -1685,6 +1685,33 @@
                 }
             }
         },
+        "/user/password-auth": {
+            "patch": {
+                "operationId": "patch-user-password-auth",
+                "tags": [
+                    "user"
+                ],
+                "summary": "",
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "401": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
         "/organization": {
             "post": {
                 "operationId": "post-organization",

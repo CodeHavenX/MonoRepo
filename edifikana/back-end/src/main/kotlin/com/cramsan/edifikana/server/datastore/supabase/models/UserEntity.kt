@@ -1,5 +1,8 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,10 +14,10 @@ import kotlin.time.Instant
 @Serializable
 @DatabaseModel
 data class UserEntity(
-    val id: String,
-    val email: String,
+    val id: UserId,
+    val email: Email,
     @SerialName("phone_number")
-    val phoneNumber: String,
+    val phoneNumber: PhoneNumber,
     @SerialName("first_name")
     val firstName: String,
     @SerialName("last_name")
@@ -34,10 +37,10 @@ data class UserEntity(
     @Serializable
     @DatabaseModel
     data class CreateUserEntity(
-        val id: String,
-        val email: String,
+        val id: UserId,
+        val email: Email,
         @SerialName("phone_number")
-        val phoneNumber: String,
+        val phoneNumber: PhoneNumber,
         @SerialName("first_name")
         val firstName: String,
         @SerialName("last_name")

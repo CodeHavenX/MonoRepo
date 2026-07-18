@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.api.PropertyApi
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
@@ -58,7 +59,7 @@ class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
                             name = propertyName,
                             address = address,
                             organizationId = organizationId,
-                            imageUrl = imageUrl,
+                            imageUrl = imageUrl?.let { Url(it) },
                         ),
                     ).execute(http)
 
@@ -80,7 +81,7 @@ class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
                         UpdatePropertyNetworkRequest(
                             name = name,
                             address = address,
-                            imageUrl = imageUrl,
+                            imageUrl = imageUrl?.let { Url(it) },
                         ),
                     ).execute(http)
 
@@ -108,6 +109,6 @@ private fun PropertyNetworkResponse.toPropertyModel(): PropertyModel {
         name = name,
         address = address.orEmpty(),
         organizationId = organizationId,
-        imageUrl = imageUrl,
+        imageUrl = imageUrl?.url,
     )
 }

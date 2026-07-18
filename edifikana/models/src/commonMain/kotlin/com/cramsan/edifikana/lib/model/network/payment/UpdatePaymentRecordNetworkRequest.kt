@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.payment
 
+import com.cramsan.edifikana.lib.model.common.MonetaryAmount
 import com.cramsan.edifikana.lib.model.payment.PaymentStatus
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
@@ -21,8 +22,7 @@ import kotlinx.serialization.Serializable
 data class UpdatePaymentRecordNetworkRequest(
     @SerialName("amount_paid")
     @JsonSchema.Description("New amount paid, or null to leave unchanged.")
-    @JsonSchema.Minimum(0.0)
-    val amountPaid: Double?,
+    val amountPaid: MonetaryAmount?,
     @SerialName("paid_date")
     @JsonSchema.Description("New date the payment was made, or null to leave unchanged.")
     @JsonSchema.Format("date")

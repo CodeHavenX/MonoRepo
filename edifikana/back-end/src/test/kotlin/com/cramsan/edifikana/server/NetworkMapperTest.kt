@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server
 
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.network.notification.NotificationNetworkResponse
 import com.cramsan.edifikana.lib.model.network.user.AuthMetadataNetworkResponse
@@ -34,9 +36,9 @@ class NetworkMapperTest {
             )
         val expectedResponse =
             UserNetworkResponse(
-                id = "123",
-                email = "test@gmail.com",
-                phoneNumber = "1234567890",
+                id = UserId("123"),
+                email = Email("test@gmail.com"),
+                phoneNumber = PhoneNumber("1234567890"),
                 firstName = "Test",
                 lastName = "User",
                 authMetadata = AuthMetadataNetworkResponse(isPasswordSet = true),

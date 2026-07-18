@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.property
 
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
@@ -29,5 +30,5 @@ data class CreatePropertyNetworkRequest(
     @JsonSchema.Description("Optional URL of a cover image for the property.")
     @JsonSchema.Format("uri")
     @JsonSchema.Example("\"https://cdn.example.com/properties/sunset.jpg\"")
-    val imageUrl: String? = null,
+    val imageUrl: Url? = null,
 ) : RequestBody

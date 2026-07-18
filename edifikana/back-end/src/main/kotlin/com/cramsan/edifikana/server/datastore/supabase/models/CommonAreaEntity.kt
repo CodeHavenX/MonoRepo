@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
+import com.cramsan.edifikana.lib.model.commonArea.CommonAreaType
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.DatabaseModel
 import kotlinx.serialization.SerialName
@@ -15,11 +17,11 @@ import kotlin.time.Instant
 @DatabaseModel
 data class CommonAreaEntity(
     @SerialName("common_area_id")
-    val commonAreaId: String,
+    val commonAreaId: CommonAreaId,
     @SerialName("property_id")
     val propertyId: PropertyId,
     val name: String,
-    val type: String,
+    val type: CommonAreaType,
     val description: String? = null,
     @SerialName("created_at")
     val createdAt: Instant,
@@ -39,7 +41,7 @@ data class CommonAreaEntity(
         @SerialName("property_id")
         val propertyId: PropertyId,
         val name: String,
-        val type: String,
+        val type: CommonAreaType,
         val description: String? = null,
     )
 }

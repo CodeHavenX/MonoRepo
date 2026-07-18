@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.employee.EmployeeRole
 import com.cramsan.edifikana.lib.model.identification.IdType
 import com.cramsan.edifikana.lib.model.property.PropertyId
@@ -14,7 +15,7 @@ import kotlin.time.Instant
 @Serializable
 @DatabaseModel
 data class EmployeeEntity(
-    val id: String,
+    val id: EmployeeId,
     @SerialName("id_type")
     val idType: IdType,
     @SerialName("first_name")

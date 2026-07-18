@@ -1,5 +1,8 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.invite.InviteCode
+import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.unit.UnitId
@@ -16,9 +19,9 @@ import kotlin.time.Instant
 @DatabaseModel
 data class InviteEntity(
     @SerialName("id")
-    val id: String,
+    val id: InviteId,
     @SerialName("email")
-    val email: String,
+    val email: Email,
     @SerialName("organization_id")
     val organizationId: OrganizationId,
     @SerialName("created_at")
@@ -28,7 +31,7 @@ data class InviteEntity(
     @SerialName("role")
     val role: InviteRole,
     @SerialName("invite_code")
-    val inviteCode: String,
+    val inviteCode: InviteCode,
     @SerialName("invited_by")
     val invitedBy: UserId? = null,
     @SerialName("accepted_at")
@@ -45,7 +48,7 @@ data class InviteEntity(
     @DatabaseModel
     data class Create(
         @SerialName("email")
-        val email: String,
+        val email: Email,
         @SerialName("organization_id")
         val organizationId: OrganizationId,
         @SerialName("created_at")
@@ -55,7 +58,7 @@ data class InviteEntity(
         @SerialName("role")
         val role: InviteRole,
         @SerialName("invite_code")
-        val inviteCode: String,
+        val inviteCode: InviteCode,
         @SerialName("invited_by")
         val invitedBy: UserId? = null,
         @SerialName("unit_id")

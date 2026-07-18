@@ -111,7 +111,8 @@
                             "type": [
                                 "string",
                                 "null"
-                            ]
+                            ],
+                            "format": "date"
                         }
                     }
                 ],
@@ -4490,12 +4491,8 @@
                         "format": "date"
                     },
                     "amount_due": {
-                        "type": [
-                            "number",
-                            "null"
-                        ],
-                        "description": "Amount due for this period.",
-                        "minimum": 0.0
+                        "type": "number",
+                        "description": "Amount due for this period."
                     },
                     "due_date": {
                         "type": [
@@ -4551,20 +4548,12 @@
                         "format": "date"
                     },
                     "amount_due": {
-                        "type": [
-                            "number",
-                            "null"
-                        ],
-                        "description": "Amount due for this period, or null if not set.",
-                        "minimum": 0.0
+                        "type": "number",
+                        "description": "Amount due for this period, or null if not set."
                     },
                     "amount_paid": {
-                        "type": [
-                            "number",
-                            "null"
-                        ],
-                        "description": "Amount paid so far for this period, or null if nothing has been paid.",
-                        "minimum": 0.0
+                        "type": "number",
+                        "description": "Amount paid so far for this period, or null if nothing has been paid."
                     },
                     "status": {
                         "type": "string",
@@ -4633,12 +4622,8 @@
                 "description": "Request payload to update an existing payment record. Only provided (non-null) fields are updated; it is not possible to explicitly clear a nullable field through this request.",
                 "properties": {
                     "amount_paid": {
-                        "type": [
-                            "number",
-                            "null"
-                        ],
-                        "description": "New amount paid, or null to leave unchanged.",
-                        "minimum": 0.0
+                        "type": "number",
+                        "description": "New amount paid, or null to leave unchanged."
                     },
                     "paid_date": {
                         "type": [
@@ -4696,10 +4681,7 @@
                         "example": "Jane Doe"
                     },
                     "email": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "Email address of the occupant."
                     },
                     "occupant_type": {
@@ -4766,10 +4748,7 @@
                         "example": "Jane Doe"
                     },
                     "email": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "Email address of the occupant, or null if not provided."
                     },
                     "occupant_type": {
@@ -4842,10 +4821,7 @@
                         "description": "New name for the occupant, or null to leave unchanged."
                     },
                     "email": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "New email address for the occupant, or null to leave unchanged."
                     },
                     "occupant_type": {
@@ -4911,8 +4887,7 @@
                     },
                     "monthly_amount": {
                         "type": "number",
-                        "description": "Monthly rent amount.",
-                        "minimum": 0.0
+                        "description": "Monthly rent amount."
                     },
                     "due_day": {
                         "type": "integer",
@@ -4921,8 +4896,7 @@
                     },
                     "currency": {
                         "type": "string",
-                        "description": "ISO 4217 currency code the rent amount is denominated in.",
-                        "example": "USD"
+                        "description": "ISO 4217 currency code the rent amount is denominated in."
                     },
                     "updated_at": {
                         "type": "string",
@@ -4952,8 +4926,7 @@
                 "properties": {
                     "monthly_amount": {
                         "type": "number",
-                        "description": "Monthly rent amount.",
-                        "minimum": 0.0
+                        "description": "Monthly rent amount."
                     },
                     "due_day": {
                         "type": "integer",
@@ -4962,8 +4935,7 @@
                     },
                     "currency": {
                         "type": "string",
-                        "description": "ISO 4217 currency code the rent amount is denominated in.",
-                        "example": "USD"
+                        "description": "ISO 4217 currency code the rent amount is denominated in."
                     }
                 }
             },
@@ -5301,10 +5273,7 @@
                         "format": "date-time"
                     },
                     "invite_code": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "Code the invitee can use to join, or null if not included in this response."
                     },
                     "created_at": {
@@ -5527,17 +5496,11 @@
                 "description": "Request payload to request a password reset. Either the email or the phone number must be provided.",
                 "properties": {
                     "email": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "Email address to send the password reset to, or null if using phoneNumber instead."
                     },
                     "phone_number": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "Phone number to send the password reset to, or null if using email instead."
                     }
                 }
@@ -5896,10 +5859,7 @@
                         ]
                     },
                     "image_url": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "URL of a photo captured with the event, or null if none.",
                         "format": "uri"
                     }
@@ -5945,10 +5905,7 @@
                         ]
                     },
                     "image_url": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "URL of a photo captured with the event, or null if none.",
                         "format": "uri"
                     },
@@ -6166,10 +6123,7 @@
                         "description": "Identifier of the organization that will own the property."
                     },
                     "image_url": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "Optional URL of a cover image for the property.",
                         "example": "https://cdn.example.com/properties/sunset.jpg",
                         "format": "uri"
@@ -6208,10 +6162,7 @@
                         "description": "Identifier of the organization that owns the property."
                     },
                     "image_url": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "URL of the property's cover image, if set.",
                         "format": "uri"
                     }
@@ -6256,10 +6207,7 @@
                         "example": "123 Main St, Springfield"
                     },
                     "image_url": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "New cover image URL, or null to leave unchanged.",
                         "format": "uri"
                     }
@@ -6912,10 +6860,7 @@
                         "description": "Original filename of the asset."
                     },
                     "signed_url": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "description": "Signed URL to download the asset, or null if not available.",
                         "format": "uri"
                     }

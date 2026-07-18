@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.common.Email
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.notification.NotificationId
 import com.cramsan.edifikana.lib.model.notification.NotificationType
@@ -37,10 +38,10 @@ class SupabaseNotificationDatastore(private val postgrest: Postgrest, private va
             val createEntity =
                 NotificationEntity.Create(
                     recipientUserId = recipientUserId,
-                    recipientEmail = recipientEmail,
-                    notificationType = notificationType.name,
+                    recipientEmail = recipientEmail?.let { Email(it) },
+                    notificationType = notificationType,
                     description = description,
-                    inviteId = inviteId.id,
+                    inviteId = inviteId,
                 )
 
             val createdEntity =

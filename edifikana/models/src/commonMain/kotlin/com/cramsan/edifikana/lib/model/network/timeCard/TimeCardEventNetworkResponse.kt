@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.timeCard
 
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.timeCard.TimeCardEventId
@@ -40,7 +41,7 @@ data class TimeCardEventNetworkResponse(
     @SerialName("image_url")
     @JsonSchema.Description("URL of a photo captured with the event, or null if none.")
     @JsonSchema.Format("uri")
-    val imageUrl: String?,
+    val imageUrl: Url?,
     @JsonSchema.Description("ISO-8601 timestamp when the event occurred.")
     @JsonSchema.Format("date-time")
     val timestamp: Instant,

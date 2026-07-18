@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.invite
 
+import com.cramsan.edifikana.lib.model.invite.InviteCode
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
 import io.ktor.openapi.JsonSchema
@@ -15,5 +16,5 @@ import kotlinx.serialization.Serializable
 data class JoinViaCodeNetworkRequest(
     @SerialName("invite_code")
     @JsonSchema.Description("Invite code to redeem.")
-    val inviteCode: String,
+    val inviteCode: InviteCode,
 ) : RequestBody

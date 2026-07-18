@@ -1,5 +1,9 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.asset.AssetId
+import com.cramsan.edifikana.lib.model.common.MimeType
+import com.cramsan.edifikana.lib.model.document.DocumentId
+import com.cramsan.edifikana.lib.model.document.DocumentType
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.unit.UnitId
@@ -16,7 +20,7 @@ import kotlin.time.Instant
 @DatabaseModel
 data class DocumentEntity(
     @SerialName("document_id")
-    val documentId: String,
+    val documentId: DocumentId,
     @SerialName("org_id")
     val orgId: OrganizationId,
     @SerialName("property_id")
@@ -25,11 +29,11 @@ data class DocumentEntity(
     val unitId: UnitId? = null,
     val filename: String,
     @SerialName("mime_type")
-    val mimeType: String,
+    val mimeType: MimeType,
     @SerialName("asset_id")
-    val assetId: String,
+    val assetId: AssetId,
     @SerialName("document_type")
-    val documentType: String,
+    val documentType: DocumentType,
     @SerialName("created_by")
     val createdBy: UserId? = null,
     @SerialName("created_at")
@@ -55,11 +59,11 @@ data class DocumentEntity(
         val unitId: UnitId? = null,
         val filename: String,
         @SerialName("mime_type")
-        val mimeType: String,
+        val mimeType: MimeType,
         @SerialName("asset_id")
-        val assetId: String,
+        val assetId: AssetId,
         @SerialName("document_type")
-        val documentType: String,
+        val documentType: DocumentType,
         @SerialName("created_by")
         val createdBy: UserId? = null,
     )

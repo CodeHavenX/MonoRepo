@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.occupant
 
+import com.cramsan.edifikana.lib.model.common.Email
 import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
 import com.cramsan.edifikana.lib.model.occupant.OccupantId
 import com.cramsan.edifikana.lib.model.occupant.OccupantType
@@ -38,7 +39,7 @@ data class OccupantNetworkResponse(
     @JsonSchema.Example("\"Jane Doe\"")
     val name: String,
     @JsonSchema.Description("Email address of the occupant, or null if not provided.")
-    val email: String?,
+    val email: Email?,
     @SerialName("occupant_type")
     @JsonSchema.Description("Occupancy type of the occupant.")
     val occupantType: OccupantType,

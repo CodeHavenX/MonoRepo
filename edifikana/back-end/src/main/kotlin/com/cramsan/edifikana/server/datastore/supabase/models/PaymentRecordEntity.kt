@@ -1,6 +1,9 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.common.MonetaryAmount
 import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
+import com.cramsan.edifikana.lib.model.payment.PaymentStatus
+import com.cramsan.edifikana.lib.model.payment.PaymentType
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.DatabaseModel
@@ -12,9 +15,6 @@ import kotlin.time.Instant
 
 /**
  * Entity representing a payment record row in the `payment_records` Supabase table.
- *
- * [paymentType] and [status] are stored as uppercase strings matching the DB enum values.
- * Monetary amounts are stored in the smallest currency unit (e.g. cents for USD).
  */
 @OptIn(ExperimentalTime::class)
 @Serializable
@@ -25,14 +25,14 @@ data class PaymentRecordEntity(
     @SerialName("unit_id")
     val unitId: UnitId,
     @SerialName("payment_type")
-    val paymentType: String,
+    val paymentType: PaymentType,
     @SerialName("period_month")
     val periodMonth: LocalDate,
     @SerialName("amount_due")
-    val amountDue: Double?,
+    val amountDue: MonetaryAmount?,
     @SerialName("amount_paid")
-    val amountPaid: Double?,
-    val status: String,
+    val amountPaid: MonetaryAmount?,
+    val status: PaymentStatus,
     @SerialName("due_date")
     val dueDate: LocalDate?,
     @SerialName("paid_date")
@@ -59,11 +59,11 @@ data class PaymentRecordEntity(
         @SerialName("unit_id")
         val unitId: UnitId,
         @SerialName("payment_type")
-        val paymentType: String,
+        val paymentType: PaymentType,
         @SerialName("period_month")
         val periodMonth: LocalDate,
         @SerialName("amount_due")
-        val amountDue: Double?,
+        val amountDue: MonetaryAmount?,
         @SerialName("due_date")
         val dueDate: LocalDate?,
         @SerialName("recorded_by")

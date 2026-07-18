@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.common.MonetaryAmount
 import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.edifikana.lib.model.payment.PaymentStatus
 import com.cramsan.edifikana.lib.model.payment.PaymentType
@@ -42,9 +43,9 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
             val entity =
                 CreatePaymentRecordEntity(
                     unitId = unitId,
-                    paymentType = paymentType.name,
+                    paymentType = paymentType,
                     periodMonth = periodMonth,
-                    amountDue = amountDue,
+                    amountDue = amountDue?.let { MonetaryAmount(it) },
                     dueDate = dueDate,
                     recordedBy = recordedBy,
                     notes = notes,
@@ -78,13 +79,12 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
     /**
      * Lists all non-deleted payment records for the given [unitId], optionally filtered by [periodMonth].
      *
-     * [periodMonth] is a string in "YYYY-MM" format (e.g. "2026-03"). If provided, only records
-     * whose period_month starts with that prefix are returned.
+     * If [periodMonth] is provided, only records whose period_month matches it are returned.
      */
 
     override suspend fun listPaymentRecords(
         unitId: UnitId,
-        periodMonth: String?,
+        periodMonth: LocalDate?,
     ): Result<List<PaymentRecord>> =
         runSuspendCatching(TAG) {
             logD(TAG, "Listing payment records for unit: %s, period: %s", unitId, periodMonth)
@@ -94,7 +94,7 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
                     filter {
                         PaymentRecordEntity::unitId eq unitId.unitId
                         PaymentRecordEntity::deletedAt isExact null
-                        periodMonth?.let { PaymentRecordEntity::periodMonth eq LocalDate.parse("$it-01") }
+                        periodMonth?.let { PaymentRecordEntity::periodMonth eq it }
                     }
                 }.decodeList<PaymentRecordEntity>()
                 .map { it.toPaymentRecord() }
@@ -116,9 +116,9 @@ class SupabasePaymentRecordDatastore(private val postgrest: Postgrest, private v
             postgrest
                 .from(PaymentRecordEntity.COLLECTION)
                 .update({
-                    amountPaid?.let { value -> PaymentRecordEntity::amountPaid setTo value }
+                    amountPaid?.let { value -> PaymentRecordEntity::amountPaid setTo MonetaryAmount(value) }
                     paidDate?.let { value -> PaymentRecordEntity::paidDate setTo value }
-                    status?.let { value -> PaymentRecordEntity::status setTo value.name }
+                    status?.let { value -> PaymentRecordEntity::status setTo value }
                     notes?.let { value -> PaymentRecordEntity::notes setTo value }
                 }) {
                     select()

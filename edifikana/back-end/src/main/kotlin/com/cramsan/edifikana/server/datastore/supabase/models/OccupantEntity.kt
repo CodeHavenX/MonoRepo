@@ -1,7 +1,9 @@
 package com.cramsan.edifikana.server.datastore.supabase.models
 
+import com.cramsan.edifikana.lib.model.common.Email
 import com.cramsan.edifikana.lib.model.occupant.OccupancyStatus
 import com.cramsan.edifikana.lib.model.occupant.OccupantId
+import com.cramsan.edifikana.lib.model.occupant.OccupantType
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.DatabaseModel
@@ -13,8 +15,6 @@ import kotlin.time.Instant
 
 /**
  * Entity representing an occupant row in the `unit_occupants` Supabase table.
- *
- * [occupantType] and [status] are stored as UPPER_SNAKE_CASE strings matching the DB enum values.
  */
 @OptIn(ExperimentalTime::class)
 @Serializable
@@ -29,16 +29,16 @@ data class OccupantEntity(
     @SerialName("added_by")
     val addedBy: UserId?,
     val name: String,
-    val email: String?,
+    val email: Email?,
     @SerialName("occupant_type")
-    val occupantType: String,
+    val occupantType: OccupantType,
     @SerialName("is_primary")
     val isPrimary: Boolean,
     @SerialName("start_date")
     val startDate: LocalDate,
     @SerialName("end_date")
     val endDate: LocalDate?,
-    val status: String,
+    val status: OccupancyStatus,
     @SerialName("added_at")
     val addedAt: Instant,
     @SerialName("deleted_at")
@@ -62,12 +62,12 @@ data class OccupantEntity(
         @SerialName("added_by")
         val addedBy: UserId?,
         val name: String,
-        val email: String?,
+        val email: Email?,
         @SerialName("occupant_type")
-        val occupantType: String,
+        val occupantType: OccupantType,
         @SerialName("is_primary")
         val isPrimary: Boolean,
-        val status: String = OccupancyStatus.ACTIVE.name,
+        val status: OccupancyStatus = OccupancyStatus.ACTIVE,
         @SerialName("start_date")
         val startDate: LocalDate,
         @SerialName("end_date")

@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.lib.model.network.user
 
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.RequestBody
 import io.ktor.openapi.JsonSchema
@@ -15,10 +17,10 @@ import kotlinx.serialization.Serializable
 data class CreateUserNetworkRequest(
     @SerialName("email")
     @JsonSchema.Description("Email address of the user.")
-    val email: String,
+    val email: Email,
     @SerialName("phone_number")
     @JsonSchema.Description("Phone number of the user.")
-    val phoneNumber: String,
+    val phoneNumber: PhoneNumber,
     @SerialName("password")
     @JsonSchema.Description("Password for the account, or null to create the account without a password.")
     val password: String?,

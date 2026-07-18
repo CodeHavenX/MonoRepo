@@ -47,14 +47,14 @@ class UserController(private val userService: UserService, private val rbacServi
     suspend fun createUser(createUserRequest: CreateUserNetworkRequest): UserNetworkResponse {
         requireAll(
             "An email and phone number must be provided.",
-            createUserRequest.email,
-            createUserRequest.phoneNumber,
+            createUserRequest.email.email,
+            createUserRequest.phoneNumber.phoneNumber,
         )
 
         val newUserResult =
             userService.createUser(
-                email = createUserRequest.email,
-                phoneNumber = createUserRequest.phoneNumber,
+                email = createUserRequest.email.email,
+                phoneNumber = createUserRequest.phoneNumber.phoneNumber,
                 password = createUserRequest.password,
                 firstName = createUserRequest.firstName,
                 lastName = createUserRequest.lastName,
@@ -129,7 +129,7 @@ class UserController(private val userService: UserService, private val rbacServi
             userService
                 .updateUser(
                     id = userId,
-                    email = updateUserRequest.email,
+                    email = updateUserRequest.email.email,
                 ).getOrThrow()
                 .toUserNetworkResponse()
 
@@ -194,7 +194,7 @@ class UserController(private val userService: UserService, private val rbacServi
         context: ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
         inviteRequest: InviteUserNetworkRequest,
     ): NoResponseBody {
-        val email = inviteRequest.email
+        val email = inviteRequest.email.email
         val orgId = inviteRequest.organizationId
         val inviteRole: InviteRole = inviteRequest.role
 
@@ -322,7 +322,7 @@ class UserController(private val userService: UserService, private val rbacServi
      */
 
     suspend fun requestPasswordReset(request: PasswordResetNetworkRequest): NoResponseBody {
-        userService.requestPasswordReset(request.email, request.phoneNumber)
+        userService.requestPasswordReset(request.email?.email, request.phoneNumber?.phoneNumber)
         return NoResponseBody
     }
 
@@ -380,7 +380,7 @@ class UserController(private val userService: UserService, private val rbacServi
                 cancelInvite(request.context, request.pathParam)
             }
             handler(api.checkUserExists) { request ->
-                checkUserIsRegistered(request.queryParam.email)
+                checkUserIsRegistered(request.queryParam.email.email)
             }
             handler(api.requestPasswordReset) { request ->
                 requestPasswordReset(request.requestBody)

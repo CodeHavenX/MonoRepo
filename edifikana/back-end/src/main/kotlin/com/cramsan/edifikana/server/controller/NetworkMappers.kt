@@ -2,6 +2,11 @@
 
 package com.cramsan.edifikana.server.controller
 
+import com.cramsan.edifikana.lib.model.common.CurrencyCode
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.common.MonetaryAmount
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
+import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.network.asset.AssetNetworkResponse
 import com.cramsan.edifikana.lib.model.network.commonArea.CommonAreaNetworkResponse
 import com.cramsan.edifikana.lib.model.network.document.DocumentNetworkResponse
@@ -46,9 +51,9 @@ import kotlin.time.ExperimentalTime
 @NetworkModel
 fun User.toUserNetworkResponse(): UserNetworkResponse {
     return UserNetworkResponse(
-        id = id.userId,
-        email = email,
-        phoneNumber = phoneNumber,
+        id = id,
+        email = Email(email),
+        phoneNumber = PhoneNumber(phoneNumber),
         firstName = firstName,
         lastName = lastName,
         authMetadata =
@@ -104,7 +109,7 @@ fun Property.toPropertyNetworkResponse(): PropertyNetworkResponse {
         name = name,
         address = address,
         organizationId = organizationId,
-        imageUrl = imageUrl,
+        imageUrl = imageUrl?.let { Url(it) },
     )
 }
 
@@ -119,7 +124,7 @@ fun TimeCardEvent.toTimeCardEventNetworkResponse(): TimeCardEventNetworkResponse
         fallbackEmployeeName = fallbackEmployeeName,
         propertyId = propertyId,
         type = type,
-        imageUrl = imageUrl,
+        imageUrl = imageUrl?.let { Url(it) },
         timestamp = timestamp,
     )
 }
@@ -132,7 +137,7 @@ fun Asset.toAssetNetworkResponse(): AssetNetworkResponse {
     return AssetNetworkResponse(
         id = id,
         fileName = fileName,
-        signedUrl = signedUrl,
+        signedUrl = signedUrl?.let { Url(it) },
     )
 }
 
@@ -159,7 +164,7 @@ fun OrgMemberView.toMemberNetworkResponse(): MemberNetworkResponse {
         role = role,
         status = status,
         joinedAt = joinedAt,
-        email = email,
+        email = Email(email),
         displayName = "$firstName $lastName".trim(),
     )
 }
@@ -171,7 +176,7 @@ fun OrgMemberView.toMemberNetworkResponse(): MemberNetworkResponse {
 fun Invite.toInviteNetworkResponse(): InviteNetworkResponse {
     return InviteNetworkResponse(
         inviteId = id,
-        email = email,
+        email = Email(email),
         organizationId = organizationId,
         role = role,
         expiresAt = expiration,
@@ -278,8 +283,8 @@ fun PaymentRecord.toPaymentRecordNetworkResponse(): PaymentRecordNetworkResponse
         unitId = unitId,
         paymentType = paymentType,
         periodMonth = periodMonth,
-        amountDue = amountDue,
-        amountPaid = amountPaid,
+        amountDue = amountDue?.let { MonetaryAmount(it) },
+        amountPaid = amountPaid?.let { MonetaryAmount(it) },
         status = status,
         dueDate = dueDate,
         paidDate = paidDate,
@@ -297,9 +302,9 @@ fun RentConfig.toRentConfigNetworkResponse(): RentConfigNetworkResponse {
     return RentConfigNetworkResponse(
         rentConfigId = id,
         unitId = unitId,
-        monthlyAmount = monthlyAmount,
+        monthlyAmount = MonetaryAmount(monthlyAmount),
         dueDay = dueDay,
-        currency = currency,
+        currency = CurrencyCode(currency),
         updatedAt = updatedAt,
         updatedBy = updatedBy,
         createdAt = createdAt,
@@ -317,7 +322,7 @@ fun Occupant.toOccupantNetworkResponse(): OccupantNetworkResponse {
         userId = userId,
         addedBy = addedBy,
         name = name,
-        email = email,
+        email = email?.let { Email(it) },
         occupantType = occupantType,
         isPrimary = isPrimary,
         startDate = startDate,

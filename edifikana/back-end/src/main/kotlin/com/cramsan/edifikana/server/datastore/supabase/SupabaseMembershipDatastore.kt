@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.datastore.supabase
 
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.invite.InviteCode
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.edifikana.lib.model.invite.InviteRole
 import com.cramsan.edifikana.lib.model.organization.OrgMemberStatus
@@ -158,12 +160,12 @@ class SupabaseMembershipDatastore(private val postgrest: Postgrest, private val 
             logD(TAG, "Creating invite for email: %s with role: %s", email, role)
             val inviteEntity =
                 InviteEntity.Create(
-                    email = email,
+                    email = Email(email),
                     organizationId = organizationId,
                     createdAt = clock.now(),
                     expiration = expiration,
                     role = role,
-                    inviteCode = inviteCode,
+                    inviteCode = InviteCode(inviteCode),
                 )
 
             val data =
@@ -186,7 +188,7 @@ class SupabaseMembershipDatastore(private val postgrest: Postgrest, private val 
             postgrest
                 .from(InviteEntity.COLLECTION)
                 .update({
-                    InviteEntity::inviteCode setTo newCode
+                    InviteEntity::inviteCode setTo InviteCode(newCode)
                     InviteEntity::expiration setTo newExpiry
                 }) {
                     select()
@@ -227,8 +229,8 @@ class SupabaseMembershipDatastore(private val postgrest: Postgrest, private val 
             // role. Intentional — re-joining via invite is explicit user action.
             val mapping =
                 UserOrganizationMappingEntity.AcceptInviteEntity(
-                    userId = userId.userId,
-                    organizationId = invite.organizationId.id,
+                    userId = userId,
+                    organizationId = invite.organizationId,
                     role = invite.role.toOrgRole(),
                     status = OrgMemberStatus.ACTIVE,
                     joinedAt = clock.now(),

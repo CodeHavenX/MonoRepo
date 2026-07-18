@@ -1,5 +1,8 @@
 package com.cramsan.edifikana.lib.model.network.user
 
+import com.cramsan.edifikana.lib.model.common.Email
+import com.cramsan.edifikana.lib.model.common.PhoneNumber
+import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
 import io.ktor.openapi.JsonSchema
@@ -15,13 +18,13 @@ import kotlinx.serialization.Serializable
 data class UserNetworkResponse(
     @SerialName("id")
     @JsonSchema.Description("Unique identifier of the user.")
-    val id: String,
+    val id: UserId,
     @SerialName("email")
     @JsonSchema.Description("Email address of the user.")
-    val email: String,
+    val email: Email,
     @SerialName("phone_number")
     @JsonSchema.Description("Phone number of the user.")
-    val phoneNumber: String,
+    val phoneNumber: PhoneNumber,
     @SerialName("first_name")
     @JsonSchema.Description("First name of the user.")
     @JsonSchema.Example("\"Jane\"")

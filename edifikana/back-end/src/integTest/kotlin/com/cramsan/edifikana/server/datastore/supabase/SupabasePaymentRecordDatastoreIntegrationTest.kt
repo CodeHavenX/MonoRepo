@@ -162,7 +162,7 @@ class SupabasePaymentRecordDatastoreIntegrationTest : SupabaseIntegrationTest() 
         ).registerPaymentRecordForDeletion()
         assertTrue(marchResult.isSuccess)
         assertTrue(aprilResult.isSuccess)
-        val listResult = paymentRecordDatastore.listPaymentRecords(unitId!!, "2026-03")
+        val listResult = paymentRecordDatastore.listPaymentRecords(unitId!!, LocalDate(2026, 3, 1))
 
         // Assert
         assertTrue(listResult.isSuccess)

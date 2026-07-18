@@ -35,11 +35,11 @@ interface PaymentRecordDatastore {
     /**
      * Retrieves all non-deleted payment records for the given [unitId], optionally filtered by [periodMonth].
      *
-     * [periodMonth] is a string in "YYYY-MM" format. If null, all periods are returned.
+     * If [periodMonth] is null, all periods are returned.
      */
     suspend fun listPaymentRecords(
         unitId: UnitId,
-        periodMonth: String?,
+        periodMonth: LocalDate?,
     ): Result<List<PaymentRecord>>
 
     /**

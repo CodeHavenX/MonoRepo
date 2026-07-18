@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.server.service.models
 
+import com.cramsan.edifikana.lib.model.asset.AssetId
+import com.cramsan.edifikana.lib.model.common.MimeType
 import com.cramsan.edifikana.lib.model.document.DocumentId
 import com.cramsan.edifikana.lib.model.document.DocumentType
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
@@ -19,9 +21,9 @@ data class Document(
     val propertyId: PropertyId?,
     val unitId: UnitId?,
     val filename: String,
-    val mimeType: String,
+    val mimeType: MimeType,
     val documentType: DocumentType,
-    val assetId: String,
+    val assetId: AssetId,
     val createdBy: UserId?,
     val createdAt: Instant,
 )

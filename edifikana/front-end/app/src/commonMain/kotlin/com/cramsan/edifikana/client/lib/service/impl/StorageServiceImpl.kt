@@ -3,6 +3,7 @@ package com.cramsan.edifikana.client.lib.service.impl
 import com.cramsan.edifikana.api.StorageApi
 import com.cramsan.edifikana.client.lib.service.DownloadStrategy
 import com.cramsan.edifikana.client.lib.service.StorageService
+import com.cramsan.edifikana.lib.model.asset.AssetId
 import com.cramsan.edifikana.lib.model.network.asset.CreateSignedUploadQueryParams
 import com.cramsan.edifikana.lib.model.network.asset.GetSignedDownloadQueryParams
 import com.cramsan.framework.annotations.NetworkModel
@@ -60,11 +61,11 @@ class StorageServiceImpl(
                             resourceId = resourceId,
                         ),
                     ).execute(http)
-            rawHttp.put(response.signedUrl) {
+            rawHttp.put(response.signedUrl.url) {
                 setBody(data)
                 contentType(ContentType.Application.OctetStream)
             }
-            response.assetId
+            response.assetId.assetId
         }
 
     override suspend fun downloadFile(
@@ -77,10 +78,10 @@ class StorageServiceImpl(
             val response =
                 StorageApi.getSignedDownload
                     .buildRequest(
-                        queryParam = GetSignedDownloadQueryParams(assetId = targetRef),
+                        queryParam = GetSignedDownloadQueryParams(assetId = AssetId(targetRef)),
                     ).execute(http)
             val signedUrl = checkNotNull(response.signedUrl) { "No signed URL returned for $targetRef" }
-            val bytes = rawHttp.get(signedUrl).body<ByteArray>()
+            val bytes = rawHttp.get(signedUrl.url).body<ByteArray>()
             downloadStrategy.saveToFile(bytes, targetRef)
         }
 

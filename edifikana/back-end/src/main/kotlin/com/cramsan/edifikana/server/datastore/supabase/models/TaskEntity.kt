@@ -3,6 +3,9 @@ package com.cramsan.edifikana.server.datastore.supabase.models
 import com.cramsan.edifikana.lib.model.commonArea.CommonAreaId
 import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.property.PropertyId
+import com.cramsan.edifikana.lib.model.task.TaskId
+import com.cramsan.edifikana.lib.model.task.TaskPriority
+import com.cramsan.edifikana.lib.model.task.TaskStatus
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.annotations.DatabaseModel
@@ -14,15 +17,12 @@ import kotlin.time.Instant
 
 /**
  * Entity representing a task row in the `tasks` Supabase table.
- *
- * [priority] and [status] are stored as uppercase strings matching the DB enum values
- * (e.g. "LOW", "OPEN"). Use [TaskPriority.valueOf] and [TaskStatus.valueOf] to convert.
  */
 @OptIn(ExperimentalTime::class)
 @Serializable
 @DatabaseModel
 data class TaskEntity(
-    val id: String,
+    val id: TaskId,
     @SerialName("property_id")
     val propertyId: PropertyId,
     @SerialName("unit_id")
@@ -37,8 +37,8 @@ data class TaskEntity(
     val statusChangedBy: UserId?,
     val title: String,
     val description: String?,
-    val priority: String,
-    val status: String,
+    val priority: TaskPriority,
+    val status: TaskStatus,
     @SerialName("due_date")
     val dueDate: LocalDate?,
     @SerialName("created_at")
@@ -74,7 +74,7 @@ data class TaskEntity(
         val createdBy: UserId,
         val title: String,
         val description: String?,
-        val priority: String,
+        val priority: TaskPriority,
         @SerialName("due_date")
         val dueDate: LocalDate?,
     )

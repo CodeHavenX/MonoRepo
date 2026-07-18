@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.lib.model.network.payment
 
+import com.cramsan.edifikana.lib.model.common.MonetaryAmount
 import com.cramsan.edifikana.lib.model.payment.PaymentType
 import com.cramsan.edifikana.lib.model.unit.UnitId
 import com.cramsan.framework.annotations.NetworkModel
@@ -28,8 +29,7 @@ data class CreatePaymentRecordNetworkRequest(
     val periodMonth: LocalDate,
     @SerialName("amount_due")
     @JsonSchema.Description("Amount due for this period.")
-    @JsonSchema.Minimum(0.0)
-    val amountDue: Double?,
+    val amountDue: MonetaryAmount?,
     @SerialName("due_date")
     @JsonSchema.Description("Date the payment is due.")
     @JsonSchema.Format("date")

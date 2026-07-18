@@ -53,7 +53,7 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
                     createdBy = createdBy,
                     title = title,
                     description = description,
-                    priority = priority.name,
+                    priority = priority,
                     dueDate = dueDate,
                 )
             postgrest
@@ -102,9 +102,9 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
                         TaskEntity::propertyId eq propertyId.propertyId
                         TaskEntity::deletedAt isExact null
                         unitId?.let { TaskEntity::unitId eq it.unitId }
-                        status?.let { TaskEntity::status eq it.name }
+                        status?.let { TaskEntity::status eq it }
                         assigneeId?.let { TaskEntity::assigneeId eq it.empId }
-                        priority?.let { TaskEntity::priority eq it.name }
+                        priority?.let { TaskEntity::priority eq it }
                     }
                 }.decodeList<TaskEntity>()
                 .map { it.toTask() }
@@ -133,8 +133,8 @@ class SupabaseTaskDatastore(private val postgrest: Postgrest, private val clock:
                 .update({
                     title?.let { value -> TaskEntity::title setTo value }
                     description?.let { value -> TaskEntity::description setTo value }
-                    priority?.let { value -> TaskEntity::priority setTo value.name }
-                    status?.let { value -> TaskEntity::status setTo value.name }
+                    priority?.let { value -> TaskEntity::priority setTo value }
+                    status?.let { value -> TaskEntity::status setTo value }
                     assigneeId?.let { value -> TaskEntity::assigneeId setTo value }
                     dueDate?.let { value -> TaskEntity::dueDate setTo value }
                     statusChangedBy?.let { value -> TaskEntity::statusChangedBy setTo value }

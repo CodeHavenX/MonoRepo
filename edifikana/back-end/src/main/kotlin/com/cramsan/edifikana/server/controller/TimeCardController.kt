@@ -58,7 +58,7 @@ class TimeCardController(private val timeCardService: TimeCardService, private v
                     fallbackEmployeeName = request.requestBody.fallbackEmployeeName,
                     propertyId = request.requestBody.propertyId,
                     type = request.requestBody.type,
-                    imageUrl = request.requestBody.imageUrl,
+                    imageUrl = request.requestBody.imageUrl?.url,
                     timestamp = Chronos.currentInstant(),
                 ).toTimeCardEventNetworkResponse()
         return newTimeCard

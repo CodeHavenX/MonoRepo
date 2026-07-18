@@ -56,5 +56,5 @@ private fun MemberNetworkResponse.toOrgMemberModel() =
         status = status,
         joinedAt = joinedAt,
         displayName = displayName,
-        email = email,
+        email = email.email,
     )

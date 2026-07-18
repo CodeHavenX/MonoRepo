@@ -1,5 +1,7 @@
 package com.cramsan.edifikana.lib.model.network.document
 
+import com.cramsan.edifikana.lib.model.asset.AssetId
+import com.cramsan.edifikana.lib.model.common.MimeType
 import com.cramsan.edifikana.lib.model.document.DocumentType
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
@@ -37,7 +39,7 @@ data class CreateDocumentNetworkRequest(
     @SerialName("mime_type")
     @JsonSchema.Description("MIME type of the document's file content.")
     @JsonSchema.Example("\"application/pdf\"")
-    val mimeType: String,
+    val mimeType: MimeType,
     @SerialName("document_type")
     @JsonSchema.Description("Category of the document.")
     val documentType: DocumentType,
@@ -45,5 +47,5 @@ data class CreateDocumentNetworkRequest(
     @JsonSchema.Description(
         "Storage path of the file asset, obtained by uploading the file via the storage API first.",
     )
-    val assetId: String,
+    val assetId: AssetId,
 ) : RequestBody

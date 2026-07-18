@@ -1,5 +1,8 @@
 package com.cramsan.edifikana.lib.model.organization
 
+import io.ktor.openapi.JsonSchema
+import kotlinx.serialization.Serializable
+
 /**
  * Domain model representing the role of a user within an organization.
  *
@@ -15,6 +18,8 @@ package com.cramsan.edifikana.lib.model.organization
  * - [MANAGER]: Elevated access for property/team management; cannot manage org-level settings.
  * - [EMPLOYEE]: Standard org member with read access and limited write access.
  */
+@Serializable
+@JsonSchema.Description("Role of a user within an organization.")
 enum class OrgRole {
     OWNER,
     ADMIN,

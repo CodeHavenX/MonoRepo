@@ -10,8 +10,11 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 
 /**
  * API definition for unit CRUD operations.
@@ -24,7 +27,12 @@ object UnitApi : Api("unit") {
             NoQueryParam,
             NoPathParam,
             UnitNetworkResponse,
-            >(HttpMethod.Post)
+            >(
+            method = HttpMethod.Post,
+            summary = "Create a unit",
+            description = "Creates a new unit within a property. Requires the ADMIN role.",
+            responses = UniversalResponsesOnly,
+        )
 
     val getUnit =
         operation<
@@ -32,7 +40,15 @@ object UnitApi : Api("unit") {
             NoQueryParam,
             UnitId,
             UnitNetworkResponse,
-            >(HttpMethod.Get)
+            >(
+            method = HttpMethod.Get,
+            summary = "Get a unit",
+            description = "Retrieves a single unit by its identifier. Requires the MANAGER role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No unit exists for the given id."
+            },
+        )
 
     val getUnits =
         operation<
@@ -40,7 +56,12 @@ object UnitApi : Api("unit") {
             GetUnitsQueryParams,
             NoPathParam,
             UnitListNetworkResponse,
-            >(HttpMethod.Get)
+            >(
+            method = HttpMethod.Get,
+            summary = "List units",
+            description = "Lists all units belonging to a property. Requires the MANAGER role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 
     val updateUnit =
         operation<
@@ -48,7 +69,15 @@ object UnitApi : Api("unit") {
             NoQueryParam,
             UnitId,
             UnitNetworkResponse,
-            >(HttpMethod.Put)
+            >(
+            method = HttpMethod.Put,
+            summary = "Update a unit",
+            description = "Updates the mutable fields of an existing unit. Requires the ADMIN role.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No unit exists for the given id."
+            },
+        )
 
     val deleteUnit =
         operation<
@@ -56,5 +85,13 @@ object UnitApi : Api("unit") {
             NoQueryParam,
             UnitId,
             NoResponseBody,
-            >(HttpMethod.Delete)
+            >(
+            method = HttpMethod.Delete,
+            summary = "Delete a unit",
+            description = "Permanently deletes a unit by its identifier. Requires the ADMIN role.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No unit exists for the given id."
+            },
+        )
 }

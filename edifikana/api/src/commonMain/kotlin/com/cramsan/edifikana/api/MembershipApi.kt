@@ -13,8 +13,10 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 
 /**
  * API definition for organization membership management operations.
@@ -34,7 +36,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             OrganizationId,
             NoResponseBody,
-            >(HttpMethod.Post, "invite")
+            >(
+            method = HttpMethod.Post,
+            path = "invite",
+            summary = "Invite a member",
+            description = "Invites a new member to join an organization by email. Requires the ADMIN role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No organization exists for the given id."
+            },
+        )
 
     /**
      * List all active members of an organization.
@@ -46,7 +57,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             OrganizationId,
             MemberListNetworkResponse,
-            >(HttpMethod.Get, "members")
+            >(
+            method = HttpMethod.Get,
+            path = "members",
+            summary = "List members",
+            description = "Lists all active members of an organization.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No organization exists for the given id."
+            },
+        )
 
     /**
      * Update a member's role within an organization.
@@ -59,7 +79,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             OrganizationId,
             NoResponseBody,
-            >(HttpMethod.Put, "members")
+            >(
+            method = HttpMethod.Put,
+            path = "members",
+            summary = "Update a member's role",
+            description = "Updates the role of an existing organization member. Requires the ADMIN role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No organization or member exists for the given ids."
+            },
+        )
 
     /**
      * Remove a member from an organization.
@@ -72,7 +101,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             OrganizationId,
             NoResponseBody,
-            >(HttpMethod.Delete, "members")
+            >(
+            method = HttpMethod.Delete,
+            path = "members",
+            summary = "Remove a member",
+            description = "Removes a member from an organization. Requires the ADMIN role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No organization or member exists for the given ids."
+            },
+        )
 
     /**
      * Leave an organization as the currently authenticated user.
@@ -84,7 +122,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             OrganizationId,
             NoResponseBody,
-            >(HttpMethod.Post, "leave")
+            >(
+            method = HttpMethod.Post,
+            path = "leave",
+            summary = "Leave an organization",
+            description = "Removes the authenticated user's own membership from an organization.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No organization exists for the given id."
+            },
+        )
 
     /**
      * Transfer organization ownership to another member.
@@ -97,7 +144,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             OrganizationId,
             NoResponseBody,
-            >(HttpMethod.Post, "transfer")
+            >(
+            method = HttpMethod.Post,
+            path = "transfer",
+            summary = "Transfer ownership",
+            description = "Transfers ownership of an organization to another member. Requires the OWNER role.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No organization or target member exists for the given ids."
+            },
+        )
 
     /**
      * List all pending (non-expired, non-cancelled, non-accepted) invites for an organization.
@@ -109,7 +165,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             OrganizationId,
             InviteListNetworkResponse,
-            >(HttpMethod.Get, "invites")
+            >(
+            method = HttpMethod.Get,
+            path = "invites",
+            summary = "List pending invites",
+            description = "Lists all pending (non-expired, non-cancelled, non-accepted) invites for an organization.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No organization exists for the given id."
+            },
+        )
 
     /**
      * Cancel a pending invite.
@@ -121,7 +186,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             InviteId,
             NoResponseBody,
-            >(HttpMethod.Delete, "invite")
+            >(
+            method = HttpMethod.Delete,
+            path = "invite",
+            summary = "Cancel an invite",
+            description = "Cancels a pending invite by its identifier.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No invite exists for the given id."
+            },
+        )
 
     /**
      * Resend a pending invite with a regenerated code and reset expiry.
@@ -133,7 +207,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             InviteId,
             NoResponseBody,
-            >(HttpMethod.Post, "invite/resend")
+            >(
+            method = HttpMethod.Post,
+            path = "invite/resend",
+            summary = "Resend an invite",
+            description = "Resends a pending invite with a regenerated code and a reset expiry.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No invite exists for the given id."
+            },
+        )
 
     /**
      * Join an organization via an invite code.
@@ -146,5 +229,16 @@ object MembershipApi : Api("membership") {
             NoQueryParam,
             NoPathParam,
             NoResponseBody,
-            >(HttpMethod.Post, "join")
+            >(
+            method = HttpMethod.Post,
+            path = "join",
+            summary = "Join via invite code",
+            description =
+            "Joins an organization using a valid invite code. Requires an authenticated user, " +
+                "but not existing org membership.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No invite exists for the given code, or it has expired."
+            },
+        )
 }

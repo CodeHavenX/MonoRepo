@@ -10,8 +10,11 @@ import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
 import com.cramsan.framework.annotations.api.NoResponseBody
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 
 /**
  * API definition for common area operations within a property.
@@ -28,7 +31,12 @@ object CommonAreaApi : Api("common-area") {
             NoQueryParam,
             NoPathParam,
             CommonAreaNetworkResponse,
-            >(HttpMethod.Post)
+            >(
+            method = HttpMethod.Post,
+            summary = "Create a common area",
+            description = "Creates a new common area within a property. Requires the MANAGER role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 
     val getCommonArea =
         operation<
@@ -36,7 +44,15 @@ object CommonAreaApi : Api("common-area") {
             NoQueryParam,
             CommonAreaId,
             CommonAreaNetworkResponse,
-            >(HttpMethod.Get)
+            >(
+            method = HttpMethod.Get,
+            summary = "Get a common area",
+            description = "Retrieves a single common area by its identifier. Requires the MANAGER role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No common area exists for the given id."
+            },
+        )
 
     val getCommonAreasForProperty =
         operation<
@@ -44,7 +60,13 @@ object CommonAreaApi : Api("common-area") {
             NoQueryParam,
             PropertyId,
             CommonAreaListNetworkResponse,
-            >(HttpMethod.Get, "by-property")
+            >(
+            method = HttpMethod.Get,
+            path = "by-property",
+            summary = "List common areas for a property",
+            description = "Lists all common areas belonging to a property. Requires the MANAGER role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 
     val updateCommonArea =
         operation<
@@ -52,7 +74,15 @@ object CommonAreaApi : Api("common-area") {
             NoQueryParam,
             CommonAreaId,
             CommonAreaNetworkResponse,
-            >(HttpMethod.Put)
+            >(
+            method = HttpMethod.Put,
+            summary = "Update a common area",
+            description = "Updates the mutable fields of an existing common area. Requires the MANAGER role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No common area exists for the given id."
+            },
+        )
 
     val deleteCommonArea =
         operation<
@@ -60,5 +90,13 @@ object CommonAreaApi : Api("common-area") {
             NoQueryParam,
             CommonAreaId,
             NoResponseBody,
-            >(HttpMethod.Delete)
+            >(
+            method = HttpMethod.Delete,
+            summary = "Delete a common area",
+            description = "Permanently deletes a common area by its identifier. Requires the MANAGER role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No common area exists for the given id."
+            },
+        )
 }

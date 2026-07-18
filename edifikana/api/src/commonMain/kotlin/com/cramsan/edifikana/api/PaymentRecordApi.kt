@@ -9,8 +9,11 @@ import com.cramsan.edifikana.lib.model.payment.PaymentRecordId
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
+import com.cramsan.framework.networkapi.AdditionalResponses
 import com.cramsan.framework.networkapi.Api
+import com.cramsan.framework.networkapi.UniversalResponsesOnly
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 
 /**
  * API definition for payment record operations.
@@ -26,7 +29,12 @@ object PaymentRecordApi : Api("payment-records") {
             NoQueryParam,
             NoPathParam,
             PaymentRecordNetworkResponse,
-            >(HttpMethod.Post)
+            >(
+            method = HttpMethod.Post,
+            summary = "Create a payment record",
+            description = "Creates a new payment record for a unit. Requires the ADMIN role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 
     val getPaymentRecord =
         operation<
@@ -34,7 +42,15 @@ object PaymentRecordApi : Api("payment-records") {
             NoQueryParam,
             PaymentRecordId,
             PaymentRecordNetworkResponse,
-            >(HttpMethod.Get)
+            >(
+            method = HttpMethod.Get,
+            summary = "Get a payment record",
+            description = "Retrieves a single payment record by its identifier. Requires the EMPLOYEE role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No payment record exists for the given id."
+            },
+        )
 
     val listPaymentRecords =
         operation<
@@ -42,7 +58,14 @@ object PaymentRecordApi : Api("payment-records") {
             GetPaymentRecordsQueryParams,
             NoPathParam,
             PaymentRecordListNetworkResponse,
-            >(HttpMethod.Get)
+            >(
+            method = HttpMethod.Get,
+            summary = "List payment records",
+            description =
+            "Lists payment records for a unit, optionally filtered by period. " +
+                "Requires the EMPLOYEE role or higher.",
+            responses = UniversalResponsesOnly,
+        )
 
     val updatePaymentRecord =
         operation<
@@ -50,5 +73,15 @@ object PaymentRecordApi : Api("payment-records") {
             NoQueryParam,
             PaymentRecordId,
             PaymentRecordNetworkResponse,
-            >(HttpMethod.Put)
+            >(
+            method = HttpMethod.Put,
+            summary = "Update a payment record",
+            description =
+            "Updates the mutable fields of an existing payment record. " +
+                "Requires the ADMIN role or higher.",
+            responses =
+            AdditionalResponses {
+                HttpStatusCode.NotFound describedAs "No payment record exists for the given id."
+            },
+        )
 }

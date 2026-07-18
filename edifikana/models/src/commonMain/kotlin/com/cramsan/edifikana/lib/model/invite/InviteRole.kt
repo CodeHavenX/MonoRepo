@@ -1,5 +1,8 @@
 package com.cramsan.edifikana.lib.model.invite
 
+import io.ktor.openapi.JsonSchema
+import kotlinx.serialization.Serializable
+
 /**
  * Domain model representing the role assigned by an invite.
  *
@@ -12,6 +15,8 @@ package com.cramsan.edifikana.lib.model.invite
  * - [EMPLOYEE]: Invited as a standard org member.
  * - [RESIDENT]: Invited as a unit resident; does NOT create a `user_organization_mapping` row.
  */
+@Serializable
+@JsonSchema.Description("Role assigned by an invite.")
 enum class InviteRole {
     ADMIN,
     MANAGER,

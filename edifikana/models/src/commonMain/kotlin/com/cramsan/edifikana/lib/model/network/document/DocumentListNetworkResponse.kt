@@ -2,6 +2,7 @@ package com.cramsan.edifikana.lib.model.network.document
 
 import com.cramsan.framework.annotations.NetworkModel
 import com.cramsan.framework.annotations.api.ResponseBody
+import io.ktor.openapi.JsonSchema
 import kotlinx.serialization.Serializable
 
 /**
@@ -9,4 +10,8 @@ import kotlinx.serialization.Serializable
  */
 @NetworkModel
 @Serializable
-data class DocumentListNetworkResponse(val documents: List<DocumentNetworkResponse>) : ResponseBody
+@JsonSchema.Description("A list of documents.")
+data class DocumentListNetworkResponse(
+    @JsonSchema.Description("The documents matching the request.")
+    val documents: List<DocumentNetworkResponse>,
+) : ResponseBody

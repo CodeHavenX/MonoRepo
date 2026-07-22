@@ -81,8 +81,10 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
-    fun `getProperties should return all properties for user`() = runBlocking {
+    fun `getProperties should return all properties for the organization, not just the caller's own`() = runBlocking {
         // Arrange
+        val otherUserId = createTestUser("other-user-${test_prefix}@example.com")
+        val otherOrg = createTestOrganization("other-org-${test_prefix}", "")
 
         // Act
         val result1 = propertyDatastore.createProperty(
@@ -92,24 +94,36 @@ class SupabasePropertyDatastoreIntegrationTest : SupabaseIntegrationTest() {
             organizationId = testOrg!!,
             imageUrl = "drawable:L_DEPA",
         ).registerPropertyForDeletion()
+        // Created by a different user, same org — proves this is org-scoped, not
+        // user-assignment-scoped like the old getAssignedProperties behavior.
         val result2 = propertyDatastore.createProperty(
             name = "${test_prefix}_PropertyB",
             address = "101 Sample Blvd, Testville, TV 13141",
-            creatorUserId = testUserId!!,
+            creatorUserId = otherUserId,
             organizationId = testOrg!!,
             imageUrl = "drawable:M_DEPA",
         ).registerPropertyForDeletion()
+        // Different org entirely — must not show up in testOrg's results.
+        val otherOrgResult = propertyDatastore.createProperty(
+            name = "${test_prefix}_PropertyOtherOrg",
+            address = "1 Other Org Way, Elsewhere, EO 99999",
+            creatorUserId = otherUserId,
+            organizationId = otherOrg,
+            imageUrl = "drawable:S_DEPA",
+        ).registerPropertyForDeletion()
         assertTrue(result1.isSuccess)
         assertTrue(result2.isSuccess)
-        val getAllResult = propertyDatastore.getProperties(userId = testUserId!!)
+        assertTrue(otherOrgResult.isSuccess)
+        val getAllResult = propertyDatastore.getProperties(organizationId = testOrg!!)
 
         // Assert
         assertTrue(getAllResult.isSuccess)
         val properties = getAllResult.getOrNull()
         assertNotNull(properties)
         val names = properties.map { it.name }
-        assertTrue(names.contains( "${test_prefix}_PropertyA"))
-        assertTrue(names.contains( "${test_prefix}_PropertyB"))
+        assertTrue(names.contains("${test_prefix}_PropertyA"))
+        assertTrue(names.contains("${test_prefix}_PropertyB"))
+        assertTrue(names.none { it == "${test_prefix}_PropertyOtherOrg" })
     }
 
     @Test

@@ -87,6 +87,7 @@ Format: `[MODULE] Short description`
 
 **References**
 - List every issue number found in Step 1 as `- Closes #NNN` or `- Related: #NNN` (use `Closes` only when this PR fully resolves the issue).
+- If the plan file read in Step 3 has a `**This Slice's GitHub Issue:**` / `**Parent GitHub Issue:**` header (a plan-issue split slice), this PR closes the *slice's own* issue, not the parent — use `- Closes #<slice-issue>` plus `- Part of #<parent-issue>` (don't `Closes` the parent; the other slices are what actually close it in full).
 - If mock files were identified in Step 3, link them: `- Mock: edifikana/mockups/<file>.html`
 - If plan files were read in Step 3, link them: `- Plan: ~/.claude/plans/<file>.md`
 - If nothing applies, write `N/A`.

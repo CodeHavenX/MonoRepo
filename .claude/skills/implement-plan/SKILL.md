@@ -59,6 +59,12 @@ git checkout -b <user>/<issue-number>-<short-description>
 Match `<short-description>` to the plan's slug. Never branch from a dirty tree, and never
 discard uncommitted work to get there — ask first.
 
+**Which `<issue-number>` to use:** for a plan produced by a split (header has `**This Slice's
+GitHub Issue:**`), use *that* number, not the parent's — it's the real issue this specific PR
+closes. If that field still reads `TBD`, the child issue hasn't been filed yet (plan-issue's
+Step 12) — stop and get it filed first rather than branching against a placeholder. For a
+single-PR plan, use the one `**GitHub Issue:**` number as before.
+
 ---
 
 ## Step 3 — Implementation order
@@ -110,6 +116,8 @@ judge PR size and reviewability. Use the format from `.ai/instructions.md`:
 ```
 [MODULE] <short description> (#NNN)
 ```
+
+`#NNN` is this slice's own issue number (see Step 2), not the parent issue's, for a split plan.
 
 Never push. Never amend a commit from this run once a later layer has been built on top of it.
 

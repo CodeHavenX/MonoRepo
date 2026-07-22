@@ -29,3 +29,12 @@ Build Tools Report
 ```
 
 If no violations are found, say so explicitly.
+
+## Next Step
+
+End with an explicit pointer to what comes next in the pipeline:
+
+- **P0 or P1 findings exist** — tell the user to fix them and re-run this review before moving
+  on. Do not suggest `create-pr` yet.
+- **Only P2/P3 findings, or none at all** — tell the user they can proceed to `create-pr` to
+  open the pull request.

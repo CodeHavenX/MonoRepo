@@ -1,7 +1,7 @@
 ---
 name: plan-issue
-description: Plan work for any Edifikana GitHub issue by fetching the issue via MCP, reading the wiki and monorepo, and producing a structured wiki plan document. Use when starting work on a new issue or asked to plan any GitHub issue.
-allowed-tools: Read, Write, Glob, Grep, WebFetch, mcp__github__issue_read, mcp__github__list_issues, mcp__github__search_issues
+description: Plan work for any Edifikana GitHub issue by fetching the issue via MCP, reading the wiki and monorepo, and producing a structured wiki plan document — splitting into a dependency-ordered chain of PR-sized plans when the issue spans multiple layers, each filed as its own linked GitHub issue, plus separate linked issues for any deferred follow-up work. Use when starting work on a new issue or asked to plan any GitHub issue.
+allowed-tools: Read, Write, Glob, Grep, Bash, WebFetch, mcp__github__issue_read, mcp__github__list_issues, mcp__github__search_issues
 ---
 
 # Plan Issue — Edifikana Issue Planning Skill
@@ -152,10 +152,61 @@ After research, determine:
 3. **Downstream dependents** — issues that will build on this one
 4. **Open questions** — anything ambiguous, any decision that was not made in the issue body
 5. **Risks and gotchas** — anything unusual found in the codebase (edge cases, existing TODOs, partial implementations, deprecated patterns)
+6. **Follow-up work** — anything this issue's research surfaces that should explicitly **not** be done as part of it (a related gap found by accident, a descoped piece of the original ask, a "do this too" temptation worth resisting). Each one becomes its own linked GitHub issue later in this skill — capture it now with a one-line title and a sentence on why it's deferred, don't just mention it in prose and lose track of it.
 
 ---
 
-## Step 7: Write the Plan Document
+## Step 7: Decide PR Sizing
+
+Not every issue should become a single PR. Decide now, before writing the plan, whether this
+issue must be split into a dependency-ordered chain of smaller plans — one plan document per
+PR-sized slice.
+
+### When to keep it as one PR
+
+- The issue touches only one layer (pure DB, pure shared-model, pure backend, or pure
+  frontend), OR
+- It touches two adjacent layers but the smaller one is trivial (e.g. a one-field model change
+  alongside a single backend method).
+
+### When to split
+
+Split if **any** of these hold:
+
+- The issue spans backend AND frontend as full units of work (a new entity end-to-end) —
+  backend Kotlin and frontend Compose are rarely reviewed in the same pass, and a combined diff
+  is harder to review and to revert independently.
+- The Technical Scope identified in Step 6 would touch **3 or more** of: DB / shared models /
+  API contracts / backend / frontend.
+- The reference implementation found in Step 4 suggests the finished diff will exceed roughly
+  15 files or 500 lines across more than one layer family (DB+backend count as one family;
+  frontend is its own family).
+- Any slice can be built, tested, and merged on its own without the rest existing yet — a strong
+  signal it deserves its own PR and its own review pass.
+
+### How to split
+
+Follow the natural layer seams, in dependency order (earlier slices must merge to `main` before
+later ones can start):
+
+1. **Foundation** — DB migration + shared models + API contract. Usually small; unblocks the
+   next two slices.
+2. **Backend** — Datastore → Service → Controller + tests, built against the Foundation slice.
+3. **Frontend** — Screens/ViewModels/UIState/Event + tests, built against the Backend slice
+   (needs it merged first — the frontend calls the real API, not a stub).
+
+Combine adjacent slices if one is trivially small — e.g. fold Foundation into Backend if there's
+no new table. Never fold Frontend into anything else; when it exists it always gets its own PR.
+
+If the issue does **not** split, skip to Step 8 and produce exactly one plan document.
+
+If it **does** split, produce one plan document per slice in Step 8, and record the chain
+explicitly in each slice's Dependencies section: `Depends on: issue-NNN-partK-<slug>.md (must
+merge first)`.
+
+---
+
+## Step 8: Write the Plan Document
 
 Produce a structured plan following this template exactly. Omit any section that does not apply to this issue (e.g., omit "Frontend" for a backend-only issue).
 
@@ -232,6 +283,8 @@ Key ViewModel methods and what they do.>
 
 - [ ] <specific, testable criterion>
 - [ ] <include integration test coverage requirements>
+- [ ] <for any new or changed Screen/Preview: "`<Screen>Preview` matches `<mock-name>.html` for
+      every modeled use-case" — this is checked via the mock fidelity check, not a unit test>
 ...
 
 ## Test Coverage
@@ -249,6 +302,13 @@ Note which existing tests already cover related behavior so we do not duplicate.
 - <question or unresolved decision — flag anything that could change the technical approach>
 ...
 
+## Follow-up Issues
+
+- <Title> — <1–2 sentences: what's deferred and why it's out of scope for this issue>
+  **Filed as:** TBD — filed after plan approval, see Step 10/Step 12
+...
+(or "None identified" if the research turned up no deferred work)
+
 ## Implementation Notes
 
 - Follow the pattern from `<ReferenceController.kt>` / `<ReferenceService.kt>` / `<ReferenceDatastore.kt>`
@@ -256,11 +316,39 @@ Note which existing tests already cover related behavior so we do not duplicate.
 - <Quote exact Supabase Kotlin syntax for any non-standard operations>
 ```
 
+**If Step 7 decided to split the issue**, produce one of these documents per slice, each scoped
+to only that slice's layers (omit Technical Scope subsections, Test Coverage entries, and
+Acceptance Criteria that belong to a different slice). Each slice gets its own GitHub issue
+(filed in Step 12), so the header changes shape:
+
+```markdown
+# Issue #NNN — <Title> (Part K: <slice name>)
+
+**Phase:** <Phase from issue labels or milestone>
+**Epic:** <Epic category>
+**Parent GitHub Issue:** #NNN
+**This Slice's GitHub Issue:** TBD — filed after plan approval, see Step 10/Step 12
+**Slice K of N** — <dependency note, e.g. "depends on Part 1 merging first">
+```
+
+In each slice's Dependencies section, add the sibling-plan chain entry in addition to any
+GitHub issue dependencies:
+
+```
+## Dependencies
+
+- issue-NNN-part1-<slug>.md — must merge first (provides <what this slice needs>)
+- #NNN — <what that issue provides that this one needs>
+```
+
+The first slice in the chain has no sibling-plan dependency, only GitHub issue dependencies (if
+any).
+
 ---
 
-## Step 8: Save the Plan to local claude plans
+## Step 9: Save the Plan(s) to Local Claude Plans
 
-Save the completed plan to:
+**Single PR (Step 7 did not split):** save the completed plan to:
 
 ```
 ~/.claude/plans/issue-NNN-<short-slug>.md
@@ -273,17 +361,122 @@ Examples:
 - `issue-405-occupant-management.md`
 - `issue-394-rls-policies.md`
 
+**Split into multiple PRs:** save one file per slice, numbered in dependency order:
+
+```
+~/.claude/plans/issue-NNN-part1-<slug>.md
+~/.claude/plans/issue-NNN-part2-<slug>.md
+~/.claude/plans/issue-NNN-part3-<slug>.md
+```
+
+Examples:
+- `issue-424-part1-common-area-db.md`
+- `issue-424-part2-common-area-api-backend.md`
+- `issue-424-part3-common-area-ui.md`
+
+Filenames stay fixed (`partK` scheme) even once a real child GitHub issue is filed for that
+slice in Step 12 — the real issue number is recorded inside the file's header, not in the
+filename.
+
 ---
 
-## Step 9: Present a Summary to the User
+## Step 10: Draft Child & Follow-up GitHub Issues
 
-After saving the plan, present:
+Do not file anything yet — this step only **drafts** the issues so they can be reviewed
+alongside the plan in Step 11. Filing happens in Step 12, and only after explicit approval:
+creating GitHub issues is a visible, external action (same category as opening a PR), never
+something this skill does silently.
+
+### If the issue was split (Step 7)
+
+Draft one child issue per slice:
+
+- **Title:** `[<slice name>] <short description> (Part K of N — #NNN)`, e.g.
+  `[Backend] Org-wide property list + RLS fix (Part 1 of 2 — #356)`
+- **Body:** a condensed version of the slice's plan document — Goal, Technical Scope summary,
+  Acceptance Criteria, Dependencies (including the sibling-slice merge order) — plus a link line:
+  `Part of #NNN. See also #<sibling-issue> for the other part(s) of this work.` (sibling issue
+  numbers are filled in once known — if slices are filed in the same batch, note "the other
+  part(s), filed alongside this issue" instead of guessing a number).
+- **Labels/milestone:** match the parent issue's labels and milestone unless the plan's Phase
+  clearly indicates otherwise.
+
+### If any Follow-up Issues were identified (Step 6 / Step 8's Follow-up Issues section)
+
+Draft one issue per follow-up:
+
+- **Title:** a short, standalone description of the deferred work — it should make sense to
+  someone who has never seen the parent issue.
+- **Body:** the 1–2 sentence description from the plan's Follow-up Issues section, expanded
+  with enough context to act on independently, plus: `Follow-up from #NNN — <why it was
+  deferred>.`
+- **Labels/milestone:** match the parent issue's labels; leave the milestone unset unless the
+  plan gives a clear reason to set one (follow-ups are typically unscheduled).
+
+If Step 7 did not split and Step 6 found no follow-ups, skip straight to Step 11 with nothing
+to draft.
+
+---
+
+## Step 11: Present a Summary to the User
+
+After saving the plan(s) and drafting any child/follow-up issues, present:
 
 1. **What the issue is about** — one sentence
-2. **Layers in scope** — which of: DB / shared models / API / backend / frontend
-3. **Reference implementation used** — the existing code pattern this issue should follow
-4. **Dependencies** — what must be done first
-5. **Open questions** — anything that needs a decision before implementation starts
-6. **Plan location** — the path where the plan file was saved
+2. **Sizing decision** — single PR, or split into N slices, and why (cite which Step 7 trigger applied)
+3. **Layers in scope per slice** — which of: DB / shared models / API / backend / frontend
+4. **Reference implementation used** — the existing code pattern this issue should follow
+5. **Dependencies** — what must be done first, including slice-to-slice merge order if split
+6. **Open questions** — anything that needs a decision before implementation starts
+7. **Plan location(s)** — the path(s) where the plan file(s) were saved
+8. **Drafted issues** — the full title + body of every child/follow-up issue drafted in Step 10,
+   for the user to review, edit, or reject individually — not just a list of titles
 
-Ask the user to review the plan and confirm or correct anything before implementation begins. Do **not** start writing implementation code until the user explicitly approves the plan.
+Ask the user to review the plan (or each slice) and the drafted issues, and confirm or correct
+anything before proceeding. Do **not** start writing implementation code, and do **not** file
+any GitHub issues, until the user explicitly approves both the plan and the drafts.
+
+---
+
+## Step 12: File the Approved Issues
+
+Only after explicit approval in Step 11. Prefer an MCP GitHub write tool if one is available in
+this session; otherwise use the `gh` CLI (matching `create-pr`'s established convention of using
+`gh` for writes even though reads in this skill go through MCP):
+
+```bash
+gh issue create --repo codeHavenX/MonoRepo --title "<title>" --body "$(cat <<'EOF'
+<body>
+EOF
+)"
+```
+
+For each created issue:
+
+1. Record the returned issue number back into that slice's plan file header (replacing the
+   `TBD` placeholder for `**This Slice's GitHub Issue:**` or the follow-up's `**Filed as:**`
+   line) — this is what `implement-plan` and `create-pr` will read later, so it must be accurate
+   before implementation starts.
+2. If this is a split issue with more than one slice, once all sibling issue numbers are known,
+   go back and fill in the `#<sibling-issue>` reference left as a placeholder in each other
+   slice's body (via `gh issue edit <N> --body "..."` or an MCP equivalent) so every child issue
+   cross-links every sibling, not just the parent.
+
+Once every drafted issue is filed, post a single comment on the **parent** issue (#NNN) listing
+all of them, so the original issue has the reverse link too:
+
+```bash
+gh issue comment NNN --repo codeHavenX/MonoRepo --body "$(cat <<'EOF'
+Split into the following issues:
+- #<child1> — <slice/follow-up title>
+- #<child2> — <slice/follow-up title>
+...
+EOF
+)"
+```
+
+Present the final list of filed issue numbers (and their URLs) to the user. Implementation
+continues via the `implement-plan` skill — for a split issue, slices must be implemented,
+reviewed, and merged strictly in the recorded dependency order, one PR at a time, and each
+slice's branch/commits should reference **that slice's own filed issue number**, not the parent
+issue's.

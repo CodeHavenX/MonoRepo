@@ -39,6 +39,14 @@ interface EmployeeDatastore {
     ): Result<List<Employee>>
 
     /**
+     * Retrieves all employee members assigned to a property. Returns the [Result] of the operation with a list of
+     * [Employee].
+     */
+    suspend fun getEmployeesForProperty(
+        propertyId: PropertyId,
+    ): Result<List<Employee>>
+
+    /**
      * Updates an employee member with the given details. Returns the [Result] of the operation with the updated [Employee].
      */
     suspend fun updateEmployee(

@@ -154,6 +154,25 @@ class EmployeeServiceTest {
         }
 
     /**
+     * Tests that getEmployeesForProperty retrieves all employees for a property and returns a list.
+     */
+    @Test
+    fun `getEmployeesForProperty should call employeeDatastore and return list`() =
+        runTest {
+            // Arrange
+            val employeeLists = listOf(mockk<Employee>(), mockk<Employee>())
+            val propertyId = PropertyId("property-1")
+            coEvery { employeeDatastore.getEmployeesForProperty(propertyId) } returns Result.success(employeeLists)
+
+            // Act
+            val result = employeeService.getEmployeesForProperty(propertyId)
+
+            // Assert
+            assertEquals(employeeLists, result)
+            coVerify { employeeDatastore.getEmployeesForProperty(propertyId) }
+        }
+
+    /**
      * Tests that updateEmployee updates an employee and returns the updated employee.
      */
     @Test

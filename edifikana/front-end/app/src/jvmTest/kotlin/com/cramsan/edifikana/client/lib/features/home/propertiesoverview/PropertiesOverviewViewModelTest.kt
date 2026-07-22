@@ -79,7 +79,7 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
     @Test
     fun `test initial ui state`() = runCoroutineTest {
         // Set up
-        coEvery { propertyManager.getPropertyList() } returns Result.success(listOf(
+        coEvery { propertyManager.getPropertyList(OrganizationId("org-1")) } returns Result.success(listOf(
             PropertyModel(
                 id = PropertyId("property-1"),
                 name = "Test Property 1",
@@ -90,7 +90,7 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
 
         // Act
         val initialState = viewModel.uiState.value
-        viewModel.initialize()
+        viewModel.initialize(OrganizationId("org-1"))
         val loadedState = viewModel.uiState.value
 
         // Assert
@@ -111,10 +111,10 @@ class PropertiesOverviewViewModelTest : CoroutineTest() {
             // Arrange
             val turbine = windowEventBus.events.testIn(backgroundScope)
             val error = RuntimeException("Network error")
-            coEvery { propertyManager.getPropertyList() } returns Result.failure(error)
+            coEvery { propertyManager.getPropertyList(OrganizationId("org-1")) } returns Result.failure(error)
 
             // Act
-            viewModel.initialize()
+            viewModel.initialize(OrganizationId("org-1"))
 
             // Assert
             val loadedState = viewModel.uiState.value

@@ -24,12 +24,12 @@ class PropertyManager(
     private val dependencies: ManagerDependencies,
 ) {
     /**
-     * Get the list of properties.
+     * Get the list of properties belonging to the given organization.
      */
-    suspend fun getPropertyList(): Result<List<PropertyModel>> =
+    suspend fun getPropertyList(organizationId: OrganizationId): Result<List<PropertyModel>> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "getPropertyList")
-            propertyService.getPropertyList().getOrThrow()
+            propertyService.getPropertyList(organizationId).getOrThrow()
         }
 
     /**
@@ -131,13 +131,13 @@ class PropertyManager(
     }
 
     /**
-     * Remove the property with the given [propertyId].
+     * Remove the property with the given [propertyId], belonging to [organizationId].
      */
-    suspend fun removeProperty(propertyId: PropertyId): Result<Unit> =
+    suspend fun removeProperty(propertyId: PropertyId, organizationId: OrganizationId): Result<Unit> =
         dependencies.getOrCatch(TAG) {
             logI(TAG, "removeProperty")
             propertyService.removeProperty(propertyId).requireSuccess()
-            propertyService.getPropertyList().requireSuccess()
+            propertyService.getPropertyList(organizationId).requireSuccess()
         }
 
     /**

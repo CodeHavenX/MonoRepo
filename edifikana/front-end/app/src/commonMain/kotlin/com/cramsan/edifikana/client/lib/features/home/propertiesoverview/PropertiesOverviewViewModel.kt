@@ -4,6 +4,7 @@ import com.cramsan.edifikana.client.lib.features.home.HomeDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.annotations.FrontendViewModel
 import com.cramsan.framework.core.compose.BaseViewModel
 import com.cramsan.framework.core.compose.ViewModelDependencies
@@ -25,13 +26,13 @@ class PropertiesOverviewViewModel(
     /**
      * Initialize the ViewModel.
      */
-    fun initialize() {
+    fun initialize(organizationId: OrganizationId) {
         viewModelCoroutineScope.launch {
             updateUiState {
                 it.copy(isLoading = true)
             }
             propertyManager
-                .getPropertyList()
+                .getPropertyList(organizationId)
                 .onSuccess { resultList ->
                     val uiModels =
                         resultList.map { property ->

@@ -42,13 +42,6 @@ class MyOrganizationsViewModel(
 
             val currentUserId = authManager.activeUser().value
             val activeOrgId = preferencesManager.getLastSelectedOrganizationId()
-            val propertyCountsByOrg =
-                propertyManager
-                    .getPropertyList()
-                    .getOrNull()
-                    ?.groupingBy { it.organizationId }
-                    ?.eachCount()
-                    ?: emptyMap()
 
             organizationManager
                 .getOrganizations()
@@ -62,11 +55,17 @@ class MyOrganizationsViewModel(
                                 val myMembership =
                                     members.firstOrNull { it.userId == currentUserId }
                                         ?: return@mapNotNull null
+                                // Property count is scoped per-org (matches the org-scoped
+                                // property list endpoint) rather than computed from a single
+                                // cross-org query, so counts reflect all of an org's properties,
+                                // not just the ones the current user happens to be individually
+                                // assigned to.
+                                val propertyCount = propertyManager.getPropertyList(org.id).getOrNull()?.size ?: 0
                                 OrgListItemUIModel(
                                     orgId = org.id,
                                     name = org.name,
                                     roleLabel = myMembership.role.toDisplayLabel(),
-                                    propertyCount = propertyCountsByOrg[org.id] ?: 0,
+                                    propertyCount = propertyCount,
                                     isActive = org.id == activeOrgId,
                                 )
                             }.sortedBy { it.name.lowercase() }

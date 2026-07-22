@@ -20,12 +20,12 @@ import io.ktor.client.HttpClient
  */
 @FrontendService
 class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
-    override suspend fun getPropertyList(): Result<List<PropertyModel>> =
+    override suspend fun getPropertyList(organizationId: OrganizationId): Result<List<PropertyModel>> =
         runSuspendCatching(TAG) {
             val response =
                 PropertyApi
-                    .getAssignedProperties
-                    .buildRequest()
+                    .getProperties
+                    .buildRequest(organizationId)
                     .execute(http)
             val propertyList =
                 response.properties.map {

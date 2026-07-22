@@ -58,13 +58,14 @@ class PropertyManagerTest : CoroutineTest() {
     fun `getPropertyList returns property list`() = runCoroutineTest {
         // Arrange
         val propertyList = listOf(mockk<PropertyModel>(), mockk<PropertyModel>())
-        coEvery { propertyService.getPropertyList() } returns Result.success(propertyList)
+        val organizationId = OrganizationId("org-1")
+        coEvery { propertyService.getPropertyList(organizationId) } returns Result.success(propertyList)
         // Act
-        val result = manager.getPropertyList()
+        val result = manager.getPropertyList(organizationId)
         // Assert
         assertTrue(result.isSuccess)
         assertEquals(propertyList, result.getOrNull())
-        coVerify { propertyService.getPropertyList() }
+        coVerify { propertyService.getPropertyList(organizationId) }
     }
 
     /**
@@ -213,11 +214,12 @@ class PropertyManagerTest : CoroutineTest() {
     fun `removeProperty calls service with correct arguments`() = runCoroutineTest {
         // Arrange
         val propertyId = PropertyId("property-1")
+        val organizationId = OrganizationId("org-1")
         coEvery { propertyService.removeProperty(propertyId) } returns Result.success(Unit)
-        coEvery { propertyService.getPropertyList() } returns Result.success(emptyList())
+        coEvery { propertyService.getPropertyList(organizationId) } returns Result.success(emptyList())
 
         // Act
-        val result = manager.removeProperty(propertyId)
+        val result = manager.removeProperty(propertyId, organizationId)
 
         // Assert
         assertTrue(result.isSuccess)

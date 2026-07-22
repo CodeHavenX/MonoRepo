@@ -48,6 +48,7 @@ class PropertyDetailViewModel(
                             name = property.name,
                             address = property.address,
                             imageUrl = property.imageUrl,
+                            organizationId = property.organizationId,
                         )
                     }
                 }.onFailure { throwable ->
@@ -101,6 +102,7 @@ class PropertyDetailViewModel(
                             name = property.name,
                             address = property.address,
                             imageUrl = property.imageUrl,
+                            organizationId = property.organizationId,
                         )
                     }
                 }.onFailure {
@@ -278,10 +280,11 @@ class PropertyDetailViewModel(
     fun deleteProperty() {
         viewModelCoroutineScope.launch {
             val propertyId = uiState.value.propertyId ?: return@launch
+            val organizationId = uiState.value.organizationId ?: return@launch
 
             updateUiState { it.copy(isLoading = true) }
             propertyManager
-                .removeProperty(propertyId)
+                .removeProperty(propertyId, organizationId)
                 .onSuccess {
                     emitWindowEvent(
                         EdifikanaWindowsEvent.ShowSnackbar("Property deleted successfully"),

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.client.lib.features.home.propertydetail
 
 import com.cramsan.edifikana.client.ui.components.ImageOptionUIModel
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.core.compose.ViewModelUIState
 
@@ -25,6 +26,7 @@ sealed class PropertyDetailDialogState {
 data class PropertyDetailUIState(
     val isLoading: Boolean,
     val propertyId: PropertyId?,
+    val organizationId: OrganizationId? = null,
     val name: String,
     val address: String,
     val imageUrl: String?,

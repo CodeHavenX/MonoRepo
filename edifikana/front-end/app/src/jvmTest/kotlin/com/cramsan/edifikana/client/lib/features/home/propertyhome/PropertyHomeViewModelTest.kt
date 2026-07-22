@@ -6,7 +6,9 @@ import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
+import com.cramsan.edifikana.client.lib.models.Organization
 import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
@@ -36,6 +38,7 @@ class PropertyHomeViewModelTest : CoroutineTest() {
     private lateinit var viewModel: PropertyHomeViewModel
     private lateinit var propertyManager: PropertyManager
     private lateinit var preferencesManager: PreferencesManager
+    private lateinit var organizationManager: OrganizationManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var applicationEventReceiver: EventBus<ApplicationEvent>
     private lateinit var windowEventBus: EventBus<WindowEvent>
@@ -48,7 +51,11 @@ class PropertyHomeViewModelTest : CoroutineTest() {
         exceptionHandler = CollectorCoroutineExceptionHandler()
         propertyManager = mockk(relaxed = true)
         preferencesManager = mockk(relaxed = true)
+        organizationManager = mockk(relaxed = true)
         coEvery { preferencesManager.getStringPreference(any()) } returns Result.success(null)
+        coEvery { organizationManager.getOrganizations() } returns Result.success(
+            listOf(Organization(id = OrganizationId("org-1"), name = "Test Org", description = ""))
+        )
         viewModel = PropertyHomeViewModel(
             dependencies = ViewModelDependencies(
                 appScope = testCoroutineScope,
@@ -59,6 +66,7 @@ class PropertyHomeViewModelTest : CoroutineTest() {
             ),
             propertyManager = propertyManager,
             preferencesManager = preferencesManager,
+            organizationManager = organizationManager,
         )
     }
 
@@ -80,7 +88,7 @@ class PropertyHomeViewModelTest : CoroutineTest() {
                 organizationId = OrganizationId("org-1"),
             )
         )
-        coEvery { propertyManager.getPropertyList() } returns Result.success(properties)
+        coEvery { propertyManager.getPropertyList(OrganizationId("org-1")) } returns Result.success(properties)
 
         // Act
         viewModel.loadContent()
@@ -95,7 +103,7 @@ class PropertyHomeViewModelTest : CoroutineTest() {
     @Test
     fun `test loadContent with no properties selects GoToOrganization tab`() = runCoroutineTest {
         // Set up
-        coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
+        coEvery { propertyManager.getPropertyList(OrganizationId("org-1")) } returns Result.success(emptyList())
 
         // Act
         viewModel.loadContent()
@@ -118,7 +126,7 @@ class PropertyHomeViewModelTest : CoroutineTest() {
                 organizationId = OrganizationId("org-1"),
             )
         )
-        coEvery { propertyManager.getPropertyList() } returns Result.success(properties)
+        coEvery { propertyManager.getPropertyList(OrganizationId("org-1")) } returns Result.success(properties)
 
         // Act
         viewModel.selectProperty(propertyId)
@@ -215,7 +223,7 @@ class PropertyHomeViewModelTest : CoroutineTest() {
     @Test
     fun `test loadContent with existing tab selection preserves tab`() = runCoroutineTest {
         // Set up - First load with no properties
-        coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
+        coEvery { propertyManager.getPropertyList(OrganizationId("org-1")) } returns Result.success(emptyList())
         viewModel.loadContent()
         assertEquals(Tabs.GoToOrganization, viewModel.uiState.value.selectedTab)
 
@@ -228,7 +236,7 @@ class PropertyHomeViewModelTest : CoroutineTest() {
                 organizationId = OrganizationId("org-1"),
             )
         )
-        coEvery { propertyManager.getPropertyList() } returns Result.success(properties)
+        coEvery { propertyManager.getPropertyList(OrganizationId("org-1")) } returns Result.success(properties)
 
         // Act - load content again
         viewModel.loadContent()
@@ -248,7 +256,7 @@ class PropertyHomeViewModelTest : CoroutineTest() {
                 organizationId = OrganizationId("org-1"),
             )
         )
-        coEvery { propertyManager.getPropertyList() } returns Result.success(properties)
+        coEvery { propertyManager.getPropertyList(OrganizationId("org-1")) } returns Result.success(properties)
 
         // Act - first load
         viewModel.loadContent()

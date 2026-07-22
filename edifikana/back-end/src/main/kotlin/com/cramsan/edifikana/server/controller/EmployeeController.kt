@@ -5,8 +5,8 @@ import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.network.employee.CreateEmployeeNetworkRequest
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
+import com.cramsan.edifikana.lib.model.network.employee.GetEmployeesForPropertyQueryParams
 import com.cramsan.edifikana.lib.model.network.employee.UpdateEmployeeNetworkRequest
-import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.EmployeeService
 import com.cramsan.edifikana.server.service.authorization.RBACService
@@ -118,16 +118,17 @@ class EmployeeController(private val employeeService: EmployeeService, private v
     suspend fun getEmployeesForProperty(
         request: OperationRequest<
             NoRequestBody,
-            NoQueryParam,
-            PropertyId,
+            GetEmployeesForPropertyQueryParams,
+            NoPathParam,
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): EmployeeListNetworkResponse {
-        if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.MANAGER)) {
+        val propertyId = request.queryParam.propertyId
+        if (!rbacService.hasRoleOrHigher(request.context, propertyId, UserRole.MANAGER)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
         val employees =
-            employeeService.getEmployeesForProperty(request.pathParam).map { it.toEmployeeNetworkResponse() }
+            employeeService.getEmployeesForProperty(propertyId).map { it.toEmployeeNetworkResponse() }
         return EmployeeListNetworkResponse(employees)
     }
 

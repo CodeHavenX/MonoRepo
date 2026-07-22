@@ -1,10 +1,10 @@
 package com.cramsan.edifikana.api
 
 import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.network.property.GetPropertiesQueryParams
 import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
@@ -53,14 +53,15 @@ object PropertyApi : Api("property") {
     val getProperties =
         operation<
             NoRequestBody,
-            NoQueryParam,
-            OrganizationId,
+            GetPropertiesQueryParams,
+            NoPathParam,
             PropertyListNetworkResponse,
             >(
             method = HttpMethod.Get,
-            path = "by-organization",
-            summary = "List properties for an organization",
-            description = "Returns all properties in the given organization. Requires membership in the organization.",
+            summary = "List properties",
+            description =
+            "Returns all properties in the organization given by the query params. " +
+                "Requires membership in the organization.",
             responses = UniversalResponsesOnly,
         )
 

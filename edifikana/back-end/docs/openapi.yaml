@@ -2837,9 +2837,9 @@
                 ]
             }
         },
-        "/employee/by-property/{param}": {
+        "/employee/by-property": {
             "get": {
-                "operationId": "get-employee-by-property-param",
+                "operationId": "get-employee-by-property",
                 "tags": [
                     "employee"
                 ],
@@ -2847,8 +2847,8 @@
                 "description": "Returns all employees (manager/security/cleaning) assigned to the given property. Requires the MANAGER role or higher on the property.",
                 "parameters": [
                     {
-                        "name": "param",
-                        "in": "path",
+                        "name": "property_id",
+                        "in": "query",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -2910,6 +2910,52 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/PropertyNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "401": {
+                        "description": "Authentication is required or has failed."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            },
+            "get": {
+                "operationId": "get-property",
+                "tags": [
+                    "property"
+                ],
+                "summary": "List properties",
+                "description": "Returns all properties in the organization given by the query params. Requires membership in the organization.",
+                "parameters": [
+                    {
+                        "name": "organization_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PropertyListNetworkResponse"
                                 }
                             }
                         }
@@ -3068,54 +3114,6 @@
                     },
                     "404": {
                         "description": "No property exists for the given id."
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": [
-                            
-                        ]
-                    }
-                ]
-            }
-        },
-        "/property/by-organization/{param}": {
-            "get": {
-                "operationId": "get-property-by-organization-param",
-                "tags": [
-                    "property"
-                ],
-                "summary": "List properties for an organization",
-                "description": "Returns all properties in the given organization. Requires membership in the organization.",
-                "parameters": [
-                    {
-                        "name": "param",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PropertyListNetworkResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "The request was malformed or failed validation."
-                    },
-                    "401": {
-                        "description": "Authentication is required or has failed."
-                    },
-                    "500": {
-                        "description": "An unexpected server error occurred."
                     }
                 },
                 "security": [

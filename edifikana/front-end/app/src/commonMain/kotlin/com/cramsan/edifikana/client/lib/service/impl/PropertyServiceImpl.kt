@@ -5,6 +5,7 @@ import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.service.PropertyService
 import com.cramsan.edifikana.lib.model.common.Url
 import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.network.property.GetPropertiesQueryParams
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
@@ -25,7 +26,7 @@ class PropertyServiceImpl(private val http: HttpClient) : PropertyService {
             val response =
                 PropertyApi
                     .getProperties
-                    .buildRequest(organizationId)
+                    .buildRequest(queryParam = GetPropertiesQueryParams(organizationId))
                     .execute(http)
             val propertyList =
                 response.properties.map {

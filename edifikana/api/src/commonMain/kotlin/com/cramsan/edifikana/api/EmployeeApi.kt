@@ -4,8 +4,8 @@ import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.network.employee.CreateEmployeeNetworkRequest
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
+import com.cramsan.edifikana.lib.model.network.employee.GetEmployeesForPropertyQueryParams
 import com.cramsan.edifikana.lib.model.network.employee.UpdateEmployeeNetworkRequest
-import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
 import com.cramsan.framework.annotations.api.NoRequestBody
@@ -68,8 +68,8 @@ object EmployeeApi : Api("employee") {
     val getEmployeesForProperty =
         operation<
             NoRequestBody,
-            NoQueryParam,
-            PropertyId,
+            GetEmployeesForPropertyQueryParams,
+            NoPathParam,
             EmployeeListNetworkResponse,
             >(
             method = HttpMethod.Get,

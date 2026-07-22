@@ -298,7 +298,7 @@ class EmployeeControllerTest :
             coEvery { rbacService.hasRoleOrHigher(context, propId, UserRole.MANAGER) } returns true
 
             // Act
-            val response = client.get("employee/by-property/property123")
+            val response = client.get("employee/by-property?property_id=property123")
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
@@ -325,7 +325,7 @@ class EmployeeControllerTest :
             coEvery { rbacService.hasRoleOrHigher(context, propId, UserRole.MANAGER) } returns false
 
             // Act
-            val response = client.get("employee/by-property/property123")
+            val response = client.get("employee/by-property?property_id=property123")
 
             // Assert
             coVerify { employeeService wasNot Called }

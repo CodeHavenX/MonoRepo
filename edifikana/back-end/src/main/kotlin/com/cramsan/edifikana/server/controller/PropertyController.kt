@@ -2,10 +2,10 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.PropertyApi
 import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.network.property.GetPropertiesQueryParams
 import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
-import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.PropertyService
@@ -89,15 +89,16 @@ class PropertyController(private val propertyService: PropertyService, private v
     suspend fun getProperties(
         request: OperationRequest<
             NoRequestBody,
-            NoQueryParam,
-            OrganizationId,
+            GetPropertiesQueryParams,
+            NoPathParam,
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): PropertyListNetworkResponse {
-        if (!rbacService.hasRoleOrHigher(request.context, request.pathParam, UserRole.EMPLOYEE)) {
+        val organizationId = request.queryParam.organizationId
+        if (!rbacService.hasRoleOrHigher(request.context, organizationId, UserRole.EMPLOYEE)) {
             throw UnauthorizedException(unauthorizedMsg)
         }
-        val properties = propertyService.getProperties(request.pathParam).map { it.toPropertyNetworkResponse() }
+        val properties = propertyService.getProperties(organizationId).map { it.toPropertyNetworkResponse() }
         return PropertyListNetworkResponse(properties)
     }
 

@@ -288,7 +288,7 @@ class PropertyControllerTest :
             }
 
             // Act
-            val response = client.get("property/by-organization/org123")
+            val response = client.get("property?organization_id=org123")
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
@@ -323,7 +323,7 @@ class PropertyControllerTest :
             }
 
             // Act
-            val response = client.get("property/by-organization/org123")
+            val response = client.get("property?organization_id=org123")
 
             // Assert
             coVerify { propertyService wasNot Called }

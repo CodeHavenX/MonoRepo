@@ -7,6 +7,7 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.MembershipManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.settings.getLastSelectedOrganizationId
 import com.cramsan.edifikana.client.lib.settings.setLastSelectedOrganizationId
 import com.cramsan.edifikana.lib.model.organization.OrgRole
@@ -26,6 +27,7 @@ class MyOrganizationsViewModel(
     private val membershipManager: MembershipManager,
     private val authManager: AuthManager,
     private val preferencesManager: PreferencesManager,
+    private val propertyManager: PropertyManager,
 ) : BaseViewModel<MyOrganizationsEvent, MyOrganizationsUIState>(
     dependencies,
     MyOrganizationsUIState.Initial,
@@ -40,23 +42,35 @@ class MyOrganizationsViewModel(
 
             val currentUserId = authManager.activeUser().value
             val activeOrgId = preferencesManager.getLastSelectedOrganizationId()
+            val propertyCountsByOrg =
+                propertyManager
+                    .getPropertyList()
+                    .getOrNull()
+                    ?.groupingBy { it.organizationId }
+                    ?.eachCount()
+                    ?: emptyMap()
 
             organizationManager
                 .getOrganizations()
                 .onSuccess { orgs ->
                     val items =
-                        orgs.mapNotNull { org ->
-                            val members = membershipManager.listMembers(org.id).getOrNull() ?: return@mapNotNull null
-                            val myMembership =
-                                members.firstOrNull { it.userId == currentUserId }
-                                    ?: return@mapNotNull null
-                            OrgListItemUIModel(
-                                orgId = org.id,
-                                name = org.name,
-                                roleLabel = myMembership.role.toDisplayLabel(),
-                                isActive = org.id == activeOrgId,
-                            )
-                        }
+                        orgs
+                            .mapNotNull { org ->
+                                val members =
+                                    membershipManager.listMembers(org.id).getOrNull()
+                                        ?: return@mapNotNull null
+                                val myMembership =
+                                    members.firstOrNull { it.userId == currentUserId }
+                                        ?: return@mapNotNull null
+                                OrgListItemUIModel(
+                                    orgId = org.id,
+                                    name = org.name,
+                                    roleLabel = myMembership.role.toDisplayLabel(),
+                                    propertyCount = propertyCountsByOrg[org.id] ?: 0,
+                                    isActive = org.id == activeOrgId,
+                                )
+                            }.sortedBy { it.name.lowercase() }
+                            .sortedByDescending { it.isActive }
                     updateUiState { it.copy(isLoading = false, organizations = items) }
                 }.onFailure {
                     updateUiState { it.copy(isLoading = false) }
@@ -117,6 +131,15 @@ class MyOrganizationsViewModel(
     fun navigateBack() {
         viewModelCoroutineScope.launch {
             emitWindowEvent(EdifikanaWindowsEvent.NavigateBack)
+        }
+    }
+
+    /**
+     * Navigate to the Join Organization screen.
+     */
+    fun navigateToJoinOrganization() {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(EdifikanaWindowsEvent.ShowSnackbar("Coming soon!"))
         }
     }
 

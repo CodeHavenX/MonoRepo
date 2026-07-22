@@ -51,7 +51,7 @@ following [mockups](mockups/index.html).
 |--------|-------|-------------|------------|
 | Organization Picker | pre-existing | [organization-picker.html](mockups/organization-picker.html) | — |
 | Create Organization | pre-existing | [create-organization.html](mockups/create-organization.html) | — |
-| Join Organization | [#391](https://github.com/CodeHavenX/MonoRepo/issues/391) | [join-organization.html](mockups/join-organization.html) | — |
+| Join Organization | [#547](https://github.com/CodeHavenX/MonoRepo/issues/547) | [join-organization.html](mockups/join-organization.html) | — |
 | My Organizations | [#392](https://github.com/CodeHavenX/MonoRepo/issues/392) | [my-organizations.html](mockups/my-organizations.html) | — |
 | Organization Detail | [#284](https://github.com/CodeHavenX/MonoRepo/issues/284), [#392](https://github.com/CodeHavenX/MonoRepo/issues/392) | [organization-detail.html](mockups/organization-detail.html) | — |
 | Transfer Ownership | [#392](https://github.com/CodeHavenX/MonoRepo/issues/392) | [transfer-ownership.html](mockups/transfer-ownership.html) | — |

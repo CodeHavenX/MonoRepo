@@ -33,5 +33,6 @@ data class OrgListItemUIModel(
     val orgId: OrganizationId,
     val name: String,
     val roleLabel: String,
+    val propertyCount: Int,
     val isActive: Boolean,
 )

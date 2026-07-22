@@ -120,4 +120,7 @@ EOF
 )"
 ```
 
-Return the PR URL to the user.
+Return the PR URL to the user. This is the last step of the local pipeline — from here, CI
+runs automatically and the PR needs a human review/approval before merge. If CI fails or a
+reviewer requests changes, address them and push updates to the same branch; there's no need to
+re-run `create-pr` itself unless the PR wasn't opened yet.

@@ -1,6 +1,6 @@
 ---
 name: plan-issue
-description: Plan work for any Edifikana GitHub issue by fetching the issue via MCP, reading the wiki and monorepo, and producing a structured wiki plan document. Use when starting work on a new issue or asked to plan any GitHub issue.
+description: Plan work for any Edifikana GitHub issue by fetching the issue via MCP, reading the wiki and monorepo, and producing a structured wiki plan document — splitting into a dependency-ordered chain of PR-sized plans when the issue spans multiple layers. Use when starting work on a new issue or asked to plan any GitHub issue.
 allowed-tools: Read, Write, Glob, Grep, WebFetch, mcp__github__issue_read, mcp__github__list_issues, mcp__github__search_issues
 ---
 
@@ -155,7 +155,57 @@ After research, determine:
 
 ---
 
-## Step 7: Write the Plan Document
+## Step 7: Decide PR Sizing
+
+Not every issue should become a single PR. Decide now, before writing the plan, whether this
+issue must be split into a dependency-ordered chain of smaller plans — one plan document per
+PR-sized slice.
+
+### When to keep it as one PR
+
+- The issue touches only one layer (pure DB, pure shared-model, pure backend, or pure
+  frontend), OR
+- It touches two adjacent layers but the smaller one is trivial (e.g. a one-field model change
+  alongside a single backend method).
+
+### When to split
+
+Split if **any** of these hold:
+
+- The issue spans backend AND frontend as full units of work (a new entity end-to-end) —
+  backend Kotlin and frontend Compose are rarely reviewed in the same pass, and a combined diff
+  is harder to review and to revert independently.
+- The Technical Scope identified in Step 6 would touch **3 or more** of: DB / shared models /
+  API contracts / backend / frontend.
+- The reference implementation found in Step 4 suggests the finished diff will exceed roughly
+  15 files or 500 lines across more than one layer family (DB+backend count as one family;
+  frontend is its own family).
+- Any slice can be built, tested, and merged on its own without the rest existing yet — a strong
+  signal it deserves its own PR and its own review pass.
+
+### How to split
+
+Follow the natural layer seams, in dependency order (earlier slices must merge to `main` before
+later ones can start):
+
+1. **Foundation** — DB migration + shared models + API contract. Usually small; unblocks the
+   next two slices.
+2. **Backend** — Datastore → Service → Controller + tests, built against the Foundation slice.
+3. **Frontend** — Screens/ViewModels/UIState/Event + tests, built against the Backend slice
+   (needs it merged first — the frontend calls the real API, not a stub).
+
+Combine adjacent slices if one is trivially small — e.g. fold Foundation into Backend if there's
+no new table. Never fold Frontend into anything else; when it exists it always gets its own PR.
+
+If the issue does **not** split, skip to Step 8 and produce exactly one plan document.
+
+If it **does** split, produce one plan document per slice in Step 8, and record the chain
+explicitly in each slice's Dependencies section: `Depends on: issue-NNN-partK-<slug>.md (must
+merge first)`.
+
+---
+
+## Step 8: Write the Plan Document
 
 Produce a structured plan following this template exactly. Omit any section that does not apply to this issue (e.g., omit "Frontend" for a backend-only issue).
 
@@ -232,6 +282,8 @@ Key ViewModel methods and what they do.>
 
 - [ ] <specific, testable criterion>
 - [ ] <include integration test coverage requirements>
+- [ ] <for any new or changed Screen/Preview: "`<Screen>Preview` matches `<mock-name>.html` for
+      every modeled use-case" — this is checked via the mock fidelity check, not a unit test>
 ...
 
 ## Test Coverage
@@ -256,11 +308,26 @@ Note which existing tests already cover related behavior so we do not duplicate.
 - <Quote exact Supabase Kotlin syntax for any non-standard operations>
 ```
 
+**If Step 7 decided to split the issue**, produce one of these documents per slice, each scoped
+to only that slice's layers (omit Technical Scope subsections, Test Coverage entries, and
+Acceptance Criteria that belong to a different slice). In each slice's Dependencies section,
+add the sibling-plan chain entry in addition to any GitHub issue dependencies:
+
+```
+## Dependencies
+
+- issue-NNN-part1-<slug>.md — must merge first (provides <what this slice needs>)
+- #NNN — <what that issue provides that this one needs>
+```
+
+The first slice in the chain has no sibling-plan dependency, only GitHub issue dependencies (if
+any).
+
 ---
 
-## Step 8: Save the Plan to local claude plans
+## Step 9: Save the Plan(s) to Local Claude Plans
 
-Save the completed plan to:
+**Single PR (Step 7 did not split):** save the completed plan to:
 
 ```
 ~/.claude/plans/issue-NNN-<short-slug>.md
@@ -273,17 +340,35 @@ Examples:
 - `issue-405-occupant-management.md`
 - `issue-394-rls-policies.md`
 
+**Split into multiple PRs:** save one file per slice, numbered in dependency order:
+
+```
+~/.claude/plans/issue-NNN-part1-<slug>.md
+~/.claude/plans/issue-NNN-part2-<slug>.md
+~/.claude/plans/issue-NNN-part3-<slug>.md
+```
+
+Examples:
+- `issue-424-part1-common-area-db.md`
+- `issue-424-part2-common-area-api-backend.md`
+- `issue-424-part3-common-area-ui.md`
+
 ---
 
-## Step 9: Present a Summary to the User
+## Step 10: Present a Summary to the User
 
-After saving the plan, present:
+After saving the plan(s), present:
 
 1. **What the issue is about** — one sentence
-2. **Layers in scope** — which of: DB / shared models / API / backend / frontend
-3. **Reference implementation used** — the existing code pattern this issue should follow
-4. **Dependencies** — what must be done first
-5. **Open questions** — anything that needs a decision before implementation starts
-6. **Plan location** — the path where the plan file was saved
+2. **Sizing decision** — single PR, or split into N slices, and why (cite which Step 7 trigger applied)
+3. **Layers in scope per slice** — which of: DB / shared models / API / backend / frontend
+4. **Reference implementation used** — the existing code pattern this issue should follow
+5. **Dependencies** — what must be done first, including slice-to-slice merge order if split
+6. **Open questions** — anything that needs a decision before implementation starts
+7. **Plan location(s)** — the path(s) where the plan file(s) were saved
 
-Ask the user to review the plan and confirm or correct anything before implementation begins. Do **not** start writing implementation code until the user explicitly approves the plan.
+Ask the user to review the plan (or each slice) and confirm or correct anything before
+implementation begins. Do **not** start writing implementation code until the user explicitly
+approves. Once approved, implementation continues via the `implement-plan` skill — for a split
+issue, slices must be implemented, reviewed, and merged strictly in the recorded dependency
+order, one PR at a time.

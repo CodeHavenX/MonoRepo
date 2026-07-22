@@ -3,7 +3,6 @@ package com.cramsan.edifikana.client.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -14,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.cramsan.edifikana.client.ui.theme.Shapes
 
 /**
  * Edifikana styled text field component.
@@ -67,7 +67,7 @@ fun EdifikanaTextField(
             singleLine = singleLine,
             maxLines = maxLines,
             minLines = minLines,
-            shape = RoundedCornerShape(25.dp),
+            shape = Shapes.pill,
             colors =
             OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,

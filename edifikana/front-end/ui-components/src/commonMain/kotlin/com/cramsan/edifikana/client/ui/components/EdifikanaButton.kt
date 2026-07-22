@@ -1,7 +1,6 @@
 package com.cramsan.edifikana.client.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -9,7 +8,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.cramsan.edifikana.client.ui.theme.Shapes
 
 /**
  * Edifikana primary button component.
@@ -32,7 +31,7 @@ fun EdifikanaPrimaryButton(
         modifier
             .fillMaxWidth(),
         enabled = enabled,
-        shape = RoundedCornerShape(25.dp),
+        shape = Shapes.pill,
         colors =
         ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -67,7 +66,7 @@ fun EdifikanaSecondaryButton(
         modifier
             .fillMaxWidth(),
         enabled = enabled,
-        shape = RoundedCornerShape(25.dp),
+        shape = Shapes.pill,
         colors =
         ButtonDefaults.outlinedButtonColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.cramsan.edifikana.client.ui.theme.Shapes
 import com.cramsan.ui.theme.Padding
 import org.jetbrains.compose.resources.stringResource
 import ui_catalog.Res
@@ -109,7 +109,7 @@ fun EdifikanaPasswordTextField(
             singleLine = true,
             maxLines = 1,
             minLines = 1,
-            shape = RoundedCornerShape(25.dp),
+            shape = Shapes.pill,
             colors =
             OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,

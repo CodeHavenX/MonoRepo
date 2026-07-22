@@ -8,6 +8,9 @@ import androidx.compose.ui.unit.dp
 object Size {
     val COLUMN_MAX_WIDTH = 450.dp
 
+    /** Size of a leading icon badge used in list items and cards. */
+    val ICON_BADGE = 48.dp
+
     val xx_small = 8.dp
     val x_small = 16.dp
     val small = 24.dp

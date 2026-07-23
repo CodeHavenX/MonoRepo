@@ -7,12 +7,15 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.MembershipManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.models.OrgMemberModel
 import com.cramsan.edifikana.client.lib.models.Organization
+import com.cramsan.edifikana.client.lib.models.PropertyModel
 import com.cramsan.edifikana.client.lib.settings.EdifikanaSettingKey
 import com.cramsan.edifikana.lib.model.organization.OrgMemberStatus
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
+import com.cramsan.edifikana.lib.model.property.PropertyId
 import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -43,6 +46,7 @@ class OrgDetailViewModelTest : CoroutineTest() {
     private lateinit var membershipManager: MembershipManager
     private lateinit var authManager: AuthManager
     private lateinit var preferencesManager: PreferencesManager
+    private lateinit var propertyManager: PropertyManager
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
     private lateinit var windowEventBus: EventBus<WindowEvent>
     private lateinit var applicationEventBus: EventBus<ApplicationEvent>
@@ -60,6 +64,7 @@ class OrgDetailViewModelTest : CoroutineTest() {
         membershipManager = mockk()
         authManager = mockk(relaxed = true)
         preferencesManager = mockk(relaxed = true)
+        propertyManager = mockk()
 
         every { authManager.activeUser() } returns MutableStateFlow(currentUserId)
 
@@ -75,6 +80,7 @@ class OrgDetailViewModelTest : CoroutineTest() {
             membershipManager = membershipManager,
             authManager = authManager,
             preferencesManager = preferencesManager,
+            propertyManager = propertyManager,
         )
     }
 
@@ -89,12 +95,23 @@ class OrgDetailViewModelTest : CoroutineTest() {
             email = "test@example.com",
         )
 
+    private fun propertyModel(id: String, organizationId: OrganizationId) =
+        PropertyModel(id = PropertyId(id), name = "Property $id", address = "", organizationId = organizationId)
+
     @Test
     fun `initialize populates state with org details`() = runCoroutineTest {
         val org = Organization(id = orgId, name = "My Org", description = "")
+        val otherOrgId = OrganizationId("org-2")
         coEvery { organizationManager.getOrganization(orgId) } returns Result.success(org)
         coEvery { membershipManager.listMembers(orgId) } returns Result.success(listOf(memberModel()))
         coEvery { preferencesManager.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization) } returns Result.success(orgId.id)
+        coEvery { propertyManager.getPropertyList() } returns Result.success(
+            listOf(
+                propertyModel("prop-1", orgId),
+                propertyModel("prop-2", orgId),
+                propertyModel("prop-3", otherOrgId),
+            ),
+        )
 
         viewModel.initialize(orgId)
 
@@ -104,6 +121,7 @@ class OrgDetailViewModelTest : CoroutineTest() {
         assertEquals(true, state.isActiveOrg)
         assertEquals(OrgRole.OWNER, state.userRole)
         assertEquals(1, state.memberCount)
+        assertEquals(2, state.propertyCount)
         assertTrue(state.isSoleOwner)
     }
 
@@ -117,6 +135,7 @@ class OrgDetailViewModelTest : CoroutineTest() {
         coEvery { organizationManager.getOrganization(orgId) } returns Result.success(org)
         coEvery { membershipManager.listMembers(orgId) } returns Result.success(members)
         coEvery { preferencesManager.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization) } returns Result.success(null)
+        coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
 
         viewModel.initialize(orgId)
 
@@ -124,10 +143,27 @@ class OrgDetailViewModelTest : CoroutineTest() {
     }
 
     @Test
+    fun `initialize sets propertyCount to 0 when property fetch fails`() = runCoroutineTest {
+        val org = Organization(id = orgId, name = "My Org", description = "")
+        coEvery { organizationManager.getOrganization(orgId) } returns Result.success(org)
+        coEvery { membershipManager.listMembers(orgId) } returns Result.success(listOf(memberModel()))
+        coEvery { preferencesManager.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization) } returns Result.success(orgId.id)
+        coEvery { propertyManager.getPropertyList() } returns Result.failure(RuntimeException("error"))
+
+        viewModel.initialize(orgId)
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isLoading)
+        assertEquals(0, state.propertyCount)
+        assertEquals("My Org", state.orgName)
+    }
+
+    @Test
     fun `initialize shows snackbar on org load failure`() = runCoroutineTest {
         coEvery { organizationManager.getOrganization(orgId) } returns Result.failure(RuntimeException("error"))
         coEvery { membershipManager.listMembers(orgId) } returns Result.success(emptyList())
         coEvery { preferencesManager.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization) } returns Result.success(null)
+        coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
 
         turbineScope {
             val turbine = windowEventBus.events.testIn(backgroundScope)

@@ -6,6 +6,7 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.MembershipManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
+import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.settings.getLastSelectedOrganizationId
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
@@ -28,6 +29,7 @@ class OrgDetailViewModel(
     private val membershipManager: MembershipManager,
     private val authManager: AuthManager,
     private val preferencesManager: PreferencesManager,
+    private val propertyManager: PropertyManager,
 ) : BaseViewModel<OrgDetailEvent, OrgDetailUIState>(
     dependencies,
     OrgDetailUIState.Initial,
@@ -45,6 +47,12 @@ class OrgDetailViewModel(
 
             val org = organizationManager.getOrganization(orgId).getOrNull()
             val members = membershipManager.listMembers(orgId).getOrNull()
+            val propertyCount =
+                propertyManager
+                    .getPropertyList()
+                    .getOrNull()
+                    ?.count { it.organizationId == orgId }
+                    ?: 0
 
             if (org == null || members == null) {
                 updateUiState { it.copy(isLoading = false) }
@@ -63,6 +71,7 @@ class OrgDetailViewModel(
                     isActiveOrg = org.id == activeOrgId,
                     userRole = myMembership?.role,
                     memberCount = members.size,
+                    propertyCount = propertyCount,
                     joinedDate = myMembership?.joinedAt?.toDisplayDate() ?: "",
                     isSoleOwner = isSoleOwner,
                 )

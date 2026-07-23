@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Business
@@ -18,7 +17,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,6 +32,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.ui.components.EdifikanaPrimaryButton
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
 import com.cramsan.edifikana.client.ui.components.IconBadge
+import com.cramsan.edifikana.client.ui.components.StatusPillBadge
 import com.cramsan.edifikana.client.ui.theme.Elevation
 import com.cramsan.edifikana.client.ui.theme.Shapes
 import com.cramsan.edifikana.client.ui.theme.Spacing
@@ -187,24 +186,11 @@ private fun OrgCard(
                         modifier = Modifier.weight(1f, fill = false),
                     )
                     if (org.isActive) {
-                        Surface(
-                            color = MaterialTheme.colorScheme.primaryContainer,
+                        StatusPillBadge(
+                            text = "Current",
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(percent = 50),
-                        ) {
-                            Text(
-                                text = "Current",
-                                style = MaterialTheme.typography.labelSmall,
-                                fontWeight = FontWeight.SemiBold,
-                                maxLines = 1,
-                                softWrap = false,
-                                modifier =
-                                Modifier.padding(
-                                    horizontal = Spacing.md,
-                                    vertical = Spacing.xs,
-                                ),
-                            )
-                        }
+                        )
                     }
                 }
                 Text(

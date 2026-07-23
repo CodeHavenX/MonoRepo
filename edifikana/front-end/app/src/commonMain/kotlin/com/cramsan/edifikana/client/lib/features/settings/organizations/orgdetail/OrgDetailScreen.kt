@@ -1,5 +1,6 @@
 package com.cramsan.edifikana.client.lib.features.settings.organizations.orgdetail
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,10 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,11 +26,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.settings.SettingsDestination
 import com.cramsan.edifikana.client.ui.components.EdifikanaTopBar
+import com.cramsan.edifikana.client.ui.components.IconBadge
+import com.cramsan.edifikana.client.ui.components.StatusPillBadge
+import com.cramsan.edifikana.client.ui.theme.Elevation
+import com.cramsan.edifikana.client.ui.theme.Shapes
 import com.cramsan.edifikana.client.ui.theme.Spacing
+import com.cramsan.edifikana.client.ui.theme.StatusColors
+import com.cramsan.edifikana.client.ui.theme.Typography
 import com.cramsan.edifikana.lib.model.organization.OrgRole
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
@@ -126,6 +137,7 @@ internal fun OrgDetailContent(
                 InfoCard(
                     userRole = uiState.userRole,
                     memberCount = uiState.memberCount,
+                    propertyCount = uiState.propertyCount,
                     joinedDate = uiState.joinedDate,
                     modifier = sectionModifier,
                 )
@@ -159,7 +171,18 @@ private fun OrgHeaderCard(
     isActive: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = Shapes.pill,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation =
+        CardDefaults.cardElevation(
+            defaultElevation = Elevation.resting,
+            hoveredElevation = Elevation.hovered,
+            pressedElevation = Elevation.pressed,
+        ),
+    ) {
         Row(
             modifier =
             Modifier
@@ -169,12 +192,16 @@ private fun OrgHeaderCard(
             horizontalArrangement = Arrangement.spacedBy(Spacing.lg),
         ) {
             Column {
-                Text(text = orgName, style = MaterialTheme.typography.headlineSmall)
+                Text(
+                    text = orgName,
+                    style = Typography.cardTitle,
+                )
                 if (isActive) {
-                    Text(
+                    StatusPillBadge(
                         text = "Active",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
+                        containerColor = StatusColors.successContainer,
+                        contentColor = StatusColors.onSuccessContainer,
+                        modifier = Modifier.padding(top = Spacing.xs),
                     )
                 }
             }
@@ -186,16 +213,29 @@ private fun OrgHeaderCard(
 private fun InfoCard(
     userRole: OrgRole?,
     memberCount: Int,
+    propertyCount: Int,
     joinedDate: String,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = Shapes.pill,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation =
+        CardDefaults.cardElevation(
+            defaultElevation = Elevation.resting,
+            hoveredElevation = Elevation.hovered,
+            pressedElevation = Elevation.pressed,
+        ),
+    ) {
         Column(modifier = Modifier.padding(Spacing.lg)) {
             InfoRow(
                 label = "Your Role",
                 value = userRole?.name?.lowercase()?.replaceFirstChar { it.uppercaseChar() } ?: "—",
             )
             InfoRow(label = "Members", value = memberCount.toString())
+            InfoRow(label = "Properties", value = propertyCount.toString())
             InfoRow(label = "Joined", value = joinedDate.ifEmpty { "—" })
         }
     }
@@ -219,7 +259,12 @@ private fun InfoRow(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Text(text = value, style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
     }
 }
 
@@ -229,10 +274,17 @@ private fun TransferOwnershipRow(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier =
-        modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         onClick = onClick,
+        shape = Shapes.pill,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation =
+        CardDefaults.cardElevation(
+            defaultElevation = Elevation.resting,
+            hoveredElevation = Elevation.hovered,
+            pressedElevation = Elevation.pressed,
+        ),
     ) {
         Row(
             modifier =
@@ -240,7 +292,14 @@ private fun TransferOwnershipRow(
                 .fillMaxWidth()
                 .padding(Spacing.lg),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
+            IconBadge(
+                icon = Icons.Filled.Build,
+                contentDescription = null,
+                backgroundColor = StatusColors.warningContainer,
+                tint = StatusColors.onWarningContainer,
+            )
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = "Transfer Ownership", style = MaterialTheme.typography.bodyLarge)
                 Text(

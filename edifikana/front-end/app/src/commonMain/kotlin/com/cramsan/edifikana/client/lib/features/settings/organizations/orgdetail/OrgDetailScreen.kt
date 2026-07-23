@@ -126,6 +126,7 @@ internal fun OrgDetailContent(
                 InfoCard(
                     userRole = uiState.userRole,
                     memberCount = uiState.memberCount,
+                    propertyCount = uiState.propertyCount,
                     joinedDate = uiState.joinedDate,
                     modifier = sectionModifier,
                 )
@@ -186,6 +187,7 @@ private fun OrgHeaderCard(
 private fun InfoCard(
     userRole: OrgRole?,
     memberCount: Int,
+    propertyCount: Int,
     joinedDate: String,
     modifier: Modifier = Modifier,
 ) {
@@ -196,6 +198,7 @@ private fun InfoCard(
                 value = userRole?.name?.lowercase()?.replaceFirstChar { it.uppercaseChar() } ?: "—",
             )
             InfoRow(label = "Members", value = memberCount.toString())
+            InfoRow(label = "Properties", value = propertyCount.toString())
             InfoRow(label = "Joined", value = joinedDate.ifEmpty { "—" })
         }
     }

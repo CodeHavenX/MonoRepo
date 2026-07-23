@@ -182,6 +182,17 @@ class AccountViewModel(private val auth: AuthManager, dependencies: ViewModelDep
         }
     }
 
+    /**
+     * Navigate to the debug page.
+     */
+    fun navigateToDebugPage() {
+        viewModelCoroutineScope.launch {
+            emitWindowEvent(
+                EdifikanaWindowsEvent.NavigateToNavGraph(EdifikanaNavGraphDestination.DebugNavGraphDestination),
+            )
+        }
+    }
+
     companion object {
         private const val TAG = "AccountViewModel"
     }

@@ -3,6 +3,7 @@ package com.cramsan.architecture.client.di
 import com.cramsan.architecture.client.service.configureStandardRetry
 import com.cramsan.architecture.client.settings.FrontEndApplicationSettingKey
 import com.cramsan.architecture.client.settings.SettingsHolder
+import com.cramsan.framework.logging.Severity
 import com.cramsan.framework.utils.exceptions.ClientRequestExceptions
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
@@ -11,6 +12,7 @@ import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.api.ClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
@@ -73,7 +75,10 @@ internal val KtorModule =
                 install(ContentNegotiation) {
                     json(get())
                 }
-                install(Logging)
+                install(Logging) {
+                    val loggingSeverity = get<Severity>()
+                    level = loggingSeverity.toKtorLogLevel()
+                }
                 install(HttpRequestRetry) {
                     configureStandardRetry()
                 }
@@ -85,3 +90,14 @@ internal val KtorModule =
             }
         }
     }
+
+private fun Severity.toKtorLogLevel(): LogLevel {
+    return when (this) {
+        Severity.VERBOSE -> LogLevel.ALL
+        Severity.DEBUG -> LogLevel.BODY
+        Severity.INFO -> LogLevel.INFO
+        Severity.WARNING -> LogLevel.NONE
+        Severity.ERROR -> LogLevel.NONE
+        Severity.DISABLED -> LogLevel.NONE
+    }
+}

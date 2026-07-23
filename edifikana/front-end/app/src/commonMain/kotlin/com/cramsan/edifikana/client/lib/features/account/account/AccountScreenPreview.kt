@@ -28,6 +28,7 @@ private fun AccountScreenPreview() =
             onEmailChange = {},
             onPhoneNumberChange = {},
             onEditPasswordClicked = {},
+            onInfoClicked = {},
         )
     }
 
@@ -55,6 +56,7 @@ private fun AccountScreenPreview_Editable() =
             onEmailChange = {},
             onPhoneNumberChange = {},
             onEditPasswordClicked = {},
+            onInfoClicked = {},
         )
     }
 
@@ -82,6 +84,7 @@ private fun AccountScreenPreview_Loading() =
             onEmailChange = {},
             onPhoneNumberChange = {},
             onEditPasswordClicked = {},
+            onInfoClicked = {},
         )
     }
 
@@ -109,6 +112,7 @@ private fun AccountScreenPreview_ES() =
             onEmailChange = {},
             onPhoneNumberChange = {},
             onEditPasswordClicked = {},
+            onInfoClicked = {},
         )
     }
 
@@ -136,5 +140,6 @@ private fun AccountScreenPreview_Editable_ES() =
             onEmailChange = {},
             onPhoneNumberChange = {},
             onEditPasswordClicked = {},
+            onInfoClicked = {},
         )
     }

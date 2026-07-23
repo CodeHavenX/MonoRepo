@@ -88,12 +88,13 @@ applicable." Commit at the end of each completed layer (see Step 4).
    ViewModel/UIState/Event/Screen per the plan, wire DI + navigation, and write the
    `ViewModelTest`.
 
-   **Once the Screen and Preview compile, run the mock fidelity check** — read
-   `.claude/skills/_shared/mock-fidelity-check.md` and follow it against this screen's mock.
-   Fix any differences found (structure, spacing, color tokens, missing states) and re-render
-   until the check reports no differences, *before* committing this layer. This is iterative —
-   loop render → compare → fix until clean, don't commit a screen that's known to diverge from
-   its mock.
+   **Once the Screen and Preview compile, run the `match-mock-fidelity` skill** against this
+   screen — it resolves the mock's actual CSS token values, compares them against the Compose
+   source (not just the rendered pixels), and iterates fix → re-render → re-compare until clean,
+   *before* committing this layer. Don't commit a screen that's known to diverge from its mock,
+   and don't settle for a shallow structural check (element order/text content matching is not
+   the same as matching the mock's actual colors, borders, shadows, corner radii, and type
+   scale — see that skill's own rationale for why this distinction matters).
 
 After writing code + its test for a layer, run:
 

@@ -100,9 +100,14 @@ For anything landing in "NEEDS MANUAL VERIFICATION," or any diff touching `Scree
 - **Mock fidelity check** — for any acceptance criterion of the form "matches mock" (or any
   screen/preview change at all), read `.claude/skills/_shared/mock-fidelity-check.md` and run it
   independently — do not accept `implement-plan`'s own fidelity pass as evidence; re-render and
-  re-compare yourself. Report any differences found the same way the shared fragment specifies,
-  and resolve the matching Acceptance Criteria item to PASS only if this independent run finds
-  none.
+  re-compare yourself. This skill only *reports* — resolve every element against the mock's
+  actual resolved CSS token values (colors, borders, shadows, corner radii, type scale), not just
+  structural order/content, since a shallow pass can miss real styling gaps (see
+  `match-mock-fidelity`'s own rationale for a concrete example of this). Report any differences
+  found the same way the shared fragment specifies, and resolve the matching Acceptance Criteria
+  item to PASS only if this independent run finds none. If differences *are* found, this skill
+  does not fix them itself — mark the criterion unmet, note that `match-mock-fidelity` is the
+  fix path, and let the user decide whether to run it before re-verifying.
 - For behavior a static screenshot can't capture (navigation, a network round-trip, a multi-step
   form), use the `run` skill to launch the app and exercise the golden path plus the edge cases
   named in the plan's Test Coverage / Acceptance Criteria.

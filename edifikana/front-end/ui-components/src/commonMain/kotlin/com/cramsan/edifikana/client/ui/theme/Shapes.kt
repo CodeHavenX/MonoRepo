@@ -10,4 +10,7 @@ import androidx.compose.ui.unit.dp
 object Shapes {
     /** Fully rounded "pill" shape used for buttons, text fields, and cards. */
     val pill: Shape = RoundedCornerShape(25.dp)
+
+    /** Fully rounded, height-relative "pill" shape used for compact status badges/chips. */
+    val badgePill: Shape = RoundedCornerShape(percent = 50)
 }

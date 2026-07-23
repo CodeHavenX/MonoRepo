@@ -2,6 +2,7 @@ package com.cramsan.edifikana.server.controller
 
 import com.cramsan.edifikana.api.PropertyApi
 import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.network.property.GetPropertiesQueryParams
 import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
@@ -80,20 +81,24 @@ class PropertyController(private val propertyService: PropertyService, private v
     }
 
     /**
-     * Retrieves the list of properties assigned to the authenticated user.
+     * Retrieves the list of properties belonging to an organization.
      * Returns a list of properties as a network response.
+     * Throws [UnauthorizedException] if the user does not have EMPLOYEE role or higher in the organization.
      */
 
-    suspend fun getAssignedProperties(
+    suspend fun getProperties(
         request: OperationRequest<
             NoRequestBody,
-            NoQueryParam,
+            GetPropertiesQueryParams,
             NoPathParam,
             ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
             >,
     ): PropertyListNetworkResponse {
-        val userId = request.context.payload.userId
-        val properties = propertyService.getProperties(userId = userId).map { it.toPropertyNetworkResponse() }
+        val organizationId = request.queryParam.organizationId
+        if (!rbacService.hasRoleOrHigher(request.context, organizationId, UserRole.EMPLOYEE)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
+        val properties = propertyService.getProperties(organizationId).map { it.toPropertyNetworkResponse() }
         return PropertyListNetworkResponse(properties)
     }
 
@@ -167,8 +172,8 @@ class PropertyController(private val propertyService: PropertyService, private v
             handler(api.getProperty) { request ->
                 getProperty(request)
             }
-            handler(api.getAssignedProperties) { request ->
-                getAssignedProperties(request)
+            handler(api.getProperties) { request ->
+                getProperties(request)
             }
             handler(api.updateProperty) { request ->
                 updateProperty(request)

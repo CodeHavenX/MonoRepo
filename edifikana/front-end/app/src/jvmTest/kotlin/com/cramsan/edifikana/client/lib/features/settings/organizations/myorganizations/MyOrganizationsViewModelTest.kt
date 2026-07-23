@@ -100,7 +100,7 @@ class MyOrganizationsViewModelTest : CoroutineTest() {
         coEvery { organizationManager.getOrganizations() } returns Result.success(listOf(org))
         coEvery { membershipManager.listMembers(orgId) } returns Result.success(listOf(member))
         coEvery { preferencesManager.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization) } returns Result.success(orgId.id)
-        coEvery { propertyManager.getPropertyList() } returns Result.success(properties)
+        coEvery { propertyManager.getPropertyList(orgId) } returns Result.success(properties)
 
         viewModel.initialize()
 
@@ -129,7 +129,7 @@ class MyOrganizationsViewModelTest : CoroutineTest() {
         coEvery { organizationManager.getOrganizations() } returns Result.success(listOf(org))
         coEvery { membershipManager.listMembers(orgId) } returns Result.success(listOf(member))
         coEvery { preferencesManager.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization) } returns Result.success(orgId.id)
-        coEvery { propertyManager.getPropertyList() } returns Result.failure(RuntimeException("error"))
+        coEvery { propertyManager.getPropertyList(orgId) } returns Result.failure(RuntimeException("error"))
 
         viewModel.initialize()
 
@@ -165,7 +165,7 @@ class MyOrganizationsViewModelTest : CoroutineTest() {
         coEvery {
             preferencesManager.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization)
         } returns Result.success(activeOrgId.id)
-        coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
+        coEvery { propertyManager.getPropertyList(any()) } returns Result.success(emptyList())
 
         viewModel.initialize()
 
@@ -180,7 +180,7 @@ class MyOrganizationsViewModelTest : CoroutineTest() {
     fun `initialize shows snackbar on org load failure`() = runCoroutineTest {
         coEvery { organizationManager.getOrganizations() } returns Result.failure(RuntimeException("error"))
         coEvery { preferencesManager.getStringPreference(EdifikanaSettingKey.lastSelectedOrganization) } returns Result.success(null)
-        coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
+        coEvery { propertyManager.getPropertyList(any()) } returns Result.success(emptyList())
 
         turbineScope {
             val turbine = windowEventBus.events.testIn(backgroundScope)

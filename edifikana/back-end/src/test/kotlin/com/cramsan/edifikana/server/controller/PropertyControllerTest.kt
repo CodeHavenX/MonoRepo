@@ -240,15 +240,16 @@ class PropertyControllerTest :
             assertEquals(expectedResponse, response.bodyAsText())
         }
 
-    // TODO: Update this test and add a negative check test for ensuring user get only list of properties they're assigned
     @Test
-    fun `test getProperties`() =
+    fun `test getProperties succeeds when user has required role in organization`() =
         testBackEndApplication { client ->
             // Arrange
             val expectedResponse = readFileContent("requests/get_properties_response.json")
             val propertyService = get<PropertyService>()
+            val rbacService = get<RBACService>()
+            val orgId = OrganizationId("org123")
             coEvery {
-                propertyService.getProperties(UserId("user123"))
+                propertyService.getProperties(orgId)
             }.answers {
                 listOf(
                     Property(
@@ -268,22 +269,65 @@ class PropertyControllerTest :
                 )
             }
             val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
-            coEvery {
-                contextRetriever.getContext(any())
-            }.answers {
+            val context =
                 ClientContext.AuthenticatedClientContext(
                     SupabaseContextPayload(
                         userInfo = mockk(),
                         userId = UserId("user123"),
                     ),
                 )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, orgId, UserRole.EMPLOYEE)
+            }.answers {
+                true
             }
 
             // Act
-            val response = client.get("property")
+            val response = client.get("property?organization_id=org123")
 
             // Assert
             assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `test getProperties fails when user doesn't have required role in organization`() =
+        testBackEndApplication { client ->
+            // Arrange
+            val expectedResponse = "You are not authorized to perform this action in your organization."
+            val propertyService = get<PropertyService>()
+            val rbacService = get<RBACService>()
+            val orgId = OrganizationId("org123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery {
+                contextRetriever.getContext(any())
+            }.answers {
+                context
+            }
+            coEvery {
+                rbacService.hasRoleOrHigher(context, orgId, UserRole.EMPLOYEE)
+            }.answers {
+                false
+            }
+
+            // Act
+            val response = client.get("property?organization_id=org123")
+
+            // Assert
+            coVerify { propertyService wasNot Called }
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
             assertEquals(expectedResponse, response.bodyAsText())
         }
 

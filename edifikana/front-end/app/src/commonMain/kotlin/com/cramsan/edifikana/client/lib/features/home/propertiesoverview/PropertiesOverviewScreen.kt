@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cramsan.edifikana.client.lib.features.home.shared.PropertyIconOptions
 import com.cramsan.edifikana.client.ui.components.EdifikanaImage
 import com.cramsan.edifikana.client.ui.components.ImageSource
+import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.framework.core.compose.ui.ObserveViewModelEvents
 import com.cramsan.ui.components.LoadingAnimationOverlay
 import com.cramsan.ui.components.ScreenLayout
@@ -50,6 +51,7 @@ import org.koin.compose.viewmodel.koinViewModel
  */
 @Composable
 fun PropertiesOverviewScreen(
+    organizationId: OrganizationId,
     modifier: Modifier = Modifier,
     viewModel: PropertiesOverviewViewModel = koinViewModel(),
 ) {
@@ -57,7 +59,7 @@ fun PropertiesOverviewScreen(
 
     // For other possible lifecycle events, see the [Lifecycle.Event] documentation.
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        viewModel.initialize()
+        viewModel.initialize(organizationId)
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         // Call this feature's viewModel

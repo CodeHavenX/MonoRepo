@@ -7,7 +7,6 @@ import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.datastore.supabase.models.PropertyEntity
 import com.cramsan.edifikana.server.datastore.supabase.models.UserPropertyMappingEntity
-import com.cramsan.edifikana.server.datastore.supabase.models.UserPropertyViewEntity
 import com.cramsan.edifikana.server.service.models.Property
 import com.cramsan.framework.annotations.BackendDatastore
 import com.cramsan.framework.core.runSuspendCatching
@@ -92,22 +91,24 @@ class SupabasePropertyDatastore(private val postgrest: Postgrest, private val cl
         }
 
     /**
-     * Gets all properties accessible to the given user.
-     * Uses the v_user_properties view for single-query retrieval (eliminates N+1 pattern).
+     * Gets all non-deleted properties belonging to the given organization.
      */
 
     override suspend fun getProperties(
-        userId: UserId,
+        organizationId: OrganizationId,
     ): Result<List<Property>> =
         runSuspendCatching(TAG) {
-            logD(TAG, "Getting all properties for user: %s", userId)
+            logD(TAG, "Getting all properties for organization: %s", organizationId)
 
-            // Use the v_user_properties view for single-query retrieval
             postgrest
-                .from(VIEW_USER_PROPERTIES)
+                .from(PropertyEntity.COLLECTION)
                 .select {
-                    filter { UserPropertyViewEntity::userId eq userId.userId }
-                }.decodeList<UserPropertyViewEntity>()
+                    filter {
+                        PropertyEntity::organizationId eq organizationId.id
+                        PropertyEntity::deletedAt isExact null
+                    }
+                    order("name", order = io.github.jan.supabase.postgrest.query.Order.ASCENDING)
+                }.decodeList<PropertyEntity>()
                 .map { it.toProperty() }
         }
 
@@ -202,6 +203,5 @@ class SupabasePropertyDatastore(private val postgrest: Postgrest, private val cl
 
     companion object {
         const val TAG = "SupabasePropertyDatastore"
-        const val VIEW_USER_PROPERTIES = "v_user_properties"
     }
 }

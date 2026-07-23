@@ -2837,6 +2837,54 @@
                 ]
             }
         },
+        "/employee/by-property": {
+            "get": {
+                "operationId": "get-employee-by-property",
+                "tags": [
+                    "employee"
+                ],
+                "summary": "List employees for a property",
+                "description": "Returns all employees (manager/security/cleaning) assigned to the given property. Requires the MANAGER role or higher on the property.",
+                "parameters": [
+                    {
+                        "name": "property_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeListNetworkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "The request was malformed or failed validation."
+                    },
+                    "401": {
+                        "description": "Authentication is required or has failed."
+                    },
+                    "500": {
+                        "description": "An unexpected server error occurred."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            
+                        ]
+                    }
+                ]
+            }
+        },
         "/property": {
             "post": {
                 "operationId": "post-property",
@@ -2889,8 +2937,18 @@
                 "tags": [
                     "property"
                 ],
-                "summary": "List assigned properties",
-                "description": "Returns all properties the authenticated user has been assigned access to.",
+                "summary": "List properties",
+                "description": "Returns all properties in the organization given by the query params. Requires membership in the organization.",
+                "parameters": [
+                    {
+                        "name": "organization_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response.",

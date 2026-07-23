@@ -117,7 +117,9 @@ private fun HubContent(
     ) {
         when (it) {
             Tabs.Properties -> {
-                PropertiesOverviewScreen()
+                organizationId?.let { orgId ->
+                    PropertiesOverviewScreen(organizationId = orgId)
+                }
             }
 
             Tabs.Employee -> {

@@ -5,6 +5,7 @@ import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.network.employee.CreateEmployeeNetworkRequest
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
+import com.cramsan.edifikana.lib.model.network.employee.GetEmployeesForPropertyQueryParams
 import com.cramsan.edifikana.lib.model.network.employee.UpdateEmployeeNetworkRequest
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.service.EmployeeService
@@ -109,6 +110,29 @@ class EmployeeController(private val employeeService: EmployeeService, private v
     }
 
     /**
+     * Retrieves all employees assigned to a property.
+     * Returns a list of employees as a network response.
+     * Throws [UnauthorizedException] if the user does not have MANAGER role or higher for the property.
+     */
+
+    suspend fun getEmployeesForProperty(
+        request: OperationRequest<
+            NoRequestBody,
+            GetEmployeesForPropertyQueryParams,
+            NoPathParam,
+            ClientContext.AuthenticatedClientContext<SupabaseContextPayload>,
+            >,
+    ): EmployeeListNetworkResponse {
+        val propertyId = request.queryParam.propertyId
+        if (!rbacService.hasRoleOrHigher(request.context, propertyId, UserRole.MANAGER)) {
+            throw UnauthorizedException(unauthorizedMsg)
+        }
+        val employees =
+            employeeService.getEmployeesForProperty(propertyId).map { it.toEmployeeNetworkResponse() }
+        return EmployeeListNetworkResponse(employees)
+    }
+
+    /**
      * Updates an employee identified by [employeeId] with the provided request data.
      * Returns the updated employee as a network response.
      */
@@ -194,6 +218,9 @@ class EmployeeController(private val employeeService: EmployeeService, private v
             }
             handler(api.getEmployees) { request ->
                 getEmployees(request)
+            }
+            handler(api.getEmployeesForProperty) { request ->
+                getEmployeesForProperty(request)
             }
             handler(api.updateEmployee) { request ->
                 updateEmployee(request)

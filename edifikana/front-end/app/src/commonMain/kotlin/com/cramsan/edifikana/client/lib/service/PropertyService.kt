@@ -11,9 +11,9 @@ import com.cramsan.framework.annotations.FrontendService
 @FrontendService
 interface PropertyService {
     /**
-     * Get a list of properties associated with current user.
+     * Get a list of properties belonging to the given organization.
      */
-    suspend fun getPropertyList(): Result<List<PropertyModel>>
+    suspend fun getPropertyList(organizationId: OrganizationId): Result<List<PropertyModel>>
 
     /**
      * Get the property with the given id.

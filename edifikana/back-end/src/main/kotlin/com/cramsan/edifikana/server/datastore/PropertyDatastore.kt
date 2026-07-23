@@ -30,10 +30,10 @@ interface PropertyDatastore {
     ): Result<Property?>
 
     /**
-     * Retrieves all properties for a user. Returns the [Result] of the operation with a list of [Property].
+     * Retrieves all properties for an organization. Returns the [Result] of the operation with a list of [Property].
      */
     suspend fun getProperties(
-        userId: UserId,
+        organizationId: OrganizationId,
     ): Result<List<Property>>
 
     /**

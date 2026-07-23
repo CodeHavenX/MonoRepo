@@ -342,7 +342,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             imageUrl = "drawable:CASA",
         )
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
-        coEvery { propertyManager.removeProperty(propertyId) } returns Result.success(Unit)
+        coEvery { propertyManager.removeProperty(propertyId, OrganizationId("org-1")) } returns Result.success(Unit)
 
         viewModel.initialize(propertyId)
 
@@ -360,7 +360,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             advanceUntilIdleAndAwaitComplete(turbine)
         }
 
-        coVerify { propertyManager.removeProperty(propertyId) }
+        coVerify { propertyManager.removeProperty(propertyId, OrganizationId("org-1")) }
         assertTrue(exceptionHandler.exceptions.isEmpty())
     }
 
@@ -375,7 +375,7 @@ class PropertyDetailViewModelTest : CoroutineTest() {
             imageUrl = "drawable:QUINTA",
         )
         coEvery { propertyManager.getProperty(propertyId) } returns Result.success(property)
-        coEvery { propertyManager.removeProperty(propertyId) } returns Result.failure(
+        coEvery { propertyManager.removeProperty(propertyId, OrganizationId("org-1")) } returns Result.failure(
             Exception("Delete failed")
         )
 
@@ -402,6 +402,6 @@ class PropertyDetailViewModelTest : CoroutineTest() {
     fun `test deleteProperty without propertyId does nothing`() = runCoroutineTest {
         viewModel.deleteProperty()
 
-        coVerify(exactly = 0) { propertyManager.removeProperty(any()) }
+        coVerify(exactly = 0) { propertyManager.removeProperty(any(), any()) }
     }
 }

@@ -1,6 +1,7 @@
 package com.cramsan.edifikana.api
 
 import com.cramsan.edifikana.lib.model.network.property.CreatePropertyNetworkRequest
+import com.cramsan.edifikana.lib.model.network.property.GetPropertiesQueryParams
 import com.cramsan.edifikana.lib.model.network.property.PropertyListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.PropertyNetworkResponse
 import com.cramsan.edifikana.lib.model.network.property.UpdatePropertyNetworkRequest
@@ -49,16 +50,18 @@ object PropertyApi : Api("property") {
             },
         )
 
-    val getAssignedProperties =
+    val getProperties =
         operation<
             NoRequestBody,
-            NoQueryParam,
+            GetPropertiesQueryParams,
             NoPathParam,
             PropertyListNetworkResponse,
             >(
             method = HttpMethod.Get,
-            summary = "List assigned properties",
-            description = "Returns all properties the authenticated user has been assigned access to.",
+            summary = "List properties",
+            description =
+            "Returns all properties in the organization given by the query params. " +
+                "Requires membership in the organization.",
             responses = UniversalResponsesOnly,
         )
 

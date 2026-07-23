@@ -257,6 +257,83 @@ class EmployeeControllerTest :
         }
 
     @Test
+    fun `test getEmployeesForProperty succeeds when user has required role or higher`() =
+        testBackEndApplication { client ->
+            // Arrange
+            val expectedResponse = readFileContent("requests/get_employees_for_property_response.json")
+            val employeeService = get<EmployeeService>()
+            val rbacService = get<RBACService>()
+            val propId = PropertyId("property123")
+            coEvery {
+                employeeService.getEmployeesForProperty(propId)
+            }.answers {
+                listOf(
+                    Employee(
+                        id = EmployeeId("emp123"),
+                        firstName = "John",
+                        lastName = "Doe",
+                        idType = IdType.DNI,
+                        role = EmployeeRole.MANAGER,
+                        propertyId = propId,
+                    ),
+                    Employee(
+                        id = EmployeeId("emp456"),
+                        firstName = "Jane",
+                        lastName = "Smith",
+                        idType = IdType.PASSPORT,
+                        role = EmployeeRole.CLEANING,
+                        propertyId = propId,
+                    ),
+                )
+            }
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { rbacService.hasRoleOrHigher(context, propId, UserRole.MANAGER) } returns true
+
+            // Act
+            val response = client.get("employee/by-property?property_id=property123")
+
+            // Assert
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
+    fun `test getEmployeesForProperty fails when user doesn't have required role or higher`() =
+        testBackEndApplication { client ->
+            // Arrange
+            val expectedResponse = "You are not authorized to perform this action in your organization."
+            val employeeService = get<EmployeeService>()
+            val rbacService = get<RBACService>()
+            val propId = PropertyId("property123")
+            val contextRetriever = get<ContextRetriever<SupabaseContextPayload>>()
+            val context =
+                ClientContext.AuthenticatedClientContext(
+                    SupabaseContextPayload(
+                        userInfo = mockk(),
+                        userId = UserId("user123"),
+                    ),
+                )
+            coEvery { contextRetriever.getContext(any()) } returns context
+            coEvery { rbacService.hasRoleOrHigher(context, propId, UserRole.MANAGER) } returns false
+
+            // Act
+            val response = client.get("employee/by-property?property_id=property123")
+
+            // Assert
+            coVerify { employeeService wasNot Called }
+            assertEquals(HttpStatusCode.Unauthorized, response.status)
+            assertEquals(expectedResponse, response.bodyAsText())
+        }
+
+    @Test
     fun `test updateEmployee succeeds when user has required role`() =
         testBackEndApplication { client ->
             // Arrange

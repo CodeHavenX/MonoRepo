@@ -4,6 +4,7 @@ import com.cramsan.architecture.client.manager.PreferencesManager
 import com.cramsan.edifikana.client.lib.features.account.AccountDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestination
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
+import com.cramsan.edifikana.client.lib.managers.OrganizationManager
 import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.client.lib.settings.getLastSelectedPropertyId
 import com.cramsan.edifikana.client.lib.settings.setLastSelectedPropertyId
@@ -22,6 +23,7 @@ class PropertyHomeViewModel(
     dependencies: ViewModelDependencies,
     private val propertyManager: PropertyManager,
     private val preferencesManager: PreferencesManager,
+    private val organizationManager: OrganizationManager,
 ) : BaseViewModel<PropertyHomeEvent, PropertyHomeUIModel>(
     dependencies,
     PropertyHomeUIModel.Empty,
@@ -50,7 +52,17 @@ class PropertyHomeViewModel(
     }
 
     private suspend fun updatePropertyList() {
-        val properties = propertyManager.getPropertyList().getOrNull().orEmpty()
+        val organizationId =
+            organizationManager
+                .getOrganizations()
+                .getOrNull()
+                ?.firstOrNull()
+                ?.id
+        val properties =
+            organizationId
+                ?.let {
+                    propertyManager.getPropertyList(it).getOrNull()
+                }.orEmpty()
         val selectedProperty =
             uiState.value.propertyId
                 ?: preferencesManager.getLastSelectedPropertyId()

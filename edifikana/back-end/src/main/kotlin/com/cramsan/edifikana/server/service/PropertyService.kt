@@ -2,7 +2,6 @@ package com.cramsan.edifikana.server.service
 
 import com.cramsan.edifikana.lib.model.organization.OrganizationId
 import com.cramsan.edifikana.lib.model.property.PropertyId
-import com.cramsan.edifikana.lib.model.user.UserId
 import com.cramsan.edifikana.server.controller.authentication.SupabaseContextPayload
 import com.cramsan.edifikana.server.datastore.PropertyDatastore
 import com.cramsan.edifikana.server.service.models.Property
@@ -53,16 +52,16 @@ class PropertyService(private val propertyDatastore: PropertyDatastore) {
     }
 
     /**
-     * Retrieves all properties.
+     * Retrieves all properties belonging to the given organization.
      */
     suspend fun getProperties(
-        userId: UserId,
+        organizationId: OrganizationId,
     ): List<Property> {
         logD(TAG, "getProperties")
         val properties =
             propertyDatastore
                 .getProperties(
-                    userId,
+                    organizationId,
                 ).getOrThrow()
         return properties
     }

@@ -76,7 +76,7 @@ class PropertyServiceImplTest {
         }
 
         // Act
-        val result = service.getPropertyList()
+        val result = service.getPropertyList(OrganizationId("org-1"))
 
         // Assert
         assertTrue(result.isSuccess)
@@ -114,7 +114,7 @@ class PropertyServiceImplTest {
         }
 
         // Act
-        val result = service.getPropertyList()
+        val result = service.getPropertyList(OrganizationId("org-1"))
 
         // Assert
         assertTrue(result.isSuccess)

@@ -5,7 +5,6 @@ import com.cramsan.edifikana.client.lib.features.window.EdifikanaNavGraphDestina
 import com.cramsan.edifikana.client.lib.features.window.EdifikanaWindowsEvent
 import com.cramsan.edifikana.client.lib.managers.AuthManager
 import com.cramsan.edifikana.client.lib.managers.OrganizationManager
-import com.cramsan.edifikana.client.lib.managers.PropertyManager
 import com.cramsan.edifikana.lib.model.invite.InviteId
 import com.cramsan.framework.core.UnifiedDispatcherProvider
 import com.cramsan.framework.core.compose.ApplicationEvent
@@ -35,7 +34,6 @@ class SplashViewModelTest : CoroutineTest() {
     private lateinit var viewModel: SplashViewModel
     private lateinit var authManager: AuthManager
     private lateinit var organizationManager: OrganizationManager
-    private lateinit var propertyManager: PropertyManager
 
     private lateinit var exceptionHandler: CollectorCoroutineExceptionHandler
 
@@ -58,7 +56,6 @@ class SplashViewModelTest : CoroutineTest() {
         )
         authManager = mockk()
         organizationManager = mockk()
-        propertyManager = mockk()
         viewModel = SplashViewModel(
             dependencies = dependencies,
             authManager = authManager,
@@ -94,7 +91,6 @@ class SplashViewModelTest : CoroutineTest() {
     @Test
     fun `test enforceAuth when signed in`() = runCoroutineTest {
         coEvery { authManager.isSignedIn() } returns Result.success(true)
-        coEvery { propertyManager.getPropertyList() } returns Result.success(emptyList())
         coEvery { organizationManager.getOrganizations() } returns Result.success(listOf(mockk()))
 
         viewModel.enforceAuth()

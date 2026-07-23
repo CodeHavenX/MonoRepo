@@ -125,24 +125,24 @@ class PropertyServiceTest {
         }
 
     /**
-     * Tests that getProperties retrieves all properties and returns a list.q
+     * Tests that getProperties retrieves all properties for an organization and returns a list.
      */
     @Test
     fun `getProperties should call propertyDatastore and return list`() =
         runTest {
             // Arrange
             val propertyList = listOf(mockk<Property>(), mockk<Property>())
-            coEvery { propertyDatastore.getProperties(UserId("TestId1")) } returns
+            coEvery { propertyDatastore.getProperties(OrganizationId("org123")) } returns
                 Result.success(
                     propertyList,
                 )
 
             // Act
-            val result = propertyService.getProperties(UserId("TestId1"))
+            val result = propertyService.getProperties(OrganizationId("org123"))
 
             // Assert
             assertEquals(propertyList, result)
-            coVerify { propertyDatastore.getProperties(UserId("TestId1")) }
+            coVerify { propertyDatastore.getProperties(OrganizationId("org123")) }
         }
 
     /**

@@ -70,6 +70,19 @@ class EmployeeService(private val employeeDatastore: EmployeeDatastore, private 
     }
 
     /**
+     * Retrieves all employees assigned to the given property.
+     */
+    suspend fun getEmployeesForProperty(
+        propertyId: PropertyId,
+    ): List<Employee> {
+        logD(TAG, "getEmployeesForProperty")
+        return employeeDatastore
+            .getEmployeesForProperty(
+                propertyId = propertyId,
+            ).getOrThrow()
+    }
+
+    /**
      * Updates an employee with the provided [id] and [name].
      */
     suspend fun updateEmployee(

@@ -4,6 +4,7 @@ import com.cramsan.edifikana.lib.model.employee.EmployeeId
 import com.cramsan.edifikana.lib.model.network.employee.CreateEmployeeNetworkRequest
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeListNetworkResponse
 import com.cramsan.edifikana.lib.model.network.employee.EmployeeNetworkResponse
+import com.cramsan.edifikana.lib.model.network.employee.GetEmployeesForPropertyQueryParams
 import com.cramsan.edifikana.lib.model.network.employee.UpdateEmployeeNetworkRequest
 import com.cramsan.framework.annotations.api.NoPathParam
 import com.cramsan.framework.annotations.api.NoQueryParam
@@ -61,6 +62,22 @@ object EmployeeApi : Api("employee") {
             description =
             "Lists all employees accessible to the authenticated user. " +
                 "Requires the EMPLOYEE role or higher.",
+            responses = UniversalResponsesOnly,
+        )
+
+    val getEmployeesForProperty =
+        operation<
+            NoRequestBody,
+            GetEmployeesForPropertyQueryParams,
+            NoPathParam,
+            EmployeeListNetworkResponse,
+            >(
+            method = HttpMethod.Get,
+            path = "by-property",
+            summary = "List employees for a property",
+            description =
+            "Returns all employees (manager/security/cleaning) assigned to the given property. " +
+                "Requires the MANAGER role or higher on the property.",
             responses = UniversalResponsesOnly,
         )
 

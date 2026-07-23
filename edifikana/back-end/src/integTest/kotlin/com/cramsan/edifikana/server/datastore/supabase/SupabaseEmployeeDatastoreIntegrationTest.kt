@@ -105,6 +105,48 @@ class SupabaseEmployeeDatastoreIntegrationTest : SupabaseIntegrationTest() {
     }
 
     @Test
+    fun `getEmployeesForProperty should return only employees for that property`() = runBlocking {
+        // Arrange
+        val otherPropertyId = createTestProperty("${test_prefix}_OtherProperty", testUserId!!, orgId!!)
+
+        // Act
+        val result1 = employeeDatastore.createEmployee(
+            firstName = "${test_prefix}_EmployeeManager",
+            lastName = "${test_prefix}_LastA",
+            role = EmployeeRole.MANAGER,
+            idType = IdType.DNI,
+            propertyId = propertyId!!,
+        ).registerEmployeeForDeletion()
+        val result2 = employeeDatastore.createEmployee(
+            firstName = "${test_prefix}_EmployeeCleaning",
+            lastName = "${test_prefix}_LastB",
+            role = EmployeeRole.CLEANING,
+            idType = IdType.PASSPORT,
+            propertyId = propertyId!!,
+        ).registerEmployeeForDeletion()
+        val otherPropertyResult = employeeDatastore.createEmployee(
+            firstName = "${test_prefix}_EmployeeOtherProperty",
+            lastName = "${test_prefix}_LastC",
+            role = EmployeeRole.SECURITY,
+            idType = IdType.DNI,
+            propertyId = otherPropertyId,
+        ).registerEmployeeForDeletion()
+        assertTrue(result1.isSuccess)
+        assertTrue(result2.isSuccess)
+        assertTrue(otherPropertyResult.isSuccess)
+        val getResult = employeeDatastore.getEmployeesForProperty(propertyId = propertyId!!)
+
+        // Assert
+        assertTrue(getResult.isSuccess)
+        val employees = getResult.getOrNull()
+        assertNotNull(employees)
+        val firstNames = employees.map { it.firstName }
+        assertTrue(firstNames.contains("${test_prefix}_EmployeeManager"))
+        assertTrue(firstNames.contains("${test_prefix}_EmployeeCleaning"))
+        assertTrue(firstNames.none { it == "${test_prefix}_EmployeeOtherProperty" })
+    }
+
+    @Test
     fun `updateEmployee should update employee fields`() = runBlocking {
         // Arrange
 

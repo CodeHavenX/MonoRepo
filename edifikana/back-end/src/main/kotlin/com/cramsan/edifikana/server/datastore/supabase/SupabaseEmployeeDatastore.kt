@@ -94,6 +94,25 @@ class SupabaseEmployeeDatastore(private val postgrest: Postgrest, private val cl
         }
 
     /**
+     * Gets all non-deleted employees assigned to the given property.
+     */
+
+    override suspend fun getEmployeesForProperty(propertyId: PropertyId): Result<List<Employee>> =
+        runSuspendCatching(TAG) {
+            logD(TAG, "Getting all employees for property: %s", propertyId)
+
+            postgrest
+                .from(EmployeeEntity.COLLECTION)
+                .select {
+                    filter {
+                        EmployeeEntity::propertyId eq propertyId.propertyId
+                        EmployeeEntity::deletedAt isExact null
+                    }
+                }.decodeList<EmployeeEntity>()
+                .map { it.toEmployee() }
+        }
+
+    /**
      * Updates an employee's properties. Only non-null parameters are updated.
      */
 

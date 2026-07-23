@@ -59,6 +59,13 @@ expect). Compare:
   mock
 - **State-specific content** — the specific labels/values/copy the mock shows for that use-case
 
+Do not stop at eyeballing the rendered PNG — a screen can look "close enough" while several of
+the above are actually wrong (e.g. a card with no border/shadow/radius can still look like a
+plausible card at a glance). When in doubt about *why* the render looks the way it does, check
+the Compose source directly: does a `Card`/`Surface` set explicit `shape`/`border`/`colors`/
+`elevation`, or is it relying on Material3 defaults that won't match a custom mock? Does a status
+label have a real background/shape, or is it plain colored text standing in for a badge?
+
 ## Step 5 — Report
 
 ```
@@ -69,3 +76,9 @@ Fix          : <specific change — Screen.kt structure, a theme token, missing 
 ```
 
 If there are no differences, say so explicitly rather than omitting the section.
+
+**This fragment is report-only.** If differences are found and the task calls for actually
+fixing them (not just describing them, e.g. inside `implement-plan`, or whenever asked to
+"match the mock"), use the `match-mock-fidelity` skill — it resolves the mock's tokens in more
+depth, prefers reusing existing app theme tokens/patterns over inventing new ones, and iterates
+fix → re-render → re-compare until clean.
